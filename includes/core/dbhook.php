@@ -207,7 +207,7 @@
 			$result = $wpdb->get_results($sql);
 		}
 
-		//Database table creation for address 
+		////Database table creation for address 
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_address'" ) != $tbl_address) {
 			$sql = "CREATE TABLE `".$tbl_address."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
