@@ -117,6 +117,43 @@ IF SUCCESS:
     }
 ```
 
+### CREATE PRODUCT
+
+REQUEST:
+- Method: POST
+- Header: key=Content-Type, value=tindapress/v1/globals/create
+- Params: key=id (value=id)
+
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Content Unknown!'
+- code: 'status' message: 'Failed to Create Content'
+
+IF SUCCESS:
+```
+    {
+        "status": "success",
+        "message": "Product Created Successfully!"
+    }
+```
+### DELETE PRODUCT 
+
+REQUEST:
+- Method: POST
+- Header: key=Content-Type, value=tindapress/v1/globals/delete
+- Params: key=id (value=id)
+
+RESPONSE:
+- code: 'unknown_product' message: 'Please contact your administrator. Authentication Unknown!'
+- code: 'invalid_id' message: 'Something went wrong. Please contact your administrator!. product: not found.'
+
+IF SUCCESS:
+```
+    {
+        "status": "success",
+        "message": "Product has been deleted successfully!"
+    }
+```
+
 ## Contributing
 
 Please read [CONTRIBUTING](CONTRIBUTING) for details on our code of conduct, and the process for submitting pull requests to us.

@@ -24,7 +24,7 @@
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Authentication Unknown!",
+                        "message" => "Please contact your administrator. Content Unknown!",
                     )
                 );
 			}
@@ -45,14 +45,14 @@
                 return rest_ensure_response( 
 					array(
 						"status" => "unknown",
-						"message" => "Failed to Send Content",
+						"message" => "Failed to Create Content",
 					)
 				);
             } else {
 				return rest_ensure_response( 
 					array(
 						"status" => "success",
-						"message" => "sent",
+						"message" => "Product Created Successfully",
 					)
 				);
 			} 
@@ -100,7 +100,7 @@
 		}
 
 		public static function update_product(){
-
+		
 			$id = 1;
 			
 			$table_name = 'sample';
@@ -132,18 +132,26 @@
 
 		public static function delete_product(){
 
+			if (!isset($_POST['id'])) {
+				return rest_ensure_response( 
+                    array(
+                        "status" => "unknown_product",
+                        "message" => "Please contact your administrator. Authentication Unknown!",
+                    )
+                );
+			}
 
 			$table_name = 'sample' ;
-			$id = 2;
 
+			$id = $_POST['id'];
 			
 			$result = TP_Globals::delete($table_name, $id);
 			
 			if ($result == false) {
                 return rest_ensure_response( 
                     array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. !",
+                        "status" => "invalid_id",
+                        "message" => "Something went wrong. Please contact your administrator!. product: not found.",
                     )
                 );
 			}else {
