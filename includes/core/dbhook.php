@@ -35,7 +35,7 @@
 		$tbl_products_meta = TP_PREFIX.'products_meta';
 		$tbl_roles_meta = TP_PREFIX.'roles_meta';
 
-		// // // //Database table creation for stores
+		//Database table creation for stores
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_stores'" ) != $tbl_stores) {
 			$sql = "CREATE TABLE `".$tbl_stores."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
@@ -47,7 +47,7 @@
 			$result = $wpdb->get_results($sql);
 		}
 
-		// // // //Database table creation for roles_meta
+		//Database table creation for roles_meta
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_roles_meta'" ) != $tbl_roles_meta) {
 			$sql = "CREATE TABLE `".$tbl_roles_meta."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
@@ -60,7 +60,7 @@
 			$result = $wpdb->get_results($sql);
 		}
 
-		// // // //Database table creation for roles_access
+		//Database table creation for roles_access
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_roles_access'" ) != $tbl_roles_access) {
 			$sql = "CREATE TABLE `".$tbl_roles_access."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
@@ -73,7 +73,7 @@
 			$result = $wpdb->get_results($sql);
 		}
 
-		// // // //Database table creation for roles
+		//Database table creation for roles
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_roles'" ) != $tbl_roles) {
 			$sql = "CREATE TABLE `".$tbl_roles."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
@@ -88,7 +88,7 @@
 			$result = $wpdb->get_results($sql);
 		}
 
-		// // // //Database table creation for revisions
+		//Database table creation for revisions
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_revisions'" ) != $tbl_revisions) {
 			$sql = "CREATE TABLE `".$tbl_revisions."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
@@ -100,7 +100,7 @@
 			$result = $wpdb->get_results($sql);
 		}
 
-		// //Database table creation for products_meta
+		//Database table creation for products_meta
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_products_meta'" ) != $tbl_products_meta) {
 			$sql = "CREATE TABLE `".$tbl_products_meta."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
@@ -123,7 +123,7 @@
 		}
 
 
-		// // //Database table creation for plugin_config
+		//Database table creation for plugin_config
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_plugin_config'" ) != $tbl_plugin_config) {
 			$sql = "CREATE TABLE `".$tbl_plugin_config."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
@@ -134,7 +134,7 @@
 			$result = $wpdb->get_results($sql);
 		}
 
-		// // //Database table creation for personnels
+		//Database table creation for personnels
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_personnels'" ) != $tbl_personnels) {
 			$sql = "CREATE TABLE `".$tbl_personnels."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
@@ -148,7 +148,7 @@
 			$result = $wpdb->get_results($sql);
 		}
 
-		// //Database table creation for order_meta
+		//Database table creation for order_meta
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_order_meta'" ) != $tbl_order_meta) {
 			$sql = "CREATE TABLE `".$tbl_order_meta."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
@@ -166,7 +166,7 @@
 			$result = $wpdb->get_results($sql);
 		}
 
-		// //Database table creation for order_items
+		//Database table creation for order_items
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_order_items'" ) != $tbl_order_items) {
 			$sql = "CREATE TABLE `".$tbl_order_items."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
@@ -178,7 +178,7 @@
 			$result = $wpdb->get_results($sql);
 		}
 
-		// //Database table creation for orders 
+		//Database table creation for orders 
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_orders'" ) != $tbl_orders) {
 			$sql = "CREATE TABLE `".$tbl_orders."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
