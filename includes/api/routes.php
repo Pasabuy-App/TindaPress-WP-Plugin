@@ -13,7 +13,7 @@
 <?php
     //Require the USocketNet class which have the core function of this plguin. 
     require plugin_dir_path(__FILE__) . '/v1/products/class-init.php';
-    require plugin_dir_path(__FILE__) . '/v1/globals/class-globals.php';
+        require plugin_dir_path(__FILE__) . '/v1/globals/class-globals.php';
 	
 	// Init check if USocketNet successfully request from wapi.
     function tindapress_route()
@@ -22,12 +22,12 @@
             'methods' => 'POST',
             'callback' => array('TP_Initialization','initialize'),
         ));
-        // sample
-        register_rest_route( 'tindapress/v1/products', 'first', array(
+       
+         // retrieve
+         register_rest_route( 'tindapress/v1/globals', 'retrieve', array(
             'methods' => 'GET',
-            'callback' => array('TP_Initialization','sample'),
+            'callback' => array('TP_Initialization','retrieve_product'),
         ));
-        
         // create
         register_rest_route( 'tindapress/v1/products', 'add_products', array(
             'methods' => 'POST',
@@ -36,14 +36,18 @@
         // update
         register_rest_route( 'tindapress/v1/globals', 'update', array(
             'methods' => 'POST',
-            'callback' => array('TP_Globals','update'),
+            'callback' => array('TP_Initialization','update_product'),
         ));
         // update
         register_rest_route( 'tindapress/v1/globals', 'delete', array(
-            'methods' => 'GET',
-            'callback' => array('TP_Globals','delete'),
+            'methods' => 'POST',
+            'callback' => array('TP_Initialization','delete_product'),
         ));
-        
+         // sample
+         register_rest_route( 'tindapress/v1/globals', 'retriveById', array(
+            'methods' => 'POST',
+            'callback' => array('TP_Initialization','retrieveById_product'),
+        ));
 
 
     }
