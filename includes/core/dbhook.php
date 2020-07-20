@@ -10,4 +10,3 @@
      * Here is where you add hook to WP to create our custom database if not found.
 	*/
 ?>
-

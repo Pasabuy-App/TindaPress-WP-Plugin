@@ -10,7 +10,6 @@
         * @version 0.1.0
 	*/
 ?>
-
 <?php
 	class TP_Initialization {
 

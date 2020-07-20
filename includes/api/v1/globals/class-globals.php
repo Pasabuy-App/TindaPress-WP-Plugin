@@ -31,7 +31,7 @@
         public static function delete($table_name , $id){
             return "delete";
 
-            $wpdb->get_row("UPDATE products set status = 0 where id = $id")
+            $wpdb->get_row("UPDATE products set status = 0 where id = $id");
         }
 
         public static function update($table_name, $id){
