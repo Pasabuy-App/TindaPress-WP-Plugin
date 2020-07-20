@@ -13,13 +13,11 @@
 <?php
 	class TP_Initialization {
 
-		
 		public static function initialize() {
             return "test";
             
 		}
 
-		
 		public static function add_products(){
 
 			if (!isset($_POST['name']) || !isset($_POST['surname'])) {
@@ -31,16 +29,15 @@
                 );
 			}
 
-			$name = $_POST['name'];
-			$surname = $_POST['surname'];
+			$n = $_POST['name'];
+			$sn = $_POST['surname'];
 
 			$data = array(
-				"name" => $name,
-				"surname" => $surname
+				"name" => $n,
+				"surname" => $sn
 			);
 			
-			$table_name="sample";
-			
+			$table_name = "sample";
 			
 			$result = TP_Globals::create($table_name, $data);
 
@@ -64,6 +61,141 @@
 
 		}
 
-	}
+		
+		public static function retrieve_product(){
+			
+			$fields = array( 'name' , 'surname');
+			// ASC
+			$sort = array('DESC');
 
+			$sort_field = array('ORDER BY', 'surname');
+
+			$table_name = "sample";
+			
+			$result = TP_Globals::retrieve($table_name, $fields, $sort_field, $sort);
+
+			if ($result == false) {
+
+                return rest_ensure_response( 
+					array(
+						"status" => "unknown",
+						"message" => "Failed to Send Content",
+					)
+				);
+
+            }else{
+
+				return rest_ensure_response( 
+					array(
+						"status" => "Sucess",
+						"data" => array(
+							"name" => $result->name,
+							"surname" => $result->surname,
+						)),
+				);
+				
+			}
+
+
+		}
+
+		public static function update_product(){
+
+			$id = 1;
+			
+			$table_name = 'sample';
+			
+			$fields = array(
+				'name' => 'miguel',
+				'surname' => 'radaza' 
+			);
+
+			$result = TP_Globals::update($table_name, $id, $fields);
+
+			if ($result == false) {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator!",
+                    )
+                );
+			}else {
+				return rest_ensure_response( 
+                    array(
+                        "status" => "success",
+                        "message" => "Product has been updated successfully!",
+                    )
+                );
+			}
+
+		}
+
+		public static function delete_product(){
+
+
+			$table_name = 'sample' ;
+			$id = 2;
+
+			
+			$result = TP_Globals::delete($table_name, $id);
+			
+			if ($result == false) {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. !",
+                    )
+                );
+			}else {
+				return rest_ensure_response( 
+                    array(
+                        "status" => "success",
+                        "message" => "Product has been deleted successfully!",
+                    )
+                );
+			}
+		}
+
+		// not working
+
+		// public static function retrieveById_product(){
+		// 	if (!isset($_POST['id']) || !isset($_POST['fields'])) 
+		// 	{
+		// 		return rest_ensure_response( 
+        //             array(
+        //                 "status" => "unknown",
+        //                 "message" => "Please contact your administrator. Authentication Unknown!",
+        //             )
+        //         );
+		// 	}
+			
+
+
+		// 	$table_name = 'sample';
+
+		// 	$fields = $_POST['fields'];
+			
+		// 	$id = $_POST['id'];
+
+		// 	$result = TP_Globals::retrieveById($table_name, $fields, $id);
+
+		// 	return $result;
+
+		// 	// if ($result == false) {
+        //     //     return rest_ensure_response( 
+		// 	// 		array(
+		// 	// 			"status" => "unknown",
+		// 	// 			"message" => "Failed to Send Content",
+		// 	// 		)
+		// 	// 	);
+        //     // } else {
+		// 	// 	return rest_ensure_response( 
+		// 	// 		array(
+		// 	// 			"status" => "Sucess",
+		// 	// 			"data" => $result ),
+		// 	// 	);
+		// 	// } 
+		// }
+
+	}
 ?>
