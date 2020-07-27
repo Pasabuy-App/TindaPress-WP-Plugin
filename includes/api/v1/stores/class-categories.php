@@ -11,7 +11,8 @@
 	*/
 ?>
 <?php
-	class TP_Categories {
+
+	class TP_Store {
         
         public static function category(){
 
@@ -25,7 +26,8 @@
 						"status" => "unknown",
 						"message" => "Please contact your administrator. Request unknown!",
 					)
-				);
+                );
+                
             }
 
 
@@ -36,7 +38,8 @@
 						"status" => "failed",
 						"message" => "Please contact your administrator. ID not in valid format!",
 					)
-				);
+                );
+                
 			}
 
 			// Step 3: Check if ID exists
@@ -46,7 +49,8 @@
 						"status" => "failed",
 						"message" => "User not found!",
 					)
-				);
+                );
+                
             }
 
 

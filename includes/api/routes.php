@@ -13,6 +13,7 @@
 <?php
     //Require the USocketNet class which have the core function of this plguin. 
         require plugin_dir_path(__FILE__) . '/v1/products/class-init.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/filter/class-categories.php';
         require plugin_dir_path(__FILE__) . '/v1/globals/class-globals.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-categories.php';
 	
@@ -35,7 +36,7 @@
             'callback' => array('TP_Initialization','add_products'),
         ));
         // update
-        register_rest_route( 'tindapress/v1/globals', 'update', array(
+        register_rest_route( 'tindapress/v1/globals/filter', 'update', array(
             'methods' => 'POST',
             'callback' => array('TP_Initialization','update_product'),
         ));
@@ -50,10 +51,17 @@
             'callback' => array('TP_Initialization','retrieveById_product'),
         ));
         // category
-        register_rest_route( 'tindapress/v1/stores', 'category', array(
+        register_rest_route( 'tindapress/v1/stores', 'categories', array(
             'methods' => 'GET',
-            'callback' => array('TP_Categories','category'),
+            'callback' => array('TP_Store','category'),
         ));
+
+
+        register_rest_route( 'tindapress/v1/products/filter', 'category', array(
+            'methods' => 'GET',
+            'callback' => array('TP_Product','initialize'),
+        ));
+
 
     }
     add_action( 'rest_api_init', 'tindapress_route' );

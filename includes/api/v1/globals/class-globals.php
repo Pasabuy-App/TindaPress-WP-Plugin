@@ -62,6 +62,20 @@
             
             return $wpdb->update( $table_name , $fields, array('id' => $id) );
         }
+
+
+        public static function validate_user(){
+            $verified = DV_Verification::initialize();
+            //Convert object to array
+            $array =  (array) $verified;
+            // Pass request status in a variable
+            $response =  $array['data']['status'];
+            if ($response != 'success') {
+                    return $verified;
+            } else {
+                    return true;
+            }
+        }
         
     }
 ?>
