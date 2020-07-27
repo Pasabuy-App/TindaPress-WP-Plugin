@@ -12,8 +12,9 @@
 ?>
 <?php
     //Require the USocketNet class which have the core function of this plguin. 
-    require plugin_dir_path(__FILE__) . '/v1/products/class-init.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-init.php';
         require plugin_dir_path(__FILE__) . '/v1/globals/class-globals.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-categories.php';
 	
 	// Init check if USocketNet successfully request from wapi.
     function tindapress_route()
@@ -48,7 +49,11 @@
             'methods' => 'POST',
             'callback' => array('TP_Initialization','retrieveById_product'),
         ));
-
+        // category
+        register_rest_route( 'tindapress/v1/stores', 'category', array(
+            'methods' => 'GET',
+            'callback' => array('TP_Categories','category'),
+        ));
 
     }
     add_action( 'rest_api_init', 'tindapress_route' );

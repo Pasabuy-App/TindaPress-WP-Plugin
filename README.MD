@@ -154,6 +154,57 @@ IF SUCCESS:
     }
 ```
 
+### CATEGORY LIST
+
+REQUEST:
+- Method: GET
+- Header: key=Content-Type, value=tindapress/api/v1/stores/categories
+- Params: key=wpid (value=user wordpress id), key=snky (value=Session key)
+
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Request unknown!'
+- code: 'failed' message: 'Please contact your administrator. ID not in valid format!. 
+- code: 'failed' message: 'User not found!. 
+- code: 'failed' message: 'User not found!.
+
+IF SUCCESS:
+```
+    {
+        {
+            "status": "success",
+            "data": {
+                "list": [
+                    {
+                        "id": "6",
+                        "types": "store",
+                        "title": "sampleTITLE",
+                        "info": "sampleINFO"
+                    },
+                    {
+                        "id": "5",
+                        "types": "product",
+                        "title": "some title",
+                        "info": "some info"
+                    },
+                    {
+                        "id": "2",
+                        "types": "store",
+                        "title": "Fast Foods",
+                        "info": "Kainan ng mga langgam."
+                    },
+                    {
+                        "id": "1",
+                        "types": "product",
+                        "title": "Ulam",
+                        "info": "Pares sa kanin."
+                    }
+                ]
+            }
+        }
+    }
+```
+
+
 ## Contributing 
 
 Please read [CONTRIBUTING](CONTRIBUTING) for details on our code of conduct, and the process for submitting pull requests to us.

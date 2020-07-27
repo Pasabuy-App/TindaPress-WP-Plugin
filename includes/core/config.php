@@ -13,7 +13,7 @@
 <?php
 
 	//Defining Global Variables
-	define('TP_PREFIX', 'bc_'); 
+	define('TP_PREFIX', 'tp_'); 
 
 
 ?>
