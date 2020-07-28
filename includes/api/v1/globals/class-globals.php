@@ -76,6 +76,15 @@
                     return true;
             }
         }
+
+        // date stamp 
+        public static function date_stamp(){
+            date_default_timezone_set('Asia/Manila');
+
+            
+            return date("Y-m-d h:i:sa");
+
+        }
         
     }
 ?>

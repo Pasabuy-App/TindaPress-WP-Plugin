@@ -19,6 +19,8 @@
         require plugin_dir_path(__FILE__) . '/v1/category/class-stores.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-stores.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-newest.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-newest.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-product.php';
 	
 	// Init check if USocketNet successfully request from wapi.
     function tindapress_route()
@@ -27,21 +29,24 @@
             'methods' => 'POST',
             'callback' => array('TP_Initialization','initialize'),
         ));
-       
+        register_rest_route( 'tindapress/v1/products', 'retrieve', array(
+            'methods' => 'POST',
+            'callback' => array('TP_Products','sample'),
+        ));
          // retrieve
-         register_rest_route( 'tindapress/v1/globals', 'retrieve', array(
-            'methods' => 'GET',
-            'callback' => array('TP_Initialization','retrieve_product'),
+         register_rest_route( 'tindapress/v1/products', 'retrieve', array(
+            'methods' => 'POST',
+            'callback' => array('TP_Products','get_product'),
         ));
         // create
         register_rest_route( 'tindapress/v1/products', 'add_products', array(
             'methods' => 'POST',
-            'callback' => array('TP_Initialization','add_products'),
+            'callback' => array('TP_Products','add_product'),
         ));
         // update
-        register_rest_route( 'tindapress/v1/globals/filter', 'update', array(
+        register_rest_route( 'tindapress/v1/globals/products', 'update', array(
             'methods' => 'POST',
-            'callback' => array('TP_Initialization','update_product'),
+            'callback' => array('TP_Products','update_product'),
         ));
         // update
         register_rest_route( 'tindapress/v1/globals', 'delete', array(
@@ -49,9 +54,9 @@
             'callback' => array('TP_Initialization','delete_product'),
         ));
          // sample
-         register_rest_route( 'tindapress/v1/globals', 'retriveById', array(
+         register_rest_route( 'tindapress/v1/products', 'retriveById', array(
             'methods' => 'POST',
-            'callback' => array('TP_Initialization','retrieveById_product'),
+            'callback' => array('TP_Products','retrieveById_product'),
         ));
         // store folder
         register_rest_route( 'tindapress/v1/stores', 'categories', array(
@@ -68,10 +73,15 @@
         ));
 
 
-
+        // product folder
         register_rest_route( 'tindapress/v1/products/filter', 'category', array(
             'methods' => 'POST',
             'callback' => array('TP_Product','initialize'),
+        ));
+
+        register_rest_route( 'tindapress/v1/products', 'newest', array(
+            'methods' => 'POST',
+            'callback' => array('TP_Product_Newest','initialize'),
         ));
 
         // store

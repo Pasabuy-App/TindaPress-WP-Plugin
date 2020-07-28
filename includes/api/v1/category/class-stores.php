@@ -59,9 +59,9 @@
                 
             }
 
-            $table_store = STORES_TABLE;
-            $table_store_revs = STORES_REVS_TABLE;
-            $table_category = CATEGORIES_TABLE;
+            $table_store = TP_STORES_TABLE;
+            $table_store_revs = TP_STORES_REVS_TABLE;
+            $table_category = TP_CATEGORIES_TABLE;
 
 
                         

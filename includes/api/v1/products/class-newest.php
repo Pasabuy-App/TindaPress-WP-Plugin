@@ -12,11 +12,10 @@
 ?>
 <?php
 
-    class TP_Product {
-        
+    class TP_Product_Newest {
         public static function initialize(){
             global $wpdb;
-
+                
             // Step1 : Check if wpid and snky is valid
             if (TP_Globals::validate_user() == false) {
                 return rest_ensure_response( 
@@ -28,7 +27,7 @@
             }
 
             // Step2 : Sanitize all Request
-			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) || !isset($_POST['stid']) || !isset($_POST['catid'])) {
+			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) ) {
 				return rest_ensure_response( 
 					array(
 						"status" => "unknown",
@@ -38,9 +37,8 @@
                 
             }
 
-
             // Step 3: Check if ID is in valid format (integer)
-			if (!is_numeric($_POST["wpid"]) || !is_numeric($_POST["stid"]) || !is_numeric($_POST["catid"]) ) {
+			if (!is_numeric($_POST["wpid"])) {
 				return rest_ensure_response( 
 					array(
 						"status" => "failed",
@@ -60,11 +58,15 @@
                 );
                 
             }
-            
 
-            
-            //Step 5: Create table name for all tables needed
+            // step 5: Put to variables all needed data
+            $now = current_time( 'mysql' ); 
+            $date_now = date( 'Y-m-d', strtotime( $now ) + 3600 ); 
+            $date=date_create($date_now);
+            date_sub( $date, date_interval_create_from_date_string("7 days"));
+            $date_expected =  date_format($date,"Y-m-d");
 
+            // table names
             $store_table           = TP_STORES_TABLE;
             $store_revs_table      = TP_STORES_REVS_TABLE;
             $categories_table      = TP_CATEGORIES_TABLE;
@@ -72,24 +74,21 @@
             $product_table         = TP_PRODUCT_TABLE;
             $product_revs_table    = TP_PRODUCT_REVS_TABLE;
             
-            $catid = $_POST['catid'];
-            $stid = $_POST['stid'];
-
-            //Step 6: Fetch data from database
+            // step 6: fetch data from databse
             $result = $wpdb->get_results("SELECT
                 prd.id AS id,
                 st_r.child_val AS store_name,
-                max( IF ( cat_r.child_key = 'title', cat_r.child_val,  '' ) ) AS cat_title,
-                max( IF ( cat_r.child_key = 'info', cat_r.child_val, ''  ) ) AS cat_info,
-                max( IF ( prd_r.child_key = 'title', prd_r.child_val, ''  ) ) AS title,
-                max( IF ( prd_r.child_key = 'preview', prd_r.child_val,  '' ) ) AS preview,
-                max( IF ( prd_r.child_key = 'short_info', prd_r.child_val, ''  ) ) AS short_info,
-                max( IF ( prd_r.child_key = 'long_info', prd_r.child_val, ''  ) ) AS long_info,
-                max( IF ( prd_r.child_key = 'status', prd_r.child_val, ''  ) ) AS STATUS,
-                max( IF ( prd_r.child_key = 'sku', prd_r.child_val, ''  ) ) AS sku,
-                max( IF ( prd_r.child_key = 'price', prd_r.child_val, ''  ) ) AS price,
-                max( IF ( prd_r.child_key = 'weight', prd_r.child_val,  '' ) ) AS weight,
-                max( IF ( prd_r.child_key = 'dimension', prd_r.child_val, ''  ) ) AS dimension,
+                max( IF ( cat_r.child_key = 'title', cat_r.child_val, '' ) ) AS cat_title,
+                max( IF ( cat_r.child_key = 'info', cat_r.child_val, '' ) ) AS cat_info,
+                max( IF ( prd_r.child_key = 'title', prd_r.child_val, '' ) ) AS title,
+                max( IF ( prd_r.child_key = 'preview', prd_r.child_val, '' ) ) AS preview,
+                max( IF ( prd_r.child_key = 'short_info', prd_r.child_val, '' ) ) AS short_info,
+                max( IF ( prd_r.child_key = 'long_info', prd_r.child_val, '' ) ) AS long_info,
+                max( IF ( prd_r.child_key = 'status', prd_r.child_val, '' ) ) AS STATUS,
+                max( IF ( prd_r.child_key = 'sku', prd_r.child_val, '' ) ) AS sku,
+                max( IF ( prd_r.child_key = 'price', prd_r.child_val, '' ) ) AS price,
+                max( IF ( prd_r.child_key = 'weight', prd_r.child_val, '' ) ) AS weight,
+                max( IF ( prd_r.child_key = 'dimension', prd_r.child_val, '' ) ) AS dimension,
                 prd_r.created_by,
                 prd.date_created 
             FROM
@@ -109,13 +108,15 @@
                 INNER JOIN $categories_revs_table cat_r ON cat.title = cat_r.ID 
                 OR cat.info = cat_r.ID 
             WHERE
-                prd.ctid = $catid 
-                AND prd.stid = $stid
+                SUBSTRING( prd.date_created, 1, 10 ) BETWEEN '$date_expected' 
+                AND '$date_now'
             GROUP BY
-                prd_r.parent_id DESC
-            ", OBJECT);
-
-            //Step 6: Return result
+                prd_r.parent_id 
+                ORDER BY
+                RAND() 
+                LIMIT 10
+            ");
+            // step 7: return result
             return rest_ensure_response( 
                 array(
                     "status" => "success",
@@ -126,7 +127,6 @@
                 )
             );
 
-            
-        }
 
+        }
     }

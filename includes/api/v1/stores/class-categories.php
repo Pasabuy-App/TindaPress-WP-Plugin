@@ -64,8 +64,8 @@
 
 
             //Step 4: Create table name for posts (tp_categories, tp_categories_revs)
-			$categories_table      = CATEGORIES_TABLE;
-			$categories_revs_table = CATEGORIES_REVS_TABLE;
+			$categories_table      = TP_CATEGORIES_TABLE;
+			$categories_revs_table = TP_CATEGORIES_REVS_TABLE;
 			
 			//Step 5: Get results from database 
 			$result= $wpdb->get_results("SELECT
