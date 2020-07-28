@@ -30,7 +30,7 @@
 
 
             // Step1 : Sanitize all Request
-			if (!isset($_GET["wpid"]) || !isset($_GET["snky"]) || !isset($_GET['stid']) || !isset($_GET['catid'])) {
+			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) || !isset($_POST['stid']) || !isset($_POST['catid'])) {
 				return rest_ensure_response( 
 					array(
 						"status" => "unknown",
@@ -42,7 +42,7 @@
 
 
             // Step 2: Check if ID is in valid format (integer)
-			if (!is_numeric($_GET["wpid"]) || !is_numeric($_GET["stid"]) || !is_numeric($_GET["catid"]) ) {
+			if (!is_numeric($_POST["wpid"]) || !is_numeric($_POST["stid"]) || !is_numeric($_POST["catid"]) ) {
 				return rest_ensure_response( 
 					array(
 						"status" => "failed",
@@ -53,7 +53,7 @@
 			}
 
 			// Step 3: Check if ID exists
-			if (!get_user_by("ID", $_GET['wpid'])) {
+			if (!get_user_by("ID", $_POST['wpid'])) {
 				return rest_ensure_response( 
 					array(
 						"status" => "failed",

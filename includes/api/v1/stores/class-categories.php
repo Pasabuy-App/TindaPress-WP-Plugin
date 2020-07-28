@@ -19,8 +19,17 @@
             // Initialize WP global variable
 			global $wpdb;
 
+			if (TP_Globals::validate_user() == false) {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. Request Unknown!",
+                    )
+                );
+            }
+
             // Step1 : Sanitize all Request
-			if (!isset($_GET["wpid"]) || !isset($_GET["snky"])) {
+			if (!isset($_POST["wpid"]) || !isset($_POST["snky"])) {
 				return rest_ensure_response( 
 					array(
 						"status" => "unknown",
@@ -32,7 +41,7 @@
 
 
             // Step 2: Check if ID is in valid format (integer)
-			if (!is_numeric($_GET["wpid"])) {
+			if (!is_numeric($_POST["wpid"])) {
 				return rest_ensure_response( 
 					array(
 						"status" => "failed",
@@ -43,7 +52,7 @@
 			}
 
 			// Step 3: Check if ID exists
-			if (!get_user_by("ID", $_GET['wpid'])) {
+			if (!get_user_by("ID", $_POST['wpid'])) {
 				return rest_ensure_response( 
 					array(
 						"status" => "failed",
@@ -55,22 +64,22 @@
 
 
             //Step 4: Create table name for posts (tp_categories, tp_categories_revs)
-			$table_categories = TP_PREFIX.'categories';
-			$table_categories_revs = TP_PREFIX.'categories_revs';
-				
+			$categories_table      = CATEGORIES_TABLE;
+			$categories_revs_table = CATEGORIES_REVS_TABLE;
+			
 			//Step 5: Get results from database 
 			$result= $wpdb->get_results("SELECT
-                tp_categories.id,
-                tp_categories.types,
-                max( IF ( tp_categories_revs.child_key = 'title', tp_categories_revs.child_val, '' ) ) AS title,
-                max( IF ( tp_categories_revs.child_key = 'info', tp_categories_revs.child_val, '' ) ) AS info
-                
-            FROM
-                tp_categories
-                INNER JOIN tp_categories_revs ON tp_categories.title = tp_categories_revs.ID 
-                OR tp_categories.info = tp_categories_revs.ID 
-            GROUP BY
-                tp_categories_revs.parent_id DESC", OBJECT);
+				cat.id,
+				cat.types,
+				max( IF ( cat_r.child_key = 'title', cat_r.child_val, '' ) ) AS title,
+				max( IF ( cat_r.child_key = 'info', cat_r.child_val, '' ) ) AS info
+				
+			FROM
+				$categories_table cat
+				INNER JOIN $categories_revs_table cat_r ON cat.title = cat_r.ID 
+				OR cat.info = cat_r.ID 
+			GROUP BY
+				cat_r.parent_id DESC", OBJECT);
             //Step 6: return result
 			return rest_ensure_response( 
 				array(

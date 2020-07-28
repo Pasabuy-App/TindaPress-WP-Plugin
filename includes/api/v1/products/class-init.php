@@ -13,10 +13,6 @@
 <?php
 	class TP_Initialization {
 
-		public static function initialize() {
-            return "test";
-            
-		}
 
 		public static function add_products(){
 
