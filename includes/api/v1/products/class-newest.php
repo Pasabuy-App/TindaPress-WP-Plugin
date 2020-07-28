@@ -60,8 +60,7 @@
             }
 
             // step 5: Put to variables all needed data
-            $now = current_time( 'mysql' ); 
-            $date_now = date( 'Y-m-d', strtotime( $now ) + 3600 ); 
+            $date_now = TP_Globals::date_stamp();
             $date=date_create($date_now);
             date_sub( $date, date_interval_create_from_date_string("7 days"));
             $date_expected =  date_format($date,"Y-m-d");

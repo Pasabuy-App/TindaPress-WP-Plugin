@@ -60,8 +60,8 @@
                 
             }
 
-            $now = current_time( 'mysql' ); 
-            $date_now = date( 'Y-m-d', strtotime( $now ) + 3600 ); 
+            $later = TP_Globals::date_stamp();
+
          
 
             $date=date_create($date_now);
