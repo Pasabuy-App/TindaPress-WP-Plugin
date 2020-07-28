@@ -17,6 +17,8 @@
         require plugin_dir_path(__FILE__) . '/v1/globals/class-globals.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-categories.php';
         require plugin_dir_path(__FILE__) . '/v1/category/class-stores.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-stores.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-newest.php';
 	
 	// Init check if USocketNet successfully request from wapi.
     function tindapress_route()
@@ -51,11 +53,21 @@
             'methods' => 'POST',
             'callback' => array('TP_Initialization','retrieveById_product'),
         ));
-        // category
+        // store folder
         register_rest_route( 'tindapress/v1/stores', 'categories', array(
             'methods' => 'POST',
             'callback' => array('TP_Store','category'),
         ));
+        register_rest_route( 'tindapress/v1/stores', 'category', array(
+            'methods' => 'POST',
+            'callback' => array('TP_StorebyCategory','initialize'),
+        ));
+        register_rest_route( 'tindapress/v1/stores', 'newest', array(
+            'methods' => 'POST',
+            'callback' => array('TP_Newest','initialize'),
+        ));
+
+
 
         register_rest_route( 'tindapress/v1/products/filter', 'category', array(
             'methods' => 'POST',
@@ -67,6 +79,7 @@
             'methods' => 'POST',
             'callback' => array('TP_Storelist','initialize'),
         ));
+
 
 
     }
