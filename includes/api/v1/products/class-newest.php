@@ -15,7 +15,14 @@
     class TP_Product_Newest {
         public static function initialize(){
             global $wpdb;
-                
+            if (TP_Globals::verifiy_datavice_plugin() == false) {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. Plugin Missing!",
+                    )
+                );
+            }
             // Step1 : Check if wpid and snky is valid
             if (TP_Globals::validate_user() == false) {
                 return rest_ensure_response( 
