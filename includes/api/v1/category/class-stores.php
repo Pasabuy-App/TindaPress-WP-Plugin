@@ -70,39 +70,37 @@
             }
 
             $table_store = TP_STORES_TABLE;
-            $table_store_revs = TP_STORES_REVS_TABLE;
             $table_category = TP_CATEGORIES_TABLE;
-
-
-                        
+            $table_revision = TP_REVISION;
+            $table_address = 'dv_address';
+                    
             $result = $wpdb->get_results("SELECT
             st.id,
             cat.types,
-            (SELECT child_val FROM tp_categories_revs WHERE ID = cat.title) as cat_title,
-            (SELECT child_val FROM tp_categories_revs WHERE ID = cat.info) as cat_info,
-                max( IF ( st_r.child_key = 'title', st_r.child_val,'' ) ) AS title,
-                max( IF ( st_r.child_key = 'short_info', st_r.child_val,'' ) ) AS short_info,
-                max( IF ( st_r.child_key = 'long_info', st_r.child_val,'' ) ) AS long_info,
-                max( IF ( st_r.child_key = 'logo', st_r.child_val,'' ) ) AS logo,
-                max( IF ( st_r.child_key = 'banner', st_r.child_val, '') ) AS banner,
-            addr.types as add_types,
-            (SELECT child_val FROM tp_address_revs WHERE ID = addr.status) as status,
-            (SELECT child_val FROM tp_address_revs WHERE ID = addr.street) as street,
-            (SELECT brgy_name FROM dv_brgys WHERE ID = (SELECT child_val FROM tp_address_revs WHERE ID = addr.brgy)) as brgy,
-            (SELECT citymun_name FROM dv_cities WHERE ID = (SELECT child_val FROM tp_address_revs WHERE ID = addr.city)) as city,
-            (SELECT prov_name FROM dv_provinces WHERE ID = (SELECT child_val FROM tp_address_revs WHERE ID = addr.province)) as province,
-            (SELECT country_name FROM dv_countries WHERE ID = (SELECT child_val FROM tp_address_revs WHERE ID = addr.country)) as country
-            
-            FROM
-                tp_stores st
-                INNER JOIN tp_stores_revs st_r ON st.title = st_r.ID 
-                OR st.short_info = st_r.ID 
-                OR st.long_info = st_r.ID 
-                OR st.logo = st_r.ID 
-                OR st.banner = st_r.ID
-                INNER JOIN tp_categories cat ON st.ctid = cat.ID 
-                INNER JOIN tp_address addr ON st.address = addr.ID 
-                GROUP BY 
+            ( SELECT child_val FROM tp_revisions WHERE ID = cat.title ) AS cat_title,
+            ( SELECT child_val FROM tp_revisions WHERE ID = cat.info ) AS cat_info,
+            max( IF ( st_r.child_key = 'title', st_r.child_val, '' ) ) AS title,
+            max( IF ( st_r.child_key = 'short_info', st_r.child_val, '' ) ) AS short_info,
+            max( IF ( st_r.child_key = 'long_info', st_r.child_val, '' ) ) AS long_info,
+            max( IF ( st_r.child_key = 'logo', st_r.child_val, '' ) ) AS logo,
+            max( IF ( st_r.child_key = 'banner', st_r.child_val, '' ) ) AS banner,
+            addr.types AS add_types,
+            ( SELECT child_val FROM dv_revisions WHERE ID = addr.STATUS ) AS STATUS,
+            ( SELECT child_val FROM dv_address WHERE ID = addr.street ) AS street,
+            ( SELECT brgy_name FROM dv_geo_brgy WHERE ID = ( SELECT child_val FROM dv_revisions WHERE ID = addr.brgy ) ) AS brgy,
+            ( SELECT citymun_name FROM dv_geo_city WHERE ID = ( SELECT child_val FROM dv_revisions WHERE ID = addr.city ) ) AS city,
+            ( SELECT prov_name FROM dv_geo_provinces WHERE ID = ( SELECT child_val FROM dv_revisions WHERE ID = addr.province ) ) AS province,
+            ( SELECT country_name FROM dv_geo_countries WHERE ID = ( SELECT child_val FROM dv_revisions WHERE ID = addr.country ) ) AS country 
+        FROM
+            $table_store st
+            INNER JOIN $table_revision st_r ON st.title = st_r.ID 
+            OR st.short_info = st_r.ID 
+            OR st.long_info = st_r.ID 
+            OR st.logo = st_r.ID 
+            OR st.banner = st_r.ID
+            INNER JOIN $table_category cat ON st.ctid = cat.ID
+            INNER JOIN $table_address addr ON st.address = addr.ID 
+        GROUP BY
             st.id
             ");
 
