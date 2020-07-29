@@ -204,6 +204,72 @@ IF SUCCESS:
     }
 ```
 
+### CATEGORY LIST OF STORES
+
+REQUEST:
+- Method: GET
+- Header: key=Content-Type, value=tindapress/v1/category/stores
+- Params: key=wpid (value=user wordpress id), key=snky (value=Session key)
+
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!'
+- code: 'unknown' message: 'Please contact your administrator. Request unknown!'
+- code: 'failed' message: 'Please contact your administrator. ID not in valid format!. 
+- code: 'unknown' message: 'Please contact your administrator. Request unknown!'
+- code: 'failed' message: 'User not found!. 
+
+IF SUCCESS:
+```
+
+    {
+        "status": "success",
+        "data": {
+            "list": [
+                {
+                    "id": "1",
+                    "types": "store",
+                    "cat_title": "Fast Food",
+                    "cat_info": "Kainan ng mga Langam",
+                    "title": "jollibee - Branch",
+                    "short_info": "Fast food restauirant company",
+                    "long_info": "Jollibee is multinational fast food retaurant in the phillipines own by jollibee corporation",
+                    "logo": "logo.png",
+                    "banner": "some banner",
+                    "add_types": "business",
+                    "STATUS": "active",
+                    "street": "jollibee - Branch",
+                    "brgy": "Putatan",
+                    "city": "City of Muntinlupa",
+                    "province": "NCR - 4th District",
+                    "country": "Philippines"
+                }
+            ]
+        }
+    }
+
+```
+
+### POST STORE LIST : NEWEST
+
+REQUEST:
+- Method: GET
+- Header: key=Content-Type, value=tindapress/v1/stores/newest
+- Params: key=wpid (value=user wordpress id), key=snky (value=Session key)
+
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!'
+- code: 'unknown' message: 'Please contact your administrator. Request unknown!'
+- code: 'failed' message: 'Please contact your administrator. ID not in valid format!. 
+- code: 'unknown' message: 'Please contact your administrator. Request unknown!'
+- code: 'failed' message: 'User not found!. 
+
+IF SUCCESS:
+```
+
+
+```
+
+
 
 ## Contributing 
 

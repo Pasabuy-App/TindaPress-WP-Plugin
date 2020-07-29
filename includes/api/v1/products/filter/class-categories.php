@@ -39,7 +39,7 @@
 				return rest_ensure_response( 
 					array(
 						"status" => "unknown",
-						"message" => "Please contact your administrator. Request unknown!",
+						"message" => "Please contact your administrator.  Request unknown missing parameters!",
 					)
                 );
                 
@@ -79,6 +79,7 @@
             $product_table         = TP_PRODUCT_TABLE;
             $product_revs_table    = TP_PRODUCT_REVS_TABLE;
             
+            $table_revs = TP_REVISION;
             $catid = $_POST['catid'];
             $stid = $_POST['stid'];
 
@@ -101,7 +102,7 @@
                 prd.date_created 
             FROM
                 $product_table prd
-                INNER JOIN $product_revs_table prd_r ON prd.title = prd_r.ID 
+                INNER JOIN $table_revs prd_r ON prd.title = prd_r.ID 
                 OR prd.preview = prd_r.ID 
                 OR prd.short_info = prd_r.ID 
                 OR prd.long_info = prd_r.ID 
@@ -111,9 +112,9 @@
                 OR prd.weight = prd_r.ID 
                 OR prd.dimension = prd_r.ID
                 INNER JOIN $store_table st ON prd.stid = st.ID
-                INNER JOIN $store_revs_table st_r ON st.title = st_r.ID
+                INNER JOIN $table_revs st_r ON st.title = st_r.ID
                 INNER JOIN $categories_table cat ON prd.ctid = cat.ID
-                INNER JOIN $categories_revs_table cat_r ON cat.title = cat_r.ID 
+                INNER JOIN $table_revs cat_r ON cat.title = cat_r.ID 
                 OR cat.info = cat_r.ID 
             WHERE
                 prd.ctid = $catid 
