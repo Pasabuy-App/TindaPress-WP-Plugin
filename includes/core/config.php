@@ -11,7 +11,7 @@
 	*/
 ?>
 <?php
-
+ 
 	//Defining Global Variables
 	define('TP_PREFIX', 'tp_'); 
 

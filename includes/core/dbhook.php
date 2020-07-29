@@ -13,7 +13,7 @@
 <?php
 	
 	function tp_dbhook_activate() {
-		
+	
 		global $wpdb;
 
 		//Initializing table name

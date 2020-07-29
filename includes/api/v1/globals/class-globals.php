@@ -85,6 +85,13 @@
             return date("Y-m-d h:i:sa");
 
         }
+
+        public static function verifiy_datavice_plugin(){
+            if(!class_exists('DV_Verification')){
+                return false;
+            }else{
+                return true;
+            }
+        }
         
     }
-?>

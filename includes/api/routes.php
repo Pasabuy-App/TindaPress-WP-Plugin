@@ -1,4 +1,5 @@
 <?php
+   
 	// Exit if accessed directly
 	if ( ! defined( 'ABSPATH' ) ) {
 		exit;
@@ -11,6 +12,7 @@
 	*/
 ?>
 <?php
+   
     //Require the USocketNet class which have the core function of this plguin. 
         require plugin_dir_path(__FILE__) . '/v1/products/class-init.php';
         require plugin_dir_path(__FILE__) . '/v1/products/filter/class-categories.php';
@@ -29,10 +31,10 @@
             'methods' => 'POST',
             'callback' => array('TP_Initialization','initialize'),
         ));
-        register_rest_route( 'tindapress/v1/products', 'retrieve', array(
-            'methods' => 'POST',
-            'callback' => array('TP_Products','sample'),
-        ));
+        // register_rest_route( 'tindapress/v1/products', 'retrieve', array(
+        //     'methods' => 'POST',
+        //     'callback' => array('TP_Products','sample'),
+        // ));
          // retrieve
          register_rest_route( 'tindapress/v1/products', 'retrieve', array(
             'methods' => 'POST',

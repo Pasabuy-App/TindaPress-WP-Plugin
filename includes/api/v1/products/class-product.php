@@ -118,7 +118,16 @@
 
         public static function get_product(){
             global $wpdb;
-                
+            
+            if (TP_Globals::verifiy_datavice_plugin() == false) {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "failed",
+                        "message" => "Please contact your administrator. Plugin Missing",
+                    )
+                );
+            }
+
             // Step1 : Check if wpid and snky is valid
             if (TP_Globals::validate_user() == false) {
                 return rest_ensure_response( 
@@ -162,56 +171,147 @@
                 
             }
 
-            $result =  $wpdb->get_results("SELECT
-                prod.id AS id,
-                str_v.child_val AS store_name,
-                max( IF ( cat_r.child_key = 'title', cat_r.child_val, '') ) AS cat_title,
-                max( IF ( cat_r.child_key = 'info', cat_r.child_val, '') ) AS cat_info,
-                max( IF ( prod_r.child_key = 'title', prod_r.child_val, '') ) AS title,
-                max( IF ( prod_r.child_key = 'preview', prod_r.child_val,'' ) ) AS preview,
-                max( IF ( prod_r.child_key = 'short_info', prod_r.child_val,'' ) ) AS short_info,
-                max( IF ( prod_r.child_key = 'long_info', prod_r.child_val, '') ) AS long_info,
-                max( IF ( prod_r.child_key = 'status', prod_r.child_val, '') ) AS STATUS,
-                max( IF ( prod_r.child_key = 'sku', prod_r.child_val, '') ) AS sku,
-                max( IF ( prod_r.child_key = 'price', prod_r.child_val, '') ) AS price,
-                max( IF ( prod_r.child_key = 'weight', prod_r.child_val, '') ) AS weight,
-                max( IF ( prod_r.child_key = 'dimension', prod_r.child_val, '') ) AS dimension,
-                prod_r.created_by,
-                prod.date_created 
-            FROM
-                tp_product prod
-                INNER JOIN tp_products_revs prod_r ON prod.title = prod_r.ID 
-                OR prod.preview = prod_r.ID 
-                OR prod.short_info = prod_r.ID 
-                OR prod.long_info = prod_r.ID 
-                OR prod.`status` = prod_r.ID 
-                OR prod.sku = prod_r.ID 
-                OR prod.price = prod_r.ID 
-                OR prod.weight = prod_r.ID 
-                OR prod.dimension = prod_r.ID
-                INNER JOIN tp_stores str ON prod.stid = str.ID
-                INNER JOIN tp_stores_revs str_v ON str.title = str_v.ID
-                INNER JOIN tp_categories cat ON prod.ctid = cat.ID
-                INNER JOIN tp_categories_revs cat_r ON cat.title = cat_r.ID 
-                OR cat.info = cat_r.ID 
-            GROUP BY
-                prod_r.parent_id DESC
-            ");
+            $table_product = TP_PRODUCT_TABLE;
+            $table_product_revs = TP_PRODUCT_REVS_TABLE;
+            $table_stores = TP_STORES_TABLE;
+            $table_stores_revs = TP_STORES_REVS_TABLE;
+            $table_categories = TP_CATEGORIES_TABLE;
+            $table_categories_revs = TP_CATEGORIES_REVS_TABLE;
 
-             //Step 6: Return result
-             return rest_ensure_response( 
-                array(
-                    "status" => "success",
-                    "data" => array(
-                        'list' => $result, 
-                    
+            
+            if(!isset($_POST['lid'])){
+
+                $result =  $wpdb->get_results("SELECT
+                    prod.id AS id,
+                    str_v.child_val AS store_name,
+                    max( IF ( cat_r.child_key = 'title', cat_r.child_val, '') ) AS cat_title,
+                    max( IF ( cat_r.child_key = 'info', cat_r.child_val, '') ) AS cat_info,
+                    max( IF ( prod_r.child_key = 'title', prod_r.child_val, '') ) AS title,
+                    max( IF ( prod_r.child_key = 'preview', prod_r.child_val,'' ) ) AS preview,
+                    max( IF ( prod_r.child_key = 'short_info', prod_r.child_val,'' ) ) AS short_info,
+                    max( IF ( prod_r.child_key = 'long_info', prod_r.child_val, '') ) AS long_info,
+                    max( IF ( prod_r.child_key = 'status', prod_r.child_val, '') ) AS STATUS,
+                    max( IF ( prod_r.child_key = 'sku', prod_r.child_val, '') ) AS sku,
+                    max( IF ( prod_r.child_key = 'price', prod_r.child_val, '') ) AS price,
+                    max( IF ( prod_r.child_key = 'weight', prod_r.child_val, '') ) AS weight,
+                    max( IF ( prod_r.child_key = 'dimension', prod_r.child_val, '') ) AS dimension,
+                    prod_r.created_by,
+                    prod.date_created 
+                FROM
+                    $table_product prod
+                    INNER JOIN $table_product_revs prod_r ON prod.title = prod_r.ID 
+                    OR prod.preview = prod_r.ID 
+                    OR prod.short_info = prod_r.ID 
+                    OR prod.long_info = prod_r.ID 
+                    OR prod.`status` = prod_r.ID 
+                    OR prod.sku = prod_r.ID 
+                    OR prod.price = prod_r.ID 
+                    OR prod.weight = prod_r.ID 
+                    OR prod.dimension = prod_r.ID
+                    INNER JOIN $table_stores str ON prod.stid = str.ID
+                    INNER JOIN $table_stores_revs str_v ON str.title = str_v.ID
+                    INNER JOIN $table_categories cat ON prod.ctid = cat.ID
+                    INNER JOIN $table_categories_revs cat_r ON cat.title = cat_r.ID 
+                    OR cat.info = cat_r.ID 
+                GROUP BY
+                    prod_r.parent_id DESC
+                ");
+                $last_id = min($result);
+
+                //Step 6: Return result
+                return rest_ensure_response( 
+                    array(
+                        "status" => "success",
+                        "data" => array(
+                            'list' => $result, 
+                            'last_id' => $last_id
+                        )
                     )
-                )
-            );
+                );
 
+            }else{
+
+                if(!is_numeric($_POST["lid"])){
+					return rest_ensure_response( 
+						array(
+							"status" => "failed",
+							"message" => "Parameters not in valid format!",
+						)
+					);
+
+                }
+                
+                $get_last_id = $_POST['lid'];
+                $add_feeds = $get_last_id - 5;
+
+                $result =  $wpdb->get_results("SELECT
+                    prod.id AS id,
+                    str_v.child_val AS store_name,
+                    max( IF ( cat_r.child_key = 'title', cat_r.child_val, '') ) AS cat_title,
+                    max( IF ( cat_r.child_key = 'info', cat_r.child_val, '') ) AS cat_info,
+                    max( IF ( prod_r.child_key = 'title', prod_r.child_val, '') ) AS title,
+                    max( IF ( prod_r.child_key = 'preview', prod_r.child_val,'' ) ) AS preview,
+                    max( IF ( prod_r.child_key = 'short_info', prod_r.child_val,'' ) ) AS short_info,
+                    max( IF ( prod_r.child_key = 'long_info', prod_r.child_val, '') ) AS long_info,
+                    max( IF ( prod_r.child_key = 'status', prod_r.child_val, '') ) AS STATUS,
+                    max( IF ( prod_r.child_key = 'sku', prod_r.child_val, '') ) AS sku,
+                    max( IF ( prod_r.child_key = 'price', prod_r.child_val, '') ) AS price,
+                    max( IF ( prod_r.child_key = 'weight', prod_r.child_val, '') ) AS weight,
+                    max( IF ( prod_r.child_key = 'dimension', prod_r.child_val, '') ) AS dimension,
+                    prod_r.created_by,
+                    prod.date_created 
+                FROM
+                    $table_product prod
+                    INNER JOIN $table_product_revs prod_r ON prod.title = prod_r.ID 
+                    OR prod.preview = prod_r.ID 
+                    OR prod.short_info = prod_r.ID 
+                    OR prod.long_info = prod_r.ID 
+                    OR prod.`status` = prod_r.ID 
+                    OR prod.sku = prod_r.ID 
+                    OR prod.price = prod_r.ID 
+                    OR prod.weight = prod_r.ID 
+                    OR prod.dimension = prod_r.ID
+                    INNER JOIN $table_stores str ON prod.stid = str.ID
+                    INNER JOIN $table_stores_revs str_v ON str.title = str_v.ID
+                    INNER JOIN $table_categories cat ON prod.ctid = cat.ID
+                    INNER JOIN $table_categories_revs cat_r ON cat.title = cat_r.ID 
+                    OR cat.info = cat_r.ID
+                WHERE prod.id BETWEEN $add_feeds AND ($get_last_id - 1) 
+                GROUP BY
+                    prod_r.parent_id DESC
+                ");
+
+                //Step 4: Check if array count is 0 , return error message if true
+				if (count($result) < 1) {
+
+					return rest_ensure_response( 
+						array(
+							"status" => "failed",
+							"message" => "No more posts to see",
+						)
+                    );
+                    
+				} else {
+
+					//Pass the last id
+                    $last_id = min($result);
+                    //Step 5: Return a success message and a complete object
+                    return rest_ensure_response( 
+                        array(
+                            "status" => "success",
+                            "data" => array(
+                                'list' => $result, 
+                                'last_id' => $last_id
+                            )
+                        )
+                    );
+                    
+                }
+                
+            }
         }
 
-        public static function initialize(){
+        public static function update_product(){
             global $wpdb;
             // Step1 : Check if wpid and snky is valid
             if (TP_Globals::validate_user() == false) {
@@ -409,9 +509,6 @@
             );
         }
 
-
-        public static function sample(){
-            $time = TP_Globals::date_stamp();
-            return $time;
-        }
+    
+      
     }
