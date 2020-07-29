@@ -16,7 +16,16 @@
 
         public static function add_product(){
             global $wpdb;
-                
+            
+            if (TP_Globals::verifiy_datavice_plugin() == false) {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. Plugin Missing!",
+                    )
+                );
+            }
+
             // Step1 : Check if wpid and snky is valid
             if (TP_Globals::validate_user() == false) {
                 return rest_ensure_response( 
@@ -67,7 +76,7 @@
             $stid = $_POST['stid'];
 
             $table_product = TP_PRODUCT_TABLE;
-            $table_product_revs = TP_PRODUCT_REVS_TABLE;
+            $table_revs = TP_REVISION;
 
             
             $child_vals = array(
@@ -81,12 +90,13 @@
                 $_POST['preview'],
             );
 
+            $revs_type = "products";
+
             $child_keys = array('title', 'short_info', 'long_info', 'sku', 'price',  'weight',  'dimension', 'preview' );
             $last_id_product = array();
 
-
             for ($count=0; $count < count($child_keys) ; $count++) {
-                $sql = "INSERT INTO $table_product_revs (child_key , child_val, created_by, date_stamp  ) VALUES ('$child_keys[$count]', '$child_vals[$count]', '$created_by', '$later')";
+                $sql = "INSERT INTO $table_revs (revs_type, child_key , child_val, created_by, date_created  ) VALUES ('$revs_type', '$child_keys[$count]', '$child_vals[$count]', $created_by, '$later')";
                 $result = $wpdb->query($sql );
                 $last_id=$wpdb->insert_id;
                 $last_ids[] = $last_id;
@@ -94,23 +104,23 @@
             }
 
 
-
             $vals  = implode(", ", $last_ids);
             $colss  = implode(", ", $child_keys); 
+            $sql2 = "INSERT INTO $table_product (stid, ctid, $colss, created_by, date_created) VALUES ($stid, $ctid, $vals, $created_by, '$later' )";
+            $result_update = $wpdb->query($sql2);
 
-            $result_update = $wpdb->query("INSERT INTO $table_product (stid, ctid, $colss, created_by, date_created) VALUES ($stid, $ctid, $vals, $created_by, '$later' )");
 
             $last_product_id = $wpdb->insert_id;
 
 
             for ($count=0; $count < count($child_keys) ; $count++) { 
-                $resultss = $wpdb->update($table_product_revs, array('parent_id' => $last_product_id), array( 'ID' => $last_ids[$count]));
+                $resultss = $wpdb->update($table_revs, array('parent_id' => $last_product_id), array( 'ID' => $last_ids[$count]));
             }
 
             return rest_ensure_response( 
                 array(
                     "status" => "success",
-                    "message" => "Product has been updated successfully!",
+                    "message" => "Product added successfully!",
                 )
             );
 
@@ -118,7 +128,18 @@
 
         public static function get_product(){
             global $wpdb;
-            
+
+
+            if (TP_Globals::verifiy_datavice_plugin() == false) {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. Plugin Missing!",
+                    )
+                );
+            }
+
+
             if (TP_Globals::verifiy_datavice_plugin() == false) {
                 return rest_ensure_response( 
                     array(
@@ -313,6 +334,17 @@
 
         public static function update_product(){
             global $wpdb;
+
+            
+            if (TP_Globals::verifiy_datavice_plugin() == false) {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. Plugin Missing!",
+                    )
+                );
+            }
+
             // Step1 : Check if wpid and snky is valid
             if (TP_Globals::validate_user() == false) {
                 return rest_ensure_response( 
@@ -362,6 +394,7 @@
             $parent_id = $_POST['pdid'];
             $ctid = $_POST['ctid'];
             $stid = $_POST['stid'];
+            $revs_type = "products";
 
             $child_vals = array(
                 $_POST['title'],
@@ -378,21 +411,23 @@
             $child_keys = array('title', 'short_info', 'long_info', 'sku', 'price',  'weight',  'dimension', 'preview' );
             $last_id_product = array();
 
-            $table_product_revs = TP_PRODUCT_REVS_TABLE;
+            $table_revs = TP_REVISION;
             $table_product = TP_PRODUCT_TABLE;
+
+
             for ($count=0; $count < count($child_keys) ; $count++) {
-                $sql = "INSERT INTO $table_product_revs (parent_id, child_key , child_val, created_by, date_stamp  ) VALUES ($parent_id, '$child_keys[$count]', '$child_vals[$count]', '$created_by', '$later')";
+                $sql = "INSERT INTO $table_revs (revs_type, parent_id, child_key , child_val, created_by, date_created  ) VALUES ('$revs_type', $parent_id, '$child_keys[$count]', '$child_vals[$count]', '$created_by', '$later')";
                 // $result = $wpdb->insert('$table_product_revs', array( 'parent_id'=> $parent_id, 'child_key'=> $child_keys[$count], 'child_val' => $child_vals[$count] , 'created_by' => $created_by, 'date_created' => $later ) );
                 $result_insert = $wpdb->query($sql);
                 $last_id=$wpdb->insert_id;
                 $last_ids[] = $last_id;
 
-                $sql2 = "UPDATE $table_product SET $child_keys[$count] = $last_ids[$count] WHERE ID= $parent_id ";
+                $sql2 = "UPDATE $table_product SET  $child_keys[$count] = $last_ids[$count] WHERE ID= $parent_id ";
                 $update_result = $wpdb->query($sql2);
 
             }
 
-           if($result_insert < 0 || $update_result <0 ){
+            if($result_insert < 0 || $update_result <0 ){
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",
@@ -415,6 +450,15 @@
         public static function retrieveById_product(){
             global $wpdb;
                 
+            if (TP_Globals::verifiy_datavice_plugin() == false) {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. Plugin Missing!",
+                    )
+                );
+            }
+            
             // Step1 : Check if wpid and snky is valid
             if (TP_Globals::validate_user() == false) {
                 return rest_ensure_response( 
@@ -511,7 +555,14 @@
 
         public static function delete_product(){
             global $wpdb;
-
+            if (TP_Globals::verifiy_datavice_plugin() == false) {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. Plugin Missing!",
+                    )
+                );
+            }
             // Step1 : Check if wpid and snky is valid
             if (TP_Globals::validate_user() == false) {
                 return rest_ensure_response( 
@@ -593,5 +644,8 @@
             }
 
         }
+
+
+
       
     }

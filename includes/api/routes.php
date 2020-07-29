@@ -51,7 +51,7 @@
             'callback' => array('TP_Products','delete_product'),
         ));
         // update
-        register_rest_route( 'tindapress/v1/globals/products', 'update', array(
+        register_rest_route( 'tindapress/v1/products', 'update', array(
             'methods' => 'POST',
             'callback' => array('TP_Products','update_product'),
         ));

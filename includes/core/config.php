@@ -16,6 +16,8 @@
 	define('TP_PREFIX', 'tp_'); 
 
 	//Initializing table names
+	define('TP_REVISION', TP_PREFIX.'revisions');
+
 	define('TP_STORES_TABLE', TP_PREFIX.'stores');
 	
 	define('TP_STORES_REVS_TABLE', TP_PREFIX.'stores_revs');
@@ -24,7 +26,7 @@
 	
 	define('TP_CATEGORIES_REVS_TABLE', TP_PREFIX.'categories_revs');
 
-	define('TP_PRODUCT_TABLE', TP_PREFIX.'product');
+	define('TP_PRODUCT_TABLE', TP_PREFIX.'products');
 	
 	define('TP_PRODUCT_REVS_TABLE', TP_PREFIX.'products_revs');
 
