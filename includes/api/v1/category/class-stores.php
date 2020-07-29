@@ -69,37 +69,48 @@
                 
             }
 
-            $table_store = TP_STORES_TABLE;
-            $table_category = TP_CATEGORIES_TABLE;
-            $table_revision = TP_REVISION;
+            $store_table           = TP_STORES_TABLE;
+            $store_revs_table      = TP_STORES_REVS_TABLE;
+            $categories_table      = TP_CATEGORIES_TABLE;
+            $categories_revs_table = TP_CATEGORIES_REVS_TABLE;
+            $product_table         = TP_PRODUCT_TABLE;
+            $product_revs_table    = TP_PRODUCT_REVS_TABLE;
+            $table_revs            = TP_REVISION_TABLE;
             $table_address = 'dv_address';
-                    
+            // datavice table variables declarations
+            $dv_geo_brgy    = DV_BRGY_TABLE;
+            $dv_revs        =  DV_REVS_TABLE;
+            $dv_address     = DV_ADDRESS_TABLE;
+            $dv_geo_city    = DV_CTY_TABLE;
+            $dv_geo_prov    = DV_PRV_TABLE;
+            $dv_geo_court   = DV_COUNTRY_TABLE;     
+
             $result = $wpdb->get_results("SELECT
                 st.id,
                 cat.types,
-                ( SELECT child_val FROM tp_revisions WHERE ID = cat.title ) AS cat_title,
-                ( SELECT child_val FROM tp_revisions WHERE ID = cat.info ) AS cat_info,
+                ( SELECT child_val FROM $table_revs WHERE ID = cat.title ) AS cat_title,
+                ( SELECT child_val FROM $table_revs WHERE ID = cat.info ) AS cat_info,
                 max( IF ( st_r.child_key = 'title', st_r.child_val, '' ) ) AS title,
                 max( IF ( st_r.child_key = 'short_info', st_r.child_val, '' ) ) AS short_info,
                 max( IF ( st_r.child_key = 'long_info', st_r.child_val, '' ) ) AS long_info,
                 max( IF ( st_r.child_key = 'logo', st_r.child_val, '' ) ) AS logo,
                 max( IF ( st_r.child_key = 'banner', st_r.child_val, '' ) ) AS banner,
                 addr.types AS add_types,
-                ( SELECT child_val FROM dv_revisions WHERE ID = addr.STATUS ) AS STATUS,
-                ( SELECT child_val FROM dv_address WHERE ID = addr.street ) AS street,
-                ( SELECT brgy_name FROM dv_geo_brgy WHERE ID = ( SELECT child_val FROM dv_revisions WHERE ID = addr.brgy ) ) AS brgy,
-                ( SELECT citymun_name FROM dv_geo_city WHERE ID = ( SELECT child_val FROM dv_revisions WHERE ID = addr.city ) ) AS city,
-                ( SELECT prov_name FROM dv_geo_provinces WHERE ID = ( SELECT child_val FROM dv_revisions WHERE ID = addr.province ) ) AS province,
-                ( SELECT country_name FROM dv_geo_countries WHERE ID = ( SELECT child_val FROM dv_revisions WHERE ID = addr.country ) ) AS country 
+                ( SELECT child_val FROM $dv_revs WHERE ID = addr.STATUS ) AS STATUS,
+                ( SELECT child_val FROM $dv_address WHERE ID = addr.street ) AS street,
+                ( SELECT brgy_name FROM $dv_geo_brgy WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = addr.brgy ) ) AS brgy,
+                ( SELECT citymun_name FROM $dv_geo_city WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = addr.city ) ) AS city,
+                ( SELECT prov_name FROM $dv_geo_prov WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = addr.province ) ) AS province,
+                ( SELECT country_name FROM $dv_geo_court WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = addr.country ) ) AS country 
             FROM
-                $table_store st
-                INNER JOIN $table_revision st_r ON st.title = st_r.ID 
+                $store_table st
+                INNER JOIN $table_revs st_r ON st.title = st_r.ID 
                 OR st.short_info = st_r.ID 
                 OR st.long_info = st_r.ID 
                 OR st.logo = st_r.ID 
                 OR st.banner = st_r.ID
-                INNER JOIN $table_category cat ON st.ctid = cat.ID
-                INNER JOIN $table_address addr ON st.address = addr.ID 
+                INNER JOIN $categories_table cat ON st.ctid = cat.ID
+                INNER JOIN $dv_address addr ON st.address = addr.ID 
             GROUP BY
                 st.id
             ");
