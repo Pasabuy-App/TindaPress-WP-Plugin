@@ -265,7 +265,67 @@ RESPONSE:
 
 IF SUCCESS:
 ```
-
+{
+    "status": "success",
+    "data": {
+        "list": [
+            {
+                "id": "1",
+                "types": "store",
+                "cat_title": "Fast Food",
+                "cat_info": "Kainan ng mga Langam",
+                "title": "jollibee - Branch",
+                "short_info": "Fast food restauirant company",
+                "long_info": "Jollibee is multinational fast food retaurant in the phillipines own by jollibee corporation",
+                "logo": "logo.png",
+                "banner": "some banner",
+                "add_types": "business",
+                "STATUS": "active",
+                "street": "jollibee - Branch",
+                "brgy": "Putatan",
+                "city": "City of Muntinlupa",
+                "province": "NCR - 4th District",
+                "country": "Philippines"
+            },
+            {
+                "id": "2",
+                "types": "store",
+                "cat_title": "Fast Food",
+                "cat_info": "Kainan ng mga Langam",
+                "title": "jollibee - Branch",
+                "short_info": "Fast food restauirant company",
+                "long_info": "Jollibee is multinational fast food retaurant in the phillipines own by jollibee corporation",
+                "logo": "logo.png",
+                "banner": "some banner",
+                "add_types": "business",
+                "STATUS": "active",
+                "street": "jollibee - Branch",
+                "brgy": "Putatan",
+                "city": "City of Muntinlupa",
+                "province": "NCR - 4th District",
+                "country": "Philippines"
+            },
+            {
+                "id": "3",
+                "types": "store",
+                "cat_title": "Fast Food",
+                "cat_info": "Kainan ng mga Langam",
+                "title": "jollibee - Branch",
+                "short_info": "Fast food restauirant company",
+                "long_info": "Jollibee is multinational fast food retaurant in the phillipines own by jollibee corporation",
+                "logo": "logo.png",
+                "banner": "some banner",
+                "add_types": "business",
+                "STATUS": "active",
+                "street": "jollibee - Branch",
+                "brgy": "Putatan",
+                "city": "City of Muntinlupa",
+                "province": "NCR - 4th District",
+                "country": "Philippines"
+            }
+        ]
+    }
+}
 
 ```
 

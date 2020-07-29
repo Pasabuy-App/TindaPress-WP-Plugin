@@ -38,8 +38,6 @@
 	
 	define('TP_CATEGORIES_REVS_TABLE', TP_PREFIX.'categories_revs');
 
-	define('TP_PRODUCT_TABLE', TP_PREFIX.'products');
-	
 	define('TP_PRODUCT_REVS_TABLE', TP_PREFIX.'products_revs');
 
 	define('TP_ADDRESS_TABLE', TP_PREFIX.'address');
