@@ -94,11 +94,11 @@
                 st.id,
                 cat.types,
                 ( SELECT child_val FROM $table_revs WHERE ID = cat.title ) AS cat_title,
-                ( SELECT child_val FROM $table_revs WHERE ID = cat.info ) AS cat_info,
+                ( SELECT child_val FROM $table_revs WHERE ID = cat.info ) AS cat_inf,
                 max( IF ( st_r.child_key = 'title', st_r.child_val, '' ) ) AS title,
                 max( IF ( st_r.child_key = 'short_info', st_r.child_val, '' ) ) AS short_info,
                 max( IF ( st_r.child_key = 'long_info', st_r.child_val, '' ) ) AS long_info,
-                max( IF ( st_r.child_key = 'logo', st_r.child_val, '' ) ) AS logo,
+                max( IF ( st_r.child_key = 'logo', st_r.child_val, '' ) ) AS logo,o
                 max( IF ( st_r.child_key = 'banner', st_r.child_val, '' ) ) AS banner,
                 addr.types AS add_types,
                 ( SELECT child_val FROM $dv_revs WHERE ID = addr.STATUS ) AS STATUS,

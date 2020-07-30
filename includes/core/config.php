@@ -33,7 +33,6 @@
 
 	define('TP_STORES_TABLE', TP_PREFIX.'stores');
 	
-	
 	define('TP_STORES_REVS_TABLE', TP_PREFIX.'stores_revs');
 	
 	define('TP_CATEGORIES_REVS_TABLE', TP_PREFIX.'categories_revs');
@@ -50,6 +49,26 @@
 
 	define('TP_DOCU_TABLE', TP_PREFIX.'documents');
 
+	// Required Documents PEFIX
+	define('DTI_REG', 'dti_registration');
+	define('BRGY_CLR', 'barangay_clearance');
+	define('LEASE_CONTR', 'lease_contract');
+	define('COMNTY_TAX', 'community_tax');
+	define('OCCT_PERMIT', 'occupancy_permit');
+	define('SANTY_PERMIT', 'sanitary_permit');
+	define('FIRE_PERMIT', 'fire_permit');
+	define('MYRS_PERMIT', 'mayors_permit');
+
+	// tp_document fields
+	define('DOCS_FIELDS', 'stid, preview, doctype');
+	// document child key in tp_revisions
+	define('PREVIEW', 'preview');
+	// document revision type
+	define('DOCUMENTS', 'documents');
+
+
+	// tp_revisions fields
+	define('REVS_FIELDS', 'revs_type, parent_id, child_key, child_val');
 
 
 	//Initializing table fields to be called

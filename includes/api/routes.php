@@ -21,6 +21,7 @@
         require plugin_dir_path(__FILE__) . '/v1/category/class-stores.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-stores.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-newest.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-documents.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-newest.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-product.php';
 	
@@ -66,6 +67,23 @@
             'callback' => array('TP_Products','retrieveById_product'),
         ));
         // store folder
+
+        // add documents
+        register_rest_route( 'tindapress/v1/stores', 'document', array(
+            'methods' => 'POST',
+            'callback' => array('TP_Documents','add_documents'),
+        ));
+        // add single documents
+        register_rest_route( 'tindapress/v1/stores', 'add_single_docs', array(
+            'methods' => 'POST',
+            'callback' => array('TP_Documents','add_single_docs'),
+        ));
+         // delete Docs 
+        register_rest_route( 'tindapress/v1/stores', 'delete_docs', array(
+            'methods' => 'POST',
+            'callback' => array('TP_Documents','delete_docs'),
+        ));
+
         register_rest_route( 'tindapress/v1/stores', 'categories', array(
             'methods' => 'POST',
             'callback' => array('TP_Store','category'),
