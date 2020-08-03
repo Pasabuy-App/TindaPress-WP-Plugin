@@ -39,7 +39,7 @@
             }
 
             // Step3 : Sanitize all Request
-			if (!isset($_POST["wpid"]) || !isset($_POST["snky"])) {
+			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) || !isset($_POST["ctid"])) {
 				return rest_ensure_response( 
 					array(
 						"status" => "unknown",
@@ -51,7 +51,7 @@
 
 
             // Step 4: Check if ID is in valid format (integer)
-			if (!is_numeric($_POST["wpid"])) {
+			if (!is_numeric($_POST["wpid"]) || !is_numeric($_POST['ctid'])) {
 				return rest_ensure_response( 
 					array(
 						"status" => "failed",
@@ -72,10 +72,8 @@
                 
 			}
 			
-
-			
             // Step6 : Sanitize all Request
-			if (empty($_POST["wpid"]) || empty($_POST["snky"])) {
+			if (empty($_POST["wpid"]) || empty($_POST["snky"]) || empty($_POST["ctid"])) {
 				return rest_ensure_response( 
 					array(
 						"status" => "unknown",
@@ -87,33 +85,69 @@
 
 
             //Step 7: Create table name for posts (tp_categories, tp_categories_revs)
-			$categories_table      = TP_CATEGORIES_TABLE;
-			$categories_revs_table = TP_CATEGORIES_REVS_TABLE;
+			// table names and POST Variables
+            $store_table           = TP_STORES_TABLE;
+            $store_revs_table      = TP_STORES_REVS_TABLE;
+            $categories_table      = TP_CATEGORIES_TABLE;
+            $product_table         = TP_PRODUCT_TABLE;
+            $product_revs_table    = TP_PRODUCT_REVS_TABLE;
+            $table_revs            = TP_REVISION_TABLE;
+            $table_address = 'dv_address';
+            // datavice table variables declarations
+            $dv_geo_brgy    = DV_BRGY_TABLE;
+            $dv_revs        =  DV_REVS_TABLE;
+            $dv_address     = DV_ADDRESS_TABLE;
+            $dv_geo_city    = DV_CITY_TABLE;
+            $dv_geo_prov    = DV_PROVINCE_TABLE;
+            $dv_geo_court   = DV_COUNTRY_TABLE;    
 			
+			$categories = $_POST['ctid'];
 			//Step 8: Get results from database 
 			$result= $wpdb->get_results("SELECT
-				cat.id,
-				cat.types,
-				max( IF ( cat_r.child_key = 'title', cat_r.child_val, '' ) ) AS title,
-				max( IF ( cat_r.child_key = 'info', cat_r.child_val, '' ) ) AS info
+				tp_str.ID,
+				tp_rev.child_val AS title,
+				( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.short_info ) AS `short_info`,
+				( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.long_info ) AS `long_info`,
+				( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.logo ) AS `logo`,
+				( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.banner ) AS `banner`,
+				( SELECT dv_rev.child_val FROM $dv_revs dv_rev WHERE ID = dv_add.street ) AS `street`,
+				( SELECT brgy_name FROM $dv_geo_brgy WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = dv_add.brgy ) ) AS brgy,
+				( SELECT city_name FROM $dv_geo_city WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = dv_add.city ) ) AS city,
+				( SELECT prov_name FROM $dv_geo_prov WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = dv_add.province ) ) AS province,
+				( SELECT country_name FROM $dv_geo_court WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = dv_add.country ) ) AS country 
 			FROM
-				$categories_table cat
-				INNER JOIN $categories_revs_table cat_r ON cat.title = cat_r.ID 
-				OR cat.info = cat_r.ID 
-			GROUP BY
-				cat_r.parent_id DESC", OBJECT);
+				$store_table tp_str
+				INNER JOIN $table_revs tp_rev ON tp_rev.ID = tp_str.title
+				INNER JOIN $dv_address dv_add ON tp_str.address = dv_add.ID
+				INNER JOIN $categories_table tp_cat ON tp_cat.ID = tp_str.ctid 
+			WHERE
+				tp_str.ctid = $categories
+			", OBJECT);
 
 
-            //Step 9: return result
-			return rest_ensure_response( 
-				array(
-					"status" => "success",
-					"data" => array(
-						'list' => $result, 
-					
+			if (empty($result)) {
+
+				return rest_ensure_response( 
+					array(
+						"status" => "success",
+						"message" => "Please contact your Administrator. Empty result"
+						
 					)
-				)
-			);
+				);
+
+			}else {
+				
+				// reutrn success result
+				return rest_ensure_response( 
+					array(
+						"status" => "success",
+						"data" => array(
+							'list' => $result, 
+						
+						)
+					)
+				);
+			}
 
         }
         

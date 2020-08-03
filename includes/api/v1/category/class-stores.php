@@ -94,8 +94,8 @@
             $dv_geo_brgy    = DV_BRGY_TABLE;
             $dv_revs        =  DV_REVS_TABLE;
             $dv_address     = DV_ADDRESS_TABLE;
-            $dv_geo_city    = DV_CTY_TABLE;
-            $dv_geo_prov    = DV_PRV_TABLE;
+            $dv_geo_city    = DV_CITY_TABLE;
+            $dv_geo_prov    = DV_PROVINCE_TABLE;
             $dv_geo_court   = DV_COUNTRY_TABLE;     
 
             // query
@@ -113,7 +113,7 @@
                     ( SELECT child_val FROM $dv_revs WHERE ID = addr.STATUS ) AS STATUS,
                     ( SELECT child_val FROM $dv_address WHERE ID = addr.street ) AS street,
                     ( SELECT brgy_name FROM $dv_geo_brgy WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = addr.brgy ) ) AS brgy,
-                    ( SELECT citymun_name FROM $dv_geo_city WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = addr.city ) ) AS city,
+                    ( SELECT city_name FROM $dv_geo_city WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = addr.city ) ) AS city,
                     ( SELECT prov_name FROM $dv_geo_prov WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = addr.province ) ) AS province,
                     ( SELECT country_name FROM $dv_geo_court WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = addr.country ) ) AS country 
             FROM
@@ -128,16 +128,30 @@
             GROUP BY
                 st.id
             ");
-            // reutrn success result
-            return rest_ensure_response( 
-                array(
-                    "status" => "success",
-                    "data" => array(
-                        'list' => $result, 
-                    
+            if (empty($result)) {
+
+                return rest_ensure_response( 
+                    array(
+                        "status" => "success",
+                        "message" => "Please contact your Administrator. Empty result"
+                        
                     )
-                )
-            );
+                );
+
+            }else {
+                
+                // reutrn success result
+                return rest_ensure_response( 
+                    array(
+                        "status" => "success",
+                        "data" => array(
+                            'list' => $result, 
+                        
+                        )
+                    )
+                );
+            }
+           
 
         }   
     }

@@ -97,7 +97,7 @@
             'callback' => array('TP_Documents','delete_docs'),
         ));
 
-        register_rest_route( 'tindapress/v1/stores', 'categories', array(
+        register_rest_route( 'tindapress/api/v1/stores', 'categories', array(
             'methods' => 'POST',
             'callback' => array('TP_Store','category'),
         ));

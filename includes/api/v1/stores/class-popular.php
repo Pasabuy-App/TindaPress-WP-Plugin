@@ -36,7 +36,7 @@
             }
 
             // Step3 : Sanitize all Request
-			if (!isset($_POST["wpid"]) || !isset($_POST["snky"])  ) {
+			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) ) {
 				return rest_ensure_response( 
 					array(
 						"status" => "unknown",
@@ -100,24 +100,24 @@
             $dv_geo_brgy = DV_BRGY_TABLE;
             $dv_revs    =  DV_REVS_TABLE;
             $dv_address = DV_ADDRESS_TABLE;
-            $dv_geo_city = DV_CTY_TABLE;
-            $dv_geo_prov = DV_PRV_TABLE;
-            $dv_geo_court = DV_COUNTRY_TABLE;
+            $dv_geo_city = DV_CITY_TABLE;
+            $dv_geo_prov = DV_PROVINCE_TABLE;
+            $dv_geo_count = DV_COUNTRY_TABLE;
 
             $mp_orders = MP_ORDER_TABLE;
 
             $result = $wpdb->get_results("SELECT
                 Count( mp_ord.stid ) AS cnt,
                 mp_ord.stid,
-                ( SELECT rev.child_val FROM tp_revisions rev WHERE ID = tp_st.title ) AS `title`,
-                ( SELECT rev.child_val FROM tp_revisions rev WHERE ID = tp_st.short_info ) AS `short_info`,
-                ( SELECT rev.child_val FROM tp_revisions rev WHERE ID = tp_st.long_info ) AS `long_info`,
-                ( SELECT rev.child_val FROM tp_revisions rev WHERE ID = tp_st.banner ) AS `banner`,
-                ( SELECT dv_revisions.child_val FROM dv_revisions WHERE ID = dv_add.street ) AS `street`,
-                ( SELECT brgy_name FROM dv_geo_brgy WHERE ID = ( SELECT child_val FROM dv_revisions WHERE ID = dv_add.brgy ) ) AS brgy,
-                ( SELECT citymun_name FROM dv_geo_city WHERE ID = ( SELECT child_val FROM dv_revisions WHERE ID = dv_add.city ) ) AS city,
-                ( SELECT prov_name FROM dv_geo_province WHERE ID = ( SELECT child_val FROM dv_revisions WHERE ID = dv_add.province ) ) AS province,
-                ( SELECT country_name FROM dv_geo_countries WHERE ID = ( SELECT child_val FROM dv_revisions WHERE ID = dv_add.country ) ) AS country 
+                ( SELECT rev.child_val FROM $tp_revs rev WHERE ID = tp_st.title ) AS `title`,
+                ( SELECT rev.child_val FROM $tp_revs rev WHERE ID = tp_st.short_info ) AS `short_info`,
+                ( SELECT rev.child_val FROM $tp_revs rev WHERE ID = tp_st.long_info ) AS `long_info`,
+                ( SELECT rev.child_val FROM $tp_revs rev WHERE ID = tp_st.banner ) AS `banner`,
+                ( SELECT dv_rev.child_val FROM $dv_revs dv_rev WHERE ID = dv_add.street ) AS `street`,
+                ( SELECT brgy_name FROM $dv_geo_brgy WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = dv_add.brgy ) ) AS brgy,
+                ( SELECT city_name FROM $dv_geo_city WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = dv_add.city ) ) AS city,
+                ( SELECT prov_name FROM $dv_geo_prov WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = dv_add.province ) ) AS province,
+                ( SELECT country_name FROM $dv_geo_count WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = dv_add.country ) ) AS country 
             FROM
                 $mp_orders mp_ord
                 INNER JOIN $table_stores tp_st ON mp_ord.stid = tp_st.ID
@@ -126,8 +126,6 @@
             GROUP BY
                 mp_ord.stid", OBJECT);
 
-
-
             if(empty($result)){
                 return rest_ensure_response( 
                     array(
@@ -135,6 +133,7 @@
                         "message" => "Please contact your administrator.",
                     )
                 );
+
             }else{
                 return rest_ensure_response( 
                     array(
