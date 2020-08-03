@@ -17,7 +17,8 @@
         public static function initialize(){
             
             global $wpdb;
-
+            
+            // Step1 : check if datavice  plugin is activated
             if (TP_Globals::verifiy_datavice_plugin() == false) {
                 return rest_ensure_response( 
                     array(
@@ -26,7 +27,8 @@
                     )
                 );
             }
-            
+
+            // step2 : Validate if user is existed in datavice 
             if (TP_Globals::validate_user() == false) {
                 return rest_ensure_response( 
                     array(
@@ -36,7 +38,7 @@
                 );
             }
 
-            // Step1 : Sanitize all Request
+            // Step3 : Sanitize all Request
 			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) ) {
 				return rest_ensure_response( 
 					array(
@@ -47,7 +49,7 @@
                 
             }
 
-            // Step 2: Check if ID is in valid format (integer)
+            // Step 3: Check if ID is in valid format (integer)
 			if (!is_numeric($_POST["wpid"])) {
 				return rest_ensure_response( 
 					array(
@@ -58,7 +60,7 @@
                 
 			}
 
-			// Step 3: Check if ID exists
+			// Step 4: Check if ID exists
 			if (!get_user_by("ID", $_POST['wpid'])) {
 				return rest_ensure_response( 
 					array(
@@ -69,11 +71,26 @@
                 
             }
 
+
+             // Step5 : Check if all variables is not empty
+			if (empty($_POST["wpid"]) || empty($_POST["snky"]) ) {
+				return rest_ensure_response( 
+					array(
+						"status" => "unknown",
+						"message" => "Required fields cannot be empty.",
+					)
+                );
+                
+            }
+
+            // variable for time stamp
             $later = TP_Globals::date_stamp();
 
+            // variable for newest date
             $date = date_create($later);
             date_sub( $date, date_interval_create_from_date_string("7 days"));
             $date_expected =  date_format($date,"Y-m-d");
+            
             // tindapress table variables declarations
             $store_table           = TP_STORES_TABLE;
             $store_revs_table      = TP_STORES_REVS_TABLE;
@@ -82,6 +99,7 @@
             $product_table         = TP_PRODUCT_TABLE;
             $product_revs_table    = TP_PRODUCT_REVS_TABLE;
             $table_revs            = TP_REVISION_TABLE;
+            
             // datavice table variables declarations
             $dv_geo_brgy = DV_BRGY_TABLE;
             $dv_revs    =  DV_REVS_TABLE;
@@ -90,6 +108,7 @@
             $dv_geo_prov = DV_PRV_TABLE;
             $dv_geo_court = DV_COUNTRY_TABLE;
 
+            // step6 : Query
             $result = $wpdb->get_results("SELECT
                 st.id,
                 cat.types,
@@ -123,7 +142,8 @@
                     RAND( ) 
                 LIMIT 10
             ");
-
+    
+            // step7 : return result
             return rest_ensure_response( 
                 array(
                     "status" => "success",

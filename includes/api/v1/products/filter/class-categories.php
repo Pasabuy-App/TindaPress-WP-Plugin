@@ -16,6 +16,8 @@
         
         public static function initialize(){
             global $wpdb;
+
+            // Step1 : validate if datavice is activated
             if (TP_Globals::verifiy_datavice_plugin() == false) {
                 return rest_ensure_response( 
                     array(
@@ -24,7 +26,7 @@
                     )
                 );
             }
-            // Step1 : Check if wpid and snky is valid
+            // Step2 : Check if wpid and snky is valid
             if (TP_Globals::validate_user() == false) {
                 return rest_ensure_response( 
                     array(
@@ -34,7 +36,7 @@
                 );
             }
 
-            // Step2 : Sanitize all Request
+            // Step3 : Sanitize all Request
 			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) || !isset($_POST['stid']) || !isset($_POST['catid'])) {
 				return rest_ensure_response( 
 					array(
@@ -46,7 +48,7 @@
             }
 
 
-            // Step 3: Check if ID is in valid format (integer)
+            // Step 4: Check if ID is in valid format (integer)
 			if (!is_numeric($_POST["wpid"]) || !is_numeric($_POST["stid"]) || !is_numeric($_POST["catid"]) ) {
 				return rest_ensure_response( 
 					array(
@@ -57,7 +59,7 @@
                 
 			}
 
-			// Step 4: Check if ID exists
+			// Step 5: Check if ID exists
 			if (!get_user_by("ID", $_POST['wpid'])) {
 				return rest_ensure_response( 
 					array(
@@ -67,11 +69,22 @@
                 );
                 
             }
+
+
+             // Step6 : Sanitize all Request
+			if (empty($_POST["wpid"]) || empty($_POST["snky"]) || empty($_POST['stid']) || empty($_POST['catid'])) {
+				return rest_ensure_response( 
+					array(
+						"status" => "unknown",
+						"message" => "Required fields cannot be empty",
+					)
+                );
+                
+            }
             
 
             
-            //Step 5: Create table name for all tables needed
-
+            //Step 7: Create table name for all tables needed
             $store_table           = TP_STORES_TABLE;
             $store_revs_table      = TP_STORES_REVS_TABLE;
             $categories_table      = TP_CATEGORIES_TABLE;
@@ -83,7 +96,7 @@
             $catid = $_POST['catid'];
             $stid = $_POST['stid'];
 
-            //Step 6: Fetch data from database
+            //Step 8: Fetch data from database
             $result = $wpdb->get_results("SELECT
                 prd.id AS id,
                 st_r.child_val AS store_name,
@@ -123,7 +136,7 @@
                 prd_r.parent_id DESC
             ", OBJECT);
 
-            //Step 6: Return result
+            //Step 9: Return result
             return rest_ensure_response( 
                 array(
                     "status" => "success",

@@ -17,7 +17,7 @@
         public static function initialize(){
             global $wpdb;
 
-
+            // step1 check if datavice plugin is activated
             if (TP_Globals::verifiy_datavice_plugin() == false) {
                 return rest_ensure_response( 
                     array(
@@ -26,7 +26,7 @@
                     )
                 );
             }
-
+            // step2: check if user is existed in database
             if (TP_Globals::validate_user() == false) {
                 return rest_ensure_response( 
                     array(
@@ -36,7 +36,7 @@
                 );
             }
 
-            // Step1 : Sanitize all Request
+            // Step3 : Sanitize all Request
 			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) ) {
 				return rest_ensure_response( 
 					array(
@@ -47,7 +47,7 @@
                 
             }
 
-            // Step 2: Check if ID is in valid format (integer)
+            // Step 4: Check if ID is in valid format (integer)
 			if (!is_numeric($_POST["wpid"]) ) {
 				return rest_ensure_response( 
 					array(
@@ -58,7 +58,7 @@
                 
 			}
 
-			// Step 3: Check if ID exists
+			// Step 5: Check if ID exists
 			if (!get_user_by("ID", $_POST['wpid'])) {
 				return rest_ensure_response( 
 					array(
@@ -69,6 +69,19 @@
                 
             }
 
+
+            // Step6 : Sanitize all Request
+			if (empty($_POST["wpid"]) || empty($_POST["snky"]) ) {
+				return rest_ensure_response( 
+					array(
+						"status" => "unknown",
+						"message" => "Required fields cannot be empty",
+					)
+                );
+                
+            }
+
+            // table names and POST Variables
             $store_table           = TP_STORES_TABLE;
             $store_revs_table      = TP_STORES_REVS_TABLE;
             $categories_table      = TP_CATEGORIES_TABLE;
@@ -85,6 +98,7 @@
             $dv_geo_prov    = DV_PRV_TABLE;
             $dv_geo_court   = DV_COUNTRY_TABLE;     
 
+            // query
             $result = $wpdb->get_results("SELECT
                 st.id,
                 cat.types,
@@ -114,7 +128,7 @@
             GROUP BY
                 st.id
             ");
-
+            // reutrn success result
             return rest_ensure_response( 
                 array(
                     "status" => "success",

@@ -15,6 +15,8 @@
     class TP_Product_Newest {
         public static function initialize(){
             global $wpdb;
+
+            // Step1: validate if dative plugin is activated
             if (TP_Globals::verifiy_datavice_plugin() == false) {
                 return rest_ensure_response( 
                     array(
@@ -23,7 +25,8 @@
                     )
                 );
             }
-            // Step1 : Check if wpid and snky is valid
+
+            // Step2 : Check if wpid and snky is valid
             if (TP_Globals::validate_user() == false) {
                 return rest_ensure_response( 
                     array(
@@ -33,7 +36,7 @@
                 );
             }
 
-            // Step2 : Sanitize all Request
+            // Step3 : Sanitize all Request
 			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) ) {
 				return rest_ensure_response( 
 					array(
@@ -44,7 +47,7 @@
                 
             }
 
-            // Step 3: Check if ID is in valid format (integer)
+            // Step 4: Check if ID is in valid format (integer)
 			if (!is_numeric($_POST["wpid"])) {
 				return rest_ensure_response( 
 					array(
@@ -55,7 +58,7 @@
                 
 			}
 
-			// Step 4: Check if ID exists
+			// Step 5: Check if ID exists
 			if (!get_user_by("ID", $_POST['wpid'])) {
 				return rest_ensure_response( 
 					array(
@@ -66,7 +69,19 @@
                 
             }
 
-            // step 5: Put to variables all needed data
+
+            // Step6 : Sanitize all Request
+			if (empty($_POST["wpid"]) || empty($_POST["snky"]) ) {
+				return rest_ensure_response( 
+					array(
+						"status" => "unknown",
+						"message" => "Required fields cannot be empty",
+					)
+                );
+                
+            }
+
+            // step 7: Put to variables all needed data
             $date_now = TP_Globals::date_stamp();
             $date=date_create($date_now);
             date_sub( $date, date_interval_create_from_date_string("7 days"));
@@ -80,7 +95,8 @@
             $product_table         = TP_PRODUCT_TABLE;
             $product_revs_table    = TP_PRODUCT_REVS_TABLE;
             $table_revs = TP_REVISION;
-            // step 6: fetch data from databse
+            
+            // step 8: fetch data from databse
             $result = $wpdb->get_results("SELECT
                 prd.id AS id,
                 st_r.child_val AS store_name,
@@ -122,7 +138,8 @@
                 RAND() 
                 LIMIT 10
             ");
-            // step 7: return result
+           
+           // step 9: return result
             return rest_ensure_response( 
                 array(
                     "status" => "success",

@@ -17,6 +17,7 @@
         public static function initialize(){
             global $wpdb;
             
+            // Step1: verify of datavice plugin is activated
             if (TP_Globals::verifiy_datavice_plugin() == false) {
                 return rest_ensure_response( 
                     array(
@@ -26,6 +27,7 @@
                 );
             }
 
+            // Step2 : validate user if activated
             if (TP_Globals::validate_user() == false) {
                 return rest_ensure_response( 
                     array(
@@ -35,7 +37,7 @@
                 );
             }
 
-            // Step1 : Sanitize all Request
+            // Step3 : Sanitize all Request
 			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) ) {
 				return rest_ensure_response( 
 					array(
@@ -46,7 +48,7 @@
                 
             }
 
-            // Step 2: Check if ID is in valid format (integer)
+            // Step 4: Check if ID is in valid format (integer)
 			if (!is_numeric($_POST["wpid"])|| !is_numeric($_POST['catid'])) {
 				return rest_ensure_response( 
 					array(
@@ -57,7 +59,7 @@
                 
 			}
 
-			// Step 3: Check if ID exists
+			// Step 5: Check if ID exists
 			if (!get_user_by("ID", $_POST['wpid'])) {
 				return rest_ensure_response( 
 					array(
@@ -67,14 +69,24 @@
                 );
                 
             }
+            // Step 6: sanitize if all variables is empty
+            if (empty($_POST["wpid"]) || empty($_POST["snky"]) ) {
+				return rest_ensure_response( 
+					array(
+						"status" => "unknown",
+						"message" => "Required fileds cannot be empty!",
+					)
+                );
+                
+            }
 
+            // declater table names to vatiable
             $table_store = TP_STORES_TABLE;
             $table_store_revs = TP_STORES_REVS_TABLE;
             $table_category = TP_CATEGORIES_TABLE;
-
             $catid = $_POST['catid'];
 
-                        
+            // Step7 : Query
             $result = $wpdb->get_results("SELECT
             st.id,
             cat.types,
@@ -106,7 +118,7 @@
                 GROUP BY 
             st.id
             ");
-
+            // Step8 : Return Result 
             return rest_ensure_response( 
                 array(
                     "status" => "success",
