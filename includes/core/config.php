@@ -15,6 +15,10 @@
 	//Defining Global Variables
 	define('TP_PREFIX', 'tp_'); 
 
+	// Temporary
+	define('MP_PREFIX', 'mp_'); 
+	define('MP_ORDER_TABLE', MP_PREFIX.'orders');
+
 	//Initializing table names
 
 	define('TP_CATEGORIES_TABLE', TP_PREFIX.'categories');

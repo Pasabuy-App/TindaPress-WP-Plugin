@@ -24,6 +24,7 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/class-documents.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-newest.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-product.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-popular.php';
 	
 	// Init check if USocketNet successfully request from wapi.
     function tindapress_route()
@@ -37,22 +38,34 @@
         //     'callback' => array('TP_Products','sample'),
         // ));
          // retrieve
-         register_rest_route( 'tindapress/v1/products', 'retrieve', array(
+         register_rest_route( 'tindapress/api/v1/products', 'retrieve', array(
             'methods' => 'POST',
             'callback' => array('TP_Products','get_product'),
         ));
         // create
-        register_rest_route( 'tindapress/v1/products', 'add_products', array(
+        register_rest_route( 'tindapress/api/v1/products', 'add_products', array(
             'methods' => 'POST',
             'callback' => array('TP_Products','add_product'),
         ));
 
-        register_rest_route( 'tindapress/v1/products', 'delete_product', array(
+        register_rest_route( 'tindapress/api/v1/products', 'delete_product', array(
             'methods' => 'POST',
             'callback' => array('TP_Products','delete_product'),
         ));
+        // new get product by store id
+        register_rest_route( 'tindapress/api/v1/products', 'get_all_product', array(
+            'methods' => 'POST',
+            'callback' => array('TP_Products','get_product_by_storeid'),
+        ));
+
+        register_rest_route( 'tindapress/api/v1/products', 'get_product_search', array(
+            'methods' => 'POST',
+            'callback' => array('TP_Products','get_product_search'),
+        ));
+
+
         // update
-        register_rest_route( 'tindapress/v1/products', 'update', array(
+        register_rest_route( 'tindapress/api/v1/products', 'update', array(
             'methods' => 'POST',
             'callback' => array('TP_Products','update_product'),
         ));
@@ -114,6 +127,12 @@
             'methods' => 'POST',
             'callback' => array('TP_Storelist','initialize'),
         ));
+        // new popular
+        register_rest_route( 'tindapress/api/v1/stores', 'popular_store', array(
+            'methods' => 'POST',
+            'callback' => array('TP_Popular_Store','popular_store'),
+        ));
+        
 
 
 
