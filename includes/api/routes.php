@@ -105,6 +105,12 @@
             'methods' => 'POST',
             'callback' => array('TP_StorebyCategory','initialize'),
         ));
+
+        register_rest_route( 'tindapress/api/v1/stores', 'store_search', array(
+            'methods' => 'POST',
+            'callback' => array('TP_StorebyCategory','search_store'),
+        ));
+
         register_rest_route( 'tindapress/v1/stores', 'newest', array(
             'methods' => 'POST',
             'callback' => array('TP_Newest','initialize'),

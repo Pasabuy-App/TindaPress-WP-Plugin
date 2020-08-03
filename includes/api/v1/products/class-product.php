@@ -881,7 +881,6 @@
 
         public static function get_product_search(){
             global $wpdb;
-            $value = $_POST['search'];
 
 
               // Step 1 : Verfy if Datavice Plugin is Activated
@@ -949,6 +948,8 @@
                 
             }
 
+            $value = $_POST['search'];
+
            
             $tp_revs = TP_REVISION_TABLE;
             $table_product = TP_PRODUCT_TABLE;
@@ -979,9 +980,10 @@
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator.",
+                        "message" => "Please contact your administrator. No Product with this value",
                     )
                 );
+                
             }else{
                 return rest_ensure_response( 
                     array(

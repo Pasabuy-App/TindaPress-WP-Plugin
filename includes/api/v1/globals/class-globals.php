@@ -65,7 +65,7 @@
 
 
         public static function validate_user(){
-            $verified = DV_Verification::initialize();
+            $verified = DV_Verification::listen();
             //Convert object to array
             $array =  (array) $verified;
             // Pass request status in a variable
