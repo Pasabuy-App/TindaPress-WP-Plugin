@@ -24,6 +24,7 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/class-documents.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-newest.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-product.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-popular.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-popular.php';
 	
 	// Init check if USocketNet successfully request from wapi.
@@ -33,10 +34,14 @@
             'methods' => 'POST',
             'callback' => array('TP_Initialization','initialize'),
         ));
-        // register_rest_route( 'tindapress/v1/products', 'retrieve', array(
-        //     'methods' => 'POST',
-        //     'callback' => array('TP_Products','sample'),
-        // ));
+        // new 8/4/2020
+        register_rest_route( 'tindapress/api/v1/products', 'popular', array(
+            'methods' => 'POST',
+            'callback' => array('TP_Product_popular','initialize'),
+        ));
+
+
+        
          // retrieve
          register_rest_route( 'tindapress/api/v1/products', 'retrieve', array(
             'methods' => 'POST',

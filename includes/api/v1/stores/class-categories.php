@@ -39,7 +39,7 @@
             }
 
             // Step3 : Sanitize all Request
-			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) || !isset($_POST["ctid"])) {
+			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) || !isset($_POST["ctid"]) || !isset($_POST["types"])) {
 				return rest_ensure_response( 
 					array(
 						"status" => "unknown",
@@ -73,7 +73,7 @@
 			}
 			
             // Step6 : Sanitize all Request
-			if (empty($_POST["wpid"]) || empty($_POST["snky"]) || empty($_POST["ctid"])) {
+			if (empty($_POST["wpid"]) || empty($_POST["snky"]) || empty($_POST["ctid"]) || empty($_POST["types"])) {
 				return rest_ensure_response( 
 					array(
 						"status" => "unknown",
@@ -83,7 +83,6 @@
                 
             }
 
-
             //Step 7: Create table name for posts (tp_categories, tp_categories_revs)
 			// table names and POST Variables
             $store_table           = TP_STORES_TABLE;
@@ -92,37 +91,40 @@
             $product_table         = TP_PRODUCT_TABLE;
             $product_revs_table    = TP_PRODUCT_REVS_TABLE;
             $table_revs            = TP_REVISION_TABLE;
-            $table_address = 'dv_address';
             // datavice table variables declarations
             $dv_geo_brgy    = DV_BRGY_TABLE;
             $dv_revs        =  DV_REVS_TABLE;
             $dv_address     = DV_ADDRESS_TABLE;
             $dv_geo_city    = DV_CITY_TABLE;
             $dv_geo_prov    = DV_PROVINCE_TABLE;
-            $dv_geo_court   = DV_COUNTRY_TABLE;    
+            $dv_geo_count   = DV_COUNTRY_TABLE;    
+			
+			$type = $_POST['types'];
 			
 			$categories = $_POST['ctid'];
 			//Step 8: Get results from database 
 			$result= $wpdb->get_results("SELECT
-				tp_str.ID,
-				tp_rev.child_val AS title,
-				( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.short_info ) AS `short_info`,
-				( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.long_info ) AS `long_info`,
-				( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.logo ) AS `logo`,
-				( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.banner ) AS `banner`,
-				( SELECT dv_rev.child_val FROM $dv_revs dv_rev WHERE ID = dv_add.street ) AS `street`,
-				( SELECT brgy_name FROM $dv_geo_brgy WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = dv_add.brgy ) ) AS brgy,
-				( SELECT city_name FROM $dv_geo_city WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = dv_add.city ) ) AS city,
-				( SELECT prov_name FROM $dv_geo_prov WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = dv_add.province ) ) AS province,
-				( SELECT country_name FROM $dv_geo_court WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = dv_add.country ) ) AS country 
-			FROM
-				$store_table tp_str
-				INNER JOIN $table_revs tp_rev ON tp_rev.ID = tp_str.title
-				INNER JOIN $dv_address dv_add ON tp_str.address = dv_add.ID
-				INNER JOIN $categories_table tp_cat ON tp_cat.ID = tp_str.ctid 
-			WHERE
-				tp_str.ctid = $categories
-			", OBJECT);
+					tp_str.ID,
+					tp_cat.types,
+					tp_str.ctid,
+					tp_rev.child_val AS title,
+					( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.short_info ) AS `short_info`,
+					( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.long_info ) AS `long_info`,
+					( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.logo ) AS `logo`,
+					( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.banner ) AS `banner`,
+					( SELECT dv_rev.child_val FROM $dv_revs dv_rev WHERE ID = dv_add.street ) AS `street`,
+					( SELECT brgy_name FROM $dv_geo_brgy WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = dv_add.brgy ) ) AS brgy,
+					( SELECT city_name FROM $dv_geo_city WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = dv_add.city ) ) AS city,
+					( SELECT prov_name FROM $dv_geo_prov WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = dv_add.province ) ) AS province,
+					( SELECT country_name FROM $dv_geo_count WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = dv_add.country ) ) AS country 
+				FROM
+					$store_table tp_str
+					INNER JOIN $table_revs tp_rev ON tp_rev.ID = tp_str.title 
+					INNER JOIN $dv_address dv_add ON tp_str.address = dv_add.ID	
+					INNER JOIN $categories_table tp_cat ON tp_str.ctid = tp_cat.ID 
+				WHERE 
+					tp_cat.types = '$type' AND  tp_str.ctid = $categories
+				", OBJECT);
 
 
 			if (empty($result)) {

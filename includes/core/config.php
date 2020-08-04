@@ -18,6 +18,7 @@
 	// Temporary
 	define('MP_PREFIX', 'mp_'); 
 	define('MP_ORDER_TABLE', MP_PREFIX.'orders');
+	define('MP_ORDER_ITEMS_TABLE', MP_PREFIX.'order_items');
 
 	//Initializing table names
 
