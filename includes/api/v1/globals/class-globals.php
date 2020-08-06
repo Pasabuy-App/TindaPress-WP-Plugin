@@ -86,8 +86,8 @@
 
         }
 
-        public static function verifiy_datavice_plugin(){
-            if(!class_exists('DV_Verification')){
+        public static function verify_datavice_plugin(){
+            if(!class_exists('DV_Verification') || !class_exists('DV_Verification') ){
                 return false;
             }else{
                 return true;

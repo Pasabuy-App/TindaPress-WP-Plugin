@@ -12,9 +12,9 @@
 ?>
 <?php
 
-    class TP_Product {
+    class TP_Select_Store_Category_Product {
         
-        public static function initialize(){
+        public static function listen(){
             global $wpdb;
 
             // Step1 : validate if datavice is activated

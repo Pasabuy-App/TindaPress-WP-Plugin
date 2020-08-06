@@ -13,7 +13,7 @@
 <?php
 
     class TP_Product_Newest {
-        public static function initialize(){
+        public static function listen(){
             global $wpdb;
 
             // Step1: validate if dative plugin is activated

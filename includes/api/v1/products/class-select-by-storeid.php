@@ -12,11 +12,12 @@
 ?>
 <?php
 
-	class TP_Product_popular {
+    class TP_Select_By_StoreId_Products {
+
         public static function listen(){
             global $wpdb;
-
-             // Step 1 : Verfy if Datavice Plugin is Activated
+            
+            // Step 1 : Verfy if Datavice Plugin is Activated
 			if (TP_Globals::verifiy_datavice_plugin() == false) {
                 return rest_ensure_response( 
                     array(
@@ -36,7 +37,7 @@
             }
 
             // Step3 : Sanitize all Request
-			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) ) {
+			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) || !isset($_POST['stid']) ) {
 				return rest_ensure_response( 
 					array(
 						"status" => "unknown",
@@ -48,7 +49,7 @@
 
 
             // Step 4: Check if ID is in valid format (integer)
-			if (!is_numeric($_POST["wpid"]) ) {
+			if (!is_numeric($_POST["wpid"]) || !is_numeric($_POST['stid']) ) {
 				return rest_ensure_response( 
 					array(
 						"status" => "failed",
@@ -71,7 +72,7 @@
             }
 
             // Step6 : Sanitize all Request if emply
-			if (empty($_POST["wpid"]) || empty($_POST["snky"])  ) {
+			if (empty($_POST["wpid"]) || empty($_POST["snky"]) || empty($_POST['stid']) ) {
 				return rest_ensure_response( 
 					array(
 						"status" => "unknown",
@@ -81,46 +82,34 @@
                 
             }
 
-
-            $table_product = TP_PRODUCT_TABLE;
-
-            $table_stores = TP_STORES_TABLE;
-
-            $table_stores_revs = TP_STORES_REVS_TABLE;
-        
-            $table_categories = TP_CATEGORIES_TABLE;
-
-            $table_categories_revs = TP_CATEGORIES_REVS_TABLE;
+            $stid = $_POST['stid'];
 
             $tp_revs = TP_REVISION_TABLE;
+            $table_product = TP_PRODUCT_TABLE;
+            $table_categories = TP_CATEGORIES_TABLE;
 
-            $mp_orders = MP_ORDER_TABLE;
 
-            $mp_order_items = MP_ORDER_ITEMS_TABLE;
-
-            
             $result = $wpdb->get_results("SELECT
-                    Count( mp_oi.pdid ) AS cnt,
-                    mp_oi.pdid,
-                    tp_prod.ID,
-                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.title ) AS `title`,
-                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.preview ) AS `preview`,
-                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.short_info ) AS `short_info`,
-                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.long_info ) AS `long_info`,
-                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.`status` ) AS `status`,
-                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.sku ) AS `sku`,
-                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.price ) AS `price`,
-                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.weight ) AS `weight`,
-                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.dimension ) AS `dimension` 
-                FROM
-                    $mp_order_items mp_oi 
-                    INNER JOIN $table_product tp_prod ON mp_oi.pdid = tp_prod.ID 
-                    INNER JOIN $tp_revs tp_rev ON tp_prod.title = tp_rev.ID 
-                GROUP BY
-                    mp_oi.pdid 
-                ORDER BY
-                    cnt DESC
-                ");
+                tp_prod.ID,
+                ( SELECT tp_cat.types FROM $table_categories tp_cat WHERE ID = tp_prod.ctid ) AS `category`,
+                ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.title ) AS `title`,
+                ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.preview ) AS `preview`,
+                ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.short_info ) AS `short_info`,
+                ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.long_info ) AS `long_info`,
+                ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.`status` ) AS `status`,
+                ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.sku ) AS `sku`,
+                ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.price ) AS `price`,
+                ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.weight ) AS `weight`,
+                ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.dimension ) AS `dimension`,
+                ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.short_info ) AS `short_info` 
+            FROM
+                $table_product tp_prod
+                INNER JOIN $tp_revs tp_rev ON tp_rev.ID = tp_prod.title 
+            WHERE
+                tp_prod.stid = $stid
+            GROUP BY
+                tp_prod.ID ");
+
 
             if(empty($result)){
                 return rest_ensure_response( 
@@ -129,7 +118,6 @@
                         "message" => "Please contact your administrator.",
                     )
                 );
-
             }else{
                 return rest_ensure_response( 
                     array(
@@ -140,9 +128,9 @@
                         )
                     )
                 );
-
             }
 
+
         }
+
     }
-        

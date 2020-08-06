@@ -262,10 +262,8 @@
               
         }
 
-
         public static function get_store_category_list(){
             global $wpdb;
-
             
 
         }

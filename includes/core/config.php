@@ -18,15 +18,20 @@
 	
 	//Initializing table names
 
+	define('TP_PRODUCT_TABLE', TP_PREFIX.'products');
+	define('TP_PRODUCT_FIELDS', '(stid, ctid, title, preview, short_info, long_info, status, sku, price,  weight,  dimension , created_by, date_created)');
+
+	define('TP_REVISION_TABLE', TP_PREFIX.'revisions');
+	define('TP_REVISION_FIELDS','(revs_type, child_key , child_val, created_by, date_created )');
+
+
+
+
 	define('TP_CATEGORIES_TABLE', TP_PREFIX.'categories');
 
 	define('TP_CONFIGS_TABLE', TP_PREFIX.'configs');
 
 	define('TP_PERSONNELS_TABLE', TP_PREFIX.'personnels');
-
-	define('TP_PRODUCT_TABLE', TP_PREFIX.'products');
-
-	define('TP_REVISION_TABLE', TP_PREFIX.'revisions');
 
 	define('TP_ROLES_TABLE', TP_PREFIX.'roles');
 
