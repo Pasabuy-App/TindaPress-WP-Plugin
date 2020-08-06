@@ -40,7 +40,10 @@
             'callback' => array('TP_Product_popular','initialize'),
         ));
 
-
+        register_rest_route( 'tindapress/api/v1/products', 'get_product_store', array(
+            'methods' => 'POST',
+            'callback' => array('TP_Products','initialize'),
+        ));
         
          // retrieve
          register_rest_route( 'tindapress/api/v1/products', 'retrieve', array(
