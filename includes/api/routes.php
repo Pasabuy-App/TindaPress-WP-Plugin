@@ -28,8 +28,8 @@
         require plugin_dir_path(__FILE__) . '/v1/products/class-delete.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-select-by-storeid.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-search.php';
-
-        // require plugin_dir_path(__FILE__) . '/v1/products/class-newest.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-newest.php';
+ 
         // require plugin_dir_path(__FILE__) . '/v1/products/class-product.php';
         // require plugin_dir_path(__FILE__) . '/v1/products/class-popular.php';
         // require plugin_dir_path(__FILE__) . '/v1/products/filter/class-categories.php';
