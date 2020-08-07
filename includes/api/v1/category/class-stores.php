@@ -17,6 +17,7 @@
         public static function initialize(){
             global $wpdb;
 
+            // NOTE : REVISED
             // step1 check if datavice plugin is activated
             if (TP_Globals::verifiy_datavice_plugin() == false) {
                 return rest_ensure_response( 

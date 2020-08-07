@@ -63,7 +63,7 @@
             $user = TP_Delete_Store::catch_post();
             
 
-            $store_data = $wpdb->get_row("SELECT * FROM tp_stores WHERE ID = '{$user["store_id"]}'   ");
+            $store_data = $wpdb->get_row("SELECT tp_stores.* FROM tp_stores INNER JOIN tp_revisions ON tp_revisions.ID = tp_stores.`status` WHERE tp_stores.ID = '17' AND tp_revisions.child_val = 1 ");
             
             if (!$store_data) {
                 return array(
