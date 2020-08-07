@@ -38,6 +38,7 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/class-update.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-delete.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-select.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-listing.php';
 
         require plugin_dir_path(__FILE__) . '/v1/globals/class-globals.php';
 
@@ -135,6 +136,11 @@
             register_rest_route( 'tindapress/v1/stores', 'select', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Select_Store','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/stores', 'list/all', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Listing_Store','listen'),
             ));
         
         
