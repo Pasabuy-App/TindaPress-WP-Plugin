@@ -12,7 +12,7 @@
 ?>
 <?php
 
-    class TP_Insert_Store {
+    class TP_Update_Store {
         public static function listen(){
             global $wpdb;
 
@@ -79,7 +79,7 @@
 
             $later = TP_Globals::date_stamp();
             
-            $user = TP_Insert_Store::catch_post();
+            $user = TP_Update_Store::catch_post();
 
             // variables for query
             $table_store = TP_STORES_TABLE;
@@ -89,6 +89,19 @@
             $table_revs_fields = TP_REVISION_FIELDS;
 
             $revs_type = "stores";
+
+
+            $get_store = $wpdb->get_row("SELECT ID FROM tp_stores  WHERE ID = '{$user["store_id"]}' ");
+                
+            //Check if this store id exists
+            if ( !$get_store ) {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "error",
+                        "message" => "An error occurred while fetching data to the server.",
+                    )
+                );
+            }
 
             $wpdb->query("START TRANSACTION");
 
@@ -116,12 +129,12 @@
                 );
             }
 
-            $wpdb->query("INSERT INTO $table_store $table_store_fields VALUES ('{$user["ctid"]}', $title, $short_info, $long_info, $logo, $banner, '{$user["address"]}', '{$user["created_by"]}', '$later' )");
-            $store_id = $wpdb->insert_id;
+            $update_store = $wpdb->query("UPDATE $table_store SET `title` = $title, `short_info` = $short_info, `long_info` = $long_info, `logo` = $logo, `banner` = $banner WHERE ID = '{$user["store_id"]}' ");
+     
 
-            $result = $wpdb->query("UPDATE $table_revs SET `parent_id` = $store_id WHERE ID IN ($title, $short_info, $long_info, $logo, $banner) ");
+            $result = $wpdb->query("UPDATE $table_revs SET `parent_id` =  '{$user["store_id"]}' WHERE ID IN ($title, $short_info, $long_info, $logo, $banner) ");
             
-            if ($store_id < 1 || $result < 1 ) {
+            if ($result < 1 ) {
                 $wpdb->query("ROLLBACK");
                 return array(
                     "status" => "failed",
@@ -131,7 +144,7 @@
                 $wpdb->query("COMMIT");
                 return array(
                     "status" => "success",
-                    "message" => "Store has successfully added.",
+                    "message" => "Store has successfully updated.",
                 );
             }
 
@@ -145,6 +158,7 @@
                 $cur_user['created_by'] = $_POST["wpid"];
                 $cur_user['ctid']       = $_POST["ctid"];
                 $cur_user['address']       = $_POST["address"];
+                $cur_user['store_id']       = $_POST["stid"];
 
                 $cur_user['title']      = $_POST["title"];
                 $cur_user['short_info'] = $_POST["short_info"];
