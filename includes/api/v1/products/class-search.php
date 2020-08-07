@@ -20,7 +20,7 @@
 
 
               // Step 1 : Verfy if Datavice Plugin is Activated
-			if (TP_Globals::verifiy_datavice_plugin() == false) {
+			if (TP_Globals::verify_datavice_plugin() == false) {
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",
@@ -39,7 +39,7 @@
             }
 
             // Step3 : Sanitize all Request
-			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) || !isset($_POST['search']) ) {
+			if ( !isset($_POST['search']) ) {
 				return rest_ensure_response( 
 					array(
 						"status" => "unknown",
@@ -50,7 +50,7 @@
             }
 
              // Step6 : Sanitize all Request if emply
-			if (empty($_POST["wpid"]) || empty($_POST["snky"]) || empty($_POST['search']) ) {
+			if ( empty($_POST['search']) ) {
 				return rest_ensure_response( 
 					array(
 						"status" => "unknown",
@@ -60,37 +60,11 @@
                 
             }
 
+            $user = TP_Search_Products::catch_post();
 
-            // Step 4: Check if ID is in valid format (integer)
-			if (!is_numeric($_POST["wpid"]) ) {
-				return rest_ensure_response( 
-					array(
-						"status" => "failed",
-						"message" => "Please contact your administrator. ID not in valid format!",
-					)
-                );
-                
-            }
-            
-
-			// Step 5: Check if ID exists
-			if (!get_user_by("ID", $_POST['wpid'])) {
-				return rest_ensure_response( 
-					array(
-						"status" => "failed",
-						"message" => "User not found!",
-					)
-                );
-                
-            }
-
-            $value = $_POST['search'];
-
-           
             $tp_revs = TP_REVISION_TABLE;
             $table_product = TP_PRODUCT_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
-
 
             $result = $wpdb->get_results("SELECT
                 tp_prod.ID,
@@ -110,7 +84,7 @@
                 $table_product tp_prod
                 INNER JOIN $tp_revs tp_rev ON tp_rev.ID = tp_prod.title 
             WHERE
-                tp_rev.child_val REGEXP '^$value';", OBJECT);
+                tp_rev.child_val REGEXP '^{$user["search"]}';", OBJECT);
 
             if(empty($result)){
                 return rest_ensure_response( 
@@ -133,6 +107,18 @@
             }
 
 
+        }
+
+
+        // Catch Post 
+        public static function catch_post()
+        {
+              $cur_user = array();
+               
+              $cur_user['created_by'] = $_POST["wpid"];
+              $cur_user['search'] = $_POST["search"];
+  
+              return  $cur_user;
         }
 
     }

@@ -109,31 +109,31 @@
 
             $wpdb->query("START TRANSACTION");
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', 'title', '{$user["title"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'title', '{$user["title"]}', '{$user["created_by"]}', '$later')");
                 $title = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', 'preview', '{$user["preview"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'preview', '{$user["preview"]}', '{$user["created_by"]}', '$later')");
                 $preview = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', 'short_info', '{$user["short_info"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'short_info', '{$user["short_info"]}', '{$user["created_by"]}', '$later')");
                 $short_info = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', 'long_info', '{$user["long_info"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'long_info', '{$user["long_info"]}', '{$user["created_by"]}', '$later')");
                 $long_info = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', 'status', '1', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'status', '1', '{$user["created_by"]}', '$later')");
                 $status = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', 'sku', '{$user["sku"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'sku', '{$user["sku"]}', '{$user["created_by"]}', '$later')");
                 $sku = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', 'price', '{$user["price"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'price', '{$user["price"]}', '{$user["created_by"]}', '$later')");
                 $price = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', 'weight', '{$user["weight"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'weight', '{$user["weight"]}', '{$user["created_by"]}', '$later')");
                 $weight = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', 'dimension', '{$user["dimension"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'dimension', '{$user["dimension"]}', '{$user["created_by"]}', '$later')");
                 $dimension = $wpdb->insert_id;
 
             if ($title < 1 || $short_info < 1 || $long_info < 1 || $sku < 1 || $price < 1 || $weight < 1 || $dimension < 1 || $preview < 1 ) {

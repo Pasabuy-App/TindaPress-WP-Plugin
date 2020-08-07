@@ -20,7 +20,7 @@
 
 
 			//  Step1 : Verify if Datavice Plugin is Active
-			if (TP_Globals::verifiy_datavice_plugin() == false) {
+			if (TP_Globals::verify_datavice_plugin() == false) {
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",
@@ -131,7 +131,7 @@
 
                 return rest_ensure_response( 
                     array(
-                        "status" => "success",
+                        "status" => "failed",
                         "message" => "Please contact your Administrator. Empty result"
                         
                     )

@@ -17,7 +17,7 @@
             global $wpdb;
 
              // Step 1 : Verfy if Datavice Plugin is Activated
-			if (TP_Globals::verifiy_datavice_plugin() == false) {
+			if (TP_Globals::verify_datavice_plugin() == false) {
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",
@@ -35,41 +35,6 @@
                 );
             }
 
-            // Step3 : Sanitize all Request
-			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) ) {
-				return rest_ensure_response( 
-					array(
-						"status" => "unknown",
-						"message" => "Please contact your administrator. Request unknown!",
-					)
-                );
-                
-            }
-
-
-            // Step 4: Check if ID is in valid format (integer)
-			if (!is_numeric($_POST["wpid"]) ) {
-				return rest_ensure_response( 
-					array(
-						"status" => "failed",
-						"message" => "Please contact your administrator. ID not in valid format!",
-					)
-                );
-                
-            }
-            
-
-			// Step 5: Check if ID exists
-			if (!get_user_by("ID", $_POST['wpid'])) {
-				return rest_ensure_response( 
-					array(
-						"status" => "failed",
-						"message" => "User not found!",
-					)
-                );
-                
-            }
-
             // Step6 : Sanitize all Request if emply
 			if (empty($_POST["wpid"]) || empty($_POST["snky"])  ) {
 				return rest_ensure_response( 
@@ -81,24 +46,10 @@
                 
             }
 
-
             $table_product = TP_PRODUCT_TABLE;
-
-            $table_stores = TP_STORES_TABLE;
-
-            $table_stores_revs = TP_STORES_REVS_TABLE;
-        
-            $table_categories = TP_CATEGORIES_TABLE;
-
-            $table_categories_revs = TP_CATEGORIES_REVS_TABLE;
-
             $tp_revs = TP_REVISION_TABLE;
-
-            $mp_orders = MP_ORDER_TABLE;
-
             $mp_order_items = MP_ORDER_ITEMS_TABLE;
 
-            
             $result = $wpdb->get_results("SELECT
                     Count( mp_oi.pdid ) AS cnt,
                     mp_oi.pdid,
@@ -122,7 +73,7 @@
                     cnt DESC
                 ");
 
-            if(empty($result)){
+            if(is_null($result)){
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",

@@ -17,7 +17,7 @@
         public static function listen(){
             global $wpdb;
                 
-            if (TP_Globals::verifiy_datavice_plugin() == false) {
+            if (TP_Globals::verify_datavice_plugin() == false) {
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",
@@ -37,7 +37,7 @@
             }
 
             // Step2 : Sanitize all Request
-			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) || !isset($_POST['pdid'])  ) {
+			if ( !isset($_POST['pdid'])  ) {
 				return rest_ensure_response( 
 					array(
 						"status" => "unknown",
@@ -48,7 +48,7 @@
             }
 
             // Step 3: Check if ID is in valid format (integer)
-			if (!is_numeric($_POST["wpid"]) || !is_numeric($_POST["pdid"])  ) {
+			if (!is_numeric($_POST["pdid"])  ) {
 				return rest_ensure_response( 
 					array(
 						"status" => "failed",
@@ -58,20 +58,10 @@
                 
 			}
 
-			// Step 4: Check if ID exists
-			if (!get_user_by("ID", $_POST['wpid'])) {
-				return rest_ensure_response( 
-					array(
-						"status" => "failed",
-						"message" => "User not found!",
-					)
-                );
-                
-            }
 
 
                // Step5 : Sanitize all Request
-			if (empty($_POST["wpid"]) || empty($_POST["snky"]) || empty($_POST['pdid']) ) {
+			if ( empty($_POST['pdid']) ) {
 				return rest_ensure_response( 
 					array(
 						"status" => "unknown",
@@ -80,6 +70,8 @@
                 );
                 
             }
+            $user = TP_Select_Byid_Product::catch_post();
+
 
 
             $table_product = TP_PRODUCT_TABLE;
@@ -87,31 +79,27 @@
             $table_categories = TP_CATEGORIES_TABLE;
 
             $table_revs = TP_REVISION_TABLE;
-            $pdid = $_POST['pdid'];
 
             $result =  $wpdb->get_results("SELECT
-                tp_prod.ID,
-                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.title ) AS `store_name`,
-                ( SELECT tp_cat.types FROM $table_categories tp_cat WHERE ID = tp_prod.ctid ) AS `category`,
-                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.title ) AS `title`,
-                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.preview ) AS `preview`,
-                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.short_info ) AS `short_info`,
-                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.long_info ) AS `long_info`,
-                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.`status` ) AS `status`,
-                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.sku ) AS `sku`,
-                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.price ) AS `price`,
-                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.weight ) AS `weight`,
-                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.dimension ) AS `dimension`,
-                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.short_info ) AS `short_info` 
-            FROM
-                $table_product tp_prod
-                INNER JOIN $table_revs tp_rev ON tp_rev.ID = tp_prod.title
-                INNER JOIN $table_stores tp_str ON tp_str.ID = tp_prod.stid 
-            WHERE
-                tp_prod.ID = $pdid
-            GROUP BY
-                tp_prod.ID
-            ");
+                    tp_products.ID as product_id,
+                    (SELECT tp_revisions.child_val FROM tp_revisions WHERE tp_revisions.ID = tp_stores.title) as product_store_name,
+                    (SELECT tp_revisions.child_val FROM tp_revisions WHERE tp_revisions.ID = (SELECT tp_categories.title FROM tp_categories WHERE tp_categories.ID = tp_products.ctid)) as product_category_name,
+                    tp_revisions.child_val as product_name,
+                    (SELECT tp_revisions.child_val FROM tp_revisions WHERE ID = tp_products.preview) as product_preview,
+                    (SELECT tp_revisions.child_val FROM tp_revisions WHERE ID = tp_products.short_info) as product_short_information,
+                    (SELECT tp_revisions.child_val FROM tp_revisions WHERE ID = tp_products.long_info) as product_long_information,
+                    (SELECT tp_revisions.child_val FROM tp_revisions WHERE ID = tp_products.`status`) as product_status,
+                    (SELECT tp_revisions.child_val FROM tp_revisions WHERE ID = tp_products.sku) as product_code,
+                    (SELECT tp_revisions.child_val FROM tp_revisions WHERE ID = tp_products.price) as product_price,
+                    (SELECT tp_revisions.child_val FROM tp_revisions WHERE ID = tp_products.weight) as product_weight,
+                    (SELECT tp_revisions.child_val FROM tp_revisions WHERE ID = tp_products.dimension) as product_dimension,
+                    tp_products.date_created
+                FROM
+                    tp_products
+                    INNER JOIN tp_revisions ON tp_revisions.ID = tp_products.title
+                    INNER JOIN tp_stores ON tp_stores.ID = tp_products.stid
+                WHERE tp_products.ID = {$user["product_id"]}
+                    ");
 
             if(empty($result)){
                 //Step 6: Return result
@@ -133,5 +121,16 @@
                     )
                 );
             }
+        }
+
+        // Catch Post 
+        public static function catch_post()
+        {
+              $cur_user = array();
+               
+              $cur_user['created_by'] = $_POST["wpid"];
+              $cur_user['product_id'] = $_POST["pdid"];
+
+              return  $cur_user;
         }
     }

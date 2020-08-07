@@ -22,7 +22,11 @@
 	define('TP_PRODUCT_FIELDS', '(stid, ctid, title, preview, short_info, long_info, status, sku, price,  weight,  dimension , created_by, date_created)');
 
 	define('TP_REVISION_TABLE', TP_PREFIX.'revisions');
-	define('TP_REVISION_FIELDS','(revs_type, child_key , child_val, created_by, date_created )');
+	define('TP_REVISION_FIELDS','(revs_type, parent_id, child_key , child_val, created_by, date_created )');
+
+	define('TP_STORES_TABLE', TP_PREFIX.'stores');
+	define('TP_STORES_FIELDS','(ctid, title, short_info, long_info, logo, banner, address, created_by, date_created )');
+
 
 
 
@@ -37,7 +41,6 @@
 
 	define('TP_ROLES_META_TABLE', TP_PREFIX.'roles_meta');
 
-	define('TP_STORES_TABLE', TP_PREFIX.'stores');
 	
 	define('TP_STORES_REVS_TABLE', TP_PREFIX.'stores_revs');
 	

@@ -29,12 +29,12 @@
         require plugin_dir_path(__FILE__) . '/v1/products/class-select-by-storeid.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-search.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-newest.php';
- 
-        // require plugin_dir_path(__FILE__) . '/v1/products/class-product.php';
-        // require plugin_dir_path(__FILE__) . '/v1/products/class-popular.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-popular.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-product.php';
         // require plugin_dir_path(__FILE__) . '/v1/products/filter/class-categories.php';
 
         require plugin_dir_path(__FILE__) . '/v1/category/class-stores.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-insert.php';
 
         require plugin_dir_path(__FILE__) . '/v1/globals/class-globals.php';
 
@@ -66,7 +66,7 @@
                 'callback' => array('TP_Select_Byid_Product','listen'),
             ));
             
-            register_rest_route( 'tindapress/api/v1/products', 'delete', array(
+            register_rest_route( 'tindapress/v1/products', 'delete', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Delete_Product','listen'),
             ));
@@ -113,7 +113,15 @@
                 'methods' => 'POST',
                 'callback' => array('TP_Insert_Documents','listen'),
             ));
-
+        
+        
+        /*
+         * STORE RESTAPI
+        */
+            register_rest_route( 'tindapress/v1/stores', 'insert', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Insert_Store','listen'),
+            ));
         
             
     
