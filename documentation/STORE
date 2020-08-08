@@ -46,7 +46,7 @@ IF SUCCESS:
 #### DELETE STORE
 
 REQUEST:
-- Method: GET
+- Method: POST
 - Header: key=Content-Type, value=application/x-www-form-urlencoded
 - Params: key=wpid (value=User ID), key=snky (value = session key), key = stid (Value = store id)
 RESPONSE:
@@ -66,7 +66,7 @@ IF SUCCESS:
 #### LIST ALL STORES
 
 REQUEST:
-- Method: GET
+- Method: POST
 - Header: key=Content-Type, value=application/x-www-form-urlencoded
 - Params: key=snky (value=session key), key=wpid (value=wordpress id)
 
@@ -76,7 +76,65 @@ RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
 - code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
 - code: 'unknown' message: 'Required fields cannot be empty' data: null
-- code: 'failed' message: 'Product not found' data: null
+- code: 'failed' message: 'An error occured while fetching data to database' data: null
+
+IF SUCCESS:
+```
+  
+```
+
+#### SELECT STORE BY ID
+
+REQUEST:
+- Method: POST
+- Header: key=Content-Type, value=application/x-www-form-urlencoded
+- Params: key=snky (value=session key), key=wpid (value=wordpress id), key = stid (Value = store id)
+
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
+- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
+- code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
+- code: 'unknown' message: 'Required fields cannot be empty' data: null
+- code: 'failed' message: 'An error occured while fetching data to database' data: null    
+
+IF SUCCESS:
+```
+  
+```
+
+#### SELECT STORE BY CATEGORY
+
+REQUEST:
+- Method: POST
+- Header: key=Content-Type, value=application/x-www-form-urlencoded
+- Params: key=snky (value=session key), key=wpid (value=wordpress id), key = catid (Value = category id)
+
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
+- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
+- code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
+- code: 'unknown' message: 'Required fields cannot be empty' data: null 
+
+IF SUCCESS:
+```
+  
+```
+
+#### SEARCHING STORE BY NAME
+
+REQUEST:
+- Method: POST
+- Header: key=Content-Type, value=application/x-www-form-urlencoded
+- Params: key=snky (value=session key), key=wpid (value=wordpress id), key = search (Value = search)
+
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
+- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
+- code: 'unknown' message: 'Required fields cannot be empty' data: null
+- code: 'unknown' message: 'Please contact your administrator. No store found with this value' data: null    
 
 IF SUCCESS:
 ```

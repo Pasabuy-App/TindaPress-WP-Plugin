@@ -37,7 +37,7 @@
             }
 
             // Step3 : Sanitize all Request
-			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) || !isset($_POST['search']) ) {
+			if (!isset($_POST['search']) ) {
 				return rest_ensure_response( 
 					array(
 						"status" => "unknown",
@@ -48,7 +48,7 @@
             }
 
              // Step6 : Sanitize all Request if emply
-			if (empty($_POST["wpid"]) || empty($_POST["snky"]) || empty($_POST['search']) ) {
+			if (empty($_POST['search']) ) {
 				return rest_ensure_response( 
 					array(
 						"status" => "unknown",
@@ -59,7 +59,7 @@
             }
 
 
-            // Step 4: Check if ID is in valid format (integer)
+            /*// Step 4: Check if ID is in valid format (integer)
 			if (!is_numeric($_POST["wpid"]) ) {
 				return rest_ensure_response( 
 					array(
@@ -80,7 +80,7 @@
 					)
                 );
                 
-            }
+            }*/
             $value = $_POST['search'];
 
             // table names and POST Variables
@@ -121,7 +121,7 @@
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. No store with this value"
+                        "message" => "Please contact your administrator. No store found with this value."
                     )
                 );
 

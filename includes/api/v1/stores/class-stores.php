@@ -38,6 +38,15 @@
             }
 
             // Step3 : Sanitize all Request
+			if (!isset($_POST['catid']) ) {
+				return rest_ensure_response( 
+					array(
+						"status" => "unknown",
+						"message" => "Please contact your administrator. Request unknown!",
+					)
+                );
+                
+            }
 
             
             // Step 4: sanitize if all variables is empty
