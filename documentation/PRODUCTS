@@ -357,6 +357,60 @@ IF SUCCESS:
 ```
 
 
+#### LIST ALL PRODUCT BY STORE ID AND CATEGORY ID
+
+REQUEST:
+- Method: GET
+- Header: key=Content-Type, value=application/x-www-form-urlencoded
+- Params: key=snky (value=session key), key=wpid (value=wordpress id), key=stid (value=store id), key=ctid (value=category id)
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
+- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
+- code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
+- code: 'unknown' message: 'Required fields cannot be empty' data: null
+
+IF SUCCESS:
+```
+{
+    "status": "success",
+    "data": {
+        "list": [
+            {
+                "ID": "16",
+                "store_title": "Jollibee - Bayan",
+                "category_title": "asdasd",
+                "product_title": "awdwadw",
+                "product_preview": "auwygdauwyd",
+                "product_short_info": "awdawd",
+                "product_long_info": "awdawd",
+                "product_sku": "uaywgdawd",
+                "product_price": "awudgyaw",
+                "product_weight": "awuydgawd",
+                "product_dimension": "some dimension",
+                "date_created": "2020-08-08 01:05:53"
+            },
+            {
+                "ID": "17",
+                "store_title": "Jollibee - Bayan",
+                "category_title": "asdasd",
+                "product_title": "awdwadw",
+                "product_preview": "auwygdauwyd",
+                "product_short_info": "awdawd",
+                "product_long_info": "awdawd",
+                "product_sku": "uaywgdawd",
+                "product_price": "awudgyaw",
+                "product_weight": "awuydgawd",
+                "product_dimension": "some dimension",
+                "date_created": "2020-08-08 01:05:53"
+            }
+        ]
+    }
+}
+
+```
+
+
 
 
 ## Contributing 

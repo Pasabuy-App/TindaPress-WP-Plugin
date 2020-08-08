@@ -11,13 +11,12 @@
 	*/
 ?>
 <?php
-
+    // NOTE : this function is for select product with store id and category id 
     class TP_Products {
 
         // GET product by store  product category ID
         public static function listen(){
             global $wpdb;
-
 
 			//  Step1 : Verify if Datavice Plugin is Active
 			if (TP_Globals::verify_datavice_plugin() == false) {
@@ -28,9 +27,9 @@
                     )
                 );
 			}
-			
-			//  Step2 : Validate if user is exist
-			if (TP_Globals::validate_user() == false) {
+            
+            // Step2 : Check if wpid and snky is valid
+            if (DV_Verification::is_verified() == false) {
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",
@@ -49,7 +48,6 @@
                 );
                 
             }
-
 
             // Step 4: Check if ID is in valid format (integer)
 			if (!is_numeric($_POST["wpid"]) || !is_numeric($_POST['ctid'])) {
@@ -84,46 +82,32 @@
                 
             }
 
-            //Step 7: Create table name for posts (tp_categories, tp_categories_revs)
-			// table names and POST Variables
+            // Create table name for posts (tp_categories, tp_categories_revs)
             $store_table           = TP_STORES_TABLE;
             $tp_categories_table   = TP_CATEGORIES_TABLE;
             $product_table         = TP_PRODUCT_TABLE;
             $tp_revs               = TP_REVISION_TABLE;
-            // datavice table variables declarations
-            $dv_geo_brgy    = DV_BRGY_TABLE;
-            $dv_revs        =  DV_REVS_TABLE;
-            $dv_address     = DV_ADDRESS_TABLE;
-            $dv_geo_city    = DV_CITY_TABLE;
-            $dv_geo_prov    = DV_PROVINCE_TABLE;
-            $dv_geo_count   = DV_COUNTRY_TABLE;    
-
+     
             $types = $_POST['types'];
             $stid = $_POST['stid'];
             $ctid = $_POST['ctid'];
 
             $result = $wpdb->get_results("SELECT
                     tp_prod.ID,
-                    tp_cat.types,
-                    tp_rev.child_val AS title,
-                    tp_reevs.child_val AS category_name,
-                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_cat.title ) AS `type`, 
-                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.preview ) AS `preview`,
-                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.short_info ) AS `short_info`,
-                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.long_info ) AS `long_info`,
-                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.`status` ) AS `status`,
-                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.sku ) AS `sku`,
-                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.price ) AS `price`,
-                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.weight ) AS `weight`,
-                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.dimension ) AS `dimension` 
+                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE tp_rev.ID = ( SELECT title FROM $store_table WHERE ID = tp_prod.stid ) ) AS store_title,
+                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE tp_rev.ID = ( SELECT title FROM $tp_categories_table WHERE ID = tp_prod.ctid ) ) AS category_title,
+                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE tp_rev.ID = tp_prod.title ) AS product_title,
+                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE tp_rev.ID = tp_prod.preview ) AS product_preview,
+                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE tp_rev.ID = tp_prod.short_info ) AS product_short_info,
+                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE tp_rev.ID = tp_prod.long_info ) AS product_long_info,
+                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE tp_rev.ID = tp_prod.sku ) AS product_sku,
+                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE tp_rev.ID = tp_prod.price ) AS product_price,
+                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE tp_rev.ID = tp_prod.weight ) AS product_weight,
+                    ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE tp_rev.ID = tp_prod.dimension ) AS product_dimension,
+                    tp_prod.date_created 
                 FROM
-                    $product_table tp_prod
-                    INNER JOIN $tp_revs tp_rev ON tp_rev.ID = tp_prod.title
-                    INNER JOIN $store_table  tp_strs ON tp_prod.stid = tp_strs.ID
-                    INNER JOIN $tp_categories_table tp_cat ON tp_cat.ID = tp_strs.ctid
-                    INNER JOIN $tp_revs tp_reevs ON tp_reevs.ID = tp_cat.title 
-                WHERE
-                    tp_prod.stid = $stid AND tp_cat.types = '$types' AND tp_strs.ctid = $ctid");
+                    $product_table tp_prod 
+                WHERE tp_prod.stid = $stid AND tp_prod.ctid = $ctid");
 
        
             if (empty($result)) {

@@ -26,14 +26,13 @@
                     )
                 );
 			}
-			//step 2: validate User
+			//  Step2 : Validate if user is exist
 			if (DV_Verification::is_verified() == false) {
-                return rest_ensure_response( 
-                    array(
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
-                    )
+                        "message" => "Please contact your administrator. Rawdawdequest Unknown!",
                 );
+                
             }
 
             // Step3 : Sanitize all Request

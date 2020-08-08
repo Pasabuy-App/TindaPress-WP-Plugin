@@ -20,7 +20,7 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/class-popular.php';
 
         require plugin_dir_path(__FILE__) . '/v1/products/class-insert.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-select.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-listing.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-update.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-select-byid.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-delete.php';
