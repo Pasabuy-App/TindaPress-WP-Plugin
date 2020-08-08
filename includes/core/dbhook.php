@@ -18,6 +18,7 @@
 
 		//Initializing table name
 		$tbl_categories = TP_CATEGORIES_TABLE;
+		$tbl_cat_group = TP_CATEGORIES_GROUP_TABLE;
 		$tbl_configs = TP_CONFIGS_TABLE;
 		$tbl_docu = TP_DOCU_TABLE;
 		$tbl_personnels = TP_PERSONNELS_TABLE;
@@ -165,9 +166,12 @@
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_categories'" ) != $tbl_categories) {
 			$sql = "CREATE TABLE `".$tbl_categories."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
-				$sql .= "`title` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Nmae of the Category with revision id.',";
+				$sql .= "`title` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Name of the Category with revision id.',";
 				$sql .= "`info` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Description of the Category with revision id.', ";
-				$sql .= "`types` enum('none','product','store') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'none' COMMENT 'Type of category with revision id.', ";
+				$sql .= "`status` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Status of the category with revision id.', ";
+				$sql .= "`name` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Global = 1 , local = 0', ";
+				$sql .= "`parent` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Parent if value is more than 0', ";
+				$sql .= "`types` enum('none','product','store', 'tags') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'none' COMMENT 'Type of category with revision id.', ";
 				$sql .= "`created_by` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User created this category with revision id.', ";
 				$sql .= "`date_created` datetime(0) NULL DEFAULT NULL COMMENT 'The date this category is created.', ";
 				$sql .= "PRIMARY KEY (`ID`) ";
@@ -175,9 +179,19 @@
 			$result = $wpdb->get_results($sql);
 		}
 
-		
-
-		
+		//Database table creation for categories gropu
+		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_cat_group'" ) != $tbl_cat_group) {
+			$sql = "CREATE TABLE `".$tbl_cat_group."` (";
+				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= "`ctid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Category id', ";
+				$sql .= "`types` enum('none','product','store') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'none' COMMENT 'Type of category with revision id.', ";
+				$sql .= "`row_id` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Row which this group belongs to', ";
+				$sql .= "`created_by` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User created this category with revision id.', ";
+				$sql .= "`date_created` datetime(0) NULL DEFAULT NULL COMMENT 'The date this category is created.', ";
+				$sql .= "PRIMARY KEY (`ID`) ";
+				$sql .= ") ENGINE = InnoDB; ";
+			$result = $wpdb->get_results($sql);
+		}
 
 		//Database table creation for roles_access
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_roles_access'" ) != $tbl_roles_access) {
@@ -192,9 +206,6 @@
 			$result = $wpdb->get_results($sql);
 		}
 
-		
-
-		
 
 		//Database table creation for products_meta
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_products_meta'" ) != $tbl_products_meta) {

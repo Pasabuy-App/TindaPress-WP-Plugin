@@ -9,17 +9,17 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
-    class TP_Category_List {
+    class TP_Category_Select_Store {
         
         public static function listen(){
             return rest_ensure_response( 
-                TP_Category_List:: list_type()
+                TP_Category_Select_Store:: select_by_store()
             );
         }
         
-        public static function list_type(){
+        public static function select_by_store(){
             global $wpdb;
-
+            
             //  Step1 : Verify if Datavice Plugin is Active
 			if (TP_Globals::verify_datavice_plugin() == false) {
                 return  array(
@@ -38,30 +38,24 @@
                 
             }
             
-            if (!isset($_POST["types"])  ) {
+            if (!isset($_POST["stid"])  ) {
 				return array(
 						"status" => "unknown",
 						"message" => "Please contact your administrator. Request unknown!",
                 );
             }
 
-            if (empty($_POST["types"])  ) {
+            if (empty($_POST["stid"])  ) {
 				return array(
 						"status" => "failed",
 						"message" => "Required fields cannot be empty.",
                 );
             }
 
-            if ( !($_POST['types'] === 'store') && !($_POST['types'] === 'product') && !($_POST['types'] === 'tags') ) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Category must be product or store only.",
-                );
-            }
-
-            $types = $_POST['types'];
+            $store_id = $_POST['stid'];
             $table_revs = TP_REVISION_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
+            $table_stores = TP_STORES_TABLE;
 
             $categories = $wpdb->get_results("SELECT
                 cat.ID, cat.types,
@@ -71,9 +65,11 @@
             FROM
                 $table_categories cat
             INNER JOIN
-                $table_revs rev ON rev.parent_id = cat.id 
+                $table_stores s ON s.ctid = cat.id
+            INNER JOIN
+                $table_revs rev ON rev.parent_id = cat.id
             WHERE
-                cat.types = '$types'
+                s.id = $store_id 
             AND
                 (SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.status) = 1
             GROUP BY

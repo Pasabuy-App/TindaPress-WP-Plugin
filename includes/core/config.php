@@ -32,6 +32,7 @@
 
 	//Categories config
 	define('TP_CATEGORIES_TABLE', TP_PREFIX.'categories');
+	define('TP_CATEGORIES_GROUP_TABLE', TP_PREFIX.'categories_group');
 	define('TP_CATEGORIES_FIELDS','(title, info, status, types, created_by, date_created )');
 	
 	//tp_configs config

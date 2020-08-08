@@ -50,8 +50,7 @@
         require plugin_dir_path(__FILE__) . '/v1/category/class-select.php';
         require plugin_dir_path(__FILE__) . '/v1/category/class-select-type.php';
         require plugin_dir_path(__FILE__) . '/v1/category/class-update.php';
-
-        require plugin_dir_path(__FILE__) . '/v1/category/store/class-store-category.php';
+        require plugin_dir_path(__FILE__) . '/v1/category/class-select-by-store.php';
 
 	
 	// Init check if USocketNet successfully request from wapi.
@@ -265,10 +264,11 @@
                 'callback' => array('TP_Category_Select','listen'),
             ));
 
-            register_rest_route( 'tindapress/v1/category/store', 'list/active', array(
+            register_rest_route( 'tindapress/v1/category', 'select/store', array(
                 'methods' => 'POST',
-                'callback' => array('TP_Store_Category','listen'),
+                'callback' => array('TP_Category_Select_Store','listen'),
             ));
+            
         
 
 
