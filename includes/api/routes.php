@@ -48,14 +48,15 @@
 
         require plugin_dir_path(__FILE__) . '/v1/class-globals.php';
         
-        //Category Classes
-        require plugin_dir_path(__FILE__) . '/v1/category/class-delete.php';
-        require plugin_dir_path(__FILE__) . '/v1/category/class-insert.php';
-        require plugin_dir_path(__FILE__) . '/v1/category/class-listing.php';
-        require plugin_dir_path(__FILE__) . '/v1/category/class-select.php';
-        require plugin_dir_path(__FILE__) . '/v1/category/class-select-type.php';
-        require plugin_dir_path(__FILE__) . '/v1/category/class-update.php';
-        require plugin_dir_path(__FILE__) . '/v1/category/class-select-by-store.php';
+         //Category Classes
+         require plugin_dir_path(__FILE__) . '/v1/category/class-delete.php';
+         require plugin_dir_path(__FILE__) . '/v1/category/class-insert.php';
+         require plugin_dir_path(__FILE__) . '/v1/category/class-listing.php';
+         require plugin_dir_path(__FILE__) . '/v1/category/class-select.php';
+         require plugin_dir_path(__FILE__) . '/v1/category/class-select-type.php';
+         require plugin_dir_path(__FILE__) . '/v1/category/class-select-by-store.php';
+         require plugin_dir_path(__FILE__) . '/v1/category/class-store-insert.php';
+         require plugin_dir_path(__FILE__) . '/v1/category/class-update.php';
 
 	
 	// Init check if USocketNet successfully request from wapi.
@@ -287,6 +288,11 @@
             register_rest_route( 'tindapress/v1/category', 'select/store', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Category_Select_Store','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/category', 'store/insert', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Category_Store_Insert','listen'),
             ));
             
         
