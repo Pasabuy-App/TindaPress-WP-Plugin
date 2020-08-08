@@ -62,7 +62,8 @@
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.status ) AS status
             FROM
                 $table_categories cat
-                INNER JOIN $table_revs rev ON rev.parent_id = cat.id 
+            INNER JOIN 
+                $table_revs rev ON rev.parent_id = cat.id 
             WHERE
                 cat.id = $category_id
             AND

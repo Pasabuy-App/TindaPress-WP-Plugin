@@ -49,8 +49,7 @@
         require plugin_dir_path(__FILE__) . '/v1/category/class-select.php';
         require plugin_dir_path(__FILE__) . '/v1/category/class-select-type.php';
         require plugin_dir_path(__FILE__) . '/v1/category/class-update.php';
-
-        require plugin_dir_path(__FILE__) . '/v1/category/store/class-store-category.php';
+        require plugin_dir_path(__FILE__) . '/v1/category/class-select-by-store.php';
 
 	
 	// Init check if USocketNet successfully request from wapi.
