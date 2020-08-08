@@ -12,17 +12,17 @@
 ?>
 <?php
 
-    class TP_Listing_Product_by_Price {
+    class TP_Listing_Product_Price_by_storeId {
 
         //REST API Call
         public static function listen(){
             
             return rest_ensure_response( 
-                TP_Listing_Product_by_Price:: listing_price()
+                TP_Listing_Product_Price_by_storeId:: listing_price_by_Store_ID()
             );
         }
 
-        public static function listing_price(){
+        public static function listing_price_by_Store_ID(){
             global $wpdb;
 
             if (TP_Globals::verify_datavice_plugin() == false) {
@@ -40,6 +40,40 @@
                 );
                 
             }
+            
+            if (!isset($_POST['stid'])) {
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Missing Paramiters",
+                );
+            }
+
+            if (empty($_POST['stid'])) {
+                return array(
+                    "status" => "failed",
+                    "message" => "Required fields cannot be empty.",
+                );
+            }
+
+            if (!is_numeric($_POST['stid'])) {
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ID is not in valid format.",
+                );
+            }
+            $stid = $_POST['stid'];
+            $get_store = $wpdb->get_row("SELECT ID FROM tp_stores  WHERE ID = $stid ");
+                
+            //Check if this store id exists
+             if ( !$get_store ) {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "error",
+                        "message" => "An error occurred while fetching data to the server.",
+                    )
+                );
+            }
+            
 
             $table_product = TP_PRODUCT_TABLE;
             $table_stores = TP_STORES_TABLE;
@@ -61,7 +95,7 @@
                     tp_prod.date_created 
                 FROM
                     $table_product tp_prod 
-                    INNER JOIN $table_revs tp_rev ON tp_rev.ID = tp_prod.price
+                    INNER JOIN $table_revs tp_rev ON tp_rev.ID = tp_prod.price WHERE tp_prod.stid = $stid
             ");
 
             if(empty($result)){

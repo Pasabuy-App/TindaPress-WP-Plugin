@@ -30,6 +30,7 @@
         require plugin_dir_path(__FILE__) . '/v1/products/class-popular.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-product.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-listing-price.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-listing-price-storeid.php';
         // require plugin_dir_path(__FILE__) . '/v1/products/filter/class-categories.php';
 
         // require plugin_dir_path(__FILE__) . '/v1/category/class-stores.php';
@@ -43,7 +44,7 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/class-search.php';
 
         require plugin_dir_path(__FILE__) . '/v1/class-globals.php';
-
+        
         //Category Classes
         require plugin_dir_path(__FILE__) . '/v1/category/class-delete.php';
         require plugin_dir_path(__FILE__) . '/v1/category/class-insert.php';
@@ -118,6 +119,11 @@
             register_rest_route( 'tindapress/v1/products', 'list/price', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Listing_Product_by_Price','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/products', 'list/price/store', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Listing_Product_Price_by_storeId','listen'),
             ));
 
 
