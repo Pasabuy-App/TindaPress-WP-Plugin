@@ -86,13 +86,10 @@
                 LIMIT 10");
            
            // step 9: return result
-            return rest_ensure_response( 
-                array(
-                    "status" => "success",
-                    "data" => array(
-                        'list' => $result, 
-                    
-                    )
+            return array(
+                "status" => "success",
+                "data" => array(
+                    'list' => $result, 
                 )
             );
 

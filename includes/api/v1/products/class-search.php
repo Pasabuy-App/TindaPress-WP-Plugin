@@ -18,7 +18,6 @@
 
             global $wpdb;
 
-
               // Step 1 : Verfy if Datavice Plugin is Activated
 			if (TP_Globals::verify_datavice_plugin() == false) {
                 return rest_ensure_response( 
@@ -105,10 +104,7 @@
                     )
                 );
             }
-
-
         }
-
 
         // Catch Post 
         public static function catch_post()

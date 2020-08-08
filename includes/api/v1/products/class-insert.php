@@ -27,6 +27,13 @@
                 );
             }
 
+            //  Step2 : Validate if user is exist
+			if (DV_Verification::is_verified() == false) {
+                return array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. Request Unknown!",
+                );
+            }
 
             // Step3 : Sanitize all Request
             if (  !isset($_POST["ctid"])      || !isset($_POST["stid"]) 
@@ -128,10 +135,8 @@
                );
            }
 
-
             // variable for time stamp
             $later = TP_Globals::date_stamp();
-
 
             // variables for query
             $table_product = TP_PRODUCT_TABLE;
@@ -180,8 +185,6 @@
                 );
             }
             
-            // commits all insert if true
-
             // Insert Product
             $wpdb->query("INSERT INTO $table_product $table_product_fields VALUES ('{$user["stid"]}', '{$user["ctid"]}', '$title', '$preview', '$short_info', '$long_info', '$status', '$sku', '$price', '$weight', '$dimension', '{$user["created_by"]}', '$later')");
             $product_id = $wpdb->insert_id;
@@ -202,14 +205,13 @@
                         "message" => "Product added successfully!",
                 );
             }
-            
 
         }
 
-          // Catch Post 
+        // Catch Post 
         public static function catch_post()
         {
-              $cur_user = array();
+                $cur_user = array();
                
                 $cur_user['created_by'] = $_POST["wpid"];
                 $cur_user['ctid']       = $_POST["ctid"];
@@ -223,8 +225,7 @@
                 $cur_user['weight']     = $_POST["weight"];
                 $cur_user['dimension']  = $_POST["dimension"];
                 $cur_user['preview']    = $_POST["preview"];
-            
   
-              return  $cur_user;
+                return  $cur_user;
         }
     }

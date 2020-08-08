@@ -18,42 +18,34 @@
             global $wpdb;
                 
             if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                    )
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Plugin Missing!",
                 );
             }
 
             // Step1 : Check if wpid and snky is valid
             if (TP_Globals::validate_user() == false) {
-                return rest_ensure_response( 
-                    array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
-                    )
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Request Unknown!",
                 );
             }
 
             // Step2 : Sanitize all Request
 			if ( !isset($_POST['pdid'])  ) {
-				return rest_ensure_response( 
-					array(
-						"status" => "unknown",
-						"message" => "Please contact your administrator. Request unknown!",
-					)
+				return array(
+					"status" => "unknown",
+					"message" => "Please contact your administrator. Request unknown!",
                 );
                 
             }
 
             // Step 3: Check if ID is in valid format (integer)
 			if (!is_numeric($_POST["pdid"])  ) {
-				return rest_ensure_response( 
-					array(
-						"status" => "failed",
-						"message" => "Please contact your administrator. ID not in valid format!",
-					)
+				return array(
+					"status" => "failed",
+					"message" => "Please contact your administrator. ID not in valid format!",
                 );
                 
 			}
@@ -62,22 +54,17 @@
 
                // Step5 : Sanitize all Request
 			if ( empty($_POST['pdid']) ) {
-				return rest_ensure_response( 
-					array(
-						"status" => "unknown",
-						"message" => "Required field cannot be empty",
-					)
+				return array(
+					"status" => "unknown",
+					"message" => "Required field cannot be empty",
                 );
                 
             }
+
             $user = TP_Select_Byid_Product::catch_post();
-
-
-
             $table_product = TP_PRODUCT_TABLE;
             $table_stores = TP_STORES_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
-
             $table_revs = TP_REVISION_TABLE;
 
             $result =  $wpdb->get_results("SELECT
@@ -103,21 +90,16 @@
 
             if(empty($result)){
                 //Step 6: Return result
-                return rest_ensure_response( 
-                    array(
-                        "status" => "success",
-                        "message" => "Please Contact your Administrator. Product fetch failed"
-                    )
+                return array(
+                    "status" => "success",
+                    "message" => "Please Contact your Administrator. Product fetch failed"
                 );   
             }else {
                 //Step 6: Return result
-                return rest_ensure_response( 
-                    array(
-                        "status" => "success",
-                        "data" => array(
-                            'list' => $result, 
-                        
-                        )
+                return array(
+                    "status" => "success",
+                    "data" => array(
+                        'list' => $result, 
                     )
                 );
             }

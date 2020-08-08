@@ -51,40 +51,32 @@
                 || !isset($_POST["weight"]) 
                 || !isset($_POST["dimension"]) 
                 || !isset($_POST["preview"])) {
-                return rest_ensure_response( 
-                    array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Request unknown!",
-                    )
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Request unknown!",
                 );
                 
             }
 
             // Step 4: Check if ID is in valid format (integer)
             if (!is_numeric($_POST["wpid"]) || !is_numeric($_POST["ctid"]) || !is_numeric($_POST["stid"]) ) {
-                return rest_ensure_response( 
-                    array(
-                        "status" => "failed",
-                        "message" => "Please contact your administrator. ID not in valid format!",
-                    )
+                return array(
+                    "status" => "failed",
+                    "message" => "Please contact your administrator. ID not in valid format!",
                 );
                 
             }
 
             // Step 5: Check if ID exists
             if (!get_user_by("ID", $_POST['wpid'])) {
-                return rest_ensure_response( 
-                    array(
-                        "status" => "failed",
-                        "message" => "User not found!",
-                    )
+                return array(
+                    "status" => "failed",
+                    "message" => "User not found!",
                 );
-                
             }
 
-
-               // Step6: Sanitize all Request if empty
-               if (empty($_POST["wpid"]) 
+            // Step6: Sanitize all Request if empty
+            if (empty($_POST["wpid"]) 
                 || empty($_POST["snky"]) 
                 || empty($_POST["ctid"]) 
                 || empty($_POST['pdid']) 
@@ -97,14 +89,13 @@
                 || empty($_POST["weight"]) 
                 || empty($_POST["dimension"]) 
                 || empty($_POST["preview"])) {
-               return rest_ensure_response( 
-                   array(
+               return array(
                        "status" => "unknown",
                        "message" => "Required fields cannot be empty",
-                   )
                );
                
            }
+
             // variables for query    
             $later = TP_Globals::date_stamp();
             $created_by = $_POST['wpid'];
@@ -123,7 +114,6 @@
                 $_POST['dimension'],
                 $_POST['preview'],
             );
-
             
             $child_keys = array('title', 'short_info', 'long_info', 'sku', 'price',  'weight',  'dimension', 'preview' );
             $last_id_product = array();
@@ -134,9 +124,7 @@
             $table_product = TP_PRODUCT_TABLE;
             $table_product_fields = TP_PRODUCT_FIELDS;
 
-
             $user = TP_Update_Products::catch_post();
-            
             
             $revs_type = "products";
 
@@ -145,7 +133,6 @@
                 $last_status = $wpdb->get_row("SELECT `status` FROM $table_product WHERE ID = {$user["pdid"]} ");
 
                 $wpdb->query("UPDATE $table_revs SET child_val = '0' WHERE ID = $last_status->status ");
-
 
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '{$user["pdid"]}', 'title', '{$user["title"]}', '{$user["created_by"]}', '$later')");
                 $title = $wpdb->insert_id;
@@ -177,21 +164,19 @@
                 //  (stid, ctid, title, preview, short_info, long_info, status, sku, price,  weight,  dimension , created_by, date_created)
                  $result = $wpdb->query("UPDATE $table_product SET `title` = $title, `preview` = $preview, `short_info` = $short_info, `long_info` = $long_info, `status` = $status, `sku` = $sku, `price` = $price,  `weight` = $weight,  `dimension` = $dimension  WHERE ID = {$user["pdid"]} ");
 
-
             if (empty($last_status) ||$result < 0 || $title < 1 || $short_info < 1 || $long_info < 1 || $sku < 1 || $price < 1 || $weight < 1 || $dimension < 1 || $preview < 1 ) {
                 // when insert failed rollback all inserted data
                 $wpdb->query("ROLLBACK");
                 return array(
-                        "status" => "failed",
-                        "message" => "An error occured while submitting data to database.",
+                    "status" => "failed",
+                    "message" => "An error occured while submitting data to database.",
                 );
+
             }else{
                 $wpdb->query("COMMIT");
-                return rest_ensure_response( 
-                    array(
-                        "status" => "success",
-                        "message" => "Product has been updated successfully!",
-                    )
+                return array(
+                    "status" => "success",
+                    "message" => "Product has been updated successfully!",
                 );
             }
          
@@ -215,9 +200,8 @@
                 $cur_user['weight']     = $_POST["weight"];
                 $cur_user['dimension']  = $_POST["dimension"];
                 $cur_user['preview']    = $_POST["preview"];
-            
   
-              return  $cur_user;
+                return  $cur_user;
         }
 
     }

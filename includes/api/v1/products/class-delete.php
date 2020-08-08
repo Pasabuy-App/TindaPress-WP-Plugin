@@ -25,87 +25,68 @@
                     )
                 );
             }
-            // Step2 : Check if wpid and snky is valid
-            if (TP_Globals::validate_user() == false) {
-                return rest_ensure_response( 
-                    array(
+
+            //  Step2 : Validate if user is exist
+			if (DV_Verification::is_verified() == false) {
+                return array(
                         "status" => "unknown",
                         "message" => "Please contact your administrator. Request Unknown!",
-                    )
                 );
             }
 
              // Step3 : Sanitize all Request
 			if (!isset($_POST["wpid"]) || !isset($_POST['pid']) ) {
-				return rest_ensure_response( 
-					array(
+				return array(
 						"status" => "unknown",
 						"message" => "Please contact your administrator. Request unknown!",
-					)
                 );
                 
             }
 
             // Step 1: Check if ID is in valid format (integer)
             if (!is_numeric($_POST["wpid"]) || !is_numeric($_POST["pid"]) ) {
-                return rest_ensure_response( 
-                    array(
+                return array(
                         "status" => "failed",
                         "message" => "Please contact your administrator. ID not in valid format!",
-                    )
                 );
                 
             }
 
             // Step 5: Check if ID exists
 			if (!get_user_by("ID", $_POST['wpid'])) {
-				return rest_ensure_response( 
-					array(
+				return array(
 						"status" => "failed",
 						"message" => "User not found!",
-					)
                 );
                 
             }
 
             // Step6 : Sanitize all Request
 			if (empty($_POST["wpid"]) || empty($_POST['pid']) ) {
-				return rest_ensure_response( 
-					array(
+				return array(
 						"status" => "unknown",
 						"message" => "Please contact your administrator. Request unknown!",
-					)
                 );
-                
             }
+
             // variables
             $parentid = $_POST['pid'];
-
             $wpid = $_POST['wpid'];
 
             $product_type = "products";
-
             $date_stamp = TP_Globals::date_stamp();
-
             $product_table         = TP_PRODUCT_TABLE;
             $table_revs            = TP_REVISION_TABLE;
             $table_revs_fields     = TP_REVISION_FIELDS;
 
-
-
-
             // Query
             $wpdb->query("START TRANSACTION ");
                 $inactive = $wpdb->get_row("SELECT `status` FROM $product_table WHERE ID = $parentid  ");
-
                 $wpdb->query("UPDATE $table_revs  SET child_val = '0' WHERE ID =  $inactive->status  AND parent_id = $parentid");
-                
-
 
             // check of retsult is true or not
             if ($last_id < 1 || $result2 < 1 ) {
                 $wpdb->query("ROLLBACK");
-
                 return rest_ensure_response( 
 					array(
 						"status" => "failed",
@@ -115,7 +96,6 @@
 
             }else{
                 $wpdb->query("COMMIT");
-
             // return Success
                 return rest_ensure_response( 
 					array(
@@ -125,7 +105,6 @@
                 );
 
             }
-
         }
         
     }

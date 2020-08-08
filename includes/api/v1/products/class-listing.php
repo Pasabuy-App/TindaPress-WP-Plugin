@@ -36,46 +36,6 @@
                 
             }
             
-            // Step3 : Sanitize all Request
-			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) ) {
-				return rest_ensure_response( 
-					array(
-						"status" => "unknown",
-						"message" => "Please contact your administrator. Request unknown!",
-					)
-                );
-                
-            }
-
-			if (!is_numeric($_POST["wpid"])  ) {
-				return rest_ensure_response( 
-					array(
-						"status" => "failed",
-						"message" => "Please contact your administrator. ID not in valid format!",
-					)
-                );
-                
-			}
-
-			if (!get_user_by("ID", $_POST['wpid'])) {
-				return rest_ensure_response( 
-					array(
-						"status" => "failed",
-						"message" => "User not found!",
-					)
-                );
-                
-            }
-
-			if (empty($_POST["wpid"]) || empty($_POST["snky"]) ) {
-				return rest_ensure_response( 
-					array(
-						"status" => "unknown",
-						"message" => "Required fields cannot be empty.",
-					)
-                );
-                
-            }
             // Step 4 : table names variable for query
             $table_product = TP_PRODUCT_TABLE;
             $table_stores = TP_STORES_TABLE;

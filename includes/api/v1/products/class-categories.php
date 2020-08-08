@@ -37,19 +37,17 @@
             }
 
             // Step3 : Sanitize all Request
-			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) || !isset($_POST['stid']) || !isset($_POST['catid'])) {
+			if ( !isset($_POST['stid']) || !isset($_POST['catid'])) {
 				return rest_ensure_response( 
 					array(
 						"status" => "unknown",
 						"message" => "Please contact your administrator.  Request unknown missing parameters!",
 					)
                 );
-                
             }
 
-
             // Step 4: Check if ID is in valid format (integer)
-			if (!is_numeric($_POST["wpid"]) || !is_numeric($_POST["stid"]) || !is_numeric($_POST["catid"]) ) {
+			if ( !is_numeric($_POST["catid"]) ) {
 				return rest_ensure_response( 
 					array(
 						"status" => "failed",
@@ -59,20 +57,8 @@
                 
 			}
 
-			// Step 5: Check if ID exists
-			if (!get_user_by("ID", $_POST['wpid'])) {
-				return rest_ensure_response( 
-					array(
-						"status" => "failed",
-						"message" => "User not found!",
-					)
-                );
-                
-            }
-
-
-             // Step6 : Sanitize all Request
-			if (empty($_POST["wpid"]) || empty($_POST["snky"]) || empty($_POST['stid']) || empty($_POST['catid'])) {
+            // Step6 : Sanitize all Request
+			if (empty($_POST['stid']) || empty($_POST['catid'])) {
 				return rest_ensure_response( 
 					array(
 						"status" => "unknown",
@@ -82,15 +68,10 @@
                 
             }
             
-
-            
             //Step 7: Create table name for all tables needed
             $store_table           = TP_STORES_TABLE;
-            $store_revs_table      = TP_STORES_REVS_TABLE;
             $categories_table      = TP_CATEGORIES_TABLE;
-            $categories_revs_table = TP_CATEGORIES_REVS_TABLE;
             $product_table         = TP_PRODUCT_TABLE;
-            $product_revs_table    = TP_PRODUCT_REVS_TABLE;
             
             $table_revs = TP_REVISION;
             $catid = $_POST['catid'];
@@ -137,13 +118,11 @@
             ", OBJECT);
 
             //Step 9: Return result
-            return rest_ensure_response( 
-                array(
-                    "status" => "success",
-                    "data" => array(
-                        'list' => $result, 
+            return array(
+                "status" => "success",
+                "data" => array(
+                    'list' => $result, 
                     
-                    )
                 )
             );
 

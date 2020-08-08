@@ -28,20 +28,19 @@
             
 			//  Step2 : Validate if user is exist
 			if (DV_Verification::is_verified() == false) {
-                return array(
+                return rest_ensure_response(  
+                    array(
                         "status" => "unknown",
                         "message" => "Please contact your administrator. Request Unknown!",
-                );
-                
+                        )
+                    );
             }
 
             // Step6 : Sanitize all Request if emply
 			if (empty($_POST["wpid"]) || empty($_POST["snky"])  ) {
-				return rest_ensure_response( 
-					array(
-						"status" => "unknown",
-						"message" => "Required fields cannot be empyty.",
-					)
+				return array(
+					"status" => "unknown",
+					"message" => "Required fields cannot be empyty.",
                 );
                 
             }
@@ -74,21 +73,16 @@
                 ");
 
             if(is_null($result)){
-                return rest_ensure_response( 
-                    array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator.",
-                    )
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator.",
                 );
 
             }else{
-                return rest_ensure_response( 
-                    array(
-                        "status" => "success",
-                        "data" => array(
-                            'list' => $result, 
-                        
-                        )
+                return array(
+                    "status" => "success",
+                    "data" => array(
+                        'list' => $result, 
                     )
                 );
 

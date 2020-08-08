@@ -36,6 +36,7 @@
                 );
                 
             }
+
             // Step3 : Sanitize all Request
 			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) || !isset($_POST["ctid"]) || !isset($_POST["types"]) || !isset($_POST["stid"])) {
 				return rest_ensure_response( 
@@ -44,7 +45,6 @@
 						"message" => "Please contact your administrator. Request unknown!",
 					)
                 );
-                
             }
 
             // Step 4: Check if ID is in valid format (integer)
@@ -55,7 +55,6 @@
 						"message" => "Please contact your administrator. ID not in valid format!",
 					)
                 );
-                
 			}
 
 			// Step 5: Check if ID exists
@@ -66,7 +65,6 @@
 						"message" => "User not found!",
 					)
                 );
-                
 			}
 			
             // Step6 : Sanitize all Request
@@ -77,7 +75,6 @@
 						"message" => "Required fields cannot be empty.",
 					)
                 );
-                
             }
 
             // Create table name for posts (tp_categories, tp_categories_revs)
@@ -106,10 +103,8 @@
                 FROM
                     $product_table tp_prod 
                 WHERE tp_prod.stid = $stid AND tp_prod.ctid = $ctid");
-
        
             if (empty($result)) {
-
                 return rest_ensure_response( 
                     array(
                         "status" => "failed",
@@ -132,8 +127,6 @@
                 );
             }
 
-
         }
-
 
     }
