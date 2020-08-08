@@ -11,7 +11,7 @@
 	*/
 ?>
 <?php
-    class TP_Banner_update{
+    class TP_Logo_update{
        
         // image upload
         public static function listen(WP_REST_Request $request) {
@@ -91,7 +91,7 @@
                 $img_name = sanitize_file_name($_POST['in']);
             }
 
-            $completed_file_name = 'Banner-'.$img_name;
+            $completed_file_name = 'logo-'.$img_name;
 
             $target_file = $target_dir['path'] . '/' . basename($completed_file_name);
             $uploadOk = 1;
@@ -167,12 +167,10 @@
                 $var = $target_dir['path'];
                 if (move_uploaded_file($files['img']['tmp_name'], $target_file)) {
               
-                    $banner_name = trailingslashit($target_dir['subdir']).$completed_file_name;
-                    //$banner_name = substr($banner_name,0,strlen($banner_name) - 4);
-            //update_user_meta( $wpid, 'banner', $banner_name);
-            $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '$stid', 'banner', '$banner_name', '$wpid', '$later')");
-            $banner_id = $wpdb->insert_id;
-            $result = $wpdb->query("UPDATE $table_store SET `banner` = $banner_id WHERE ID = '$stid' ");
+                    $logo_name = trailingslashit($target_dir['subdir']).$completed_file_name;
+            $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '$stid', 'logo', '$logo_name', '$wpid', '$later')");
+            $logo_id = $wpdb->insert_id;
+            $result = $wpdb->query("UPDATE $table_store SET `logo` = $logo_id WHERE ID = '$stid' ");
 
                     return rest_ensure_response( 
                         array(

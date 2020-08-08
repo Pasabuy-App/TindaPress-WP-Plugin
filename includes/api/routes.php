@@ -45,6 +45,7 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/class-search.php';
         
         require plugin_dir_path(__FILE__) . '/v1/settings/class-banner.php';
+        require plugin_dir_path(__FILE__) . '/v1/settings/class-logo.php';
 
         require plugin_dir_path(__FILE__) . '/v1/class-globals.php';
         
@@ -304,6 +305,10 @@
         register_rest_route( 'tindapress/v1/settings', 'banner', array(
             'methods' => 'POST',
             'callback' => array('TP_Banner_update','listen'),
+        ));
+        register_rest_route( 'tindapress/v1/settings', 'logo', array(
+            'methods' => 'POST',
+            'callback' => array('TP_Logo_update','listen'),
         ));
 
 
