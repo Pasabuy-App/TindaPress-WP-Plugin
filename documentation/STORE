@@ -24,31 +24,31 @@ IF SUCCESS:
     
 ```
 
-#### INSERT STORE
+#### UPDATE STORE
 
 REQUEST:
-- Method: GET
+- Method: POST
 - Header: key=Content-Type, value=application/x-www-form-urlencoded
-- Params: key=wpid (value=User ID), key=session key (value=User snky), key=stid (value = Store id), key=title (value = title of product ), key = preview (value = preview of product ), key=short_info (value = short info of product ), key= long_info (value = long info of product ), key=sku (value = stock keeping unit ), key= price (value = price ), key= weight (value = weight ), key= dimension (value = dimension )
+- Params: key=snky (value=session key), key=ctid (value=Category ID), key=title (value= title of store), key = short_info  (Value = short information of product ), key = long_info (Value = long info of product ), key = logo (Value = logo of product ), key = banner (Value = banner of product ), key = add (Value = address id of product ), key = stid (Value = Store id)
+
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
 - code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
 - code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
 - code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
 - code: 'unknown' message: 'Required fields cannot be empty' data: null
-- code: 'failed' message: 'An error occured while submiting data to server' data: null
+- code: 'failed' message: 'Address not found' data: null
 
 IF SUCCESS:
 ```
-  
+    
 ```
-
-#### UPDATE PRODUCT
+#### DELETE STORE
 
 REQUEST:
 - Method: GET
 - Header: key=Content-Type, value=application/x-www-form-urlencoded
-- Params: key=wpid (value=User ID), key=session key (value=User snky), key=stid (value = Store id), key=title (value = title of product ), key = preview (value = preview of product ), key=short_info (value = short info of product ), key= long_info (value = long info of product ), key=sku (value = stock keeping unit ), key= price (value = price ), key= weight (value = weight ), key= dimension (value = dimension ), key = prod_id (Value = product id)
+- Params: key=wpid (value=User ID), key=snky (value = session key), key = stid (Value = store id)
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
 - code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
@@ -63,13 +63,13 @@ IF SUCCESS:
   
 ```
 
-
-#### SELECT SINGLE PRODUCT
+#### LIST ALL STORES
 
 REQUEST:
 - Method: GET
 - Header: key=Content-Type, value=application/x-www-form-urlencoded
-- Params: key=snky (value=session key), key=wpid (value=wordpress id), key = prod_id (Value = product id)
+- Params: key=snky (value=session key), key=wpid (value=wordpress id)
+
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
 - code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
@@ -83,24 +83,6 @@ IF SUCCESS:
   
 ```
 
-#### LIST ALL PRODUCT
-
-REQUEST:
-- Method: GET
-- Header: key=Content-Type, value=application/x-www-form-urlencoded
-- Params: key=snky (value=session key), key=wpid (value=wordpress id)
-RESPONSE:
-- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
-- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
-- code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty' data: null
-
-IF SUCCESS:
-```
-  
-  
-```
 
 
 
