@@ -31,7 +31,7 @@
         require plugin_dir_path(__FILE__) . '/v1/products/class-product.php';
         // require plugin_dir_path(__FILE__) . '/v1/products/filter/class-categories.php';
 
-        require plugin_dir_path(__FILE__) . '/v1/category/class-stores.php';
+        // require plugin_dir_path(__FILE__) . '/v1/category/class-stores.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-insert.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-update.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-delete.php';
