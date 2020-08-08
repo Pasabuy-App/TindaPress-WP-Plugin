@@ -36,6 +36,18 @@
                     );
                 }
 
+            // variables for query
+            $table_store = TP_STORES_TABLE;
+            $table_revs = TP_REVISION_TABLE;
+
+            $table_brgy = DV_BRGY_TABLE;
+            $table_city = DV_CITY_TABLE;
+            $table_province = DV_PROVINCE_TABLE;
+            $table_country = DV_COUNTRY_TABLE;
+            $table_dv_revs = DV_REVS_TABLE;
+            $table_add = DV_ADDRESS_TABLE;
+            
+
 
             $result = $wpdb->get_results("SELECT
                     tp_str.ID,
@@ -45,8 +57,8 @@
                     ( SELECT tp_rev.child_val FROM tp_revisions tp_rev WHERE ID = tp_str.banner ) AS `banner`,
                     ( SELECT dv_revisions.child_val FROM dv_revisions WHERE ID = dv_add.street ) AS `street`,
                     ( SELECT brgy_name FROM dv_geo_brgys WHERE ID = ( SELECT child_val FROM dv_revisions WHERE ID = dv_add.brgy ) ) AS brgy,
-                    ( SELECT citymun_name FROM dv_geo_city WHERE ID = ( SELECT child_val FROM dv_revisions WHERE ID = dv_add.city ) ) AS city,
-                    ( SELECT prov_name FROM dv_geo_province WHERE ID = ( SELECT child_val FROM dv_revisions WHERE ID = dv_add.province ) ) AS province,
+                    ( SELECT citymun_name FROM dv_geo_city WHERE city_code = ( SELECT child_val FROM dv_revisions WHERE ID = dv_add.city ) ) AS city,
+                    ( SELECT prov_name FROM dv_geo_province WHERE prov_code = ( SELECT child_val FROM dv_revisions WHERE ID = dv_add.province ) ) AS province,
                     ( SELECT country_name FROM dv_geo_countries WHERE ID = ( SELECT child_val FROM dv_revisions WHERE ID = dv_add.country ) ) AS country 
                 FROM
                     tp_stores tp_str
