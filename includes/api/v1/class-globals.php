@@ -38,18 +38,6 @@
             return $wpdb->get_results("SELECT $data FROM $table_name $sorted_field $sorted ");
         }
 
-        /**
-         * Not working 
-         
-            *public static function retrieveById($table_name, $fields, $id){
-            *    global $wpdb;
-            *    $data = implode( ', ', $fields );
-            *    return $data;
-            *    // return $wpdb->get_results("SELECT $data FROM $table_name WHERE id = $id ");
-
-            *}
-         */
-
         public static function delete($table_name , $id){
             global $wpdb;
         
@@ -71,6 +59,22 @@
             return date("Y-m-d h:i:s");
 
         }
+
+
+        public static function check_roles($role){
+            
+            $wp_user = get_userdata($_POST['wpid']);
+            
+            if ( in_array($role , $wp_user->roles, true) ) {
+                return true;
+            }
+
+            return false;
+        }
+
+
+
+
 
         public static function verify_datavice_plugin(){
             if(!class_exists('DV_Verification') ){

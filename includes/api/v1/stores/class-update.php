@@ -91,7 +91,7 @@
             $revs_type = "stores";
 
 
-            $get_store = $wpdb->get_row("SELECT ID FROM tp_stores  WHERE ID = '{$user["store_id"]}' ");
+             $get_store = $wpdb->get_row("SELECT ID FROM tp_stores  WHERE ID = '{$user["store_id"]}' ");
                 
             //Check if this store id exists
             if ( !$get_store ) {

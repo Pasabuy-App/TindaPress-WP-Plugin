@@ -100,11 +100,6 @@
 
                 $wpdb->query("UPDATE $table_revs  SET child_val = '0' WHERE ID =  $inactive->status  AND parent_id = $parentid");
                 
-                $wpdb->query("INSERT INTO $table_revs (revs_type, parent_id, child_key, child_val, created_by, date_created) 
-                                            VALUES ('$product_type', $parentid , 'status', '1', $wpid, '$date_stamp'  )");
-                $last_id = $wpdb->insert_id;
-
-                $result2 = $wpdb->query("UPDATE $product_table tp_prod SET tp_prod.`status` =  $last_id  WHERE tp_prod.ID = $parentid ");
 
 
             // check of retsult is true or not

@@ -89,7 +89,6 @@
             $store_table           = TP_STORES_TABLE;
             $tp_categories_table   = TP_CATEGORIES_TABLE;
             $product_table         = TP_PRODUCT_TABLE;
-            $product_revs_table    = TP_PRODUCT_REVS_TABLE;
             $tp_revs               = TP_REVISION_TABLE;
             // datavice table variables declarations
             $dv_geo_brgy    = DV_BRGY_TABLE;
@@ -118,7 +117,7 @@
                     ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.weight ) AS `weight`,
                     ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.dimension ) AS `dimension` 
                 FROM
-                    tp_products tp_prod
+                    $product_table tp_prod
                     INNER JOIN $tp_revs tp_rev ON tp_rev.ID = tp_prod.title
                     INNER JOIN $store_table  tp_strs ON tp_prod.stid = tp_strs.ID
                     INNER JOIN $tp_categories_table tp_cat ON tp_cat.ID = tp_strs.ctid

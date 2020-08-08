@@ -40,7 +40,7 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/class-listing-active.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-listing-inactive.php';
 
-        require plugin_dir_path(__FILE__) . '/v1/globals/class-globals.php';
+        require plugin_dir_path(__FILE__) . '/v1/class-globals.php';
 
         //Category Classes
         require plugin_dir_path(__FILE__) . '/v1/category/class-delete.php';

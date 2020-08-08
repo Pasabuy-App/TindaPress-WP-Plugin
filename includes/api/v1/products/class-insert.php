@@ -27,15 +27,6 @@
                 );
             }
 
-            // Step2 : Check if wpid and snky is valid
-            if (TP_Globals::validate_user() == false) {
-                return rest_ensure_response( 
-                    array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
-                    )
-                );
-            }
 
             // Step3 : Sanitize all Request
 			if (  !isset($_POST["ctid"]) || !isset($_POST["stid"]) || !isset($_POST["title"]) || !isset($_POST["short_info"]) || !isset($_POST["long_info"]) ||  !isset($_POST["sku"]) ||   !isset($_POST["price"]) || !isset($_POST["weight"]) || !isset($_POST["dimension"]) || !isset($_POST["preview"])) {
@@ -79,9 +70,12 @@
                 );
                 
             }
+            // catch all post request
+            $user = TP_Insert_Product::catch_post();
+
 
             //Check if this store id exists
-            $store_id = $_POST["stid"];
+            $store_id = $user['stid'];
             $get_store = $wpdb->get_row("SELECT ID FROM tp_stores  WHERE ID = $store_id  ");
                 
              if ( !$get_store ) {
@@ -93,10 +87,47 @@
                 );
             }
 
+               //Check if personnel is part of the store
+             $personnels = $wpdb->get_row("SELECT `wpid`, `roid`
+               FROM `tp_personnels` 
+               WHERE `stid` = $store_id
+               AND `wpid` = '{$user["created_by"]}'");
+
+           
+           //Check if current user is one of the personnels or one of our staff
+           if (!$personnels || (TP_Globals::check_roles('contributor') == false  && TP_Globals::check_roles('administrator') == false) ) {
+               return rest_ensure_response( 
+                   array(
+                       "status" => "failed",
+                       "message" => "User not associated with this store",
+                   )
+               );
+           }
+
+           $role_id = $personnels->roid;
+
+           //Get all access from that role_id 
+           $get_access = $wpdb->get_results("SELECT rm.access
+               FROM `tp_roles` r 
+                   LEFT JOIN tp_roles_meta rm ON rm.roid = r.ID
+               WHERE r.id = $role_id");
+           
+           $access = array_column($get_access, 'access');
+
+           //Check if user has role access of `can_delete_contact` or one of our staff
+           if ( !in_array('can_insert_contact' , $access, true) && (DV_Globals::check_roles('contributor') == false  && DV_Globals::check_roles('administrator') == false) ) {
+               return rest_ensure_response( 
+                   array(
+                       "status" => "failed",
+                       "message" => "Current user has no access in inserting contacts",
+                   )
+               );
+           }
+
+
             // variable for time stamp
             $later = TP_Globals::date_stamp();
 
-            $user = TP_Insert_Product::catch_post();
 
             // variables for query
             $table_product = TP_PRODUCT_TABLE;
@@ -146,7 +177,6 @@
             }
             
             // commits all insert if true
-            $wpdb->query("COMMIT");
 
             // Insert Product
             $wpdb->query("INSERT INTO $table_product $table_product_fields VALUES ('{$user["stid"]}', '{$user["ctid"]}', '$title', '$preview', '$short_info', '$long_info', '$status', '$sku', '$price', '$weight', '$dimension', '{$user["created_by"]}', '$later')");
@@ -155,13 +185,14 @@
             $result = $wpdb->query("UPDATE $table_revs SET `parent_id` = $product_id WHERE ID IN ($title, $preview, $short_info, $long_info, $status, $sku, $price, $weight, $dimension) ");
 
             if ($product_id < 1 || $result < 1 ) {
-
+                $wpdb->query("ROLLBACK");
                 return array(
                         "status" => "failed",
                         "message" => "An error occured while submitting data to database.",
                 );
 
             }else {
+            $wpdb->query("COMMIT");
                 return array(
                         "status" => "success",
                         "message" => "Product added successfully!",

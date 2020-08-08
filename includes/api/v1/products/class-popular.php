@@ -25,15 +25,7 @@
                     )
                 );
 			}
-			//step 2: validate User
-			if (TP_Globals::validate_user() == false) {
-                return rest_ensure_response( 
-                    array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
-                    )
-                );
-            }
+
 
             // Step6 : Sanitize all Request if emply
 			if (empty($_POST["wpid"]) || empty($_POST["snky"])  ) {
