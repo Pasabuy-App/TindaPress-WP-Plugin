@@ -128,11 +128,7 @@
         /*
          * Category RESTAPI
         */
-            register_rest_route( 'tindapress/v1/category/store', 'list/active', array(
-                'methods' => 'POST',
-                'callback' => array('TP_Store_Category','listen'),
-            ));
-        
+            
         /*
          * STORE RESTAPI
         */
@@ -241,30 +237,36 @@
          * CATEGORIES RESTAPI
         */
 
-        register_rest_route( 'tindapress/v1/category', 'insert', array(
-            'methods' => 'POST',
-            'callback' => array('TP_Category_Insert','listen'),
-        ));
+            register_rest_route( 'tindapress/v1/category', 'insert', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Category_Insert','listen'),
+            ));
 
-        register_rest_route( 'tindapress/v1/category', 'delete', array(
-            'methods' => 'POST',
-            'callback' => array('TP_Category_Delete','listen'),
-        ));
+            register_rest_route( 'tindapress/v1/category', 'delete', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Category_Delete','listen'),
+            ));
 
-        register_rest_route( 'tindapress/v1/category', 'update', array(
-            'methods' => 'POST',
-            'callback' => array('TP_Category_Update','listen'),
-        ));
+            register_rest_route( 'tindapress/v1/category', 'update', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Category_Update','listen'),
+            ));
 
-        register_rest_route( 'tindapress/v1/category', 'list/type', array(
-            'methods' => 'POST',
-            'callback' => array('TP_Category_List','listen'),
-        ));
+            register_rest_route( 'tindapress/v1/category', 'list/type', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Category_List','listen'),
+            ));
+            
+            register_rest_route( 'tindapress/v1/category', 'select', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Category_Select','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/category/store', 'list/active', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Store_Category','listen'),
+            ));
         
-        register_rest_route( 'tindapress/v1/category', 'select', array(
-            'methods' => 'POST',
-            'callback' => array('TP_Category_Select','listen'),
-        ));
 
 
 

@@ -47,7 +47,6 @@
                 
             }
 
-            // Step 4: Check if ID is in valid format (integer)
 			if (!is_numeric($_POST["wpid"])  ) {
 				return rest_ensure_response( 
 					array(
@@ -58,7 +57,6 @@
                 
 			}
 
-			// Step 5: Check if ID exists
 			if (!get_user_by("ID", $_POST['wpid'])) {
 				return rest_ensure_response( 
 					array(
@@ -69,7 +67,6 @@
                 
             }
 
-            // Step6 : Sanitize all Request if empty
 			if (empty($_POST["wpid"]) || empty($_POST["snky"]) ) {
 				return rest_ensure_response( 
 					array(
@@ -79,13 +76,13 @@
                 );
                 
             }
-            // table names variable for query
+            // Step 4 : table names variable for query
             $table_product = TP_PRODUCT_TABLE;
             $table_stores = TP_STORES_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
             $table_revs = TP_REVISION_TABLE;
 
-            // Step7 : if last insert id is not in Request
+            // Step5 : if last insert id is not in Request
             if(!isset($_POST['lid'])){
 
                 // product list query
@@ -140,7 +137,6 @@
                 // variable of query
                 $get_last_id = $_POST['lid'];
                 $add_feeds = $get_last_id - 5;
-
 
                 // query
                 $result =  $wpdb->get_results("SELECT

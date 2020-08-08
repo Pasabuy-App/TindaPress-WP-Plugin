@@ -28,16 +28,14 @@
                 );
 			}
             
-            // Step2 : Check if wpid and snky is valid
-            if (DV_Verification::is_verified() == false) {
-                return rest_ensure_response( 
-                    array(
+			//  Step2 : Validate if user is exist
+			if (DV_Verification::is_verified() == false) {
+                return array(
                         "status" => "unknown",
                         "message" => "Please contact your administrator. Request Unknown!",
-                    )
                 );
+                
             }
-
             // Step3 : Sanitize all Request
 			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) || !isset($_POST["ctid"]) || !isset($_POST["types"]) || !isset($_POST["stid"])) {
 				return rest_ensure_response( 

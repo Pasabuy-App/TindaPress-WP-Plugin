@@ -29,7 +29,11 @@
 
 
             // Step3 : Sanitize all Request
-			if (  !isset($_POST["ctid"]) || !isset($_POST["stid"]) || !isset($_POST["title"]) || !isset($_POST["short_info"]) || !isset($_POST["long_info"]) ||  !isset($_POST["sku"]) ||   !isset($_POST["price"]) || !isset($_POST["weight"]) || !isset($_POST["dimension"]) || !isset($_POST["preview"])) {
+            if (  !isset($_POST["ctid"])      || !isset($_POST["stid"]) 
+               || !isset($_POST["title"])     || !isset($_POST["short_info"]) 
+               || !isset($_POST["long_info"]) || !isset($_POST["sku"]) 
+               || !isset($_POST["price"])     || !isset($_POST["weight"]) 
+               || !isset($_POST["dimension"]) || !isset($_POST["preview"])) {
 				return rest_ensure_response( 
 					array(
 						"status" => "unknown",

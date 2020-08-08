@@ -120,7 +120,7 @@
                 return rest_ensure_response( 
 					array(
 						"status" => "success",
-						"message" => "Product has been updated successfully",
+						"message" => "Product has been deleted successfully",
 					)
                 );
 

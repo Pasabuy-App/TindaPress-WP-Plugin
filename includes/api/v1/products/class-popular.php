@@ -24,8 +24,16 @@
                         "message" => "Please contact your administrator. Plugin Missing!",
                     )
                 );
-			}
-
+            }
+            
+			//  Step2 : Validate if user is exist
+			if (DV_Verification::is_verified() == false) {
+                return array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. Request Unknown!",
+                );
+                
+            }
 
             // Step6 : Sanitize all Request if emply
 			if (empty($_POST["wpid"]) || empty($_POST["snky"])  ) {

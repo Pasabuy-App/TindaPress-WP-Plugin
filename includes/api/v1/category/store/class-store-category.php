@@ -75,19 +75,10 @@
             //Step 7: Create table name for posts (tp_categories, tp_categories_revs)
 			// table names and POST Variables
             $store_table           = TP_STORES_TABLE;
-            $store_revs_table      = TP_STORES_REVS_TABLE;
             $categories_table      = TP_CATEGORIES_TABLE;
             $product_table         = TP_PRODUCT_TABLE;
-            $product_revs_table    = TP_PRODUCT_REVS_TABLE;
             $table_revs            = TP_REVISION_TABLE;
-            // datavice table variables declarations
-            $dv_geo_brgy    = DV_BRGY_TABLE;
-            $dv_revs        =  DV_REVS_TABLE;
-            $dv_address     = DV_ADDRESS_TABLE;
-            $dv_geo_city    = DV_CITY_TABLE;
-            $dv_geo_prov    = DV_PROVINCE_TABLE;
-            $dv_geo_count   = DV_COUNTRY_TABLE;    
-            
+    
             $stid = $_POST["stid"];
 		
 
