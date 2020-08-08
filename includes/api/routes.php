@@ -31,6 +31,7 @@
         require plugin_dir_path(__FILE__) . '/v1/products/class-product.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-listing-price.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-listing-price-storeid.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-select-by-category.php';
         // require plugin_dir_path(__FILE__) . '/v1/products/filter/class-categories.php';
 
         // require plugin_dir_path(__FILE__) . '/v1/category/class-stores.php';
@@ -42,17 +43,20 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/class-listing-active.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-listing-inactive.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-search.php';
+        
+        require plugin_dir_path(__FILE__) . '/v1/settings/class-banner.php';
 
         require plugin_dir_path(__FILE__) . '/v1/class-globals.php';
         
-        //Category Classes
-        require plugin_dir_path(__FILE__) . '/v1/category/class-delete.php';
-        require plugin_dir_path(__FILE__) . '/v1/category/class-insert.php';
-        require plugin_dir_path(__FILE__) . '/v1/category/class-listing.php';
-        require plugin_dir_path(__FILE__) . '/v1/category/class-select.php';
-        require plugin_dir_path(__FILE__) . '/v1/category/class-select-type.php';
-        require plugin_dir_path(__FILE__) . '/v1/category/class-update.php';
-        require plugin_dir_path(__FILE__) . '/v1/category/class-select-by-store.php';
+         //Category Classes
+         require plugin_dir_path(__FILE__) . '/v1/category/class-delete.php';
+         require plugin_dir_path(__FILE__) . '/v1/category/class-insert.php';
+         require plugin_dir_path(__FILE__) . '/v1/category/class-listing.php';
+         require plugin_dir_path(__FILE__) . '/v1/category/class-select.php';
+         require plugin_dir_path(__FILE__) . '/v1/category/class-select-type.php';
+         require plugin_dir_path(__FILE__) . '/v1/category/class-select-by-store.php';
+         require plugin_dir_path(__FILE__) . '/v1/category/class-store-insert.php';
+         require plugin_dir_path(__FILE__) . '/v1/category/class-update.php';
 
 	
 	// Init check if USocketNet successfully request from wapi.
@@ -125,6 +129,11 @@
             register_rest_route( 'tindapress/v1/products', 'list/price/store', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Listing_Product_Price_by_storeId','listen'),
+            ));
+            
+            register_rest_route( 'tindapress/v1/products', 'select/category', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Select_Store_Category_Product','listen'),
             ));
 
 
@@ -280,9 +289,22 @@
                 'methods' => 'POST',
                 'callback' => array('TP_Category_Select_Store','listen'),
             ));
+
+            register_rest_route( 'tindapress/v1/category', 'store/insert', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Category_Store_Insert','listen'),
+            ));
             
         
 
+        /*
+         * SETTINGS RESTAPI
+        */
+
+        register_rest_route( 'tindapress/v1/settings', 'banner', array(
+            'methods' => 'POST',
+            'callback' => array('TP_Banner_update','listen'),
+        ));
 
 
 
