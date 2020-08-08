@@ -261,10 +261,11 @@
                 'callback' => array('TP_Category_Select','listen'),
             ));
 
-            register_rest_route( 'tindapress/v1/category/store', 'list/active', array(
+            register_rest_route( 'tindapress/v1/category', 'select/store', array(
                 'methods' => 'POST',
-                'callback' => array('TP_Store_Category','listen'),
+                'callback' => array('TP_Category_Select_Store','listen'),
             ));
+            
         
 
 

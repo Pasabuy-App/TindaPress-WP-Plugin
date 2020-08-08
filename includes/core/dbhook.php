@@ -175,10 +175,6 @@
 			$result = $wpdb->get_results($sql);
 		}
 
-		
-
-		
-
 		//Database table creation for roles_access
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_roles_access'" ) != $tbl_roles_access) {
 			$sql = "CREATE TABLE `".$tbl_roles_access."` (";
@@ -192,9 +188,6 @@
 			$result = $wpdb->get_results($sql);
 		}
 
-		
-
-		
 
 		//Database table creation for products_meta
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_products_meta'" ) != $tbl_products_meta) {

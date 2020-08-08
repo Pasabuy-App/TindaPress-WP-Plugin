@@ -23,7 +23,6 @@ IF SUCCESS:
     }
 ```
 
-
 #### UPDATE CATEGORY by CATEGORY `ID`
 
 REQUEST:
@@ -124,7 +123,7 @@ IF SUCCESS:
 REQUEST:
 - Method: GET
 - Header: key=Content-Type, value=application/x-www-form-urlencoded
-- Params: key=snky (value=session key), key=wpid (value=wordpress id), key = type (value= store or product)
+- Params: key=snky (value=session key), key=wpid (value=wordpress id), key = type (value= store or product), key = catid (value= category id) 
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
 - code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
@@ -142,6 +141,34 @@ IF SUCCESS:
             "types": "product",
             "title": "Milktea",
             "info": "A combination of milk and tea",
+            "status": "1"
+        }
+}
+```
+
+#### SELECT CATEGORY by `STORE ID`
+
+REQUEST:
+- Method: GET
+- Header: key=Content-Type, value=application/x-www-form-urlencoded
+- Params: key=snky (value=session key), key=wpid (value=wordpress id), key = type (value= store or product), key = stid (value= category id) 
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
+- code: 'unknown' message: 'Required fields cannot be empty' data: null
+- code: 'failed' message: 'No results found' data: null
+
+
+IF SUCCESS:
+```
+  {
+    "status": "success",
+    "data": [
+        {
+            "ID": "16",
+            "types": "product",
+            "title": "Milktea",
+            "info": "A combination of milk, tea, and sugar",
             "status": "1"
         }
 }
