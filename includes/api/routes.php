@@ -47,6 +47,7 @@
         //Category Classes
         require plugin_dir_path(__FILE__) . '/v1/category/class-delete.php';
         require plugin_dir_path(__FILE__) . '/v1/category/class-insert.php';
+        require plugin_dir_path(__FILE__) . '/v1/category/class-listing.php';
         require plugin_dir_path(__FILE__) . '/v1/category/class-select.php';
         require plugin_dir_path(__FILE__) . '/v1/category/class-select-type.php';
         require plugin_dir_path(__FILE__) . '/v1/category/class-update.php';
@@ -252,6 +253,11 @@
             register_rest_route( 'tindapress/v1/category', 'update', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Category_Update','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/category', 'list/all', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Category_All','listen'),
             ));
 
             register_rest_route( 'tindapress/v1/category', 'list/type', array(
