@@ -55,8 +55,7 @@ RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
 - code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
 - code: 'unknown' message: 'Required fields cannot be empty' data: null
-- code: 'failed' message: 'Product not found' data: null
-- code: 'failed' message: 'Category not found' data: null
+- code: 'failed' message: 'An error occured while fetching data to database' data: null
 
 IF SUCCESS:
 ```
