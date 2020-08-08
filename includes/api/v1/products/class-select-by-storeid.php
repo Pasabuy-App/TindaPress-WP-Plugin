@@ -18,7 +18,7 @@
             global $wpdb;
             
             // Step 1 : Verfy if Datavice Plugin is Activated
-			if (TP_Globals::verifiy_datavice_plugin() == false) {
+			if (TP_Globals::verify_datavice_plugin() == false) {
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",
@@ -27,7 +27,7 @@
                 );
 			}
 			//step 2: validate User
-			if (TP_Globals::validate_user() == false) {
+			if (DV_Verification::is_verified() == false) {
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",
@@ -87,7 +87,6 @@
             $tp_revs = TP_REVISION_TABLE;
             $table_product = TP_PRODUCT_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
-
 
             $result = $wpdb->get_results("SELECT
                 tp_prod.ID,
