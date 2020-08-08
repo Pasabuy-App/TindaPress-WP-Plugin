@@ -10,9 +10,7 @@
 		* @version 0.1.0
 		* This is the primary gateway of all the rest api request.
 	*/
-?>
-<?php
-   
+
     //Require the USocketNet class which have the core function of this plguin. 
 
         require plugin_dir_path(__FILE__) . '/v1/stores/class-stores.php';
@@ -41,6 +39,13 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/class-listing.php';
 
         require plugin_dir_path(__FILE__) . '/v1/globals/class-globals.php';
+
+        //Category Classes
+        require plugin_dir_path(__FILE__) . '/v1/category/class-delete.php';
+        require plugin_dir_path(__FILE__) . '/v1/category/class-insert.php';
+        require plugin_dir_path(__FILE__) . '/v1/category/class-listing.php';
+        require plugin_dir_path(__FILE__) . '/v1/category/class-select.php';
+        require plugin_dir_path(__FILE__) . '/v1/category/class-update.php';
 
 	
 	// Init check if USocketNet successfully request from wapi.
@@ -202,10 +207,37 @@
             'methods' => 'POST',
             'callback' => array('TP_Popular_Store','popular_store'),
         ));
+
+        /*
+         * CATEGORIES RESTAPI
+        */
+
+        register_rest_route( 'tindapress/v1/category', 'insert', array(
+            'methods' => 'POST',
+            'callback' => array('TP_Category_Insert','listen'),
+        ));
+
+        register_rest_route( 'tindapress/v1/category', 'delete', array(
+            'methods' => 'POST',
+            'callback' => array('TP_Category_Delete','listen'),
+        ));
+
+        register_rest_route( 'tindapress/v1/category', 'update', array(
+            'methods' => 'POST',
+            'callback' => array('TP_Category_Update','listen'),
+        ));
+
+        register_rest_route( 'tindapress/v1/category', 'list', array(
+            'methods' => 'POST',
+            'callback' => array('TP_Category_List','listen'),
+        ));
         
+        register_rest_route( 'tindapress/v1/category', 'select', array(
+            'methods' => 'POST',
+            'callback' => array('TP_Category_Select','listen'),
+        ));
 
 
 
     }
     add_action( 'rest_api_init', 'tindapress_route' );
-?>
