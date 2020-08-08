@@ -10,22 +10,80 @@
         * @version 0.1.0
 	*/
     class TP_Category_Delete {
+        
         public static function listen(){
-            global $wpdb;
-            return 'test';
-
-            
+            return rest_ensure_response( 
+                TP_Category_Delete:: delete_category()
+            );
         }
         
-        // Catch Post 
-        public static function catch_post()
-        {
-            $cur_user = array();
-               
-            $cur_user['created_by'] = $_POST["wpid"];
-            $cur_user['store_id']      = $_POST["stid"];
-  
-            return  $cur_user;
+        
+        public static function delete_category(){
+           
+            global $wpdb;
+
+            //  Step1 : Verify if Datavice Plugin is Active
+			if (TP_Globals::verify_datavice_plugin() == false) {
+                return  array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. Plugin Missing!",
+                );
+                
+			}
+			
+			//  Step2 : Validate if user is exist
+			if (DV_Verification::is_verified() == false) {
+                return array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. Request Unknown!",
+                );
+                
+            }
+            
+            if (!isset($_POST["catid"])  ) {
+				return array(
+						"status" => "unknown",
+						"message" => "Please contact your administrator. Request unknown!",
+                );
+            }
+
+            if (empty($_POST["catid"])  ) {
+				return array(
+						"status" => "failed",
+						"message" => "Required fields cannot be empty.",
+                );
+            }
+
+            $category_id = $_POST["catid"];
+            $table_revs = TP_REVISION_TABLE;
+            $table_categories = TP_CATEGORIES_TABLE;
+
+            $category = $wpdb->get_row("SELECT `status` FROM $table_categories WHERE `id` = $category_id");
+
+            if ( !$category ) {
+				return array(
+						"status" => "failed",
+						"message" => "This category does not exists",
+                );
+            }
+
+            $status_id = $category->status;
+
+            $result = $wpdb->query("UPDATE $table_revs SET `child_val` = 0 WHERE `ID` = $status_id");
+
+            if ($result < 1) {
+                return array(
+                    "status" => "error",
+                    "message" => "An error occured while submitting data to the server.",
+                );
+            }
+
+            return array(
+                "status" => "success",
+                "message" => "Data has been deleted successfully.",
+            );
+
+        
         }
 
     }
