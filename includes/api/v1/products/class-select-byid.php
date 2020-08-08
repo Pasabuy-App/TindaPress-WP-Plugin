@@ -24,12 +24,13 @@
                 );
             }
 
-            // Step1 : Check if wpid and snky is valid
-            if (TP_Globals::validate_user() == false) {
+			//  Step2 : Validate if user is exist
+			if (DV_Verification::is_verified() == false) {
                 return array(
-                    "status" => "unknown",
-                    "message" => "Please contact your administrator. Request Unknown!",
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. Request Unknown!",
                 );
+                
             }
 
             // Step2 : Sanitize all Request

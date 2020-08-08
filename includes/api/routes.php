@@ -29,6 +29,7 @@
         require plugin_dir_path(__FILE__) . '/v1/products/class-newest.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-popular.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-product.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-listing-price.php';
         // require plugin_dir_path(__FILE__) . '/v1/products/filter/class-categories.php';
 
         // require plugin_dir_path(__FILE__) . '/v1/category/class-stores.php';
@@ -115,6 +116,11 @@
                 'callback' => array('TP_Select_Store_Category_Product','listen'),
             ));
 
+            register_rest_route( 'tindapress/v1/products', 'list/price', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Listing_Product_by_Price','listen'),
+            ));
+
 
         /*
          * DOCUMENTS RESTAPI
@@ -124,10 +130,7 @@
                 'callback' => array('TP_Insert_Documents','listen'),
             ));
             
-        
-        /*
-         * Category RESTAPI
-        */
+ 
             
         /*
          * STORE RESTAPI
