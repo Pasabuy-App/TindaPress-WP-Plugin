@@ -105,45 +105,57 @@ IF SUCCESS:
   
 ```
 
-
-#### LIST ALL STORES BY CATEGORY
-
-REQUEST:
-- Method: GET
-- Header: key=Content-Type, value=application/x-www-form-urlencoded
-- Params: key=snky (value=session key), key=wpid (value=wordpress id), key = catid (Category iD)
-RESPONSE:
-- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
-- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
-- code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty' data: null
-- code: 'failed' message: 'Category not found' data: null
-
-IF SUCCESS:
-```
-  
-```
-
-
-#### LIST ALL PRODUCTS BY CATEGORY
+#### LIST CATEGORIES by `STORE` or `PRODUCT`
 
 REQUEST:
 - Method: GET
 - Header: key=Content-Type, value=application/x-www-form-urlencoded
-- Params: key=snky (value=session key), key=wpid (value=wordpress id), key = catid (Category iD)
+- Params: key=snky (value=session key), key=wpid (value=wordpress id), key = type (value= store or product)
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
 - code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
-- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
-- code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
 - code: 'unknown' message: 'Required fields cannot be empty' data: null
-- code: 'failed' message: 'Category not found' data: null
+- code: 'failed' message: 'Category must be product or store only' data: null
+- code: 'failed' message: 'No results found' data: null
+
 
 IF SUCCESS:
 ```
-  
+  {
+    "status": "success",
+    "data": [
+        {
+            "ID": "3",
+            "types": "product",
+            "title": "Chicken Meals",
+            "info": "Category food product",
+            "status": "1"
+        },
+        {
+            "ID": "6",
+            "types": "product",
+            "title": "Happy Meal",
+            "info": "Happy na, Meal pa.",
+            "status": "1"
+        },
+        {
+            "ID": "7",
+            "types": "product",
+            "title": "Classic Pizzas",
+            "info": "Not special pizza.",
+            "status": "1"
+        },
+        {
+            "ID": "8",
+            "types": "product",
+            "title": "Overloaded Pizzas",
+            "info": "Pizza with meat, cheese, bacon, etc.",
+            "status": "1"
+        }
+    ]
+}
 ```
+
 
 
 ## Contributing 
