@@ -10,25 +10,22 @@
         * @version 0.1.0
     */
     
-    class TP_Category_Insert {
+    class TP_Category_Listing {
+
         public static function listen(){
-            global $wpdb;
+            
             return rest_ensure_response( 
                 TP_Category_Insert:: get_list()
             );
-
             
         }
-        
-        // Catch Post 
-        public static function get_list()
-        {
-            $cur_user = array();
-               
-            $cur_user['created_by'] = $_POST["wpid"];
-            $cur_user['store_id']      = $_POST["stid"];
-  
-            return  $cur_user;
+
+        public static function get_list(){
+
+            global $wpdb;
+
+
+           
         }
 
-    }
+    }//end of class

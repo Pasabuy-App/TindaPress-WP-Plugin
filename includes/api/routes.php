@@ -234,7 +234,7 @@
         
         register_rest_route( 'tindapress/v1/category', 'select', array(
             'methods' => 'POST',
-            'callback' => array('TP_Category_List','listen'),
+            'callback' => array('TP_Category_Select','listen'),
         ));
 
 

@@ -13,22 +13,44 @@
 <?php
 
     class TP_Category_Insert {
+
+        //REST API Call
         public static function listen(){
-            global $wpdb;
-
-
-            
+            return 'test';
+            return rest_ensure_response( 
+                TP_Category_Insert:: insert_category()
+            );
         }
         
-        // Catch Post 
-        public static function catch_post()
-        {
-            $cur_user = array();
-               
-            $cur_user['created_by'] = $_POST["wpid"];
-            $cur_user['store_id']      = $_POST["stid"];
-  
-            return  $cur_user;
+        
+        //Inserting Category function
+        public static function insert_category(){
+            
+            global $wpdb;
+
+            //  Step1 : Verify if Datavice Plugin is Active
+			if (TP_Globals::verifiy_datavice_plugin() == false) {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. Plugin Missing!",
+                    )
+                );
+			}
+			
+			//  Step2 : Validate if user is exist
+			if (TP_Globals::validate_user() == false) {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. Request Unknown!",
+                    )
+                );
+            }
+
+            
+
+
         }
 
     }
