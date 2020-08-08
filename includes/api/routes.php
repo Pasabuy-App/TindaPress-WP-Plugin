@@ -160,6 +160,10 @@
                 'callback' => array('TP_Listing_Store','listen'),
             ));
 
+            register_rest_route( 'tindapress/v1/stores', 'stores', array(
+                'methods' => 'POST',
+                'callback' => array('TP_StorebyCategory','listen'),
+            ));
             register_rest_route( 'tindapress/v1/stores', 'list/store/active', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Listing_Active_Store','listen'),
