@@ -92,18 +92,19 @@
 
 			//Step 8: Get results from database 
 			$result= $wpdb->get_results("SELECT
-                    tp_cat.ID,
-                    tp_rev.child_val AS cat_status,
-                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE tp_rev.ID = tp_cat.title ) AS cat_title,
-                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE tp_rev.ID = tp_cat.info ) AS cat_info,
-                    tp_cat.types,
-                    tp_cat.`name`,
-                    tp_cat.created_by,
-                    tp_cat.date_created 
-                FROM
-                    $categories_table tp_cat
-                    INNER JOIN $table_revs tp_rev ON tp_rev.ID = tp_cat.`status`
-                    WHERE tp_rev.child_val  =1
+            tp_categories.ID,
+            tp_revisions.child_val AS cat_status,
+            ( SELECT tp_revisions.child_val FROM tp_revisions WHERE tp_revisions.ID = tp_categories.title ) AS cat_title,
+            ( SELECT tp_revisions.child_val FROM tp_revisions WHERE tp_revisions.ID = tp_categories.info ) AS cat_info,
+            tp_categories.types,
+            tp_categories.`name`,
+            tp_categories.created_by,
+            tp_categories.date_created 
+        FROM
+            tp_categories
+            INNER JOIN tp_revisions ON tp_revisions.ID = tp_categories.`status`
+            
+             WHERE tp_revisions.child_val  =1 AND tp_categories.ID = (SELECT ctid FROM tp_stores WHERE ID = 2)
                         ", OBJECT);
 
 
@@ -111,7 +112,7 @@
 
 				return rest_ensure_response( 
 					array(
-						"status" => "success",
+						"status" => "faields",
 						"message" => "Please contact your Administrator. Empty result"
 						
 					)

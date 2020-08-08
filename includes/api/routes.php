@@ -47,6 +47,8 @@
         require plugin_dir_path(__FILE__) . '/v1/category/class-select.php';
         require plugin_dir_path(__FILE__) . '/v1/category/class-update.php';
 
+        require plugin_dir_path(__FILE__) . '/v1/category/store/class-store-category.php';
+
 	
 	// Init check if USocketNet successfully request from wapi.
     function tindapress_route()
@@ -112,13 +114,21 @@
 
 
         /*
-         * PRODUCT RESTAPI
+         * DOCUMENTS RESTAPI
         */
             register_rest_route( 'tindapress/v1/stores/documents', 'insert', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Insert_Documents','listen'),
             ));
+            
         
+        /*
+         * Category RESTAPI
+        */
+            register_rest_route( 'tindapress/v1/category/store', 'list/active', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Store_Category','listen'),
+            ));
         
         /*
          * STORE RESTAPI
