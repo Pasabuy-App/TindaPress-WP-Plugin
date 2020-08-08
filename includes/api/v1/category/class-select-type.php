@@ -52,7 +52,7 @@
                 );
             }
 
-            if ( !($_POST['types'] === 'store') && !($_POST['types'] === 'product')) {
+            if ( !($_POST['types'] === 'store') && !($_POST['types'] === 'product') && !($_POST['types'] === 'tags') ) {
                 return array(
                     "status" => "failed",
                     "message" => "Category must be product or store only.",
