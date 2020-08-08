@@ -32,11 +32,13 @@
         // require plugin_dir_path(__FILE__) . '/v1/products/filter/class-categories.php';
 
         // require plugin_dir_path(__FILE__) . '/v1/category/class-stores.php';
-        require plugin_dir_path(__FILE__) . '/v1/stores/class-insert.php';
+        // require plugin_dir_path(__FILE__) . '/v1/stores/class-insert.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-update.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-delete.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-select.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-listing.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-listing-active.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-listing-inactive.php';
 
         require plugin_dir_path(__FILE__) . '/v1/globals/class-globals.php';
 
@@ -162,6 +164,17 @@
                 'methods' => 'POST',
                 'callback' => array('TP_StorebyCategory','listen'),
             ));
+            register_rest_route( 'tindapress/v1/stores', 'list/store/active', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Listing_Active_Store','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/stores', 'list/store/inactive', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Listing_Inactive_Store','listen'),
+            ));
+        
+        
         
         
             

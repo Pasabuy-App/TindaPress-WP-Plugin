@@ -27,7 +27,7 @@
             }
             
             // Step2 : Check if wpid and snky is valid
-            if (TP_Globals::validate_user() == false) {
+            if (DV_Verification::is_verified() == false) {
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",
@@ -40,7 +40,7 @@
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
+                        "message" => "Please contact your administrator. Request unknown!",
                     )
                 );
             }

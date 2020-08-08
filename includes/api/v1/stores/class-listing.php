@@ -27,8 +27,9 @@
                 );
             }
             
+           
             // Step2 : Check if wpid and snky is valid
-            if (TP_Globals::validate_user() == false) {
+            if (DV_Verification::is_verified() == false) {
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",

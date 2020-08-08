@@ -9,10 +9,10 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
-    class TP_Delete_Store_awdw {
+    class TP_Category_Delete {
         public static function listen(){
             global $wpdb;
-
+            return 'test';
 
             
         }

@@ -26,9 +26,9 @@
                     )
                 );
             }
-
-            // Step2 : validate user if activated
-            if (TP_Globals::validate_user() == false) {
+            
+            // Step2 : Check if wpid and snky is valid
+            if (DV_Verification::is_verified() == false) {
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",
@@ -64,7 +64,6 @@
 
             // declater table names to vatiable
             $table_store = TP_STORES_TABLE;
-            $table_store_revs = TP_STORES_REVS_TABLE;
             $table_category = TP_CATEGORIES_TABLE;
             $table_revs = TP_REVISION_TABLE;
             $table_brgy = DV_BRGY_TABLE;

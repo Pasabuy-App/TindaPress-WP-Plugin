@@ -18,35 +18,31 @@
 	
 	//Initializing table names
 
+	//Products Config
 	define('TP_PRODUCT_TABLE', TP_PREFIX.'products');
 	define('TP_PRODUCT_FIELDS', '(stid, ctid, title, preview, short_info, long_info, status, sku, price,  weight,  dimension , created_by, date_created)');
 
+	//Revision Config
 	define('TP_REVISION_TABLE', TP_PREFIX.'revisions');
 	define('TP_REVISION_FIELDS','(revs_type, parent_id, child_key , child_val, created_by, date_created )');
 
+	//Stores config
 	define('TP_STORES_TABLE', TP_PREFIX.'stores');
 	define('TP_STORES_FIELDS','(ctid, title, short_info, long_info, logo, banner, status, address, created_by, date_created )');
 
-
-
-
-
+	//Categories config
 	define('TP_CATEGORIES_TABLE', TP_PREFIX.'categories');
-
+	define('TP_CATEGORIES_FIELDS','(title, info, status, types, created_by, date_created )');
+	
+	//tp_configs config
 	define('TP_CONFIGS_TABLE', TP_PREFIX.'configs');
+
 
 	define('TP_PERSONNELS_TABLE', TP_PREFIX.'personnels');
 
 	define('TP_ROLES_TABLE', TP_PREFIX.'roles');
 
 	define('TP_ROLES_META_TABLE', TP_PREFIX.'roles_meta');
-
-	
-	define('TP_STORES_REVS_TABLE', TP_PREFIX.'stores_revs');
-	
-	define('TP_CATEGORIES_REVS_TABLE', TP_PREFIX.'categories_revs');
-
-	define('TP_PRODUCT_REVS_TABLE', TP_PREFIX.'products_revs');
 
 	define('TP_ADDRESS_TABLE', TP_PREFIX.'address');
 
@@ -75,11 +71,5 @@
 	// document revision type
 	define('DOCUMENTS', 'documents');
 
-
-	// tp_revisions fields
-	define('REVS_FIELDS', 'revs_type, parent_id, child_key, child_val');
-
-
-	//Initializing table fields to be called
 
 ?>
