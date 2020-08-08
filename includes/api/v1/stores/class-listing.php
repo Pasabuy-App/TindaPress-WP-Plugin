@@ -53,15 +53,16 @@
             
            $result = $wpdb->get_results("SELECT
                 tp_str.ID,
-                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.short_info ) AS `short_info`,
-                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.long_info ) AS `long_info`,
-                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.logo ) AS `logo`,
-                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.banner ) AS `banner`,
-                ( SELECT dv_rev.child_val FROM $table_dv_revs dv_rev WHERE ID = dv_add.street ) AS `street`,
-                ( SELECT brgy_name FROM $table_brgy WHERE ID = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.brgy ) ) AS brgy,
-                ( SELECT city_name FROM $table_city WHERE ID = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.city ) ) AS city,
-                ( SELECT prov_name FROM $table_province WHERE ID = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.province ) ) AS province,
-                ( SELECT country_name FROM $table_country WHERE ID = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.country ) ) AS country 
+            (select child_val from $table_revs where id = tp_str.short_info) AS bio,
+            (select child_val from $table_revs where id = tp_str.long_info) AS details,
+            (select child_val from $table_revs where id = tp_str.logo) AS icon,
+            (select child_val from $table_revs where id = tp_str.banner) AS bg,
+            (select child_val from $table_revs where id = tp_str.`status`) AS stats,
+            (select child_val from $table_dv_revs where id = dv_add.street) as street,
+            (SELECT brgy_name FROM $table_brgy WHERE ID = (select child_val from $table_dv_revs where id = dv_add.brgy)) as brgy,
+            (SELECT citymun_name FROM $table_city WHERE city_code = (select child_val from $table_dv_revs where id = dv_add.city)) as city,
+            (SELECT prov_name FROM $table_province WHERE prov_code = (select child_val from $table_dv_revs where id = dv_add.province)) as province,
+            (SELECT country_name FROM $table_country WHERE id = (select child_val from $table_dv_revs where id = dv_add.country)) as country
             FROM
                 $table_store tp_str
                 INNER JOIN $table_revs tp_rev ON tp_rev.ID = tp_str.`status` 
