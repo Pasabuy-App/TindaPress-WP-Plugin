@@ -43,6 +43,8 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/class-listing-active.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-listing-inactive.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-search.php';
+        
+        require plugin_dir_path(__FILE__) . '/v1/settings/class-banner.php';
 
         require plugin_dir_path(__FILE__) . '/v1/class-globals.php';
         
@@ -289,6 +291,14 @@
             
         
 
+        /*
+         * SETTINGS RESTAPI
+        */
+
+        register_rest_route( 'tindapress/v1/settings', 'banner', array(
+            'methods' => 'POST',
+            'callback' => array('TP_Banner_update','listen'),
+        ));
 
 
 

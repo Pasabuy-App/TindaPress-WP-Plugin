@@ -32,7 +32,7 @@
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
+                        "message" => "Please contact your administrator. Verification Issues!",
                     )
                 );
             }
