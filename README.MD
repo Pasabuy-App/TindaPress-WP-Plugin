@@ -4,7 +4,7 @@ The TindaPress for WordPress is an e-commerce plugin used in managing data with 
 
 ## Prerequisites
 
-The plugin [DataVice](https://github.com/BytesCrafter/TindaPress-WP-Plugin) needs to be activated first before using this plugin.
+The plugin [DataVice](https://github.com/BytesCrafter/DataVice-WP-Plugin) needs to be activated first before using this plugin.
 
 ## REST API Implementation
 
