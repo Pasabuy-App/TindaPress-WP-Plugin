@@ -16,16 +16,14 @@
         public static function listen(){
             
             return rest_ensure_response( 
-                TP_Category_Update:: Update_category()
+                TP_Category_Update:: update_category()
             );
         }
         
         //Inserting Category function
-        public static function Update_category(){
+        public static function update_category(){
+            
             global $wpdb;
-
-
-
 
             //  Step1 : Verify if Datavice Plugin is Active
 			if (TP_Globals::verify_datavice_plugin() == false) {
@@ -45,14 +43,14 @@
                 
             }
 
-            if (!isset($_POST["title"]) || !isset($_POST["info"])  || !isset($_POST["types"]) ) {
+            if (!isset($_POST["title"]) || !isset($_POST["info"])  || !isset($_POST["types"]) || !isset($_POST["catid"])) {
 				return array(
 						"status" => "unknown",
 						"message" => "Please contact your administrator. Request unknown!",
                 );
             }
 
-            if (empty($_POST["title"]) || empty($_POST["info"])  || empty($_POST["types"]) ) {
+            if (empty($_POST["title"]) || empty($_POST["info"])  || empty($_POST["types"]) || !isset($_POST["catid"]) ) {
 				return array(
 						"status" => "failed",
 						"message" => "Required fields cannot be empty.",
@@ -73,7 +71,7 @@
 
             $wpid = $_POST["wpid"]; 
 
-            $ctid = $_POST["ctid"];
+            $category_id = $_POST["catid"];
 
             //Store or product
             $types = $_POST["types"]; 
@@ -87,13 +85,21 @@
 
             $date = date('Y-m-d h:i:s');
 
-            
+            $get_status = $wpdb->get_row("SELECT `status` FROM $table_categories WHERE ID = $category_id  ");
+
+            if (!$get_status) {
+                return array(
+                    "status" => "failed",
+                    "message" => "This category does not exists.",
+                );
+            }
+
+            $status_id = $get_status->status;
 
             $wpdb->query("START TRANSACTION");
-                // update Status to zero
-                $status_id = $wpdb->get_row("SELECT `status` FROM $table_categories WHERE ID = $ctid  ");
-                $wpdb->query("UPDATE $table_revs SET `child_val` = 0 WHERE ID = $status_id->status  ");
-
+                
+                // Archiving the revision field
+                $wpdb->query("UPDATE $table_revs SET `child_val` = 0 WHERE ID = $status_id ");
 
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'title', '$title', $wpid, '$date')");
                 
@@ -107,10 +113,9 @@
 
                 $status_id = $wpdb->insert_id;
 
-                $wpdb->query("UPDATE $table_categories SET `title`=$title_id, `info`=$info_id, `status`= $status_id WHERE ID = $ctid ");
+                $wpdb->query("UPDATE $table_categories SET `title` = $title_id, `info` = $info_id, `status` = $status_id WHERE ID = $category_id ");
                 
-             
-                $result = $wpdb->query("UPDATE $table_revs SET `parent_id` = $ctid WHERE ID IN ($title_id, $info_id, $status_id) ");
+                $result = $wpdb->query("UPDATE $table_revs SET `parent_id` = $category_id WHERE ID IN ($title_id, $info_id, $status_id) ");
 
             if ($title_id < 1 || $info_id < 1 || $status_id < 1 ||  $result < 1) {
                 // when insert failed rollback all inserted data
@@ -127,9 +132,8 @@
 
             return array(
                 "status" => "success",
-                "message" => "Data has been added successfully!",
+                "message" => "Data has been updated successfully!",
             );
-
 
         }
 

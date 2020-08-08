@@ -39,6 +39,7 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/class-listing.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-listing-active.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-listing-inactive.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-search.php';
 
         require plugin_dir_path(__FILE__) . '/v1/class-globals.php';
 
@@ -160,7 +161,7 @@
                 'callback' => array('TP_Listing_Store','listen'),
             ));
 
-            register_rest_route( 'tindapress/v1/stores', 'stores', array(
+            register_rest_route( 'tindapress/v1/stores', 'listbycat', array(
                 'methods' => 'POST',
                 'callback' => array('TP_StorebyCategory','listen'),
             ));
@@ -211,9 +212,9 @@
             'callback' => array('TP_StorebyCategory','initialize'),
         ));
 
-        register_rest_route( 'tindapress/api/v1/stores', 'store_search', array(
+        register_rest_route( 'tindapress/v1/stores', 'search', array(
             'methods' => 'POST',
-            'callback' => array('TP_StorebyCategory','search_store'),
+            'callback' => array('TP_SearchStore','listen'),
         ));
 
         register_rest_route( 'tindapress/v1/stores', 'newest', array(

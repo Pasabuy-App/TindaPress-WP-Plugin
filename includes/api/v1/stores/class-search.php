@@ -13,20 +13,21 @@
 <?php
 
     class TP_SearchStore {
-        public static function search_store(){
+        public static function listen(){
             global $wpdb;
 
-              // Step 1 : Verfy if Datavice Plugin is Activated
-			if (TP_Globals::verifiy_datavice_plugin() == false) {
+             // Step1: verify of datavice plugin is activated
+            if (TP_Globals::verify_datavice_plugin() == false) {
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",
                         "message" => "Please contact your administrator. Plugin Missing!",
                     )
                 );
-			}
-			//step 2: validate User
-			if (TP_Globals::validate_user() == false) {
+            }
+            
+            // Step2 : Check if wpid and snky is valid
+            if (DV_Verification::is_verified() == false) {
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",
@@ -84,10 +85,6 @@
 
             // table names and POST Variables
             $store_table           = TP_STORES_TABLE;
-            $categories_table      = TP_CATEGORIES_TABLE;
-            $categories_revs_table = TP_CATEGORIES_REVS_TABLE;
-            $product_table         = TP_PRODUCT_TABLE;
-            $product_revs_table    = TP_PRODUCT_REVS_TABLE;
             $table_revs            = TP_REVISION_TABLE;
             $table_address = 'dv_address';
             // datavice table variables declarations
@@ -107,8 +104,8 @@
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.banner ) AS `banner`,
                 ( SELECT dv_rev.child_val FROM $dv_revs as dv_rev WHERE ID = dv_add.street ) AS `street`,
                 ( SELECT brgy_name FROM $dv_geo_brgy WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = dv_add.brgy ) ) AS brgy,
-                ( SELECT city_name FROM $dv_geo_city WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = dv_add.city ) ) AS city,
-                ( SELECT prov_name FROM $dv_geo_prov WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = dv_add.province ) ) AS province,
+                ( SELECT citymun_name FROM $dv_geo_city WHERE city_code = ( SELECT child_val FROM $dv_revs WHERE ID = dv_add.city ) ) AS city,
+                ( SELECT prov_name FROM $dv_geo_prov WHERE prov_code = ( SELECT child_val FROM $dv_revs WHERE ID = dv_add.province ) ) AS province,
                 ( SELECT country_name FROM $dv_geo_court WHERE ID = ( SELECT child_val FROM $dv_revs WHERE ID = dv_add.country ) ) AS country 
             FROM
                 $store_table tp_str
@@ -124,7 +121,7 @@
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. No Product with this value"
+                        "message" => "Please contact your administrator. No store with this value"
                     )
                 );
 
