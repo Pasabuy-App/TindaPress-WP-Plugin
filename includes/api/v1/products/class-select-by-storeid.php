@@ -79,7 +79,7 @@
 
             $result = $wpdb->get_results("SELECT
                 tp_prod.ID,
-                ( SELECT tp_cat.types FROM $table_categories tp_cat WHERE ID = tp_prod.ctid ) AS `category`,
+                ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = ( SELECT title FROM $table_categories WHERE ID = tp_prod.ctid ) ) AS category_title,
                 ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.title ) AS `title`,
                 ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.preview ) AS `preview`,
                 ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.short_info ) AS `short_info`,

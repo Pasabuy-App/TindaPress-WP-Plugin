@@ -98,43 +98,15 @@
                 );
             }
 
-               //Check if personnel is part of the store
-             $personnels = $wpdb->get_row("SELECT `wpid`, `roid`
-               FROM `tp_personnels` 
-               WHERE `stid` = $store_id
-               AND `wpid` = '{$user["created_by"]}'");
+       
+             // Check user role 
+            if (TP_Globals::verify_role( $_POST['wpid'], $_POST['stid'], 'can_add_product' )) {
+                return rest_ensure_response( 
+                    TP_Globals::verify_role($_POST['wpid'], $_POST['stid'], 'can_add_product' ),
+                );
+            }
 
-           
-           //Check if current user is one of the personnels or one of our staff
-           if (!$personnels || (TP_Globals::check_roles('contributor') == false  && TP_Globals::check_roles('administrator') == false) ) {
-               return rest_ensure_response( 
-                   array(
-                       "status" => "failed",
-                       "message" => "User not associated with this store",
-                   )
-               );
-           }
-
-           $role_id = $personnels->roid;
-
-           //Get all access from that role_id 
-           $get_access = $wpdb->get_results("SELECT rm.access
-               FROM `tp_roles` r 
-                   LEFT JOIN tp_roles_meta rm ON rm.roid = r.ID
-               WHERE r.id = $role_id");
-           
-           $access = array_column($get_access, 'access');
-
-           //Check if user has role access of `can_delete_contact` or one of our staff
-           if ( !in_array('can_insert_contact' , $access, true) && (DV_Globals::check_roles('contributor') == false  && DV_Globals::check_roles('administrator') == false) ) {
-               return rest_ensure_response( 
-                   array(
-                       "status" => "failed",
-                       "message" => "Current user has no access in inserting contacts",
-                   )
-               );
-           }
-
+            
             // variable for time stamp
             $later = TP_Globals::date_stamp();
 

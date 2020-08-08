@@ -72,16 +72,59 @@
             return false;
         }
 
-
-
-
-
         public static function verify_datavice_plugin(){
             if(!class_exists('DV_Verification') ){
                 return false;
             }else{
                 return true;
             }
+        }
+
+        public static function verify_role($wpid, $store_id, $role){
+            global $wpdb;
+
+            if ($store_id === 0) {
+                //Check if personnel is part of the store
+                $personnels = $wpdb->get_row("SELECT `wpid`, `roid`
+                    FROM `tp_personnels` 
+                    WHERE `wpid` = $wpid");
+
+            }else{
+                //Check if personnel is part of the store
+                $personnels = $wpdb->get_row("SELECT `wpid`, `roid`
+                    FROM `tp_personnels` 
+                    WHERE `stid` = $store_id
+                    AND `wpid` = $wpid");
+            }
+
+            
+                
+            //Check if current user is one of the personnels or one of our staff
+            if (!$personnels || (DV_Globals::check_roles('subscriber') == true) ) {
+                return array(
+                    "status" => "failed",
+                    "message" => "User not associated with this store",
+                );
+            }
+
+            $role_id = $personnels->roid;
+
+            //Get all access from that role_id 
+            $get_access = $wpdb->get_results("SELECT rm.access
+                FROM `tp_roles` r 
+                    LEFT JOIN tp_roles_meta rm ON rm.roid = r.ID
+                WHERE r.id = $role_id");
+                
+            $access = array_column($get_access, 'access');
+
+            //Check if user has role access of `can_delete_contact` or one of our staff
+            if ( !in_array($role , $access, true) || (DV_Globals::check_roles('subscriber') == true) ) {
+                return array(
+                    "status" => "failed",
+                    "message" => "Current user has no access in inserting contacts",
+                );
+            }
+
         }
         
     }

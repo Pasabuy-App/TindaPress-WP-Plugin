@@ -52,22 +52,21 @@
                 
             }
 
-            // Step 5: Check if ID exists
-			if (!get_user_by("ID", $_POST['wpid'])) {
-				return array(
-						"status" => "failed",
-						"message" => "User not found!",
-                );
-                
-            }
-
             // Step6 : Sanitize all Request
-			if (empty($_POST["wpid"]) || empty($_POST['pid']) ) {
+			if ( empty($_POST['pid']) ) {
 				return array(
 						"status" => "unknown",
 						"message" => "Please contact your administrator. Request unknown!",
                 );
             }
+
+            //             // Check user role 
+            // if (TP_Globals::verify_role( )) {
+            //     return rest_ensure_response( 
+            //         TP_Globals::verify_role(),
+            //     );
+            // }
+
 
             // variables
             $parentid = $_POST['pid'];
