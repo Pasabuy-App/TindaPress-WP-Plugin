@@ -8,20 +8,20 @@
 	/** 
         * @package tindapress-wp-plugin
         * @version 0.1.0
-	*/
-?>
-<?php
-
+    */
+    
     class TP_Category_Insert {
         public static function listen(){
             global $wpdb;
-
+            return rest_ensure_response( 
+                TP_Category_Insert:: get_list()
+            );
 
             
         }
         
         // Catch Post 
-        public static function catch_post()
+        public static function get_list()
         {
             $cur_user = array();
                
