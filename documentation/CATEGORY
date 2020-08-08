@@ -27,45 +27,6 @@ IF SUCCESS:
     }
 ```
 
-#### SELECT SINGLE CATEGORY
-
-REQUEST:
-- Method: GET
-- Header: key=Content-Type, value=application/x-www-form-urlencoded
-- Params: key=wpid (value=User ID), key=session key (value=User snky), key=catid (value = Category id)
-
-RESPONSE:
-- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
-- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
-- code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty' data: null
-
-IF SUCCESS:
-```
-  
-```
-
-#### LIST ALL CATEGORY
-
-REQUEST:
-- Method: GET
-- Header: key=Content-Type, value=application/x-www-form-urlencoded
-- Params: key=wpid (value=User ID), key=session key (value=User snky)
-
-RESPONSE:
-- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
-- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
-- code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty' data: null
-- code: 'failed' message: 'Category not found' data: null
-
-IF SUCCESS:
-```
-  
-```
-
 
 #### UPDATE CATEGORY
 
@@ -102,7 +63,10 @@ RESPONSE:
 
 IF SUCCESS:
 ```
-  
+    {
+        "status": "success",
+        "message": "Data has been deleted successfully!"
+    }
 ```
 
 #### LIST CATEGORIES by `STORE` or `PRODUCT`
@@ -153,6 +117,34 @@ IF SUCCESS:
             "status": "1"
         }
     ]
+}
+```
+
+#### SELECT CATEGORY by `ID`
+
+REQUEST:
+- Method: GET
+- Header: key=Content-Type, value=application/x-www-form-urlencoded
+- Params: key=snky (value=session key), key=wpid (value=wordpress id), key = type (value= store or product)
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
+- code: 'unknown' message: 'Required fields cannot be empty' data: null
+- code: 'failed' message: 'No results found' data: null
+
+
+IF SUCCESS:
+```
+  {
+    "status": "success",
+    "data": [
+        {
+            "ID": "16",
+            "types": "product",
+            "title": "Milktea",
+            "info": "A combination of milk and tea",
+            "status": "1"
+        }
 }
 ```
 
