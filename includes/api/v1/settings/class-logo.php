@@ -27,6 +27,7 @@
             $revs_type = "stores";
             $wpid = $_POST["wpid"];
             $stid = $_POST["stid"];
+
             // Step1 : check if datavice plugin is activated
             if (TP_Globals::verify_datavice_plugin() == false) {
                 return rest_ensure_response( 
@@ -46,11 +47,11 @@
                     )
                 );
             }
-            
 
            
             $files = $request->get_file_params();
             
+            // Step3 : Sanitize all Request
             if ( !isset($files['img']) || !isset($_POST['stid'])) {
 				return rest_ensure_response( 
 					array(
@@ -60,6 +61,7 @@
 				);
             }
             
+            // Step4 : Check if ID is in valid format (integer)
             if ( !is_numeric($_POST["stid"]) ) {
                 return rest_ensure_response( 
                     array(
@@ -69,7 +71,7 @@
                 );
             }
 
-
+            // Step5 : sanitize if all variables is empty
             if ( empty($_POST["stid"]) ){
                 return rest_ensure_response( 
                     array(
@@ -79,6 +81,7 @@
                 );
             }
             
+            // Step6 : Validation of store
             $get_store = $wpdb->get_row("SELECT ID FROM $table_store  WHERE ID = $stid  ");
                 
              if ( !$get_store ) {
@@ -90,6 +93,7 @@
                 );
 			}
 
+            // Step7 : sanitize if all variables is empty
             if ( $files['img']['name'] == NULL  || $files['img']['type'] == NULL) {
 				return rest_ensure_response( 
 					array(
@@ -111,8 +115,10 @@
                 $img_name = sanitize_file_name($_POST['in']);
             }
 
+            //Image name complete
             $completed_file_name = 'Logo-'.$img_name;
 
+            //Target path to move the file
             $target_file = $target_dir['path'] . '/' . basename($completed_file_name);
             $uploadOk = 1;
             $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
@@ -173,21 +179,13 @@
             } else {
 
                 $var = $target_dir['path'];
-                    
-                // Validation of store id
-                $stid = $_POST["stid"];
-                $get_store = $wpdb->get_row("SELECT ID FROM $table_store  WHERE ID = $stid  ");
-                    
-                if ( !$get_store ) {
-                    return array(
-                            "status" => "failed",
-                            "message" => "No store found.",
-                    );
-                }
+
+                //Logo Name
                 $logo_name = trailingslashit($target_dir['subdir']).$completed_file_name;
 
                 if (move_uploaded_file($files['img']['tmp_name'], $target_file)) {
               
+                // Query
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '$stid', 'logo', '$logo_name', '$wpid', '$later')");
                 $logo_id = $wpdb->insert_id;
                 $result = $wpdb->query("UPDATE $table_store SET `logo` = $logo_id WHERE ID = '$stid' ");

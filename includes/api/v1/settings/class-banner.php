@@ -51,6 +51,7 @@
            
             $files = $request->get_file_params();
             
+            // Step3 : Sanitize all Request
             if ( !isset($files['img']) || !isset($_POST['stid'])) {
 				return rest_ensure_response( 
 					array(
@@ -60,35 +61,39 @@
 				);
             }
             
+            // Step4 : Check if ID is in valid format (integer)
             if ( !is_numeric($_POST["stid"]) ) {
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. ID is not in valid format.",
+                        "message" => "Please contact your administrator. ID is not in valid format!",
                     )
                 );
             }
 
-
+            // Step5 : sanitize if all variables is empty
             if ( empty($_POST["stid"]) ){
                 return rest_ensure_response( 
                     array(
                         "status" => "failed",
-                        "message" => "Required fields cannot be empty.",
+                        "message" => "Required fields cannot be empty!",
                     )
                 );
             }
+            
+            // Step6 : Validation of store
             $get_store = $wpdb->get_row("SELECT ID FROM $table_store  WHERE ID = $stid  ");
                 
              if ( !$get_store ) {
                 return rest_ensure_response( 
                     array(
-                        "status" => "error",
-                        "message" => "No store found.",
+                        "status" => "failed",
+                        "message" => "No store found!",
                     )
                 );
 			}
 
+            // Step7 : sanitize if all variables is empty
             if ( $files['img']['name'] == NULL  || $files['img']['type'] == NULL) {
 				return rest_ensure_response( 
 					array(
@@ -110,8 +115,10 @@
                 $img_name = sanitize_file_name($_POST['in']);
             }
 
+            //Image name complete
             $completed_file_name = 'Banner-'.$img_name;
 
+            //Target path to move the file
             $target_file = $target_dir['path'] . '/' . basename($completed_file_name);
             $uploadOk = 1;
             $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
@@ -135,7 +142,7 @@
                 return rest_ensure_response( 
 					array(
 						"status" => "failed",
-						"message" => "A file with this name already exists",
+						"message" => "A file with this name already exists!",
 					)
 				);
             }
@@ -157,7 +164,7 @@
                 return rest_ensure_response( 
 					array(
 						"status" => "failed",
-						"message" => "Invalid image file type. JPG, PNG, JPEG and GIF types are only accepted",
+						"message" => "Invalid image file type. JPG, PNG, JPEG and GIF types are only accepted.",
 					)
 				);
             }
@@ -166,27 +173,19 @@
                 return rest_ensure_response( 
 					array(
 						"status" => "error",
-						"message" => "An error occured while submitting data to the server.",
+						"message" => "An error occured while submitting data to the server!",
 					)
 				);
             } else {
 
                 $var = $target_dir['path'];
-                    
-                // Validation of store id
-                $stid = $_POST["stid"];
-                $get_store = $wpdb->get_row("SELECT ID FROM $table_store  WHERE ID = $stid  ");
-                    
-                if ( !$get_store ) {
-                    return array(
-                            "status" => "failed",
-                            "message" => "No store found.",
-                    );
-                }
+
+                //Banner Name
                 $banner_name = trailingslashit($target_dir['subdir']).$completed_file_name;
 
                 if (move_uploaded_file($files['img']['tmp_name'], $target_file)) {
-              
+
+                // Query
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '$stid', 'banner', '$banner_name', '$wpid', '$later')");
                 $banner_id = $wpdb->insert_id;
                 $result = $wpdb->query("UPDATE $table_store SET `banner` = $banner_id WHERE ID = '$stid' ");

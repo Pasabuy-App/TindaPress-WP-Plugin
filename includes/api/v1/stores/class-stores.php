@@ -82,7 +82,7 @@
              if ( !$get_cat ) {
                 return array(
                         "status" => "failed",
-                        "message" => "No category found.",
+                        "message" => "No category found!",
                 );
 			}
 
@@ -113,7 +113,7 @@
             {
                 return array(
                         "status" => "failed",
-                        "message" => "No store found with this value.",
+                        "message" => "No store found with this value!",
                 );
             }
             

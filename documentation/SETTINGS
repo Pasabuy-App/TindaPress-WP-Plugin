@@ -1,0 +1,61 @@
+# TindaPress - WordPress Plugin
+
+The TindaPress for WordPress is an e-commerce plugin lorem ipsum
+
+### REST API Implementation
+
+#### LIST ALL STORES => tindapress/v1/settings/banner
+
+REQUEST:
+- Method: POST
+- Header: key=Content-Type, value=application/x-www-form-urlencoded
+- Params: key=snky (value=session key), key=wpid (value=wordpress id), key=stid (value=store id), key=img (value=image)
+
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
+- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
+- code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
+- code: 'unknown' message: 'Required fields cannot be empty'! data: null
+- code: 'failed' message: 'No store found!' data: null
+- code: 'failed' message: 'Please select an image!' data: null
+- code: 'failed' message: 'A file with this name already exists!' data: null
+- code: 'failed' message: 'Your image file size was too big.' data: null
+- code: 'failed' message: 'Invalid image file type. JPG, PNG, JPEG and GIF types are only accepted' data: null
+- code: 'failed' message: 'An error occured while submitting data to the server!' data: null
+
+IF SUCCESS:
+```
+- code: 'failed' message: 'Data has been updated successfully.' data: null
+}
+```
+
+
+
+
+
+
+## Contributing 
+
+Please read [CONTRIBUTING](CONTRIBUTING) for details on our code of conduct, and the process for submitting pull requests to us.
+
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/BytesCrafter/DataVice-WP-Plugin/tags). 
+
+## Authors
+
+* **Bytes Crafter** - *Initial work* - [Github](https://github.com/BytesCrafter/DataVice-WP-Plugin.git)
+
+See also the list of [contributors](https://github.com/BytesCrafter/DataVice-WP-Plugin/graphs/contributors) who participated in this project.
+
+## License
+
+This project is licensed under the GNU GPL License - see the [LICENSE](LICENSE) file for details
+
+## Acknowledgments
+
+* WordPress.Org
+* MariaDB Developer
+
+<!-- Test Now -->

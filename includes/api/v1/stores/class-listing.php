@@ -71,7 +71,7 @@
             if (!$result ) {
                 return array(
                         "status" => "failed",
-                        "message" => "No results found.",
+                        "message" => "No results found!",
                 );
 
             }

@@ -62,7 +62,7 @@ IF SUCCESS:
   
 ```
 
-#### LIST ALL STORES
+#### LIST ALL STORES => tindapress/v1/stores/list/all
 
 REQUEST:
 - Method: POST
@@ -75,7 +75,7 @@ RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
 - code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
 - code: 'unknown' message: 'Required fields cannot be empty' data: null
-- code: 'failed' message: 'An error occured while fetching data to database' data: null
+- code: 'failed' message: 'No results found!' data: null
 
 IF SUCCESS:
 ```
@@ -153,7 +153,7 @@ IF SUCCESS:
 }
 ```
 
-#### SELECT STORE BY ID
+#### SELECT STORE BY ID => tindapress/v1/stores/select
 
 REQUEST:
 - Method: POST
@@ -166,7 +166,9 @@ RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
 - code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
 - code: 'unknown' message: 'Required fields cannot be empty' data: null
-- code: 'failed' message: 'An error occured while fetching data to database' data: null    
+- code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
+- code: 'failed' message: 'No store found!' data: null
+- code: 'failed' message: 'No store found with this value!' data: null    
 
 IF SUCCESS:
 ```
@@ -193,7 +195,7 @@ IF SUCCESS:
 }
 ```
 
-#### SELECT STORE BY CATEGORY
+#### SELECT STORE BY CATEGORY => tindapress/v1/stores/listbycat
 
 REQUEST:
 - Method: POST
@@ -205,7 +207,10 @@ RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
 - code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
 - code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty' data: null 
+- code: 'unknown' message: 'Required fields cannot be empty' data: null
+- code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
+- code: 'failed' message: 'No category found!' data: null
+- code: 'failed' message: 'No store found with this value!' data: null  
 
 IF SUCCESS:
 ```
@@ -248,7 +253,7 @@ IF SUCCESS:
 }
 ```
 
-#### SEARCHING STORE BY NAME
+#### SEARCHING STORE BY NAME => tindapress/v1/stores/search
 
 REQUEST:
 - Method: POST
@@ -259,8 +264,10 @@ RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
 - code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
 - code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
+- code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
 - code: 'unknown' message: 'Required fields cannot be empty' data: null
-- code: 'unknown' message: 'Please contact your administrator. No store found with this value' data: null    
+- code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
+- code: 'failed' message: 'No store found with this value!' data: null    
 
 IF SUCCESS:
 ```

@@ -49,7 +49,7 @@
 			if (empty($_POST['search']) ) {
 				return array(
 						"status" => "unknown",
-						"message" => "Required fields cannot be empyty.",
+						"message" => "Required fields cannot be empyty!",
                 );
                 
             }
@@ -92,7 +92,7 @@
             if (!$result ) {
                 return array(
                         "status" => "failed",
-                        "message" => "No store found with this value.",
+                        "message" => "No store found with this value!",
                 );
 
             }

@@ -59,7 +59,7 @@
             if ( empty($_POST["stid"]) ){
                 return array(
                         "status" => "failed",
-                        "message" => "Required fields cannot be empty.",
+                        "message" => "Required fields cannot be empty!",
                 );
             }
             
@@ -67,7 +67,7 @@
             if ( !is_numeric($_POST["stid"]) ) {
                 return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. ID is not in valid format.",
+                        "message" => "Please contact your administrator. ID is not in valid format!",
                 );
             }
 
@@ -78,7 +78,7 @@
              if ( !$get_store ) {
                 return array(
                         "status" => "failed",
-                        "message" => "No store found.",
+                        "message" => "No store found!",
                 );
 			}
 
@@ -114,7 +114,7 @@
             {
                 return array(
                         "status" => "failed",
-                        "message" => "No store found with this value.",
+                        "message" => "No store found with this value!",
                 );
             }
             
