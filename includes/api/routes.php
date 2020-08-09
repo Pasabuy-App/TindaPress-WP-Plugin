@@ -65,6 +65,7 @@
         require plugin_dir_path(__FILE__) . '/v1/operations/class-list-open.php';
         require plugin_dir_path(__FILE__) . '/v1/operations/class-list-month.php';
         require plugin_dir_path(__FILE__) . '/v1/operations/class-list-orders.php';
+        require plugin_dir_path(__FILE__) . '/v1/operations/class-list-by-date.php';
 
         //Orders Classes
         require plugin_dir_path(__FILE__) . '/v1/order/class-total-sales.php';
@@ -339,6 +340,11 @@
             register_rest_route( 'tindapress/v1/operations', 'list/month', array(
                 'methods' => 'POST',
                 'callback' => array('TP_List_Month','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/operations', 'list/date', array(
+                'methods' => 'POST',
+                'callback' => array('TP_List_Date','listen'),
             ));
 
 

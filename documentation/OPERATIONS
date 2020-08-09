@@ -5,7 +5,7 @@
 REQUEST:
 - Method: POST
 - Header: key=Content-Type, value=application/x-www-form-urlencoded
-- Params: key=snky (value=session key), key=wpid (value=wordpress id), key=title (value= date and time in Y-m-d H:i:s format)
+- Params: key=snky (value=session key), key=wpid (value=wordpress id)
 
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
@@ -125,24 +125,6 @@ IF SUCCESS:
     {
         "status": "success",
         "data": [
-            {
-                "ID": "2",
-                "operation_id": "1",
-                "order_id": "1",
-                "store_name": "McDonald",
-                "product_name": "1pc. Burger Steak with McSpaghetti",
-                "product_price": "69.00",
-                "quantity": "2"
-            },
-            {
-                "ID": "2",
-                "operation_id": "1",
-                "order_id": "1",
-                "store_name": "McDonald",
-                "product_name": "Cheesy Deluxe Burger",
-                "product_price": "145.00",
-                "quantity": "2"
-            },
              {
                 "date": "2020-08-07 16:26:45",
                 "ID": "3",
@@ -177,5 +159,64 @@ IF SUCCESS:
     }
 ```
 
+#### GET LIST of ORDERS BY `DATE` => tindapress/v1/operations/list/date
+
+REQUEST:
+- Method: POST
+- Header: key=Content-Type, value=application/x-www-form-urlencoded
+- Params: key=snky (value=session key), key=wpid (value=wordpress id), key=start (value=start date to be search), key=end (value=end date to be search)
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
+- code: 'failed' message: 'Dates not in valid format' data: null
+- code: 'failed' message: 'No results found' data: null
+
+
+IF SUCCESS:
+```
+    {
+        "status": "success",
+        "data": [
+            {
+                "ID": "2",
+                "operation_id": "1",
+                "order_id": "1",
+                "store_name": "McDonald",
+                "product_name": "1pc. Burger Steak with McSpaghetti",
+                "product_price": "69.00",
+                "quantity": "2"
+            },
+            {
+                "ID": "2",
+                "operation_id": "1",
+                "order_id": "1",
+                "store_name": "McDonald",
+                "product_name": "Cheesy Deluxe Burger",
+                "product_price": "145.00",
+                "quantity": "2"
+            },
+             {
+                "date": "2020-08-07 16:26:45",
+                "ID": "3",
+                "operation_id": "2",
+                "order_id": "2",
+                "store_name": "Toyota",
+                "product_name": "McChicken",
+                "product_price": "55.00",
+                "quantity": "3"
+            },
+            {
+                "date": "2020-08-09 16:26:52",
+                "ID": "1",
+                "operation_id": "3",
+                "order_id": "3",
+                "store_name": "Jollibee",
+                "product_name": "Premium Chicken Sandwiches",
+                "product_price": "69.00",
+                "quantity": "4"
+            },
+        ]
+    }
+```
 
 
