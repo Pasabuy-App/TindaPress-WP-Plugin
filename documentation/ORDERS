@@ -4,8 +4,141 @@ The TindaPress for WordPress is an e-commerce plugin lorem ipsum
 
 ### REST API Implementation
 
+####  INSERT STORE => tindapress/v1/order/date
 
+REQUEST:
+- Method: POST
+- Header: key=Content-Type, value=application/x-www-form-urlencoded
+- Params: key=snky (value=session key), key=wpid (value=wordpress id), key=date (value=date to be search)
 
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
+- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
+- code: 'unknown' message: 'Required fields cannot be empty' data: null
+- code: 'failed' message: 'No store  not found' data: null
+- code: 'failed' message: 'Date is not in valid format!' data: null
+- code: 'failed' message: 'No order found by this value!' data: null
+
+IF SUCCESS:
+```
+{
+    "status": "success",
+    "data": [
+        [
+            {
+                "ID": "21",
+                "store": "McDonald",
+                "product": "McFeast",
+                "quantity": "1",
+                "date_created": "2020-08-06 01:25:00"
+            },
+            {
+                "ID": "22",
+                "store": "McDonald",
+                "product": "McChicken",
+                "quantity": "2",
+                "date_created": "2020-08-06 01:25:00"
+            },
+            {
+                "ID": "23",
+                "store": "McDonald",
+                "product": "McNuggets",
+                "quantity": "3",
+                "date_created": "2020-08-06 01:25:00"
+            },
+            {
+                "ID": "24",
+                "store": "McDonald",
+                "product": "Premium Chicken Sandwiches",
+                "quantity": "4",
+                "date_created": "2020-08-06 01:25:00"
+            }
+        ]
+    ]
+}
+```
+    
+####  INSERT STORE => tindapress/v1/order/stage
+
+REQUEST:
+- Method: POST
+- Header: key=Content-Type, value=application/x-www-form-urlencoded
+- Params: key=snky (value=session key), key=wpid (value=wordpress id), key=stage (value=stage to be select by order status)
+
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
+- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
+- code: 'unknown' message: 'Required fields cannot be empty' data: null
+- code: 'failed' message: 'No order found by this value!' data: null
+
+IF SUCCESS:
+```
+{
+    "status": "success",
+    "data": [
+        [
+            {
+                "ID": "1",
+                "store": "Jollibee",
+                "orders": "1pc. Burger Steak",
+                "qty": "1",
+                "date_ordered": "2020-06-01 08:00:00"
+            },
+            {
+                "ID": "2",
+                "store": "Jollibee",
+                "orders": "2pc. Burger Steak",
+                "qty": "2",
+                "date_ordered": "2020-06-01 08:00:00"
+            },
+            {
+                "ID": "3",
+                "store": "Jollibee",
+                "orders": "1pc. Burger Steak with Joly Spaghetti",
+                "qty": "3",
+                "date_ordered": "2020-06-01 08:00:00"
+            },
+            {
+                "ID": "4",
+                "store": "Jollibee",
+                "orders": "Cheesy Deluxe Yumburger",
+                "qty": "4",
+                "date_ordered": "2020-06-01 08:00:00"
+            },
+            {
+                "ID": "5",
+                "store": "Jollibee",
+                "orders": "Bacon Cheesy Deluxe Yumburger",
+                "qty": "1",
+                "date_ordered": "2020-07-02 09:05:00"
+            },
+            {
+                "ID": "6",
+                "store": "Jollibee",
+                "orders": "Cheesy Yumburger",
+                "qty": "2",
+                "date_ordered": "2020-07-02 09:05:00"
+            },
+            {
+                "ID": "7",
+                "store": "Jollibee",
+                "orders": "1pc. Burger Steak",
+                "qty": "3",
+                "date_ordered": "2020-07-02 09:05:00"
+            },
+            {
+                "ID": "8",
+                "store": "Jollibee",
+                "orders": "2pc. Burger Steak",
+                "qty": "4",
+                "date_ordered": "2020-07-02 09:05:00"
+            }
+        ]
+    ]
+}
+```
 
 ## Contributing 
 

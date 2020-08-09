@@ -99,7 +99,7 @@
             {
                 return array(
                         "status" => "failed",
-                        "message" => "No order found by this value.",
+                        "message" => "No order found by this value!",
                 );
             }
             
