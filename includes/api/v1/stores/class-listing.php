@@ -26,7 +26,6 @@
                     )
                 );
             }
-            
            
             // Step2 : Check if wpid and snky is valid
             if (DV_Verification::is_verified() == false) {
@@ -38,7 +37,6 @@
                 );
             }
 
-
             // variables for query
             $table_store = TP_STORES_TABLE;
             $table_revs = TP_REVISION_TABLE;
@@ -49,9 +47,8 @@
             $table_country = DV_COUNTRY_TABLE;
             $table_dv_revs = DV_REVS_TABLE;
             $table_add = DV_ADDRESS_TABLE;
-            
      
-            
+            // Step3 : Query
            $result = $wpdb->get_results("SELECT
                 tp_str.ID,
             (select child_val from $table_revs where id = tp_str.short_info) AS bio,
@@ -70,20 +67,25 @@
                 INNER JOIN $table_add dv_add ON tp_str.address = dv_add.ID	
             ");
 
+            // Step4 : Check if no result
             if (!$result ) {
-                return array(
-                    "status" => "failed",
-                    "message" => "An error occured while fetching data to database.",
-                );
-            }else{
-                return  array(
-                    "status" => "success",
-                    "data" => array(
-                        'list' => $result, 
-                        
+                return rest_ensure_response( 
+                    array(
+                        "status" => "failed",
+                        "message" => "No data."
                     )
                 );
+
             }
+            
+            // Step5 : Return Result 
+            return rest_ensure_response( 
+                array(
+                    "status" => "success",
+                    "data" => array($result,
+                    )
+                )
+            );
             
         }
 

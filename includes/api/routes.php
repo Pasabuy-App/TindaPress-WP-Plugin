@@ -235,7 +235,7 @@
                 'callback' => array('TP_Initialization','delete_product'),
             ));
 
-            register_rest_route( 'tindapress/v1/order', 'listbystages', array(
+            register_rest_route( 'tindapress/v1/order', 'stage', array(
                 'methods' => 'POST',
                 'callback' => array('TP_OrdersByStage','listen'),
             ));

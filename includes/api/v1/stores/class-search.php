@@ -47,7 +47,7 @@
                 
             }
 
-             // Step6 : Sanitize all Request if emply
+             // Step4 : Sanitize all Request if emply
 			if (empty($_POST['search']) ) {
 				return rest_ensure_response( 
 					array(
@@ -71,7 +71,7 @@
             $dv_geo_city    = DV_CITY_TABLE;
             $dv_geo_prov    = DV_PROVINCE_TABLE;
             $dv_geo_court   = DV_COUNTRY_TABLE;     
-            // query
+            // Step5 : Query
             $result = $wpdb->get_results("SELECT
                 tp_str.ID,
                 tp_rev.child_val AS title,
@@ -92,7 +92,7 @@
                 tp_rev.child_val REGEXP '^$value';
                 ");
 
-
+            // Step6 : Check if no result
             if (!$result ) {
                 return rest_ensure_response( 
                     array(
@@ -101,25 +101,16 @@
                     )
                 );
 
-            }else{
-                // reutrn success result
-                return rest_ensure_response( 
-                    array(
-                        "status" => "success",
-                        "data" => array(
-                            'list' => $result, 
-                        
-                        )
-                    )
-                );
-
             }
-              
-        }
-
-        public static function get_store_category_list(){
-            global $wpdb;
             
-
+            // Step9 : Return Result 
+            return rest_ensure_response( 
+                array(
+                    "status" => "success",
+                    "data" => array($result,
+                    )
+                )
+            );
+              
         }
     }

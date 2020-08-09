@@ -26,7 +26,6 @@
                     )
                 );
             }
-            
            
             // Step2 : Check if wpid and snky is valid
             if (DV_Verification::is_verified() == false) {
@@ -38,8 +37,8 @@
                 );
             }
             
-
-            if (!isset($_POST["stages"])) {
+            // Step3 : Sanitize all Request
+            if (!isset($_POST["stage"])) {
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",
@@ -47,9 +46,9 @@
                     )
                 );
             }
-            
 
-            if (empty($_POST["stages"])) {
+            // Step4 : sanitize if all variables is empty
+            if (empty($_POST["stage"])) {
                 return rest_ensure_response( 
                     array(
                         "status" => "failed",
@@ -65,10 +64,9 @@
             $table_revs = TP_REVISION_TABLE;
             $table_orders = MP_ORDERS_TABLE;
             $table_ordes_items = MP_ORDER_ITEMS_TABLE;
-            $stages = $_POST['stages'];
-            
-     
-            
+            $stage = $_POST['stage'];
+        
+            // Step5 : Query
            $result = $wpdb->get_results("SELECT
            mp_ordtem.ID,
            (select child_val from $table_revs where id = (select title from $table_store where id = mp_ord.stid)) AS store,
@@ -78,24 +76,28 @@
            FROM
            $table_ordes_items as mp_ordtem
            INNER JOIN $table_orders as mp_ord ON mp_ord.ID = mp_ordtem.odid
-           WHERE mp_ord.`status` = '$stages'
-           #GROUP BY mp_ordtem.ID
+           WHERE mp_ord.`status` = '$stage'
             ");
-
-            if (!$result ) {
-                return array(
-                    "status" => "failed",
-                    "message" => "An error occured while fetching data to database.",
-                );
-            }else{
-                return  array(
-                    "status" => "success",
-                    "data" => array(
-                        'list' => $result, 
-                        
+            
+            // Step6 : Check if no result
+            if (!$result)
+            {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "failed",
+                        "message" => "No order found by this value."
                     )
                 );
             }
+            
+            // Step7 : Return Result 
+            return rest_ensure_response( 
+                array(
+                    "status" => "success",
+                    "data" => array($result,
+                    )
+                )
+            );
             
         }
 

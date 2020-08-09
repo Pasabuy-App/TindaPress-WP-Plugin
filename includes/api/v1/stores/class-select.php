@@ -47,6 +47,7 @@
                 );
             }
 
+            // Step3 : Sanitize all Request
             if (!isset($_POST["stid"])) {
                 return rest_ensure_response( 
                     array(
@@ -55,7 +56,18 @@
                     )
                 );
             }
+
+            // Step4 : sanitize if all variables is empty
+            if ( empty($_POST["stid"]) ){
+                return rest_ensure_response( 
+                    array(
+                        "status" => "failed",
+                        "message" => "Required fields cannot be empty.",
+                    )
+                );
+            }
             
+            // Step5 : Check if ID is in valid format (integer)
             if ( !is_numeric($_POST["stid"]) ) {
                 return rest_ensure_response( 
                     array(
@@ -65,15 +77,7 @@
                 );
             }
 
-
-            if ( empty($_POST["stid"]) ){
-                return rest_ensure_response( 
-                    array(
-                        "status" => "failed",
-                        "message" => "Required fields cannot be empty.",
-                    )
-                );
-            }
+            // Step6 : Validation of store id
             $stid = $_POST["stid"];
             $get_store = $wpdb->get_row("SELECT ID FROM $table_store  WHERE ID = $stid  ");
                 
@@ -86,10 +90,9 @@
                 );
 			}
 
-
-            
             $user = TP_Select_Store::catch_post();
-            
+
+            // Step7 : Query
             $result = $wpdb->get_results("SELECT
                     tp_str.ID,
             (select child_val from $table_revs where id = (select title from tp_categories where id = tp_str.ctid)) AS category,
@@ -114,6 +117,7 @@
                 WHERE tp_str.ID = '{$user["store_id"]}'
                 ");
             
+            // Step8 : Check if no result
             if (!$result)
             {
                 return rest_ensure_response( 
@@ -124,13 +128,11 @@
                 );
             }
             
-            // Step8 : Return Result 
+            // Step9 : Return Result 
             return rest_ensure_response( 
                 array(
                     "status" => "success",
-                    "data" => array(
-                        'list' => $result, 
-                    
+                    "data" => array($result, 
                     )
                 )
             );
