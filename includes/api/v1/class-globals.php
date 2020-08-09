@@ -151,6 +151,16 @@
             $user_timezone = TP_Globals::get_timezone($wpid);
             date_default_timezone_set($user_timezone->time_zone);
             return date("Y-m-d H:i:s");
+
         }
+
+        public static function convert_date($wpid, $date){
+            global $wpdb;
+            $user_timezone = TP_Globals::get_timezone($wpid);
+            date_default_timezone_set($user_timezone->time_zone);
+
+            return date('Y-m-d H:i:s', strtotime($date));
+        }
+        
         
     }
