@@ -73,11 +73,11 @@
             }
 
             // Step6 : Validate date with format
-            $valdt= TP_OrdersByDate::validateDate($_POST["date"]);   
+            return $valdt= TP_OrdersByDate::validateDate($dt);   
             if ( !$valdt ) {
                return array(
                        "status" => "failed",
-                       "message" => "Date is invalid.",
+                       "message" => "Date is not in valid format!",
                );
            }
         
@@ -112,7 +112,7 @@
             
         }
         
-        public static function validateDate($date, $format = 'Y-m-d')
+        public static function validateDate($date, $format = 'Y-m-d H:i:s')
         {
             $d = DateTime::createFromFormat($format, $date);
             return $d && $d->format($format) == $date;
