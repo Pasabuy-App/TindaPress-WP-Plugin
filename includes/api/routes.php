@@ -12,13 +12,8 @@
 	*/
 
     //Require the USocketNet class which have the core function of this plguin. 
-
-        require plugin_dir_path(__FILE__) . '/v1/stores/class-stores.php';
-        require plugin_dir_path(__FILE__) . '/v1/stores/class-newest.php';
-        // require plugin_dir_path(__FILE__) . '/v1/stores/class-documents.php';
-        require plugin_dir_path(__FILE__) . '/v1/stores/class-categories.php';
-        require plugin_dir_path(__FILE__) . '/v1/stores/class-popular.php';
-
+        
+        //Products Classes
         require plugin_dir_path(__FILE__) . '/v1/products/class-insert.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-listing.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-update.php';
@@ -34,7 +29,7 @@
         require plugin_dir_path(__FILE__) . '/v1/products/class-select-by-category.php';
         // require plugin_dir_path(__FILE__) . '/v1/products/filter/class-categories.php';
 
-        // require plugin_dir_path(__FILE__) . '/v1/category/class-stores.php';
+        //Stores Classes
         // require plugin_dir_path(__FILE__) . '/v1/stores/class-insert.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-update.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-delete.php';
@@ -43,13 +38,17 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/class-listing-active.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-listing-inactive.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-search.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-stores.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-newest.php';
+        // require plugin_dir_path(__FILE__) . '/v1/stores/class-documents.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-categories.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-popular.php';
         
+        //Settings Classes
         require plugin_dir_path(__FILE__) . '/v1/settings/class-banner.php';
         require plugin_dir_path(__FILE__) . '/v1/settings/class-logo.php';
 
-        require plugin_dir_path(__FILE__) . '/v1/class-globals.php';
-        
-         //Category Classes
+        //Category Classes
          require plugin_dir_path(__FILE__) . '/v1/category/class-delete.php';
          require plugin_dir_path(__FILE__) . '/v1/category/class-insert.php';
          require plugin_dir_path(__FILE__) . '/v1/category/class-listing.php';
@@ -59,9 +58,17 @@
          require plugin_dir_path(__FILE__) . '/v1/category/class-store-insert.php';
          require plugin_dir_path(__FILE__) . '/v1/category/class-update.php';
 
-    
+        //Operations Classes
+        require plugin_dir_path(__FILE__) . '/v1/operations/class-list-open.php';
+        require plugin_dir_path(__FILE__) . '/v1/operations/class-list-month.php';
+        require plugin_dir_path(__FILE__) . '/v1/operations/class-list-orders.php';
+
+        //Orders Classes
         require plugin_dir_path(__FILE__) . '/v1/order/class-total-sales.php';
         require plugin_dir_path(__FILE__) . '/v1/order/class-total-sales-date.php';
+
+        //Global Classes
+        require plugin_dir_path(__FILE__) . '/v1/class-globals.php';
          
 
 	// Init check if USocketNet successfully request from wapi.
@@ -149,8 +156,12 @@
                 'methods' => 'POST',
                 'callback' => array('TP_Insert_Documents','listen'),
             ));
-            
- 
+
+            register_rest_route( 'tindapress/v1/stores', 'delete_docs', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Documents','delete_docs'),
+            ));
+     
             
         /*
          * STORE RESTAPI
@@ -194,6 +205,16 @@
                 'callback' => array('TP_Listing_Inactive_Store','listen'),
             ));
 
+            register_rest_route( 'tindapress/v1/stores', 'search', array(
+                'methods' => 'POST',
+                'callback' => array('TP_SearchStore','listen'),
+            ));
+    
+            register_rest_route( 'tindapress/v1/stores', 'newest', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Newest','initialize'),
+            ));
+
         /*
          * ORDER RESTAPI
         */
@@ -208,66 +229,10 @@
                 'callback' => array('TP_Total_sales_date','listen'),
             ));
 
-        
-        
-            
-    
-          
-
-        register_rest_route( 'tindapress/v1/globals', 'delete', array(
-            'methods' => 'POST',
-            'callback' => array('TP_Initialization','delete_product'),
-        ));
-         // sample
-        
-        // store folder
-
-        // add documents
-        register_rest_route( 'tindapress/v1/stores', 'document', array(
-            'methods' => 'POST',
-            'callback' => array('TP_Documents','add_documents'),
-        ));
-        // add single documents
-        
-         // delete Docs 
-        register_rest_route( 'tindapress/v1/stores', 'delete_docs', array(
-            'methods' => 'POST',
-            'callback' => array('TP_Documents','delete_docs'),
-        ));
-
-        register_rest_route( 'tindapress/api/v1/stores', 'categories', array(
-            'methods' => 'POST',
-            'callback' => array('TP_Store','category'),
-        ));
-        register_rest_route( 'tindapress/v1/stores', 'category', array(
-            'methods' => 'POST',
-            'callback' => array('TP_StorebyCategory','initialize'),
-        ));
-
-        register_rest_route( 'tindapress/v1/stores', 'search', array(
-            'methods' => 'POST',
-            'callback' => array('TP_SearchStore','listen'),
-        ));
-
-        register_rest_route( 'tindapress/v1/stores', 'newest', array(
-            'methods' => 'POST',
-            'callback' => array('TP_Newest','initialize'),
-        ));
-
-
-        // product folder
-       
-
-        // store
-        register_rest_route( 'tindapress/v1/category', 'stores', array(
-            'methods' => 'POST',
-            'callback' => array('TP_Storelist','initialize'),
-        ));
-        // new popular
-        register_rest_route( 'tindapress/api/v1/stores', 'popular_store', array(
-            'methods' => 'POST',
-            'callback' => array('TP_Popular_Store','popular_store'),
-        ));
+            register_rest_route( 'tindapress/v1/globals', 'delete', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Initialization','delete_product'),
+            ));
 
         /*
          * CATEGORIES RESTAPI
@@ -313,21 +278,28 @@
                 'callback' => array('TP_Category_Store_Insert','listen'),
             ));
             
-        
 
         /*
          * SETTINGS RESTAPI
         */
 
-        register_rest_route( 'tindapress/v1/settings', 'banner', array(
-            'methods' => 'POST',
-            'callback' => array('TP_Banner_update','listen'),
-        ));
-        register_rest_route( 'tindapress/v1/settings', 'logo', array(
-            'methods' => 'POST',
-            'callback' => array('TP_Logo_update','listen'),
-        ));
+            register_rest_route( 'tindapress/v1/settings', 'banner', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Banner_update','listen'),
+            ));
+            register_rest_route( 'tindapress/v1/settings', 'logo', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Logo_update','listen'),
+            ));
 
+        /*
+         * OPERATIONS RESTAPI
+        */
+
+            register_rest_route( 'tindapress/v1/operations', 'list/open', array(
+                'methods' => 'POST',
+                'callback' => array('TP_List_Open','listen'),
+            ));
 
 
     }
