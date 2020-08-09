@@ -58,7 +58,11 @@
          require plugin_dir_path(__FILE__) . '/v1/category/class-store-insert.php';
          require plugin_dir_path(__FILE__) . '/v1/category/class-update.php';
 
-	
+    
+        require plugin_dir_path(__FILE__) . '/v1/order/class-total-sales.php';
+        require plugin_dir_path(__FILE__) . '/v1/order/class-total-sales-date.php';
+         
+
 	// Init check if USocketNet successfully request from wapi.
     function tindapress_route()
     {
@@ -188,8 +192,21 @@
                 'methods' => 'POST',
                 'callback' => array('TP_Listing_Inactive_Store','listen'),
             ));
-        
-        
+
+        /*
+         * ORDER RESTAPI
+        */
+            
+            register_rest_route( 'tindapress/v1/order', 'total/sales', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Total_sales','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/order', 'total/sales/date', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Total_sales_date','listen'),
+            ));
+
         
         
             
@@ -301,10 +318,10 @@
          * SETTINGS RESTAPI
         */
 
-        register_rest_route( 'tindapress/v1/settings', 'banner', array(
-            'methods' => 'POST',
-            'callback' => array('TP_Banner_update','listen'),
-        ));
+            register_rest_route( 'tindapress/v1/settings', 'banner', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Banner_update','listen'),
+            ));
 
 
 

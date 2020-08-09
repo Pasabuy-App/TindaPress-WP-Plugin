@@ -12,7 +12,7 @@
 ?>
 <?php
 
-    class TP_Total_sales {
+    class TP_Total_sales_date {
 
         public static function listen(){
 			global $wpdb;
@@ -72,9 +72,9 @@
                         "message" => "An error occurred while fetching data to the server.",
                     )
                 );
-            }
-
-
+			}
+			$date = TP_Globals::get_user_date($_POST['wpid']);
+			return substr ($date, 5, 2);
 			$store_id = $_POST["stid"];
 			$result = $wpdb->get_row("SELECT COALESCE
 					( FORMAT( sum( ( SELECT tp_rev.child_val FROM tp_revisions tp_rev WHERE ID = tp_prod.price ) ), 2 ), 0 ) AS total_sales 
