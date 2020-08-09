@@ -73,7 +73,7 @@
             }
 
             // Step6 : Validate date with format
-            return $valdt= TP_OrdersByDate::validateDate($dt);   
+            $valdt= TP_OrdersByDate::validateDate($dt);   
             if ( !$valdt ) {
                return array(
                        "status" => "failed",
