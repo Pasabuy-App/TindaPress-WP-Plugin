@@ -125,7 +125,7 @@
                 $uploadOk = 0;
                 return rest_ensure_response( 
 					array(
-						"status" => "errfailedor",
+						"status" => "failed",
 						"message" => "Your image file size was too big.",
 					)
 				);
