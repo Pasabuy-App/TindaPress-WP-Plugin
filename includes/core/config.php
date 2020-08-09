@@ -12,7 +12,7 @@
 
 	//Defining Global Variables
 	define('TP_PREFIX', 'tp_'); 
-	// define('MP_PREFIX', 'mp_'); 
+	define('MP_PREFIX', 'mp_'); 
 	
 	//Initializing table names
 
@@ -37,8 +37,8 @@
 	define('TP_CONFIGS_TABLE', TP_PREFIX.'configs');
 
 	//Orders Config (Note : The prefix used here is MP which is mobilePOS)
-	// define('MP_ORDERS_TABLE', MP_PREFIX.'orders');
-	// define('MP_ORDER_ITEMS_TABLE', MP_PREFIX.'order_items');
+	define('MP_ORDERS_TABLE', MP_PREFIX.'orders');
+	define('MP_ORDER_ITEMS_TABLE', MP_PREFIX.'order_items');
 
 
 	//Personnels Config

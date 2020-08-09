@@ -27,6 +27,8 @@
         require plugin_dir_path(__FILE__) . '/v1/products/class-listing-price.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-listing-price-storeid.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-select-by-category.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-best-seller.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-best-seller-local.php';
         // require plugin_dir_path(__FILE__) . '/v1/products/filter/class-categories.php';
 
         //Stores Classes
@@ -43,6 +45,7 @@
         // require plugin_dir_path(__FILE__) . '/v1/stores/class-documents.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-categories.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-popular.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-best-seller.php';
         
         //Settings Classes
         require plugin_dir_path(__FILE__) . '/v1/settings/class-banner.php';
@@ -149,6 +152,16 @@
                 'methods' => 'POST',
                 'callback' => array('TP_Select_Store_Category_Product','listen'),
             ));
+            
+            register_rest_route( 'tindapress/v1/products', 'best_seller/global', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Best_Seller_Product','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/products', 'best_seller/local', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Best_Seller_Product_Local','listen'),
+            ));
 
 
         /*
@@ -215,6 +228,11 @@
             register_rest_route( 'tindapress/v1/stores', 'newest', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Newest','initialize'),
+            ));
+
+            register_rest_route( 'tindapress/v1/stores', 'best_seller', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Best_Seller_Store','listen'),
             ));
 
         /*
