@@ -57,30 +57,7 @@
                 );
                 
             }
-
-
-            /*// Step 4: Check if ID is in valid format (integer)
-			if (!is_numeric($_POST["wpid"]) ) {
-				return rest_ensure_response( 
-					array(
-						"status" => "failed",
-						"message" => "Please contact your administrator. ID not in valid format!",
-					)
-                );
-                
-            }
             
-
-			// Step 5: Check if ID exists
-			if (!get_user_by("ID", $_POST['wpid'])) {
-				return rest_ensure_response( 
-					array(
-						"status" => "failed",
-						"message" => "User not found!",
-					)
-                );
-                
-            }*/
             $value = $_POST['search'];
 
             // table names and POST Variables
@@ -116,12 +93,11 @@
                 ");
 
 
-            if (empty( $result) ) {
-                // reutrn success result
+            if (!$result ) {
                 return rest_ensure_response( 
                     array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. No store found with this value."
+                        "status" => "failed",
+                        "message" => "No store found with this value."
                     )
                 );
 

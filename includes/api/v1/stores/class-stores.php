@@ -16,6 +16,18 @@
 
         public static function listen(){
             global $wpdb;
+
+            // declater table names to vatiable
+            $table_store = TP_STORES_TABLE;
+            $table_category = TP_CATEGORIES_TABLE;
+            $table_revs = TP_REVISION_TABLE;
+            $table_brgy = DV_BRGY_TABLE;
+            $table_city = DV_CITY_TABLE;
+            $table_province = DV_PROVINCE_TABLE;
+            $table_country = DV_COUNTRY_TABLE;
+            $table_dv_revs = DV_REVS_TABLE;
+            $table_add = DV_ADDRESS_TABLE;
+            $catid = $_POST['catid'];
             
             // Step1: verify of datavice plugin is activated
             if (TP_Globals::verify_datavice_plugin() == false) {
@@ -70,18 +82,17 @@
                 );
                 
 			}
-
-            // declater table names to vatiable
-            $table_store = TP_STORES_TABLE;
-            $table_category = TP_CATEGORIES_TABLE;
-            $table_revs = TP_REVISION_TABLE;
-            $table_brgy = DV_BRGY_TABLE;
-            $table_city = DV_CITY_TABLE;
-            $table_province = DV_PROVINCE_TABLE;
-            $table_country = DV_COUNTRY_TABLE;
-            $table_dv_revs = DV_REVS_TABLE;
-            $table_add = DV_ADDRESS_TABLE;
-            $catid = $_POST['catid'];
+            $ctid = $_POST["catid"];
+            $get_cat = $wpdb->get_row("SELECT ID FROM $table_category  WHERE ID = $ctid  ");
+                
+             if ( !$get_cat ) {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "failed",
+                        "message" => "No category found.",
+                    )
+                );
+			}
 
             // Step7 : Query
             $result = $wpdb->get_results("SELECT
@@ -105,6 +116,15 @@
             tp_str.ctid = '$catid'
             ");
             
+            if (!$result)
+            {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "failed",
+                        "message" => "No store found with this value."
+                    )
+                );
+            }
             
             // Step8 : Return Result 
             return rest_ensure_response( 

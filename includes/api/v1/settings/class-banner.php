@@ -17,6 +17,19 @@
         public static function listen(WP_REST_Request $request) {
     
             global $wpdb;
+            $later = TP_Globals::date_stamp();
+
+            // variables for query
+            $table_store = TP_STORES_TABLE;
+            $table_store_fields = TP_STORES_FIELDS;
+
+            $table_revs = TP_REVISION_TABLE;
+            $table_revs_fields = TP_REVISION_FIELDS;
+
+            $revs_type = "stores";
+            $wpid = $_POST["wpid"];
+            $stid = $_POST["stid"];
+
             // Step1 : check if datavice plugin is activated
             if (TP_Globals::verify_datavice_plugin() == false) {
                 return rest_ensure_response( 
@@ -37,8 +50,6 @@
                 );
             }
             
-
-            $wpid = $_POST['wpid'];
            
             $files = $request->get_file_params();
             
@@ -69,6 +80,16 @@
                     )
                 );
             }
+            $get_store = $wpdb->get_row("SELECT ID FROM $table_store  WHERE ID = $stid  ");
+                
+             if ( !$get_store ) {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "error",
+                        "message" => "No store found.",
+                    )
+                );
+			}
 
             if ( $files['img']['name'] == NULL  || $files['img']['type'] == NULL) {
 				return rest_ensure_response( 
@@ -151,18 +172,6 @@
 					)
 				);
             } else {
-                $later = TP_Globals::date_stamp();
-
-                // variables for query
-                $table_store = TP_STORES_TABLE;
-                $table_store_fields = TP_STORES_FIELDS;
-
-                $table_revs = TP_REVISION_TABLE;
-                $table_revs_fields = TP_REVISION_FIELDS;
-
-                $revs_type = "stores";
-                $wpid = $_POST["wpid"];
-                $stid = $_POST["stid"];
 
                 $var = $target_dir['path'];
                 if (move_uploaded_file($files['img']['tmp_name'], $target_file)) {

@@ -15,6 +15,17 @@
     class TP_Select_Store {
         public static function listen(){
             global $wpdb;
+            // variables for query
+            $table_store = TP_STORES_TABLE;
+            $table_revs = TP_REVISION_TABLE;
+
+            $table_cotnacts = DV_CONTACTS_TABLE;
+            $table_brgy = DV_BRGY_TABLE;
+            $table_city = DV_CITY_TABLE;
+            $table_province = DV_PROVINCE_TABLE;
+            $table_country = DV_COUNTRY_TABLE;
+            $table_dv_revs = DV_REVS_TABLE;
+            $table_add = DV_ADDRESS_TABLE;
 
             // Step1 : check if datavice plugin is activated
             if (TP_Globals::verify_datavice_plugin() == false) {
@@ -63,19 +74,19 @@
                     )
                 );
             }
+            $stid = $_POST["stid"];
+            $get_store = $wpdb->get_row("SELECT ID FROM $table_store  WHERE ID = $stid  ");
+                
+             if ( !$get_store ) {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "failed",
+                        "message" => "No store found.",
+                    )
+                );
+			}
 
 
-            // variables for query
-            $table_store = TP_STORES_TABLE;
-            $table_revs = TP_REVISION_TABLE;
-
-            $table_cotnacts = DV_CONTACTS_TABLE;
-            $table_brgy = DV_BRGY_TABLE;
-            $table_city = DV_CITY_TABLE;
-            $table_province = DV_PROVINCE_TABLE;
-            $table_country = DV_COUNTRY_TABLE;
-            $table_dv_revs = DV_REVS_TABLE;
-            $table_add = DV_ADDRESS_TABLE;
             
             $user = TP_Select_Store::catch_post();
             
@@ -102,22 +113,27 @@
                     INNER JOIN $table_cotnacts as dv_cont ON tp_str.ID = dv_cont.stid
                 WHERE tp_str.ID = '{$user["store_id"]}'
                 ");
-
-
-            if (!$result ) {
-                return array(
-                    "status" => "failed",
-                    "message" => "An error occured while fetching data to database.",
-                );
-            }else{
-                return  array(
-                    "status" => "success",
-                    "data" => array(
-                        'list' => $result, 
-                        
+            
+            if (!$result)
+            {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "failed",
+                        "message" => "No store found with this value."
                     )
                 );
             }
+            
+            // Step8 : Return Result 
+            return rest_ensure_response( 
+                array(
+                    "status" => "success",
+                    "data" => array(
+                        'list' => $result, 
+                    
+                    )
+                )
+            );
         }
 
         // Catch Post 
