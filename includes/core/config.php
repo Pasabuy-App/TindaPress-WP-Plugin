@@ -9,12 +9,10 @@
      * @version 0.1.0
      * This is where you provide all the constant config.
 	*/
-?>
-<?php
- 
+
 	//Defining Global Variables
 	define('TP_PREFIX', 'tp_'); 
-
+	define('MP_PREFIX', 'mp_'); 
 	
 	//Initializing table names
 
@@ -38,24 +36,21 @@
 	//tp_configs config
 	define('TP_CONFIGS_TABLE', TP_PREFIX.'configs');
 
+	//Orders Config (Note : The prefix used here is MP which is mobilePOS)
+	define('MP_ORDERS_TABLE', MP_PREFIX.'orders');
+	define('MP_ORDER_ITEMS_TABLE', MP_PREFIX.'order_items');
 
+
+	//Personnels Config
 	define('TP_PERSONNELS_TABLE', TP_PREFIX.'personnels');
 
+	//Roles Config
 	define('TP_ROLES_TABLE', TP_PREFIX.'roles');
-
 	define('TP_ROLES_META_TABLE', TP_PREFIX.'roles_meta');
-
-	define('TP_ADDRESS_TABLE', TP_PREFIX.'address');
-
-	define('TP_ORDERS_TABLE', TP_PREFIX.'orders');
-
-	define('TP_ORDERS_ITEMS_TABLE', TP_PREFIX.'orders_items');
-
 	define('TP_ROLES_ACCESS_TABLE', TP_PREFIX.'roles_access');
 
-	define('TP_DOCU_TABLE', TP_PREFIX.'documents');
-
 	// Required Documents PEFIX
+	define('TP_DOCU_TABLE', TP_PREFIX.'documents');
 	define('DTI_REG', 'dti_registration');
 	define('BRGY_CLR', 'barangay_clearance');
 	define('LEASE_CONTR', 'lease_contract');
@@ -64,13 +59,6 @@
 	define('SANTY_PERMIT', 'sanitary_permit');
 	define('FIRE_PERMIT', 'fire_permit');
 	define('MYRS_PERMIT', 'mayors_permit');
-
-	// tp_document fields
 	define('DOCS_FIELDS', 'stid, preview, doctype');
-	// document child key in tp_revisions
 	define('PREVIEW', 'preview');
-	// document revision type
 	define('DOCUMENTS', 'documents');
-
-
-?>

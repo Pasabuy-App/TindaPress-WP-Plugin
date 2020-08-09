@@ -41,6 +41,8 @@
                 
             }
             
+            return $date = TP_Globals::get_user_date($_POST['wpid']);
+         
             // if (!isset($_POST["catid"])  ) {
 			// 	return array(
 			// 			"status" => "unknown",
