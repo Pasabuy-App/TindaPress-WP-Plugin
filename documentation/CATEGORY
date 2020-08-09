@@ -1,8 +1,8 @@
 ### REST API Implementation
 
-#### INSERT CATEGORY
+#### INSERT CATEGORY => tindapress/v1/category/insert
 
-REQUEST:
+REQUEST: 
 - Method: POST
 - Header: key=Content-Type, value=application/x-www-form-urlencoded
 - Params: key=snky (value=session key), key=wpid (value=wordpress id), key=title (value= title of category), key=info (value= information of category), key = types (store or product)
@@ -23,7 +23,7 @@ IF SUCCESS:
     }
 ```
 
-#### UPDATE CATEGORY by CATEGORY `ID`
+#### UPDATE CATEGORY by CATEGORY `ID` => tindapress/v1/category/update
 
 REQUEST:
 - Method: POST
@@ -45,8 +45,8 @@ IF SUCCESS:
     }
 ```
 
-#### DELETE CATEGORY by CATEGORY `ID`
-
+#### DELETE CATEGORY by CATEGORY `ID` => => tindapress/v1/category/delete
+ 
 REQUEST:
 - Method: POST
 - Header: key=Content-Type, value=application/x-www-form-urlencoded
@@ -67,7 +67,7 @@ IF SUCCESS:
     }
 ```
 
-#### LIST of CATEGORIES
+#### LIST of CATEGORIES => tindapress/v1/category/list/all
 
 REQUEST:
 - Method: POST
@@ -116,7 +116,7 @@ IF SUCCESS:
 }
 ```
 
-#### LIST CATEGORIES by `STORE` or `PRODUCT`
+#### LIST CATEGORIES by `STORE` or `PRODUCT` => => tindapress/v1/category/list/type
 
 REQUEST:
 - Method: POST
@@ -152,7 +152,7 @@ IF SUCCESS:
 }
 ```
 
-#### SELECT CATEGORY by `ID`
+#### SELECT CATEGORY by `ID` => tindapress/v1/category/select
 
 REQUEST:
 - Method: POST
@@ -180,7 +180,7 @@ IF SUCCESS:
 }
 ```
 
-#### SELECT CATEGORY by `STORE ID`
+#### SELECT CATEGORY by `STORE ID` => tindapress/v1/category/select/store
 
 REQUEST:
 - Method: POST
@@ -208,7 +208,7 @@ IF SUCCESS:
 }
 ```
 
-#### INSERT CATEGORY within the STORE
+#### INSERT CATEGORY within the STORE => tindapress/v1/category/store/insert
 
 REQUEST:
 - Method: POST

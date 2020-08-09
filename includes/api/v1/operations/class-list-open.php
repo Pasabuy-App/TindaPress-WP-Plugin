@@ -21,8 +21,6 @@
            
             global $wpdb;
 
-            $date = date('Y-m-d h:i:s');
-
             //  Step1 : Verify if Datavice Plugin is Active
 			if (TP_Globals::verify_datavice_plugin() == false) {
                 return  array(
@@ -36,32 +34,20 @@
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
+                        "message" => "Please contact your administrator. Verification Issues!",
                 );
                 
             }
             
-            return $date = TP_Globals::get_user_date($_POST['wpid']);
-         
-            // if (!isset($_POST["catid"])  ) {
-			// 	return array(
-			// 			"status" => "unknown",
-			// 			"message" => "Please contact your administrator. Request unknown!",
-            //     );
-            // }
+            //get current date base on user timezone
+            $date = TP_Globals::get_user_date($_POST['wpid']);
+            
 
-            // if (empty($_POST["catid"])  ) {
-			// 	return array(
-			// 			"status" => "failed",
-			// 			"message" => "Required fields cannot be empty.",
-            //     );
-            // }
-
-            // $category_id = $_POST["catid"];
             $table_revs = TP_REVISION_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
 
-            $open_stores = $wpdb->get_row("SELECT st.ID, date_open, date_close,
+            //Get results
+            $open_stores = $wpdb->get_results("SELECT st.ID, date_open, date_close,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = st.title ) AS `title`,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = st.short_info ) AS `short_info`,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = st.long_info ) AS `long_info`,
@@ -88,7 +74,7 @@
 
             if ( !$open_stores) {
                 return array(
-                    "status" => "error",
+                    "status" => "failed",
                     "message" => "No open stores found.",
                 );
             }

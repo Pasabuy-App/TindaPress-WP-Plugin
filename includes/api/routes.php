@@ -307,6 +307,16 @@
                 'callback' => array('TP_List_Open','listen'),
             ));
 
+            register_rest_route( 'tindapress/v1/operations', 'list/orders', array(
+                'methods' => 'POST',
+                'callback' => array('TP_List_Orders','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/operations', 'list/month', array(
+                'methods' => 'POST',
+                'callback' => array('TP_List_Month','listen'),
+            ));
+
 
     }
     add_action( 'rest_api_init', 'tindapress_route' );

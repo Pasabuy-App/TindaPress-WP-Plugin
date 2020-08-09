@@ -1,0 +1,112 @@
+### REST API Implementation
+
+#### GET LIST of OPEN STORES => tindapress/v1/operations/list/open
+
+REQUEST:
+- Method: POST
+- Header: key=Content-Type, value=application/x-www-form-urlencoded
+- Params: key=snky (value=session key), key=wpid (value=wordpress id), key=title (value= date and time in Y-m-d H:i:s format)
+
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
+- code: 'failed' message: 'No open stores found' data: null
+
+
+IF SUCCESS:
+```
+    {
+        "status": "success",
+        "data": [
+            {
+                "ID": "1",
+                "date_open": "2020-08-09 12:32:53",
+                "date_close": "2020-08-09 21:32:56",
+                "title": "Jollibee",
+                "short_info": "No.1 Fast Food in the Philippines.",
+                "long_info": "It’s also the most awarded Filipino fast-food chain.",
+                "logo": "/2020/08/logo-jollibee.jpg",
+                "banner": "/2020/08/banner-jollibee.jpg",
+                "street": "Alabang Market Jollibee",
+                "brgy": "Alabang",
+                "city": "City of Muntinlupa",
+                "province": "NCR - 4th District",
+                "country": "Philippines"
+            },
+            {
+                "ID": "4",
+                "date_open": "2020-08-09 10:32:53",
+                "date_close": "2020-08-09 22:32:56",
+                "title": "Easy PC",
+                "short_info": "Store for computer and laptop parts, hardware and software.",
+                "long_info": "A leading technology retailer in the Philippines, EasyPC sells high-quality computer.",
+                "logo": "logo/easypc.jpg",
+                "banner": "banner/easypc.jpg",
+                "street": "Barong Barong St. Toyota",
+                "brgy": "Cupang",
+                "city": "City of Muntinlupa",
+                "province": "NCR - 4th District",
+                "country": "Philippines"
+            },
+            {
+                "ID": "5",
+                "date_open": "2020-08-09 10:32:53",
+                "date_close": "2020-08-09 22:32:56",
+                "title": "Ace Hardware",
+                "short_info": "Anything you need in your house, you can find here in Ace Hardware.",
+                "long_info": "It is the world's largest hardware retail cooperative, and the largest non-grocery American retail cooperative",
+                "logo": "logo/acehardware.jpg",
+                "banner": "banner/acehardware.jpg",
+                "street": "Tensuan St. Easy PC",
+                "brgy": "Poblacion",
+                "city": "City of Muntinlupa",
+                "province": "NCR - 4th District",
+                "country": "Philippines"
+            }
+        ]
+    }
+```
+
+#### GET LIST of ORDERS BY OPERATIONS `ID` => tindapress/v1/operations/list/orders
+
+REQUEST:
+- Method: POST
+- Header: key=Content-Type, value=application/x-www-form-urlencoded
+- Params: key=snky (value=session key), key=wpid (value=wordpress id), key=ops_id (value= toperation id)
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
+- code: 'unknown' message: 'Required fields cannot be empty' data: null
+- code: 'failed' message: 'This operation id does not exists' data: null
+- code: 'failed' message: 'No results found' data: null
+
+
+IF SUCCESS:
+```
+    {
+        "status": "success",
+        "data": [
+            {
+                "ID": "2",
+                "operation_id": "1",
+                "order_id": "1",
+                "store_name": "McDonald",
+                "product_name": "1pc. Burger Steak with McSpaghetti",
+                "product_price": "69.00",
+                "quantity": "2"
+            },
+            {
+                "ID": "2",
+                "operation_id": "1",
+                "order_id": "1",
+                "store_name": "McDonald",
+                "product_name": "Cheesy Deluxe Burger",
+                "product_price": "145.00",
+                "quantity": "2"
+            }
+        ]
+    }
+```
+
+
+
