@@ -73,18 +73,25 @@
                     )
                 );
 			}
+			
 			$date = TP_Globals::get_user_date($_POST['wpid']);
-			return substr ($date, 5, 2);
+			$expected_date  = $date_expected = date('Y-m-d h:i:s', strtotime($date. ' - 1 month'));
+			
+			$order_items_table = MP_ORDER_ITEMS_TABLE;
+			$order_items = MP_ORDERS_TABLE;
+			$product_table = TP_PRODUCT_TABLE;
+			$tp_revs_table = TP_REVISION_TABLE;
+
 			$store_id = $_POST["stid"];
 			$result = $wpdb->get_row("SELECT COALESCE
-					( FORMAT( sum( ( SELECT tp_rev.child_val FROM tp_revisions tp_rev WHERE ID = tp_prod.price ) ), 2 ), 0 ) AS total_sales 
+					( FORMAT( sum( ( SELECT tp_rev.child_val FROM $tp_revs_table tp_rev WHERE ID = tp_prod.price ) ), 2 ), 0 ) AS total_sales 
 				FROM
-					mp_orders mp_ord
-					LEFT JOIN mp_order_items mp_ord_itms ON mp_ord_itms.odid = mp_ord.ID
-					LEFT JOIN tp_products tp_prod ON tp_prod.ID = mp_ord_itms.pdid 
+					$order_items mp_ord
+					LEFT JOIN $order_items_table mp_ord_itms ON mp_ord_itms.odid = mp_ord.ID
+					LEFT JOIN $product_table tp_prod ON tp_prod.ID = mp_ord_itms.pdid 
 				WHERE
-					mp_ord.stid = $store_id");
-
+					mp_ord.stid = 2  AND MONTH(mp_ord.date_created)  BETWEEN MONTH('$expected_date')  AND  MONTH('$date')
+			");
 
 			if ($result->total_sales <  1) {
 				return array(
@@ -98,7 +105,8 @@
 					"data" => array(
 						'list' => $result
 					)
-			);
+				);
+
 			}
 
 

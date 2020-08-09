@@ -96,24 +96,24 @@
 
             // Step7 : Query
             $result = $wpdb->get_results("SELECT
-            tp_str.ID,
-            (select child_val from $table_revs where id = (select title from tp_categories where id = tp_str.ctid)) AS cat,
-            (select child_val from $table_revs where id = tp_str.title) AS stname,
-            (select child_val from $table_revs where id = tp_str.short_info) AS bio,
-            (select child_val from $table_revs where id = tp_str.long_info) AS details,
-            (select child_val from $table_revs where id = tp_str.logo) AS icon,
-            (select child_val from $table_revs where id = tp_str.banner) AS bg,
-            (select child_val from $table_revs where id = tp_str.`status`) AS stats,
-            (select child_val from $table_dv_revs where id = dv_add.street) as street,
-            (SELECT brgy_name FROM $table_brgy WHERE ID = (select child_val from $table_dv_revs where id = dv_add.brgy)) as brgy,
-            (SELECT citymun_name FROM $table_city WHERE city_code = (select child_val from $table_dv_revs where id = dv_add.city)) as city,
-            (SELECT prov_name FROM $table_province WHERE prov_code = (select child_val from $table_dv_revs where id = dv_add.province)) as province,
-            (SELECT country_name FROM $table_country WHERE id = (select child_val from $table_dv_revs where id = dv_add.country)) as country
-            FROM
-            $table_store tp_str
-            INNER JOIN $table_add dv_add ON tp_str.address = dv_add.ID
-            WHERE
-            tp_str.ctid = '$catid'
+                tp_str.ID,
+                (select child_val from $table_revs where id = (select title from tp_categories where id = tp_str.ctid)) AS cat,
+                (select child_val from $table_revs where id = tp_str.title) AS stname,
+                (select child_val from $table_revs where id = tp_str.short_info) AS bio,
+                (select child_val from $table_revs where id = tp_str.long_info) AS details,
+                (select child_val from $table_revs where id = tp_str.logo) AS icon,
+                (select child_val from $table_revs where id = tp_str.banner) AS bg,
+                (select child_val from $table_revs where id = tp_str.`status`) AS stats,
+                (select child_val from $table_dv_revs where id = dv_add.street) as street,
+                (SELECT brgy_name FROM $table_brgy WHERE ID = (select child_val from $table_dv_revs where id = dv_add.brgy)) as brgy,
+                (SELECT citymun_name FROM $table_city WHERE city_code = (select child_val from $table_dv_revs where id = dv_add.city)) as city,
+                (SELECT prov_name FROM $table_province WHERE prov_code = (select child_val from $table_dv_revs where id = dv_add.province)) as province,
+                (SELECT country_name FROM $table_country WHERE id = (select child_val from $table_dv_revs where id = dv_add.country)) as country
+                FROM
+                $table_store tp_str
+                INNER JOIN $table_add dv_add ON tp_str.address = dv_add.ID
+                WHERE
+                tp_str.ctid = '$catid'
             ");
             
             if (!$result)
