@@ -21,6 +21,14 @@
 
             global $wpdb;
 
+            // variables for query
+            $table_store = TP_STORES_TABLE;
+            $table_products = TP_PRODUCT_TABLE;
+            $table_revs = TP_REVISION_TABLE;
+            $table_orders = MP_ORDERS_TABLE;
+            $table_ordes_items = MP_ORDER_ITEMS_TABLE;
+            $dt = TP_Globals::convert_date($_POST["wpid"],$_POST["date"]);
+
             // Step1 : check if datavice plugin is activated
             if (TP_Globals::verify_datavice_plugin() == false) {
                 return array(
@@ -38,7 +46,7 @@
             }
             
             // Step3 : Sanitize all Request
-            if (!isset($_POST["stage"])) {
+            if (!isset($_POST["stid"]) || !isset($_POST["date"])) {
                 return array(
                         "status" => "unknown",
                         "message" => "Please contact your administrator. Request unknown!",
@@ -46,14 +54,14 @@
             }
 
             // Step4 : sanitize if all variables is empty
-            if (empty($_POST["stage"])) {
+            if (empty($_POST["stid"]) || empty($_POST["date"])) {
                 return array(
                         "status" => "failed",
                         "message" => "Required fields cannot be empty.",
                 );
             }
 
-            // Step6 : Validation of store id
+            // Step5 : Validation of store id
             $stid = $_POST["stid"];
             $get_store = $wpdb->get_row("SELECT ID FROM $table_store  WHERE ID = $stid  ");
                 
@@ -62,30 +70,31 @@
                         "status" => "failed",
                         "message" => "No store found.",
                 );
-			}
+            }
 
-            // variables for query
-            $table_store = TP_STORES_TABLE;
-            $table_products = TP_PRODUCT_TABLE;
-            $table_revs = TP_REVISION_TABLE;
-            $table_orders = MP_ORDERS_TABLE;
-            $table_ordes_items = MP_ORDER_ITEMS_TABLE;
-            $stage = $_POST['stage'];
+            // Step6 : Validate date with format
+            $valdt= TP_OrdersByDate::validateDate($_POST["date"]);   
+            if ( !$valdt ) {
+               return array(
+                       "status" => "failed",
+                       "message" => "Date is invalid.",
+               );
+           }
         
-            // Step5 : Query
+            // Step7 : Query
            $result = $wpdb->get_results("SELECT
            mp_ordtem.ID,
            (select child_val from $table_revs where id = (select title from $table_store where id = mp_ord.stid)) AS store,
-           (select child_val from $table_revs where id = (select title from $table_products where id = mp_ordtem.pdid)) AS orders,
-           mp_ordtem.quantity as qty,
-           mp_ord.date_created as date_ordered
+           (select child_val from $table_revs where id = (select title from $table_products where id = mp_ordtem.pdid)) AS product,
+           mp_ordtem.quantity,
+           mp_ord.date_created
            FROM
            $table_ordes_items as mp_ordtem
            INNER JOIN $table_orders as mp_ord ON mp_ord.ID = mp_ordtem.odid
-           WHERE mp_ord.`status` = '$stage'
+           WHERE mp_ord.stid = '$stid' and DATE(mp_ord.date_created) = '$dt'
             ");
             
-            // Step6 : Check if no result
+            // Step8 : Check if no result
             if (!$result)
             {
                 return array(
@@ -94,13 +103,19 @@
                 );
             }
             
-            // Step7 : Return Result 
+            // Step9 : Return Result 
             return array(
                     "status" => "success",
                     "data" => array($result,
                 )
             );
             
+        }
+        
+        public static function validateDate($date, $format = 'Y-m-d')
+        {
+            $d = DateTime::createFromFormat($format, $date);
+            return $d && $d->format($format) == $date;
         }
 
     }
