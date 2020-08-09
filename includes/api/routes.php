@@ -324,7 +324,10 @@
                 'methods' => 'POST',
                 'callback' => array('TP_Banner_update','listen'),
             ));
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
         register_rest_route( 'tindapress/v1/settings', 'banner', array(
             'methods' => 'POST',
             'callback' => array('TP_Banner_update','listen'),
@@ -333,7 +336,10 @@
             'methods' => 'POST',
             'callback' => array('TP_Logo_update','listen'),
         ));
+<<<<<<< Updated upstream
 >>>>>>> 51653e5f5be6d0554370b98ff2d6ac8bf67e7535
+=======
+>>>>>>> Stashed changes
 
 
 
