@@ -9,51 +9,47 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
-?>
-<?php
-
     class TP_SearchStore {
+
         public static function listen(){
+            return rest_ensure_response( 
+                TP_SearchStore:: list_open()
+            );
+        }
+
+        public static function list_open(){
             global $wpdb;
 
              // Step1: verify of datavice plugin is activated
             if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+                return array(
                         "status" => "unknown",
                         "message" => "Please contact your administrator. Plugin Missing!",
-                    )
                 );
             }
             
             // Step2 : Check if wpid and snky is valid
             if (DV_Verification::is_verified() == false) {
-                return rest_ensure_response( 
-                    array(
+                return array(
                         "status" => "unknown",
                         "message" => "Please contact your administrator. Verification Issues!",
-                    )
                 );
             }
 
             // Step3 : Sanitize all Request
 			if (!isset($_POST['search']) ) {
-				return rest_ensure_response( 
-					array(
+				return array(
 						"status" => "unknown",
 						"message" => "Please contact your administrator. Request unknown!",
-					)
                 );
                 
             }
 
              // Step4 : Sanitize all Request if emply
 			if (empty($_POST['search']) ) {
-				return rest_ensure_response( 
-					array(
+				return array(
 						"status" => "unknown",
 						"message" => "Required fields cannot be empyty.",
-					)
                 );
                 
             }
@@ -94,21 +90,17 @@
 
             // Step6 : Check if no result
             if (!$result ) {
-                return rest_ensure_response( 
-                    array(
+                return array(
                         "status" => "failed",
-                        "message" => "No store found with this value."
-                    )
+                        "message" => "No store found with this value.",
                 );
 
             }
             
             // Step9 : Return Result 
-            return rest_ensure_response( 
-                array(
+            return array(
                     "status" => "success",
                     "data" => array($result,
-                    )
                 )
             );
               

@@ -67,6 +67,7 @@
         require plugin_dir_path(__FILE__) . '/v1/order/class-total-sales.php';
         require plugin_dir_path(__FILE__) . '/v1/order/class-total-sales-date.php';
         require plugin_dir_path(__FILE__) . '/v1/order/class-listing-stages.php';
+        require plugin_dir_path(__FILE__) . '/v1/order/class-listing-date.php';
 
         //Global Classes
         require plugin_dir_path(__FILE__) . '/v1/class-globals.php';
@@ -238,6 +239,11 @@
             register_rest_route( 'tindapress/v1/order', 'stage', array(
                 'methods' => 'POST',
                 'callback' => array('TP_OrdersByStage','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/order', 'date', array(
+                'methods' => 'POST',
+                'callback' => array('TP_OrdersByDate','listen'),
             ));
 
         /*

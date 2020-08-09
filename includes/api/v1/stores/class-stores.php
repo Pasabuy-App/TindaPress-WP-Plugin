@@ -9,12 +9,15 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
-?>
-<?php
-
     class TP_StorebyCategory {
 
         public static function listen(){
+            return rest_ensure_response( 
+                TP_StorebyCategory:: list_open()
+            );
+        }
+
+        public static function list_open(){
             global $wpdb;
 
             // declater table names to variable
@@ -31,53 +34,43 @@
             
             // Step1: verify of datavice plugin is activated
             if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+                return array(
                         "status" => "unknown",
                         "message" => "Please contact your administrator. Plugin Missing!",
-                    )
                 );
             }
             
             // Step2 : Check if wpid and snky is valid
             if (DV_Verification::is_verified() == false) {
-                return rest_ensure_response( 
-                    array(
+                return array(
                         "status" => "unknown",
                         "message" => "Please contact your administrator. Verification Issues!",
-                    )
                 );
             }
 
             // Step3 : Sanitize all Request
 			if (!isset($_POST['catid']) ) {
-				return rest_ensure_response( 
-					array(
+				return array(
 						"status" => "unknown",
 						"message" => "Please contact your administrator. Request unknown!",
-					)
                 );
                 
             }
             
             // Step4 : sanitize if all variables is empty
             if (empty($_POST["catid"])) {
-				return rest_ensure_response( 
-					array(
+				return array(
 						"status" => "unknown",
 						"message" => "Required fileds cannot be empty!",
-					)
                 );
                 
             }
 
             // Step5 : Check if ID is in valid format (integer)
 			if (!is_numeric($_POST['catid'])) {
-				return rest_ensure_response( 
-					array(
+				return array(
 						"status" => "failed",
 						"message" => "Please contact your administrator. ID not in valid format!",
-					)
                 );
                 
             }
@@ -87,11 +80,9 @@
             $get_cat = $wpdb->get_row("SELECT ID FROM $table_category  WHERE ID = $ctid  ");
                 
              if ( !$get_cat ) {
-                return rest_ensure_response( 
-                    array(
+                return array(
                         "status" => "failed",
                         "message" => "No category found.",
-                    )
                 );
 			}
 
@@ -120,20 +111,16 @@
             // Step8 : Check if no result
             if (!$result)
             {
-                return rest_ensure_response( 
-                    array(
+                return array(
                         "status" => "failed",
-                        "message" => "No store found with this value."
-                    )
+                        "message" => "No store found with this value.",
                 );
             }
             
             // Step9 : Return Result 
-            return rest_ensure_response( 
-                array(
+            return array(
                     "status" => "success",
                     "data" => array($result,
-                    )
                 )
             );
 

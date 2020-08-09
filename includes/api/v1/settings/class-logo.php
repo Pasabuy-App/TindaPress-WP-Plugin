@@ -9,8 +9,6 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
-?>
-<?php
     class TP_Logo_update{
        
         // image upload
@@ -113,7 +111,7 @@
                 $img_name = sanitize_file_name($_POST['in']);
             }
 
-            $completed_file_name = 'logo-'.$img_name;
+            $completed_file_name = 'Logo-'.$img_name;
 
             $target_file = $target_dir['path'] . '/' . basename($completed_file_name);
             $uploadOk = 1;
@@ -175,12 +173,24 @@
             } else {
 
                 $var = $target_dir['path'];
+                    
+                // Validation of store id
+                $stid = $_POST["stid"];
+                $get_store = $wpdb->get_row("SELECT ID FROM $table_store  WHERE ID = $stid  ");
+                    
+                if ( !$get_store ) {
+                    return array(
+                            "status" => "failed",
+                            "message" => "No store found.",
+                    );
+                }
+                $logo_name = trailingslashit($target_dir['subdir']).$completed_file_name;
+
                 if (move_uploaded_file($files['img']['tmp_name'], $target_file)) {
               
-                    $logo_name = trailingslashit($target_dir['subdir']).$completed_file_name;
-            $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '$stid', 'logo', '$logo_name', '$wpid', '$later')");
-            $logo_id = $wpdb->insert_id;
-            $result = $wpdb->query("UPDATE $table_store SET `logo` = $logo_id WHERE ID = '$stid' ");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '$stid', 'logo', '$logo_name', '$wpid', '$later')");
+                $logo_id = $wpdb->insert_id;
+                $result = $wpdb->query("UPDATE $table_store SET `logo` = $logo_id WHERE ID = '$stid' ");
 
                     return rest_ensure_response( 
                         array(

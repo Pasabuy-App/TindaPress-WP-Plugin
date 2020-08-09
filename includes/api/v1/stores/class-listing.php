@@ -9,31 +9,31 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
-?>
-<?php
-
     class TP_Listing_Store {
-        public static function listen(){
-            global $wpdb;
 
+        public static function listen(){
+            return rest_ensure_response( 
+                TP_Listing_Store:: list_open()
+            );
+        }
+
+        public static function list_open(){
+
+            global $wpdb;
             
             // Step1 : check if datavice plugin is activated
             if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+                return array(
                         "status" => "unknown",
                         "message" => "Please contact your administrator. Plugin Missing!",
-                    )
                 );
             }
            
             // Step2 : Check if wpid and snky is valid
             if (DV_Verification::is_verified() == false) {
-                return rest_ensure_response( 
-                    array(
+                return array(
                         "status" => "unknown",
                         "message" => "Please contact your administrator. Verification Issues!",
-                    )
                 );
             }
 
@@ -69,21 +69,17 @@
 
             // Step4 : Check if no result
             if (!$result ) {
-                return rest_ensure_response( 
-                    array(
+                return array(
                         "status" => "failed",
-                        "message" => "No data."
-                    )
+                        "message" => "No results found.",
                 );
 
             }
             
             // Step5 : Return Result 
-            return rest_ensure_response( 
-                array(
+            return array(
                     "status" => "success",
                     "data" => array($result,
-                    )
                 )
             );
             

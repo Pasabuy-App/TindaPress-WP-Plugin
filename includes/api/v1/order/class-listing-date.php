@@ -9,18 +9,18 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
-    class TP_OrdersByStage {
+    class TP_OrdersByDate {
 
         public static function listen(){
             return rest_ensure_response( 
-                TP_OrdersByStage:: list_open()
+                TP_OrdersByDate:: list_open()
             );
         }
 
         public static function list_open(){
 
             global $wpdb;
-            
+
             // Step1 : check if datavice plugin is activated
             if (TP_Globals::verify_datavice_plugin() == false) {
                 return array(
@@ -52,6 +52,17 @@
                         "message" => "Required fields cannot be empty.",
                 );
             }
+
+            // Step6 : Validation of store id
+            $stid = $_POST["stid"];
+            $get_store = $wpdb->get_row("SELECT ID FROM $table_store  WHERE ID = $stid  ");
+                
+             if ( !$get_store ) {
+                return array(
+                        "status" => "failed",
+                        "message" => "No store found.",
+                );
+			}
 
             // variables for query
             $table_store = TP_STORES_TABLE;

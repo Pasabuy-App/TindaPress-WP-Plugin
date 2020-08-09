@@ -9,8 +9,6 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
-?>
-<?php
     class TP_Banner_update{
        
         // image upload
@@ -174,14 +172,24 @@
             } else {
 
                 $var = $target_dir['path'];
+                    
+                // Validation of store id
+                $stid = $_POST["stid"];
+                $get_store = $wpdb->get_row("SELECT ID FROM $table_store  WHERE ID = $stid  ");
+                    
+                if ( !$get_store ) {
+                    return array(
+                            "status" => "failed",
+                            "message" => "No store found.",
+                    );
+                }
+                $banner_name = trailingslashit($target_dir['subdir']).$completed_file_name;
+
                 if (move_uploaded_file($files['img']['tmp_name'], $target_file)) {
               
-                    $banner_name = trailingslashit($target_dir['subdir']).$completed_file_name;
-                    //$banner_name = substr($banner_name,0,strlen($banner_name) - 4);
-            //update_user_meta( $wpid, 'banner', $banner_name);
-            $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '$stid', 'banner', '$banner_name', '$wpid', '$later')");
-            $banner_id = $wpdb->insert_id;
-            $result = $wpdb->query("UPDATE $table_store SET `banner` = $banner_id WHERE ID = '$stid' ");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '$stid', 'banner', '$banner_name', '$wpid', '$later')");
+                $banner_id = $wpdb->insert_id;
+                $result = $wpdb->query("UPDATE $table_store SET `banner` = $banner_id WHERE ID = '$stid' ");
 
                     return rest_ensure_response( 
                         array(

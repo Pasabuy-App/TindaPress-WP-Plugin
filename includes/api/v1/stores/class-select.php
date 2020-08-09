@@ -9,16 +9,20 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
-?>
-<?php
-
     class TP_Select_Store {
+
         public static function listen(){
+            return rest_ensure_response( 
+                TP_Select_Store:: list_open()
+            );
+        }
+
+        public static function list_open(){
             global $wpdb;
+
             // variables for query
             $table_store = TP_STORES_TABLE;
             $table_revs = TP_REVISION_TABLE;
-
             $table_cotnacts = DV_CONTACTS_TABLE;
             $table_brgy = DV_BRGY_TABLE;
             $table_city = DV_CITY_TABLE;
@@ -29,51 +33,41 @@
 
             // Step1 : check if datavice plugin is activated
             if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+                return array(
                         "status" => "unknown",
                         "message" => "Please contact your administrator. Plugin Missing!",
-                    )
                 );
             }
             
             // Step2 : Check if wpid and snky is valid
             if (DV_Verification::is_verified() == false) {
-                return rest_ensure_response( 
-                    array(
+                return array(
                         "status" => "unknown",
                         "message" => "Please contact your administrator. Verification Issues!",
-                    )
                 );
             }
 
             // Step3 : Sanitize all Request
             if (!isset($_POST["stid"])) {
-                return rest_ensure_response( 
-                    array(
+                return array(
                         "status" => "unknown",
                         "message" => "Please contact your administrator. Request unknown!",
-                    )
                 );
             }
 
             // Step4 : sanitize if all variables is empty
             if ( empty($_POST["stid"]) ){
-                return rest_ensure_response( 
-                    array(
+                return array(
                         "status" => "failed",
                         "message" => "Required fields cannot be empty.",
-                    )
                 );
             }
             
             // Step5 : Check if ID is in valid format (integer)
             if ( !is_numeric($_POST["stid"]) ) {
-                return rest_ensure_response( 
-                    array(
+                return array(
                         "status" => "unknown",
                         "message" => "Please contact your administrator. ID is not in valid format.",
-                    )
                 );
             }
 
@@ -82,11 +76,9 @@
             $get_store = $wpdb->get_row("SELECT ID FROM $table_store  WHERE ID = $stid  ");
                 
              if ( !$get_store ) {
-                return rest_ensure_response( 
-                    array(
+                return array(
                         "status" => "failed",
                         "message" => "No store found.",
-                    )
                 );
 			}
 
@@ -120,20 +112,16 @@
             // Step8 : Check if no result
             if (!$result)
             {
-                return rest_ensure_response( 
-                    array(
+                return array(
                         "status" => "failed",
-                        "message" => "No store found with this value."
-                    )
+                        "message" => "No store found with this value.",
                 );
             }
             
             // Step9 : Return Result 
-            return rest_ensure_response( 
-                array(
+            return array(
                     "status" => "success",
                     "data" => array($result, 
-                    )
                 )
             );
         }
