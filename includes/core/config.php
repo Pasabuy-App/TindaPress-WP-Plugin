@@ -37,7 +37,7 @@
 	define('TP_CONFIGS_TABLE', TP_PREFIX.'configs');
 
 	//Orders Config (Note : The prefix used here is MP which is mobilePOS)
-	define('MP_ORDERS_TABLE', MP_PREFIX.'orders');
+	// define('MP_ORDERS_TABLE', MP_PREFIX.'orders');
 	// define('MP_ORDER_ITEMS_TABLE', MP_PREFIX.'order_items');
 
 
