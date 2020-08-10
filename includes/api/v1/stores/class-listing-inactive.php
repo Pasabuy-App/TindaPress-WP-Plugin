@@ -16,15 +16,14 @@
         public static function listen(){
             global $wpdb;
 
-            // Step1 : check if datavice plugin is activated
-            if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                    )
-                );
-            }
+           //Check if prerequisites plugin are missing
+           $plugin = TP_Globals::verify_prerequisites();
+           if ($plugin !== true) {
+               return array(
+                       "status" => "unknown",
+                       "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+               );
+           }
                 
             // Step2 : Check if wpid and snky is valid
             if (DV_Verification::is_verified() == false) {
@@ -70,16 +69,13 @@
             if ($result < 1 ) {
                 return array(
                     "status" => "failed",
-                    "message" => "An error occured while fetching data to database.",
+                    "message" => "No results found.",
                 );
 
             }else{
                 return  array(
                     "status" => "success",
-                    "data" => array(
-                        'list' => $result, 
-                        
-                    )
+                    "data" => $result
                 );
 
             }

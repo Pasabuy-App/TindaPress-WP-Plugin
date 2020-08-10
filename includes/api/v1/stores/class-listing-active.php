@@ -16,13 +16,12 @@
         public static function listen(){
             global $wpdb;
 
-            // Step1 : check if datavice plugin is activated
-            if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+            //Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                    )
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
                 
@@ -38,7 +37,7 @@
 
             // variables for query
             $table_store = TP_STORES_TABLE;
-            $table_revs = TP_REVISION_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
 
             $table_brgy = DV_BRGY_TABLE;
             $table_city = DV_CITY_TABLE;
@@ -70,16 +69,13 @@
             if ($result < 1 ) {
                 return array(
                     "status" => "failed",
-                    "message" => "An error occured while fetching data to database.",
+                    "message" => "No results found.",
                 );
                 
             }else{
                 return  array(
                     "status" => "success",
-                    "data" => array(
-                        'list' => $result, 
-                        
-                    )
+                    "data" => $result
                 );
 
             }

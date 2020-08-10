@@ -23,7 +23,7 @@
             // declater table names to variable
             $table_store = TP_STORES_TABLE;
             $table_category = TP_CATEGORIES_TABLE;
-            $table_revs = TP_REVISION_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
             $table_brgy = DV_BRGY_TABLE;
             $table_city = DV_CITY_TABLE;
             $table_province = DV_PROVINCE_TABLE;
@@ -32,14 +32,15 @@
             $table_add = DV_ADDRESS_TABLE;
             $catid = $_POST['catid'];
             
-            // Step1: verify of datavice plugin is activated
-            if (TP_Globals::verify_datavice_plugin() == false) {
+            //Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
                 return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
-            
+
             // Step2 : Check if wpid and snky is valid
             if (DV_Verification::is_verified() == false) {
                 return array(
@@ -66,15 +67,6 @@
                 
             }
 
-            // Step5 : Check if ID is in valid format (integer)
-			if (!is_numeric($_POST['catid'])) {
-				return array(
-						"status" => "failed",
-						"message" => "Please contact your administrator. ID not in valid format!",
-                );
-                
-            }
-            
             // Step6 : Validation of category id
             $ctid = $_POST["catid"];
             $get_cat = $wpdb->get_row("SELECT ID FROM $table_category  WHERE ID = $ctid  ");
@@ -113,15 +105,14 @@
             {
                 return array(
                         "status" => "failed",
-                        "message" => "No store found with this value!",
+                        "message" => "No results found!",
                 );
             }
             
             // Step9 : Return Result 
             return array(
                     "status" => "success",
-                    "data" => array($result,
-                )
+                    "data" => $result
             );
 
         }   

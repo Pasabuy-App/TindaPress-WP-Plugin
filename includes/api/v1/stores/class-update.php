@@ -14,13 +14,12 @@
         public static function listen(){
             global $wpdb;
 
-            // Step1 : check if datavice plugin is activated
-            if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+            //Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                    )
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
             
@@ -68,12 +67,7 @@
             
             }
 
-            if (  !is_numeric($_POST["ctid"]) || !is_numeric($_POST["address"]) ) {
-                return array(
-                    "status" => "unknown",
-                    "message" => "Please contact your administrator. Id is not in Valid format!",
-                );
-            }
+           
 
             $later = TP_Globals::date_stamp();
             
@@ -84,7 +78,7 @@
             $table_store_fields = TP_STORES_FIELDS;
 
             $table_revs = TP_REVISION_TABLE;
-            $table_revs_fields = TP_REVISION_FIELDS;
+            $table_revs_fields = TP_REVISIONS_FIELDS;
 
             $revs_type = "stores";
 
@@ -142,7 +136,7 @@
                 $wpdb->query("COMMIT");
                 return array(
                     "status" => "success",
-                    "message" => "Store has successfully updated.",
+                    "message" => "Data has been updated successfully.",
                 );
             }
 

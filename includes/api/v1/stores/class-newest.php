@@ -18,13 +18,12 @@
             
             global $wpdb;
             
-            // Step1 : check if datavice  plugin is activated
-            if (TP_Globals::verifiy_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+            //Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                    )
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 
@@ -44,28 +43,6 @@
 					array(
 						"status" => "unknown",
 						"message" => "Please contact your administrator. Request unknown!",
-					)
-                );
-                
-            }
-
-            // Step 3: Check if ID is in valid format (integer)
-			if (!is_numeric($_POST["wpid"])) {
-				return rest_ensure_response( 
-					array(
-						"status" => "failed",
-						"message" => "Please contact your administrator. ID not in valid format!",
-					)
-                );
-                
-			}
-
-			// Step 4: Check if ID exists
-			if (!get_user_by("ID", $_POST['wpid'])) {
-				return rest_ensure_response( 
-					array(
-						"status" => "failed",
-						"message" => "User not found!",
 					)
                 );
                 
@@ -93,12 +70,12 @@
             
             // tindapress table variables declarations
             $store_table           = TP_STORES_TABLE;
-            $store_revs_table      = TP_STORES_REVS_TABLE;
+  
             $categories_table      = TP_CATEGORIES_TABLE;
-            $categories_revs_table = TP_CATEGORIES_REVS_TABLE;
+          
             $product_table         = TP_PRODUCT_TABLE;
-            $product_revs_table    = TP_PRODUCT_REVS_TABLE;
-            $table_revs            = TP_REVISION_TABLE;
+
+            $table_revs            = TP_REVISIONS_TABLE;
             
             // datavice table variables declarations
             $dv_geo_brgy = DV_BRGY_TABLE;
@@ -147,9 +124,7 @@
             return rest_ensure_response( 
                 array(
                     "status" => "success",
-                    "data" => array(
-                        'list' => $result, 
-                    
+                    "data" => $result
                     )
                 )
             );

@@ -20,13 +20,14 @@
         public static function list_open(){
             global $wpdb;
 
-             // Step1: verify of datavice plugin is activated
-            if (TP_Globals::verify_datavice_plugin() == false) {
-                return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                );
-            }
+           //Check if prerequisites plugin are missing
+           $plugin = TP_Globals::verify_prerequisites();
+           if ($plugin !== true) {
+               return array(
+                       "status" => "unknown",
+                       "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+               );
+           }
             
             // Step2 : Check if wpid and snky is valid
             if (DV_Verification::is_verified() == false) {
@@ -58,7 +59,7 @@
 
             // table names and POST Variables
             $store_table           = TP_STORES_TABLE;
-            $table_revs            = TP_REVISION_TABLE;
+            $table_revs            = TP_REVISIONS_TABLE;
             $table_address = 'dv_address';
             // datavice table variables declarations
             $dv_geo_brgy    = DV_BRGY_TABLE;
@@ -92,7 +93,7 @@
             if (!$result ) {
                 return array(
                         "status" => "failed",
-                        "message" => "No store found with this value!",
+                        "message" => "No results found!",
                 );
 
             }
@@ -100,8 +101,7 @@
             // Step9 : Return Result 
             return array(
                     "status" => "success",
-                    "data" => array($result,
-                )
+                    "data" => $result
             );
               
         }
