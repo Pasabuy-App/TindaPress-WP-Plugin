@@ -28,7 +28,7 @@
             $wpid = $_POST["wpid"];
             $stid = $_POST["stid"];
 
-            //Check if prerequisites plugin are missing
+            // Step1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
@@ -50,7 +50,7 @@
            
             $files = $request->get_file_params();
             
-            // Step3 : Sanitize all Request
+            // Step3 : Sanitize request
             if ( !isset($files['img']) || !isset($_POST['stid'])) {
 				return rest_ensure_response( 
 					array(
@@ -61,34 +61,34 @@
             }
             
 
-            // Step5 : sanitize if all variables is empty
+            // Step4 : Sanitize variable is empty
             if ( empty($_POST["stid"]) ){
                 return rest_ensure_response( 
                     array(
                         "status" => "failed",
-                        "message" => "Required fields cannot be empty!",
+                        "message" => "Required fields cannot be empty.",
                     )
                 );
             }
             
-            // Step6 : Validation of store
+            // Step5 : Validation of store
             $get_store = $wpdb->get_row("SELECT ID FROM $table_store  WHERE ID = $stid  ");
                 
              if ( !$get_store ) {
                 return rest_ensure_response( 
                     array(
                         "status" => "failed",
-                        "message" => "No store found!",
+                        "message" => "No store found.",
                     )
                 );
 			}
 
-            // Step7 : sanitize if all variables is empty
+            // Step6 : Sanitize if all variables is empty
             if ( $files['img']['name'] == NULL  || $files['img']['type'] == NULL) {
 				return rest_ensure_response( 
 					array(
 						"status" => "failed",
-						"message" => "Please select an image!",
+						"message" => "Please select an image.",
 					)
 				);
             }
@@ -132,7 +132,7 @@
                 return rest_ensure_response( 
 					array(
 						"status" => "failed",
-						"message" => "A file with this name already exists!",
+						"message" => "A file with this name already exists.",
 					)
 				);
             }
@@ -163,7 +163,7 @@
                 return rest_ensure_response( 
 					array(
 						"status" => "error",
-						"message" => "An error occured while submitting data to the server!",
+						"message" => "An error occured while submitting data to the server.",
 					)
 				);
             } else {

@@ -24,6 +24,17 @@
             
             global $wpdb;
             
+            // Declare variables
+            $tp_docs = TP_DOCU_TABLE;
+            $doc_fields = DOCS_FIELDS;
+            $revs_fields = REVS_FIELDS;
+            $docs = DOCUMENTS;
+            $prev = PREVIEW;
+            $table_revs = TP_REVISIONS_TABLE;           
+            $doc_type = $_POST['doc_type'];
+            $stid = $_POST['stid'];
+            $doc_prev = $_POST['doc_prev'];
+            
             // Step1 : Verify if datavicce plugin is active
 			if (TP_Globals::verifiy_datavice_plugin() == false) {
                 return array(
@@ -53,28 +64,17 @@
                 
             }
 
-            // Step6 : Check if all variables is not empty 
+            // Step4 : Check if all variables is not empty 
             if ( empty($_POST['doc_type']) 
                 || empty($_POST['stid']) 
                 || empty($_POST['doc_prev']) ) {
                 return array(
-                    "status" => "unknown",
+                    "status" => "failed",
                     "message" => "Required fileds cannot be empty.",
                 );
             }
 
-            // Declare variables
-            $tp_docs = TP_DOCU_TABLE;
-            $doc_fields = DOCS_FIELDS;
-            $revs_fields = REVS_FIELDS;
-            $docs = DOCUMENTS;
-            $prev = PREVIEW;
-            $table_revs = TP_REVISIONS_TABLE;           
-            $doc_type = $_POST['doc_type'];
-            $stid = $_POST['stid'];
-            $doc_prev = $_POST['doc_prev'];
-
-            // Step7 : Start Query
+            // Step5 : Start Query
             $wpdb->query("START TRANSACTION");
                 $insert1 = $wpdb->query("INSERT INTO $tp_docs ($doc_fields) VALUES ($stid, 0, '$doc_type')");
                     $last_id_doc = $wpdb->insert_id;
@@ -82,20 +82,20 @@
                     $last_id_rev = $wpdb->insert_id;
                 $update = $wpdb->query("UPDATE $tp_docs SET $prev = $last_id_rev WHERE ID = $last_id_doc ");
            
-            // Step8 : Check if query has result
+            // Step6 : Check if query has result
             if ($insert2 < 1 || $insert1 < 1 || $update < 1) {
                 $wpdb->query("ROLLBACK");
-                // Step9 : return result
+                // Step7 : return result
                 return array(
-                    "status" => "unknown",
-                    "message" => "Please Contact your administrator. Submiting Document Failed!"
+                    "status" => "failed",
+                    "message" => "Please contact your administrator. Submitting document failed."
                 );
             }else {
-                //  Step10 : Return Success
+                //  Step8 : Return Success
                 $wpdb->query("COMMIT");
                 return array(
                     "status" => "success",
-                    "message" => "Document Successfully Submited!"
+                    "message" => "Document Successfully Submited."
                 );
             }
         }

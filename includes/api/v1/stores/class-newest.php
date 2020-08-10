@@ -29,18 +29,16 @@
             date_sub( $date, date_interval_create_from_date_string("7 days"));
             $date_expected =  date_format($date,"Y-m-d");
             
-            // tindapress table variables declarations
-            $table_store           = TP_STORES_TABLE;
-            $table_category      = TP_CATEGORIES_TABLE;
+            // declaring table names to variable
+            $table_store = TP_STORES_TABLE;
+            $table_category = TP_CATEGORIES_TABLE;
             $table_revs = TP_REVISIONS_TABLE;
-            
-            // datavice table variables declarations
-            $table_brgy = DV_BRGY_TABLE;
-            $table_dv_revs    =  DV_REVS_TABLE;
             $table_address = DV_ADDRESS_TABLE;
+            $table_dv_revs =  DV_REVS_TABLE;
+            $table_brgy = DV_BRGY_TABLE;
             $table_city = DV_CTY_TABLE;
-            $dv_geo_prov = DV_PRV_TABLE;
-            $dv_geo_court = DV_COUNTRY_TABLE;
+            $table_province = DV_PRV_TABLE;
+            $table_country = DV_COUNTRY_TABLE;
             
             //Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -59,7 +57,7 @@
                 );
             }
 
-            // Step3 : Sanitize all Request
+            // Step3 : Sanitize request
 			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) ) {
 				return array(
 						"status" => "unknown",
@@ -67,7 +65,7 @@
                 );
             }
 
-             // Step4 : Check if all variables is not empty
+             // Step4 : Check if variable is not empty
             if (empty($_POST["wpid"]) 
                 || empty($_POST["snky"]) ) {
 				return array(
@@ -92,8 +90,8 @@
                 ( SELECT child_val FROM $table_address WHERE ID = addr.street ) AS street,
                 ( SELECT brgy_name FROM $table_brgy WHERE ID = ( SELECT child_val FROM $table_dv_revs WHERE ID = addr.brgy ) ) AS brgy,
                 ( SELECT citymun_name FROM $table_city WHERE ID = ( SELECT child_val FROM $table_dv_revs WHERE ID = addr.city ) ) AS city,
-                ( SELECT prov_name FROM $dv_geo_prov WHERE ID = ( SELECT child_val FROM $table_dv_revs WHERE ID = addr.province ) ) AS province,
-                ( SELECT country_name FROM $dv_geo_court WHERE ID = ( SELECT child_val FROM $table_dv_revs WHERE ID = addr.country ) ) AS country 
+                ( SELECT prov_name FROM $table_province WHERE ID = ( SELECT child_val FROM $table_dv_revs WHERE ID = addr.province ) ) AS province,
+                ( SELECT country_name FROM $table_country WHERE ID = ( SELECT child_val FROM $table_dv_revs WHERE ID = addr.country ) ) AS country 
             FROM
                 $table_store st
             INNER JOIN
@@ -120,7 +118,6 @@
                     "status" => "success",
                     "data" => $result
             );
-
         }
 
     }

@@ -21,15 +21,15 @@
 
             global $wpdb;
 
-            // variables for query
+            // declaring table names to variable
             $table_store = TP_STORES_TABLE;
             $table_revs = TP_REVISIONS_TABLE;
+            $table_address = DV_ADDRESS_TABLE;
+            $table_dv_revs = DV_REVS_TABLE;
             $table_brgy = DV_BRGY_TABLE;
             $table_city = DV_CITY_TABLE;
             $table_province = DV_PROVINCE_TABLE;
             $table_country = DV_COUNTRY_TABLE;
-            $table_dv_revs = DV_REVS_TABLE;
-            $table_add = DV_ADDRESS_TABLE;
             
             // Step1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();

@@ -21,7 +21,13 @@
         }
 
         public static function delete_document(){
+
             global $wpdb;
+
+            // Put all request to variable
+            $stid = $_POST['stid'];
+            $docid = $_POST['docid'];
+            $tp_docs = TP_DOCU_TABLE;
             
             // Step 1 : Verfy if Datavice Plugin is Activated
 			if (TP_Globals::verifiy_datavice_plugin() == false) {
@@ -42,54 +48,44 @@
             }
 
             // Step3 : Sanitize all Request
-			if (!isset($_POST['stid']) || !isset($_POST['docid']) ) {
+            if (!isset($_POST['stid']) 
+                || !isset($_POST['docid']) ) {
 				return array(
 					"status" => "unknown",
 					"message" => "Please contact your administrator. Request unknown!",
                 );
-                
             }
 
-
-            // Step 4: Check if ID is in valid format (integer)
+            // Step4: Check if ID is in valid format (integer)
 			if ( !is_numeric($_POST['docid'])) {
 				return array(
 					"status" => "failed",
-					"message" => "Please contact your administrator. ID not in valid format!",
+					"message" => "Please contact your administrator. ID not in valid format.",
                 );
-                
             }
             
-            // Step6 : Sanitize all Request if emply
-			if ( empty($_POST['stid']) || empty($_POST['docid']) ) {
+            // Step5 : Sanitize all Request if emply
+            if ( empty($_POST['stid']) 
+                || empty($_POST['docid']) ) {
 				return array(
 						"status" => "unknown",
-						"message" => "Required fields cannot be empyty.",
+						"message" => "Required fields cannot be empty.",
                 );
-                
             }
-
-            // Put all request to variable
-            $stid = $_POST['stid'];
-            $docid = $_POST['docid'];
-            $tp_docs = TP_DOCU_TABLE;
 
             $result = $wpdb->query("UPDATE $tp_docs SET `status` = 'inactive' WHERE ID = $docid AND stid = $stid ");
 
-            //  Step7 : Return Success
+            //  Step6 : Return Success
             if ($result < 1 ) {
-
                 return array(
 					"status" => "failed",
-					"message" => "Please Contact your Administrator. Deletion failed!",
+					"message" => "Please Contact your administrator. Deletion failed.",
                 );
-
             }else {
                 return array(
 					"status" => "success",
-					"message" => "Successfully Deleted",
+					"message" => "Successfully deleted.",
                 );
-
             }
 
         }

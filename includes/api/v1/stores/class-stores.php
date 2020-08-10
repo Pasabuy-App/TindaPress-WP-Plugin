@@ -52,7 +52,7 @@
                 );
             }
 
-            // Step3 : Sanitize all Request
+            // Step3 : Sanitize request
 			if (!isset($_POST['catid']) ) {
 				return array(
 						"status" => "unknown",
@@ -60,7 +60,7 @@
                 );
             }
             
-            // Step4 : sanitize if all variables is empty
+            // Step4 : Sanitize if variable is empty
             if (empty($_POST["catid"])) {
 				return array(
 						"status" => "failed",
@@ -70,7 +70,7 @@
 
             // Step5 : Validation of category id
             $get_cat = $wpdb->get_row("SELECT ID FROM $table_category  WHERE ID = $ctid  ");
-             if ( !$get_cat ) {
+            if ( !$get_cat ) {
                 return array(
                         "status" => "failed",
                         "message" => "No category found.",
