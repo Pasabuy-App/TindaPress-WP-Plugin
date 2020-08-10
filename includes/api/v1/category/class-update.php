@@ -66,10 +66,10 @@
             }
 
             // Step 5: Check if types value is valid
-            if ( !($_POST['types'] === 'store') && !($_POST['types'] === 'product') && !($_POST['types'] === 'tags') ) {
+            if ( !($_POST['types'] === 'store') && !($_POST['types'] === 'product') && !($_POST['types'] === 'tags') && !($_POST['types'] === 'categories') ) {
                 return array(
                     "status" => "failed",
-                    "message" => "Category must be product or store only.",
+                    "message" => "Category must be product, store only or categories.",
                 );
             }
 
