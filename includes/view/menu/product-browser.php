@@ -14,9 +14,9 @@
 
 	<?php /* Header Section */ ?>
 		<div class="tp-welcome-header">
-			<h1>STORE BROWSER</h1>
+			<h1>PRODUCT BROWSER</h1>
 			<p>
-                Add, Edit, Delete Stores.
+                Add, Edit, Delete Products.
 			</p>
 		</div>
 	<?php /* Header Section */ ?>
@@ -30,10 +30,10 @@
 			</div>
 			<table id="stores-datatables" class="stripe" style="width: 100%;"></table>
 			<div id="stores-notification" class="alert alert-info tp-center-item " role="alert" style="margin-top: 20px;">
-				Currently fetching updates for all available stores. Please wait...
+				Currently fetching updates for all available products. Please wait...
 			</div>
 		</div>
-		<?php include_once( TP_PLUGIN_PATH . "/includes/model/stores.php" ); ?>
+		<?php include_once( TP_PLUGIN_PATH . "/includes/model/products.php" ); ?>
 
 	<?php } else { ?>
 
@@ -48,7 +48,7 @@
 			</div>
 			<table id="stores-datatables" class="stripe" style="width: 100%;"></table>
 			<div id="stores-notification" class="alert alert-info tp-center-item " role="alert" style="margin-top: 20px;">
-				Currently fetching updates for all available stores. Please wait...
+				Currently fetching updates for all available products. Please wait...
 			</div>
 		</div>
 		<?php //include_once( plugin_dir_path( __FILE__ ) . "/project-browser/variants.php" ); ?>

@@ -21,8 +21,14 @@
             add_submenu_page('tp-getting_started', 'TP Getting Started', 'Getting Started',
                 'manage_options', 'tp-getting_started' );
 
-            add_submenu_page('tp-getting_started', 'TP Store Browser', 'Store Browser',
+            add_submenu_page('tp-getting_started', 'TP Store Browser', 'Stores',
                 'manage_options', 'tp-store_browser', 'tindapress_store_browser_page_callback' );
+
+            add_submenu_page('tp-getting_started', 'TP Product Browser', 'Products',
+                'manage_options', 'tp-product_browser', 'tindapress_product_browser_page_callback' );
+
+            add_submenu_page('tp-getting_started', 'TP Category Browser', 'Categories',
+                'manage_options', 'tp-category_browser', 'tindapress_category_browser_page_callback' );
 
              add_submenu_page('tp-getting_started', 'TP Settings', 'Settings',
                 'manage_options', 'tp-settings', 'tindapress_setting_page_callback' );
@@ -37,6 +43,16 @@
         function tindapress_store_browser_page_callback()
         {
             include_once( TP_PLUGIN_PATH . '/includes/view/menu/store-browser.php' );
+        }
+
+        function tindapress_product_browser_page_callback()
+        {
+            include_once( TP_PLUGIN_PATH . '/includes/view/menu/product-browser.php' );
+        }
+
+        function tindapress_category_browser_page_callback()
+        {
+            include_once( TP_PLUGIN_PATH . '/includes/view/menu/category-browser.php' );
         }
 
         function tindapress_setting_page_callback()

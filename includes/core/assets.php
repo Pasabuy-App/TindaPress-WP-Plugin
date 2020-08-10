@@ -15,6 +15,8 @@
     $checkUSNarr = array(
         'tp-getting_started',
         'tp-store_browser',
+        'tp-product_browser',
+        'tp-category_browser',
         'tp-settings',
     );
     
