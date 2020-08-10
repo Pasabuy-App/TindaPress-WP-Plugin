@@ -15,9 +15,21 @@
     class TP_Select_Byid_Product {
 
         public static function listen(){
+            return rest_ensure_response( 
+                TP_Select_Byid_Product:: select_product_byid()
+            );
+        }
+
+        public static function select_product_byid(){
+
             global $wpdb;
+
+            $table_product = TP_PRODUCT_TABLE;
+            $table_stores = TP_STORES_TABLE;
+            $table_categories = TP_CATEGORIES_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
                 
-            //Check if prerequisites plugin are missing
+            // Step 1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
@@ -26,7 +38,7 @@
                 );
             }
 
-			//  Step2 : Validate if user is exist
+			//  Step 2 : Validate if user is exist
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
@@ -35,7 +47,7 @@
                 
             }
 
-            // Step2 : Sanitize all Request
+            // Step 3 : Sanitize all Request
 			if ( !isset($_POST['pdid'])  ) {
 				return array(
 					"status" => "unknown",
@@ -44,7 +56,7 @@
                 
             }
 
-            // Step5 : Sanitize all Request
+            // Step 4 : Sanitize all Request
 			if ( empty($_POST['pdid']) ) {
 				return array(
 					"status" => "unknown",
@@ -54,40 +66,38 @@
             }
 
             $user = TP_Select_Byid_Product::catch_post();
-            $table_product = TP_PRODUCT_TABLE;
-            $table_stores = TP_STORES_TABLE;
-            $table_categories = TP_CATEGORIES_TABLE;
-            $table_revs = TP_REVISIONS_TABLE;
-
+            // Query
             $result =  $wpdb->get_results("SELECT
-                    tp_products.ID as product_id,
-                    (SELECT tp_revisions.child_val FROM tp_revisions WHERE tp_revisions.ID = tp_stores.title) as product_store_name,
-                    (SELECT tp_revisions.child_val FROM tp_revisions WHERE tp_revisions.ID = (SELECT tp_categories.title FROM tp_categories WHERE tp_categories.ID = tp_products.ctid)) as product_category_name,
-                    tp_revisions.child_val as product_name,
-                    (SELECT tp_revisions.child_val FROM tp_revisions WHERE ID = tp_products.preview) as product_preview,
-                    (SELECT tp_revisions.child_val FROM tp_revisions WHERE ID = tp_products.short_info) as product_short_information,
-                    (SELECT tp_revisions.child_val FROM tp_revisions WHERE ID = tp_products.long_info) as product_long_information,
-                    (SELECT tp_revisions.child_val FROM tp_revisions WHERE ID = tp_products.`status`) as product_status,
-                    (SELECT tp_revisions.child_val FROM tp_revisions WHERE ID = tp_products.sku) as product_code,
-                    (SELECT tp_revisions.child_val FROM tp_revisions WHERE ID = tp_products.price) as product_price,
-                    (SELECT tp_revisions.child_val FROM tp_revisions WHERE ID = tp_products.weight) as product_weight,
-                    (SELECT tp_revisions.child_val FROM tp_revisions WHERE ID = tp_products.dimension) as product_dimension,
-                    tp_products.date_created
-                FROM
-                    tp_products
-                    INNER JOIN tp_revisions ON tp_revisions.ID = tp_products.title
-                    INNER JOIN tp_stores ON tp_stores.ID = tp_products.stid
-                WHERE tp_products.ID = {$user["product_id"]}
-                    ");
+                tp_products.ID as product_id,
+                (SELECT tp_revisions.child_val FROM tp_revisions WHERE tp_revisions.ID = tp_stores.title) as product_store_name,
+                (SELECT tp_revisions.child_val FROM tp_revisions WHERE tp_revisions.ID = (SELECT tp_categories.title FROM tp_categories WHERE tp_categories.ID = tp_products.ctid)) as product_category_name,
+                tp_revisions.child_val as product_name,
+                (SELECT tp_revisions.child_val FROM tp_revisions WHERE ID = tp_products.preview) as product_preview,
+                (SELECT tp_revisions.child_val FROM tp_revisions WHERE ID = tp_products.short_info) as product_short_information,
+                (SELECT tp_revisions.child_val FROM tp_revisions WHERE ID = tp_products.long_info) as product_long_information,
+                (SELECT tp_revisions.child_val FROM tp_revisions WHERE ID = tp_products.`status`) as product_status,
+                (SELECT tp_revisions.child_val FROM tp_revisions WHERE ID = tp_products.sku) as product_code,
+                (SELECT tp_revisions.child_val FROM tp_revisions WHERE ID = tp_products.price) as product_price,
+                (SELECT tp_revisions.child_val FROM tp_revisions WHERE ID = tp_products.weight) as product_weight,
+                (SELECT tp_revisions.child_val FROM tp_revisions WHERE ID = tp_products.dimension) as product_dimension,
+                tp_products.date_created
+            FROM
+                tp_products
+                INNER JOIN tp_revisions ON tp_revisions.ID = tp_products.title
+                INNER JOIN tp_stores ON tp_stores.ID = tp_products.stid
+            WHERE tp_products.ID = {$user["product_id"]}
+                ");
 
+            //Step 5: Return result
             if(empty($result)){
-                //Step 6: Return result
+                
                 return array(
                     "status" => "failed",
                     "message" => "No results found"
                 );   
+
             }else {
-                //Step 6: Return result
+
                 return array(
                     "status" => "success",
                     "data" => $result

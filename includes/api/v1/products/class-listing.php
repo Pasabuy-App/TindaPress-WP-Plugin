@@ -13,11 +13,25 @@
 <?php
 
     class TP_Select_Product {
-        
+
+        //REST API Call
         public static function listen(){
+            
+            return rest_ensure_response( 
+                TP_Select_Product:: listing_product()
+            );
+        }
+        
+        public static function listing_product(){
+
             global $wpdb;
 
-            //Check if prerequisites plugin are missing
+            $table_product = TP_PRODUCT_TABLE;
+            $table_stores = TP_STORES_TABLE;
+            $table_categories = TP_CATEGORIES_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
+
+            // Step 1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
@@ -35,13 +49,7 @@
                 
             }
             
-            // Step 4 : table names variable for query
-            $table_product = TP_PRODUCT_TABLE;
-            $table_stores = TP_STORES_TABLE;
-            $table_categories = TP_CATEGORIES_TABLE;
-            $table_revs = TP_REVISIONS_TABLE;
-
-            // Step5 : if last insert id is not in Request
+            // Step3 : if last insert id is not in Request
             if(!isset($_POST['lid'])){
 
                 // product list query
@@ -76,21 +84,24 @@
                 );
 
             }else{
+
                 // Sanitize requirest if numeric
                 if(!is_numeric($_POST["lid"])){
+
 					return array(
 							"status" => "failed",
 							"message" => "Parameters not in valid format!",
 					);
 
                 }
+
                 // Sanitize requirest if not empty
                 if(empty($_POST["lid"])){
+
 					return array(
 							"status" => "unknown",
 							"message" => "Required fields cannot be empty.",
 					);
-
                 }
                 
                 // variable of query

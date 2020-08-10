@@ -14,10 +14,26 @@
 
     class TP_Delete_Product {
 
+        //REST API Call
         public static function listen(){
-            global $wpdb;
+            
+            return rest_ensure_response( 
+                TP_Delete_Product:: delete_product()
+            );
+        }
 
-            //Check if prerequisites plugin are missing
+
+        public static function delete_product(){
+
+            global $wpdb;
+            
+            $product_type      = "products";
+            $date_stamp        = TP_Globals::date_stamp();
+            $product_table     = TP_PRODUCT_TABLE;
+            $table_revs        = TP_REVISIONS_TABLE;
+            $table_revs_fields = TP_REVISION_FIELDS;
+
+            // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
@@ -26,7 +42,7 @@
                 );
             }
 
-            //  Step2 : Validate if user is exist
+            // Step2 : Validate if user is exist
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
@@ -43,14 +59,13 @@
                 
             }
 
-            // Step6 : Sanitize all Request
+            // Step4 : Sanitize all Request
 			if ( empty($_POST['pid']) ) {
 				return array(
 						"status" => "unknown",
 						"message" => "Required fields cannot be empty!",
                 );
             }
-
 
             // variables
             $parentid = $_POST['pid'];
@@ -64,26 +79,32 @@
 
             // Query
             $wpdb->query("START TRANSACTION ");
+                
                 $inactive = $wpdb->get_row("SELECT `status` FROM $product_table WHERE ID = $parentid  ");
+                
                 $wpdb->query("UPDATE $table_revs  SET child_val = '0' WHERE ID =  $inactive->status  AND parent_id = $parentid");
 
             // check of retsult is true or not
             if ($last_id < 1 || $result2 < 1 ) {
+            
                 $wpdb->query("ROLLBACK");
+            
                 return rest_ensure_response( 
 					array(
 						"status" => "failed",
-						"message" => "An error occured while submitting data to the server",
+						"message" => "An error occured while submitting data to the server.",
 					)
                 );
 
             }else{
+            
                 $wpdb->query("COMMIT");
-            // return Success
+                
+                // return Success result
                 return rest_ensure_response( 
 					array(
 						"status" => "success",
-						"message" => "Data has been deleted successfully",
+						"message" => "Data has been deleted successfully.",
 					)
                 );
 

@@ -14,10 +14,27 @@
 
     class TP_Insert_Product {
         
+        //REST API Call
         public static function listen(){
-            global $wpdb;
             
-            //Check if prerequisites plugin are missing
+            return rest_ensure_response( 
+                TP_Insert_Product:: insert_product()
+            );
+        }
+        
+        public static function insert_product(){
+
+            global $wpdb;
+
+            // variables for query
+            $table_product        = TP_PRODUCT_TABLE;
+            $table_product_fields = TP_PRODUCT_FIELDS;
+            $table_revs           = TP_REVISIONS_TABLE;
+            $table_revs_fields    = TP_REVISION_FIELDS;
+            $date = TP_Globals::date_stamp();
+            $revs_type = "products";
+            
+            // Step 1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
@@ -26,7 +43,7 @@
                 );
             }
 
-            //  Step2 : Validate if user is exist
+            //  Step 2 : Validate if user is exist
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
@@ -34,7 +51,7 @@
                 );
             }
 
-            // Step3 : Sanitize all Request
+            // Step 3 : Sanitize all Request
             if (  !isset($_POST["ctid"])      || !isset($_POST["stid"]) 
                || !isset($_POST["title"])     || !isset($_POST["short_info"]) 
                || !isset($_POST["long_info"]) || !isset($_POST["sku"]) 
@@ -49,7 +66,7 @@
                 
             }
 
-            // Step 4: Check if ID is in valid format (integer)
+            // Step 4 : Check if ID is in valid format (integer)
 			if (!is_numeric($_POST["wpid"]) || !is_numeric($_POST["ctid"]) || !is_numeric($_POST["stid"]) ) {
 				return rest_ensure_response( 
 					array(
@@ -61,7 +78,7 @@
 			}
 
 
-            // Step6 : Check if all variable is not empty
+            // Step 6 : Check if all variable is not empty
             if (empty($_POST["ctid"]) 
                 || empty($_POST["stid"]) 
                 || empty($_POST["title"]) 
@@ -91,60 +108,46 @@
              if ( !$get_store ) {
                 return rest_ensure_response( 
                     array(
-                        "status" => "error",
-                        "message" => "An error occurred while fetching data to the server.",
+                        "status" => "failed",
+                        "message" => "This store does not exists..",
                     )
                 );
             }
-
        
-             // Check user role 
+            // Check user role 
             if (TP_Globals::verify_role( $_POST['wpid'], $_POST['stid'], 'can_add_product' )) {
                 return rest_ensure_response( 
                     TP_Globals::verify_role($_POST['wpid'], $_POST['stid'], 'can_add_product' ),
                 );
             }
 
-            
-            // variable for time stamp
-            $later = TP_Globals::date_stamp();
-
-            // variables for query
-            $table_product = TP_PRODUCT_TABLE;
-            $table_product_fields = TP_PRODUCT_FIELDS;
-
-            $table_revs = TP_REVISIONS_TABLE;
-            $table_revs_fields = TP_REVISION_FIELDS;
-
-            $revs_type = "products";
-
             $wpdb->query("START TRANSACTION");
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'title', '{$user["title"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'title', '{$user["title"]}', '{$user["created_by"]}', '$date')");
                 $title = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'preview', '{$user["preview"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'preview', '{$user["preview"]}', '{$user["created_by"]}', '$date')");
                 $preview = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'short_info', '{$user["short_info"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'short_info', '{$user["short_info"]}', '{$user["created_by"]}', '$date')");
                 $short_info = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'long_info', '{$user["long_info"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'long_info', '{$user["long_info"]}', '{$user["created_by"]}', '$date')");
                 $long_info = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'status', '1', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'status', '1', '{$user["created_by"]}', '$date')");
                 $status = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'sku', '{$user["sku"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'sku', '{$user["sku"]}', '{$user["created_by"]}', '$date')");
                 $sku = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'price', '{$user["price"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'price', '{$user["price"]}', '{$user["created_by"]}', '$date')");
                 $price = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'weight', '{$user["weight"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'weight', '{$user["weight"]}', '{$user["created_by"]}', '$date')");
                 $weight = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'dimension', '{$user["dimension"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'dimension', '{$user["dimension"]}', '{$user["created_by"]}', '$date')");
                 $dimension = $wpdb->insert_id;
 
             if ($title < 1 || $short_info < 1 || $long_info < 1 || $sku < 1 || $price < 1 || $weight < 1 || $dimension < 1 || $preview < 1 ) {
@@ -157,12 +160,13 @@
             }
             
             // Insert Product
-            $wpdb->query("INSERT INTO $table_product $table_product_fields VALUES ('{$user["stid"]}', '{$user["ctid"]}', '$title', '$preview', '$short_info', '$long_info', '$status', '$sku', '$price', '$weight', '$dimension', '{$user["created_by"]}', '$later')");
+            $wpdb->query("INSERT INTO $table_product $table_product_fields VALUES ('{$user["stid"]}', '{$user["ctid"]}', '$title', '$preview', '$short_info', '$long_info', '$status', '$sku', '$price', '$weight', '$dimension', '{$user["created_by"]}', '$date')");
             $product_id = $wpdb->insert_id;
 
             $result = $wpdb->query("UPDATE $table_revs SET `parent_id` = $product_id WHERE ID IN ($title, $preview, $short_info, $long_info, $status, $sku, $price, $weight, $dimension) ");
 
             if ($product_id < 1 || $result < 1 ) {
+
                 $wpdb->query("ROLLBACK");
                 return array(
                         "status" => "failed",
@@ -170,7 +174,8 @@
                 );
 
             }else {
-            $wpdb->query("COMMIT");
+
+                $wpdb->query("COMMIT");
                 return array(
                         "status" => "success",
                         "message" => "Data has been added successfully!",

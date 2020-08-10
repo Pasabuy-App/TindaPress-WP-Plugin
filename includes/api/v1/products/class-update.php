@@ -15,24 +15,40 @@
     class TP_Update_Products {
 
         public static function listen(){
+            return rest_ensure_response( 
+                TP_Update_Products:: update_product()
+            );
+        }
+
+        public static function update_product(){
+            
             global $wpdb;
 
+            // Variables for Tables
+            $table_revs = TP_REVISIONS_TABLE;
+            $table_revs_fields = TP_REVISION_FIELDS;
+
+            $table_product = TP_PRODUCT_TABLE;
+            $table_product_fields = TP_PRODUCT_FIELDS;
+            $revs_type = "products";
+            
             //Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
+
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 
 			//  Step2 : Validate if user is exist
 			if (DV_Verification::is_verified() == false) {
-                return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification issues!",
-                );
                 
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification issues!",
+                );
             }
 
             // Step3 : Sanitize all Request
@@ -85,30 +101,8 @@
             $stid = $_POST['stid'];
             $revs_type = "products";
 
-            $child_vals = array(
-                $_POST['title'],
-                $_POST['short_info'],
-                $_POST['long_info'],
-                $_POST['sku'],
-                $_POST['price'],
-                $_POST['weight'],
-                $_POST['dimension'],
-                $_POST['preview'],
-            );
-            
-            $child_keys = array('title', 'short_info', 'long_info', 'sku', 'price',  'weight',  'dimension', 'preview' );
-            $last_id_product = array();
-
-            $table_revs = TP_REVISIONS_TABLE;
-            $table_revs_fields = TP_REVISION_FIELDS;
-
-            $table_product = TP_PRODUCT_TABLE;
-            $table_product_fields = TP_PRODUCT_FIELDS;
-
             $user = TP_Update_Products::catch_post();
-            
-            $revs_type = "products";
-
+            // Query
             $wpdb->query("START TRANSACTION");
 
                 $last_status = $wpdb->get_row("SELECT `status` FROM $table_product WHERE ID = {$user["pdid"]} ");
@@ -146,6 +140,7 @@
                  $result = $wpdb->query("UPDATE $table_product SET `title` = $title, `preview` = $preview, `short_info` = $short_info, `long_info` = $long_info, `status` = $status, `sku` = $sku, `price` = $price,  `weight` = $weight,  `dimension` = $dimension  WHERE ID = {$user["pdid"]} ");
 
             if (empty($last_status) ||$result < 0 || $title < 1 || $short_info < 1 || $long_info < 1 || $sku < 1 || $price < 1 || $weight < 1 || $dimension < 1 || $preview < 1 ) {
+               
                 // when insert failed rollback all inserted data
                 $wpdb->query("ROLLBACK");
                 return array(
@@ -154,6 +149,7 @@
                 );
 
             }else{
+                
                 $wpdb->query("COMMIT");
                 return array(
                     "status" => "success",

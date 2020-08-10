@@ -21,11 +21,17 @@
         }
 
         public static function get_prods_by_cat(){
+
             global $wpdb;
+            // Variables for Table
+            $tp_revs = TP_REVISIONS_TABLE;
+            $table_product = TP_PRODUCT_TABLE;
+            $table_categories = TP_CATEGORIES_TABLE;
             
             //Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
+
                 return array(
                         "status" => "unknown",
                         "message" => "Please contact your administrator. ".$plugin." plugin missing!",
@@ -43,15 +49,16 @@
 
             // Step3 : Sanitize all Request
 			if (!isset($_POST['catid']) ) {
+
 				return array(
 					"status" => "unknown",
 					"message" => "Please contact your administrator. Request unknown!",
                 );
-                
             }
 
             // Step6 : Sanitize all Request if emply
 			if (empty($_POST['catid']) ) {
+
 				return array(
 					"status" => "unknown",
 					"message" => "Required fields cannot be empyty.",
@@ -59,11 +66,7 @@
             }
 
             $category_id = $_POST['catid'];
-
-            $tp_revs = TP_REVISIONS_TABLE;
-            $table_product = TP_PRODUCT_TABLE;
-            $table_categories = TP_CATEGORIES_TABLE;
-
+            // query
             $result = $wpdb->get_results("SELECT
                 tp_prod.ID,
                 ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.title ) AS `category_name`,
@@ -82,20 +85,21 @@
                 tp_prod.ctid = $category_id
             GROUP BY
                 tp_prod.ID ");
-
+            // Return results 
             if(!$result){
+
                 return array(
                         "status" => "failed",
                         "message" => "No results found.",
                 );
+
             }else{
+
                 return array(
                     "status" => "success",
                     "data" => $result
                 );
             }
-
-
         }
 
     }

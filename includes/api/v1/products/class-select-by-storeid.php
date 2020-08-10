@@ -15,11 +15,24 @@
     class TP_Select_By_StoreId_Products {
 
         public static function listen(){
+            return rest_ensure_response( 
+                TP_Select_By_StoreId_Products:: get_products_by_storeid()
+            );
+        }
+
+        public static function get_products_by_storeid(){
+            
             global $wpdb;
+
+            // Variables for Tables
+            $tp_revs = TP_REVISIONS_TABLE;
+            $table_product = TP_PRODUCT_TABLE;
+            $table_categories = TP_CATEGORIES_TABLE;
             
             //Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
+
                 return array(
                         "status" => "unknown",
                         "message" => "Please contact your administrator. ".$plugin." plugin missing!",
@@ -28,15 +41,15 @@
             
 			//  Step2 : Validate if user is exist
 			if (DV_Verification::is_verified() == false) {
+
                 return array(
                         "status" => "unknown",
                         "message" => "Please contact your administrator. Verification issues!",
                 );
-                
             }
 
             // Step3 : Sanitize all Request
-			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) || !isset($_POST['stid']) ) {
+			if (!isset($_POST['stid']) ) {
 				return array(
 					"status" => "unknown",
 					"message" => "Please contact your administrator. Request unknown!",
@@ -45,7 +58,7 @@
             }
             
             // Step6 : Sanitize all Request if emply
-			if (empty($_POST["wpid"]) || empty($_POST["snky"]) || empty($_POST['stid']) ) {
+			if (empty($_POST['stid']) ) {
 				return array(
 					"status" => "unknown",
 					"message" => "Required fields cannot be empyty.",
@@ -53,10 +66,6 @@
             }
 
             $stid = $_POST['stid'];
-
-            $tp_revs = TP_REVISIONS_TABLE;
-            $table_product = TP_PRODUCT_TABLE;
-            $table_categories = TP_CATEGORIES_TABLE;
 
             $result = $wpdb->get_results("SELECT
                 tp_prod.ID,
@@ -79,18 +88,21 @@
             GROUP BY
                 tp_prod.ID ");
 
+            // Return results
             if(empty($result)){
+
                 return array(
                         "status" => "failed",
                         "message" => "No results found.",
                 );
+                
             }else{
+
                 return array(
                     "status" => "success",
                     "data" => $result
                 );
             }
-
 
         }
 
