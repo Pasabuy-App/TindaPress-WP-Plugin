@@ -42,7 +42,6 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/class-search.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-stores.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-newest.php';
-        require plugin_dir_path(__FILE__) . '/v1/stores/class-categories.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-popular.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-best-seller.php';
         
