@@ -26,7 +26,7 @@
 		<div class="tp-panel-body">
 			<div class="tp-panel-first">
 				<button id="RefreshAppList" type="button" class="btn btn-dark">Refresh List</button>
-				<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#CreateNewApp">Create Project</button>
+				<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#CreateNewApp">Create Store</button>
 			</div>
 			<table id="stores-datatables" class="stripe" style="width: 100%;"></table>
 			<div id="stores-notification" class="alert alert-info tp-center-item " role="alert" style="margin-top: 20px;">
@@ -51,10 +51,10 @@
 				Currently fetching updates for all available stores. Please wait...
 			</div>
 		</div>
-		<?php //include_once( plugin_dir_path( __FILE__ ) . "/project-browser/variants.php" ); ?>
+		<?php //include_once( TP_PLUGIN_PATH . "/project-browser/variants.php" ); ?>
 	<?php } ?>
 
-	<?php //include_once( plugin_dir_path( __FILE__ ) . "/project-browser/create-modal.php" ); ?>
-	<?php //include_once( plugin_dir_path( __FILE__ ) . "/project-browser/edit-modal.php" ); ?>
+	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/store-create-modal.php" ); ?>
+	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/store-edit-modal.php" ); ?>
 	<div id="jquery-overlay" class="modal-backdrop fade show tp-display-hide" style="z-index: 9999;"></div>
 	

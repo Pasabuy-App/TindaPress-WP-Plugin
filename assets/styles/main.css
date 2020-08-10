@@ -14,12 +14,12 @@
 .tp-welcome-header h1 {
     font-size: 49px;
     font-weight: bold;
-    color: #eaeaea;
-    text-shadow: 2px 3px #3d3d3d;
+    color: #3d3d3d;
+    /* text-shadow: 2px 3px #3d3d3d; */
 }
 
 .tp-welcome-header p {
-    text-shadow: 1px 1px #3d3d3d;
+    color: #4d4d4d;
     font-size: 15px;
 }
 

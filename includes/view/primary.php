@@ -15,7 +15,7 @@
         function tindapress_init_admin_menu() 
         {
             // Add new menu to the admin page.
-            add_menu_page('TindaPress', 'TindaPress', 'manage_options', 'tp-getting_started', 
+            add_menu_page(TP_CUSTOM, TP_CUSTOM, 'manage_options', 'tp-getting_started', 
                 'tindapress_gettingstarted_page_callback', TP_PLUGIN_URL . '/icon.png', 4 );
 
             add_submenu_page('tp-getting_started', 'TP Getting Started', 'Getting Started',
