@@ -93,12 +93,11 @@
 				);
 
 			}else {
+				
 				return array(
 					"status" => "success",
-					"data" => array(
-						'list' => $result
-					)
-			);
+					"data" => $result
+				);
 			}
 
 
