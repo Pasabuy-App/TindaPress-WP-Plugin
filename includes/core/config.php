@@ -25,7 +25,7 @@
 	define('TP_REVISION_FIELDS','(revs_type, parent_id, child_key , child_val, created_by, date_created )');
 
 	define('TP_STORES_TABLE', TP_PREFIX.'stores');
-	define('TP_STORES_FIELDS','(ctid, title, short_info, long_info, logo, banner, address, created_by, date_created )');
+	define('TP_STORES_FIELDS','(ctid, title, short_info, long_info, logo, banner, status, address, created_by, date_created )');
 
 
 

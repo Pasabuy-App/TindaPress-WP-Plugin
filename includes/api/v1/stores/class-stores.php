@@ -18,7 +18,7 @@
             global $wpdb;
             
             // Step1: verify of datavice plugin is activated
-            if (TP_Globals::verifiy_datavice_plugin() == false) {
+            if (TP_Globals::verify_datavice_plugin() == false) {
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",
@@ -38,39 +38,10 @@
             }
 
             // Step3 : Sanitize all Request
-			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) ) {
-				return rest_ensure_response( 
-					array(
-						"status" => "unknown",
-						"message" => "Please contact your administrator. Request unknown!",
-					)
-                );
-                
-            }
 
-            // Step 4: Check if ID is in valid format (integer)
-			if (!is_numeric($_POST["wpid"])|| !is_numeric($_POST['catid'])) {
-				return rest_ensure_response( 
-					array(
-						"status" => "failed",
-						"message" => "Please contact your administrator. ID not in valid format!",
-					)
-                );
-                
-			}
-
-			// Step 5: Check if ID exists
-			if (!get_user_by("ID", $_POST['wpid'])) {
-				return rest_ensure_response( 
-					array(
-						"status" => "failed",
-						"message" => "User not found!",
-					)
-                );
-                
-            }
-            // Step 6: sanitize if all variables is empty
-            if (empty($_POST["wpid"]) || empty($_POST["snky"]) ) {
+            
+            // Step 4: sanitize if all variables is empty
+            if (empty($_POST["catid"]) ) {
 				return rest_ensure_response( 
 					array(
 						"status" => "unknown",
@@ -80,6 +51,17 @@
                 
             }
 
+            // Step 5: Check if ID is in valid format (integer)
+			if (!is_numeric($_POST['catid'])) {
+				return rest_ensure_response( 
+					array(
+						"status" => "failed",
+						"message" => "Please contact your administrator. ID not in valid format!",
+					)
+                );
+                
+			}
+
             // declater table names to vatiable
             $table_store = TP_STORES_TABLE;
             $table_store_revs = TP_STORES_REVS_TABLE;
@@ -88,36 +70,27 @@
 
             // Step7 : Query
             $result = $wpdb->get_results("SELECT
-            st.id,
-            cat.types,
-            (SELECT child_val FROM tp_categories_revs WHERE ID = cat.title) as cat_title,
-            (SELECT child_val FROM tp_categories_revs WHERE ID = cat.info) as cat_info,
-                max( IF ( st_r.child_key = 'title', st_r.child_val,'' ) ) AS title,
-                max( IF ( st_r.child_key = 'short_info', st_r.child_val,'' ) ) AS short_info,
-                max( IF ( st_r.child_key = 'long_info', st_r.child_val,'' ) ) AS long_info,
-                max( IF ( st_r.child_key = 'logo', st_r.child_val,'' ) ) AS logo,
-                max( IF ( st_r.child_key = 'banner', st_r.child_val, '') ) AS banner,
-            addr.types as add_types,
-            (SELECT child_val FROM tp_address_revs WHERE ID = addr.status) as status,
-            (SELECT child_val FROM tp_address_revs WHERE ID = addr.street) as street,
-            (SELECT brgy_name FROM dv_brgys WHERE ID = (SELECT child_val FROM tp_address_revs WHERE ID = addr.brgy)) as brgy,
-            (SELECT citymun_name FROM dv_cities WHERE ID = (SELECT child_val FROM tp_address_revs WHERE ID = addr.city)) as city,
-            (SELECT prov_name FROM dv_provinces WHERE ID = (SELECT child_val FROM tp_address_revs WHERE ID = addr.province)) as province,
-            (SELECT country_name FROM dv_countries WHERE ID = (SELECT child_val FROM tp_address_revs WHERE ID = addr.country)) as country
-            
+            tp_stores.ID,
+            (select child_val from tp_revisions where id = (select title from tp_categories where id = tp_stores.ctid)) as cat,
+            (select child_val from tp_revisions where id = tp_stores.title) as stname,
+            (select child_val from tp_revisions where id = tp_stores.short_info) as bio,
+            (select child_val from tp_revisions where id = tp_stores.long_info) as details,
+            (select child_val from tp_revisions where id = tp_stores.logo) as icon,
+            (select child_val from tp_revisions where id = tp_stores.banner) as bg,
+            (select child_val from tp_revisions where id = tp_stores.`status`) as stats,
+            (select child_val from dv_revisions where id = (select street from dv_address where id = tp_stores.address)) as street,
+            (select brgy_name from dv_geo_brgys where id = (select child_val from dv_revisions where id = (select brgy from dv_address where id = tp_stores.address))) as brgy,
+            (select citymun_name from dv_geo_cities where city_code = (select child_val from dv_revisions where id = (select city from dv_address where id = tp_stores.address))) as city,
+            (select prov_name from dv_geo_provinces where prov_code = (select child_val from dv_revisions where id = (select province from dv_address where id = tp_stores.address))) as province,
+            (select country_name from dv_geo_countries where id = (select child_val from dv_revisions where id = (select country from dv_address where id = tp_stores.address))) as country,
+            (select meta_value from wp_usermeta where user_id = tp_stores.created_by and meta_key = 'nickname') as users,
+            tp_stores.date_created
             FROM
-                tp_stores st
-                INNER JOIN tp_stores_revs st_r ON st.title = st_r.ID 
-                OR st.short_info = st_r.ID 
-                OR st.long_info = st_r.ID 
-                OR st.logo = st_r.ID 
-                OR st.banner = st_r.ID
-                INNER JOIN tp_categories cat ON st.ctid = cat.ID 
-                INNER JOIN tp_address addr ON st.address = addr.ID 
-                WHERE st.ctid = $catid
-                GROUP BY 
-            st.id
+            tp_stores
+            where tp_stores.ctid = '$catid'
             ");
+            
+            
             // Step8 : Return Result 
             return rest_ensure_response( 
                 array(

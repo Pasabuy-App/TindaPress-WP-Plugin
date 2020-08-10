@@ -106,9 +106,13 @@
 
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'banner', '{$user["banner"]}', '{$user["created_by"]}', '$later')");
                 $banner = $wpdb->insert_id;
+
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'status', '1', '{$user["created_by"]}', '$later')");
+                $status = $wpdb->insert_id;
+                
                 
 
-            if ( $title < 1 || $short_info < 1 || $long_info < 1 || $logo < 1 || $banner < 1 ) {
+            if ( $title < 1 || $short_info < 1 || $long_info < 1 || $logo < 1 || $banner < 1 || $status < 0 ) {
             $wpdb->query("ROLLBACK");
                 return array(
                     "status" => "failed",
@@ -116,10 +120,10 @@
                 );
             }
 
-            $wpdb->query("INSERT INTO $table_store $table_store_fields VALUES ('{$user["ctid"]}', $title, $short_info, $long_info, $logo, $banner, '{$user["address"]}', '{$user["created_by"]}', '$later' )");
+            $wpdb->query("INSERT INTO $table_store $table_store_fields VALUES ('{$user["ctid"]}', $title, $short_info, $long_info, $logo, $banner, $status, '{$user["address"]}', '{$user["created_by"]}', '$later' )");
             $store_id = $wpdb->insert_id;
 
-            $result = $wpdb->query("UPDATE $table_revs SET `parent_id` = $store_id WHERE ID IN ($title, $short_info, $long_info, $logo, $banner) ");
+            $result = $wpdb->query("UPDATE $table_revs SET `parent_id` = $store_id WHERE ID IN ($title, $short_info, $long_info, $logo, $banner, $status) ");
             
             if ($store_id < 1 || $result < 1 ) {
                 $wpdb->query("ROLLBACK");
