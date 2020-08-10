@@ -82,14 +82,16 @@
 
         public static function verify_role($wpid, $store_id, $role){
             global $wpdb;
-
-            if ($store_id === 0) {
+            
+            if ($store_id == 0) {
+                
                 //Check if personnel is part of the store
-                $personnels = $wpdb->get_row("SELECT `wpid`, `roid`
+                 $personnels = $wpdb->get_row("SELECT `wpid`, `roid`
                     FROM `tp_personnels` 
                     WHERE `wpid` = $wpid");
 
             }else{
+              
                 //Check if personnel is part of the store
                 $personnels = $wpdb->get_row("SELECT `wpid`, `roid`
                     FROM `tp_personnels` 
@@ -97,33 +99,26 @@
                     AND `wpid` = $wpid");
             }
 
-            
-                
-            //Check if current user is one of the personnels or one of our staff
-            if (!$personnels || (DV_Globals::check_roles('subscriber') == true) ) {
-                return array(
-                    "status" => "failed",
-                    "message" => "User not associated with this store",
-                );
+            if (!$personnels) {
+                return false;
             }
 
             $role_id = $personnels->roid;
 
             //Get all access from that role_id 
-            $get_access = $wpdb->get_results("SELECT rm.access
+             $get_access = $wpdb->get_results("SELECT rm.access
                 FROM `tp_roles` r 
                     LEFT JOIN tp_roles_meta rm ON rm.roid = r.ID
                 WHERE r.id = $role_id");
                 
             $access = array_column($get_access, 'access');
 
-            //Check if user has role access of `can_delete_contact` or one of our staff
+            //Check if user has permitted role access or one of our staff
             if ( !in_array($role , $access, true) || (DV_Globals::check_roles('subscriber') == true) ) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Current user has no access in inserting contacts",
-                );
+                return true;
             }
+            return false;
+
 
         }
 

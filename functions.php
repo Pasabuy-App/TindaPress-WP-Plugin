@@ -38,6 +38,7 @@
     include_once ( TP_PLUGIN_PATH . '/includes/core/update.php' );
 
     // include_once ( TP_PLUGIN_PATH . '/includes/view/primary.php' );
+    include_once ( TP_PLUGIN_PATH . '/includes/view/primary.php' );
 
      //Make sure to create required mysql tables.
     include_once ( TP_PLUGIN_PATH . '/includes/core/dbhook.php' );

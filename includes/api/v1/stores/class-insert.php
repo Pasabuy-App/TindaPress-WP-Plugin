@@ -14,66 +14,69 @@
 
     class TP_Insert_Store {
         public static function listen(){
+            return rest_ensure_response( 
+                TP_Insert_Store::add_store()
+            );
+        }
+        public static function add_store(){
             global $wpdb;
 
             // Step1 : check if datavice plugin is activated
             if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+                return array(
                         "status" => "unknown",
                         "message" => "Please contact your administrator. Plugin Missing!",
-                    )
                 );
             }
             
             // Step2 : Check if wpid and snky is valid
-            if (TP_Globals::validate_user() == false) {
-                return rest_ensure_response( 
-                    array(
+            if (DV_Verification::is_verified() == false) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
-                    )
+                        "message" => "Please contact your administrator. Verification issues!",
                 );
             }
 
             if (!isset($_POST["wpid"]) 
-                || !isset($_POST["ctid"]) 
                 || !isset($_POST["title"]) 
                 || !isset($_POST["short_info"]) 
                 || !isset($_POST["long_info"]) 
                 || !isset($_POST["logo"]) 
                 || !isset($_POST["banner"]) 
-                || !isset($_POST["address"]) ) {
-				return rest_ensure_response( 
-					array(
+                ) {
+				return array(
 						"status" => "unknown",
 						"message" => "Please contact your administrator. Request unknown!",
-					)
                 );
                 
             }
 
             if (empty($_POST["wpid"]) 
-            || empty($_POST["ctid"]) 
             || empty($_POST["title"]) 
             || empty($_POST["short_info"]) 
             || empty($_POST["long_info"]) 
             || empty($_POST["logo"]) 
             || empty($_POST["banner"]) 
-            || empty($_POST["address"]) ) {
-                return rest_ensure_response( 
-                    array(
+            ) {
+                return array(
                         "status" => "unknown",
                         "message" => "Required fields cannot be empty",
-                    )
                 );
             
             }
+            $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_add_store' );
 
-            if (  !is_numeric($_POST["ctid"]) || !is_numeric($_POST["address"]) ) {
+            if ($permission == true) {
                 return array(
-                    "status" => "unknown",
-                    "message" => "Please contact your administrator. Id is not in Valid format!",
+                    "status" => "failed",
+                    "message" => "Current user has no access in manipulation of data.",
+                );
+            }
+
+            // Check user role 
+            if (TP_Globals::verify_role( $_POST['wpid'], '0', 'can_add_store' )) {
+                return array( 
+                    TP_Globals::verify_role($_POST['wpid'], '0', 'can_add_store' ),
                 );
             }
 
@@ -113,7 +116,7 @@
                 
 
             if ( $title < 1 || $short_info < 1 || $long_info < 1 || $logo < 1 || $banner < 1 || $status < 0 ) {
-            $wpdb->query("ROLLBACK");
+                $wpdb->query("ROLLBACK");
                 return array(
                     "status" => "failed",
                     "message" => "An error occured while submitting data to database.",
@@ -135,7 +138,7 @@
                 $wpdb->query("COMMIT");
                 return array(
                     "status" => "success",
-                    "message" => "Store has successfully added.",
+                    "message" => "Data has been added successfully.",
                 );
             }
 
@@ -148,7 +151,7 @@
                
                 $cur_user['created_by'] = $_POST["wpid"];
                 $cur_user['ctid']       = $_POST["ctid"];
-                $cur_user['address']       = $_POST["address"];
+                $cur_user['address']    = $_POST["address"];
 
                 $cur_user['title']      = $_POST["title"];
                 $cur_user['short_info'] = $_POST["short_info"];

@@ -32,7 +32,7 @@
         // require plugin_dir_path(__FILE__) . '/v1/products/filter/class-categories.php';
 
         //Stores Classes
-        // require plugin_dir_path(__FILE__) . '/v1/stores/class-insert.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-insert.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-update.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-delete.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-select.php';
