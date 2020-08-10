@@ -14,20 +14,6 @@
 	define('TP_CUSTOM', 'eCommerce'); 
 	define('TP_PREFIX', 'tp_'); 
 	
-	//Initializing table names
-
-	//Products Config
-	define('TP_PRODUCT_TABLE', TP_PREFIX.'products');
-	define('TP_PRODUCT_FIELDS', '(stid, ctid, title, preview, short_info, long_info, status, sku, price,  weight,  dimension , created_by, date_created)');
-
-	//Revision Config
-	define('TP_REVISION_TABLE', TP_PREFIX.'revisions');
-	define('TP_REVISION_FIELDS','(revs_type, parent_id, child_key , child_val, created_by, date_created )');
-
-	//Stores config
-	define('TP_STORES_TABLE', TP_PREFIX.'stores');
-	define('TP_STORES_FIELDS','(ctid, title, short_info, long_info, logo, banner, status, address, created_by, date_created )');
-
 	//Categories config
 	define('TP_CATEGORIES_TABLE', TP_PREFIX.'categories');
 	define('TP_CATEGORIES_GROUP_TABLE', TP_PREFIX.'categories_group');
