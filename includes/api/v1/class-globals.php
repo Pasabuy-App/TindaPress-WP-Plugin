@@ -9,8 +9,6 @@
 		* @version 0.1.0
 		* This is the primary gateway of all the rest api request.
 	*/
-?>
-<?php
   	class TP_Globals {
          
         public static function create($table_name, $data){

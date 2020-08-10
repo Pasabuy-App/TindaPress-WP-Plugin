@@ -9,8 +9,6 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
-?>
-<?php
 
     class TP_Update_Store {
         public static function listen(){
