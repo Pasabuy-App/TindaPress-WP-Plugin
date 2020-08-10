@@ -32,13 +32,6 @@
                 );
 			}
             
-<<<<<<< Updated upstream
-            // Step2 : Verify if User is in database
-			if (DV_Verification::is_verified() == false) {
-                return array(
-                    "status" => "unknown",
-                    "message" => "Please contact your administrator. Request Unknown!",
-=======
             // Step2 : Check if wpid and snky is valid
             if (DV_Verification::is_verified() == false) {
                 return rest_ensure_response( 
@@ -46,7 +39,6 @@
                         "status" => "unknown",
                         "message" => "Please contact your administrator. Verification Issues!",
                     )
->>>>>>> Stashed changes
                 );
             }
 
@@ -77,12 +69,7 @@
             $revs_fields = REVS_FIELDS;
             $docs = DOCUMENTS;
             $prev = PREVIEW;
-<<<<<<< Updated upstream
-            $table_revs = TP_REVISIONS_TABLE;            
-            
-=======
             $table_revs = TP_REVISIONS_TABLE;           
->>>>>>> Stashed changes
             $doc_type = $_POST['doc_type'];
             $stid = $_POST['stid'];
             $doc_prev = $_POST['doc_prev'];

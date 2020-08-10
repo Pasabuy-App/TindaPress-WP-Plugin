@@ -18,9 +18,10 @@
         }
 
         public static function list_open(){
+
             global $wpdb;
 
-            // declater table names to variable
+            // declaring table names to variable
             $table_store = TP_STORES_TABLE;
             $table_category = TP_CATEGORIES_TABLE;
             $table_revs = TP_REVISIONS_TABLE;
@@ -30,9 +31,11 @@
             $table_country = DV_COUNTRY_TABLE;
             $table_dv_revs = DV_REVS_TABLE;
             $table_add = DV_ADDRESS_TABLE;
-            $catid = $_POST['catid'];
+
+            // declaring variable
+            $ctid = $_POST["catid"];
             
-            //Check if prerequisites plugin are missing
+            //Step1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
@@ -55,30 +58,26 @@
 						"status" => "unknown",
 						"message" => "Please contact your administrator. Request unknown!",
                 );
-                
             }
             
             // Step4 : sanitize if all variables is empty
             if (empty($_POST["catid"])) {
 				return array(
-						"status" => "unknown",
-						"message" => "Required fileds cannot be empty!",
+						"status" => "failed",
+						"message" => "Required fileds cannot be empty.",
                 );
-                
             }
 
-            // Step6 : Validation of category id
-            $ctid = $_POST["catid"];
+            // Step5 : Validation of category id
             $get_cat = $wpdb->get_row("SELECT ID FROM $table_category  WHERE ID = $ctid  ");
-                
              if ( !$get_cat ) {
                 return array(
                         "status" => "failed",
-                        "message" => "No category found!",
+                        "message" => "No category found.",
                 );
 			}
 
-            // Step7 : Query
+            // Step6 : Query
             $result = $wpdb->get_results("SELECT
                 tp_str.ID,
                 (select child_val from $table_revs where id = (select title from tp_categories where id = tp_str.ctid)) AS category,
@@ -93,23 +92,24 @@
                 (SELECT citymun_name FROM $table_city WHERE city_code = (select child_val from $table_dv_revs where id = dv_add.city)) as city,
                 (SELECT prov_name FROM $table_province WHERE prov_code = (select child_val from $table_dv_revs where id = dv_add.province)) as province,
                 (SELECT country_name FROM $table_country WHERE id = (select child_val from $table_dv_revs where id = dv_add.country)) as country
-                FROM
+            FROM
                 $table_store tp_str
-                INNER JOIN $table_add dv_add ON tp_str.address = dv_add.ID
-                WHERE
+            INNER JOIN 
+                $table_add dv_add ON tp_str.address = dv_add.ID
+            WHERE
                 tp_str.ctid = '$catid'
             ");
             
-            // Step8 : Check if no result
+            // Step7 : Check if no result
             if (!$result)
             {
                 return array(
                         "status" => "failed",
-                        "message" => "No results found!",
+                        "message" => "No results found.",
                 );
             }
             
-            // Step9 : Return Result 
+            // Step8 : Return Result 
             return array(
                     "status" => "success",
                     "data" => $result

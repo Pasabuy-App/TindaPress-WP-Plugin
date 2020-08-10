@@ -20,8 +20,18 @@
         public static function list_open(){
 
             global $wpdb;
+
+            // variables for query
+            $table_store = TP_STORES_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
+            $table_brgy = DV_BRGY_TABLE;
+            $table_city = DV_CITY_TABLE;
+            $table_province = DV_PROVINCE_TABLE;
+            $table_country = DV_COUNTRY_TABLE;
+            $table_dv_revs = DV_REVS_TABLE;
+            $table_add = DV_ADDRESS_TABLE;
             
-            //Check if prerequisites plugin are missing
+            // Step1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
@@ -37,42 +47,34 @@
                         "message" => "Please contact your administrator. Verification Issues!",
                 );
             }
-
-            // variables for query
-            $table_store = TP_STORES_TABLE;
-            $table_revs = TP_REVISIONS_TABLE;
-
-            $table_brgy = DV_BRGY_TABLE;
-            $table_city = DV_CITY_TABLE;
-            $table_province = DV_PROVINCE_TABLE;
-            $table_country = DV_COUNTRY_TABLE;
-            $table_dv_revs = DV_REVS_TABLE;
-            $table_add = DV_ADDRESS_TABLE;
      
             // Step3 : Query
-           $result = $wpdb->get_results("SELECT
+            $result = $wpdb->get_results("SELECT
                 tp_str.ID,
-            (select child_val from $table_revs where id = tp_str.short_info) AS short_info,
-            (select child_val from $table_revs where id = tp_str.long_info) AS long_info,
-            (select child_val from $table_revs where id = tp_str.logo) AS avatar,
-            (select child_val from $table_revs where id = tp_str.banner) AS banner,
-            (select child_val from $table_revs where id = tp_str.`status`) AS status,
-            (select child_val from $table_dv_revs where id = dv_add.street) as street,
-            (SELECT brgy_name FROM $table_brgy WHERE ID = (select child_val from $table_dv_revs where id = dv_add.brgy)) as brgy,
-            (SELECT citymun_name FROM $table_city WHERE city_code = (select child_val from $table_dv_revs where id = dv_add.city)) as city,
-            (SELECT prov_name FROM $table_province WHERE prov_code = (select child_val from $table_dv_revs where id = dv_add.province)) as province,
-            (SELECT country_name FROM $table_country WHERE id = (select child_val from $table_dv_revs where id = dv_add.country)) as country
+                (select child_val from $table_revs where id = tp_str.title) AS title,
+                (select child_val from $table_revs where id = tp_str.short_info) AS short_info,
+                (select child_val from $table_revs where id = tp_str.long_info) AS long_info,
+                (select child_val from $table_revs where id = tp_str.logo) AS avatar,
+                (select child_val from $table_revs where id = tp_str.banner) AS banner,
+                (select child_val from $table_revs where id = tp_str.`status`) AS status,
+                (select child_val from $table_dv_revs where id = dv_add.street) as street,
+                (SELECT brgy_name FROM $table_brgy WHERE ID = (select child_val from $table_dv_revs where id = dv_add.brgy)) as brgy,
+                (SELECT citymun_name FROM $table_city WHERE city_code = (select child_val from $table_dv_revs where id = dv_add.city)) as city,
+                (SELECT prov_name FROM $table_province WHERE prov_code = (select child_val from $table_dv_revs where id = dv_add.province)) as province,
+                (SELECT country_name FROM $table_country WHERE id = (select child_val from $table_dv_revs where id = dv_add.country)) as country
             FROM
                 $table_store tp_str
-                INNER JOIN $table_revs tp_rev ON tp_rev.ID = tp_str.`status` 
-                INNER JOIN $table_add dv_add ON tp_str.address = dv_add.ID	
+            INNER JOIN 
+                $table_revs tp_rev ON tp_rev.ID = tp_str.`status` 
+            INNER JOIN 
+                $table_add dv_add ON tp_str.address = dv_add.ID	
             ");
 
             // Step4 : Check if no result
             if (!$result ) {
                 return array(
                         "status" => "failed",
-                        "message" => "No results found!",
+                        "message" => "No results found.",
                 );
 
             }

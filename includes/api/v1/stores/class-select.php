@@ -18,9 +18,12 @@
         }
 
         public static function list_open(){
+
             global $wpdb;
 
-            // variables for query
+            $user = TP_Select_Store::catch_post();
+
+            // declaring table names to variable
             $table_store = TP_STORES_TABLE;
             $table_revs = TP_REVISIONS_TABLE;
             $table_cotnacts = DV_CONTACTS_TABLE;
@@ -30,6 +33,9 @@
             $table_country = DV_COUNTRY_TABLE;
             $table_dv_revs = DV_REVS_TABLE;
             $table_add = DV_ADDRESS_TABLE;
+
+            // declaring variable
+            $stid = $_POST["stid"];
 
            //Check if prerequisites plugin are missing
            $plugin = TP_Globals::verify_prerequisites();
@@ -59,60 +65,59 @@
             if ( empty($_POST["stid"]) ){
                 return array(
                         "status" => "failed",
-                        "message" => "Required fields cannot be empty!",
+                        "message" => "Required fields cannot be empty.",
                 );
             }
-            
 
-
-            // Step6 : Validation of store id
-            $stid = $_POST["stid"];
-            $get_store = $wpdb->get_row("SELECT ID FROM $table_store  WHERE ID = $stid  ");
+            // Step5 : Validation of store id
+            $get_store = $wpdb->get_row("SELECT ID FROM $table_store  WHERE ID = $stid ");
                 
              if ( !$get_store ) {
                 return array(
                         "status" => "failed",
-                        "message" => "No store found!",
+                        "message" => "No store found.",
                 );
 			}
 
-            $user = TP_Select_Store::catch_post();
-
-            // Step7 : Query
+            // Step6 : Query
             $result = $wpdb->get_results("SELECT
-                    tp_str.ID,
-            (select child_val from $table_revs where id = (select title from tp_categories where id = tp_str.ctid)) AS category,
-            tp_rev.child_val AS title,
-            (select child_val from $table_revs where id = tp_str.short_info) AS short_info,
-            (select child_val from $table_revs where id = tp_str.long_info) AS long_info,
-            (select child_val from $table_revs where id = tp_str.logo) AS avatar,
-            (select child_val from $table_revs where id = tp_str.banner) AS banner,
-            (select child_val from $table_revs where id = tp_str.`status`) AS status,
-            (select child_val from $table_dv_revs where id = dv_add.street) as street,
-            (SELECT brgy_name FROM $table_brgy WHERE ID = (select child_val from $table_dv_revs where id = dv_add.brgy)) as brgy,
-            (SELECT citymun_name FROM $table_city WHERE city_code = (select child_val from $table_dv_revs where id = dv_add.city)) as city,
-            (SELECT prov_name FROM $table_province WHERE prov_code = (select child_val from $table_dv_revs where id = dv_add.province)) as province,
-            (SELECT country_name FROM $table_country WHERE id = (select child_val from $table_dv_revs where id = dv_add.country)) as country,
-            (SELECT child_val from dv_revisions where id = max( IF ( dv_cont.types = 'phone', dv_cont.revs, '' )) ) AS phone,
-            (SELECT child_val from dv_revisions where id = max( IF ( dv_cont.types = 'email', dv_cont.revs, '' )) ) AS email
-                FROM
-                    $table_store tp_str
-                    INNER JOIN $table_revs tp_rev ON tp_rev.ID = tp_str.title 
-                    INNER JOIN $table_add dv_add ON tp_str.address = dv_add.ID
-                    INNER JOIN $table_cotnacts as dv_cont ON tp_str.ID = dv_cont.stid
-                WHERE tp_str.ID = '{$user["store_id"]}'
-                ");
+                tp_str.ID,
+                (select child_val from $table_revs where id = (select title from tp_categories where id = tp_str.ctid)) AS category,
+                tp_rev.child_val AS title,
+                (select child_val from $table_revs where id = tp_str.short_info) AS short_info,
+                (select child_val from $table_revs where id = tp_str.long_info) AS long_info,
+                (select child_val from $table_revs where id = tp_str.logo) AS avatar,
+                (select child_val from $table_revs where id = tp_str.banner) AS banner,
+                (select child_val from $table_revs where id = tp_str.`status`) AS status,
+                (select child_val from $table_dv_revs where id = dv_add.street) as street,
+                (SELECT brgy_name FROM $table_brgy WHERE ID = (select child_val from $table_dv_revs where id = dv_add.brgy)) as brgy,
+                (SELECT citymun_name FROM $table_city WHERE city_code = (select child_val from $table_dv_revs where id = dv_add.city)) as city,
+                (SELECT prov_name FROM $table_province WHERE prov_code = (select child_val from $table_dv_revs where id = dv_add.province)) as province,
+                (SELECT country_name FROM $table_country WHERE id = (select child_val from $table_dv_revs where id = dv_add.country)) as country,
+                (SELECT child_val from dv_revisions where id = max( IF ( dv_cont.types = 'phone', dv_cont.revs, '' )) ) AS phone,
+                (SELECT child_val from dv_revisions where id = max( IF ( dv_cont.types = 'email', dv_cont.revs, '' )) ) AS email
+            FROM
+                $table_store tp_str
+            INNER JOIN 
+                $table_revs tp_rev ON tp_rev.ID = tp_str.title 
+            INNER JOIN 
+                $table_add dv_add ON tp_str.address = dv_add.ID
+            INNER JOIN 
+                $table_cotnacts as dv_cont ON tp_str.ID = dv_cont.stid
+            WHERE 
+                tp_str.ID = '{$user["store_id"]}'
+            ");
             
-            // Step8 : Check if no result
+            // Step7 : Check if no result
             if (!$result)
             {
                 return array(
                         "status" => "failed",
-                        "message" => "No results found!",
+                        "message" => "No results found.",
                 );
             }
             
-            // Step9 : Return Result 
+            // Step8 : Return Result 
             return array(
                     "status" => "success",
                     "data" => $result

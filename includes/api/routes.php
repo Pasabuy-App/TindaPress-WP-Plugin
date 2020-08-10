@@ -237,12 +237,17 @@
     
             register_rest_route( 'tindapress/v1/stores', 'newest', array(
                 'methods' => 'POST',
-                'callback' => array('TP_Newest','initialize'),
+                'callback' => array('TP_Newest','listen'),
             ));
 
             register_rest_route( 'tindapress/v1/stores', 'best_seller', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Best_Seller_Store','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/stores', 'popular_store', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Popular_Store','listen'),
             ));
 
         /*
