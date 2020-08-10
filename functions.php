@@ -36,8 +36,11 @@
     //Important config files and plugin updates.
     include_once ( TP_PLUGIN_PATH . '/includes/core/config.php' );
     include_once ( TP_PLUGIN_PATH . '/includes/core/update.php' );
+<<<<<<< Updated upstream
 
     // include_once ( TP_PLUGIN_PATH . '/includes/view/primary.php' );
+=======
+>>>>>>> Stashed changes
     include_once ( TP_PLUGIN_PATH . '/includes/view/primary.php' );
 
      //Make sure to create required mysql tables.

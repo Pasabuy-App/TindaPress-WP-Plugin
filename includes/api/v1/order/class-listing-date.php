@@ -19,14 +19,16 @@
 
         public static function list_open(){
 
+            //Initial QA done 2020-08-10 10:54 am
+            
             global $wpdb;
 
             // variables for query
             $table_store = TP_STORES_TABLE;
             $table_products = TP_PRODUCT_TABLE;
             $table_revs = TP_REVISION_TABLE;
-            $table_orders = MP_ORDERS_TABLE;
-            $table_ordes_items = MP_ORDER_ITEMS_TABLE;
+            $table_orders = 'mp_orders';
+            $table_order_items = 'mp_order_items';
             $dt = TP_Globals::convert_date($_POST["wpid"],$_POST["date"]);
 
             // Step1 : check if datavice plugin is activated
@@ -68,7 +70,7 @@
              if ( !$get_store ) {
                 return array(
                         "status" => "failed",
-                        "message" => "No store found.",
+                        "message" => "This store does not exists.",
                 );
             }
 
@@ -83,15 +85,19 @@
         
             // Step7 : Query
            $result = $wpdb->get_results("SELECT
-           mp_ordtem.ID,
-           (select child_val from $table_revs where id = (select title from $table_store where id = mp_ord.stid)) AS store,
-           (select child_val from $table_revs where id = (select title from $table_products where id = mp_ordtem.pdid)) AS product,
-           mp_ordtem.quantity,
-           mp_ord.date_created
-           FROM
-           $table_ordes_items as mp_ordtem
-           INNER JOIN $table_orders as mp_ord ON mp_ord.ID = mp_ordtem.odid
-           WHERE mp_ord.stid = '$stid' and DATE(mp_ord.date_created) = '$dt'
+                    mp_ordtem.ID,
+                    (select child_val from $table_revs where id = (select title from $table_store where id = mp_ord.stid)) AS store,
+                    (select child_val from $table_revs where id = (select title from $table_products where id = mp_ordtem.pdid)) AS product,
+                    mp_ordtem.quantity,
+                    mp_ord.date_created
+                FROM
+                    $table_order_items as mp_ordtem
+                INNER JOIN 
+                    $table_orders as mp_ord ON mp_ord.ID = mp_ordtem.odid
+                WHERE
+                    mp_ord.stid = '$stid' 
+                AND
+                    DATE(mp_ord.date_created) = '$dt'
             ");
             
             // Step8 : Check if no result
@@ -99,7 +105,7 @@
             {
                 return array(
                         "status" => "failed",
-                        "message" => "No order found by this value!",
+                        "message" => "No orders found!",
                 );
             }
             
@@ -112,6 +118,8 @@
             
         }
         
+        //Function for checking if date is valid and in valid format(2020-01-01).
+        //Invalid dates such us 2020-02-31 will return false
         public static function validateDate($date, $format = 'Y-m-d H:i:s')
         {
             $d = DateTime::createFromFormat($format, $date);
