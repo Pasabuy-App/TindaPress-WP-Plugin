@@ -37,7 +37,9 @@
 				$sql .= "`long_info` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Description of the store with revision ID.', ";
 				$sql .= "`logo` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Logo of the store with revision Id.', ";
 				$sql .= "`banner` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Preview image url with revision ID.', ";
+				$sql .= "`status` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Status of the store with revision ID.', ";
 				$sql .= "`address` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Address id of this store, 0 if not set', ";
+				$sql .= "`created_by` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User id who created this store', ";
 				$sql .= "`date_created` datetime(0) NULL DEFAULT NULL COMMENT 'The date this store was created.', ";
 				$sql .= "PRIMARY KEY (`ID`) ";
 				$sql .= ") ENGINE = InnoDB; ";
