@@ -51,22 +51,20 @@
                 );
             }
 
-            // Step3 : Sanitize all Request
+            // Step3 : Sanitize request
 			if (!isset($_POST['search']) ) {
 				return array(
 						"status" => "unknown",
 						"message" => "Please contact your administrator. Request unknown!",
                 );
-                
             }
 
-             // Step4 : Sanitize all Request if emply
+             // Step4 : Sanitize variable if empty
 			if (empty($_POST['search']) ) {
 				return array(
 						"status" => "failed",
 						"message" => "Required fields cannot be empty.",
                 );
-                
             }
 
             // Step5 : Query
@@ -98,7 +96,6 @@
                         "status" => "failed",
                         "message" => "No results found.",
                 );
-
             }
             
             // Step7 : Return Result 

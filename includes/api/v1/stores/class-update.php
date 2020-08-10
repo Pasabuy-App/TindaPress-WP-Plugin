@@ -50,7 +50,7 @@
                 );
             }
 
-            // Step3 : Check if wpid and snky is valid
+            // Step3 : Sanitize all request
             if (!isset($_POST["wpid"]) 
                 || !isset($_POST["ctid"]) 
                 || !isset($_POST["title"]) 
@@ -65,7 +65,7 @@
                 );
             }
 
-            // Step4 : Check if wpid and snky is valid
+            // Step4 : Sanitize all variable is empty
             if (empty($_POST["wpid"]) 
             || empty($_POST["ctid"]) 
             || empty($_POST["title"]) 

@@ -53,7 +53,7 @@
                 );
             }
 
-            // Step3 : Sanitize all Request
+            // Step3 : Sanitize request
             if (!isset($_POST["stid"])) {
                 return array(
                         "status" => "unknown",
@@ -61,7 +61,7 @@
                 );
             }
 
-            // Step4 : sanitize if all variables is empty
+            // Step4 : Sanitize if variable is empty
             if ( empty($_POST["stid"]) ){
                 return array(
                         "status" => "failed",
@@ -70,9 +70,8 @@
             }
 
             // Step5 : Validation of store id
-            $get_store = $wpdb->get_row("SELECT ID FROM $table_store  WHERE ID = $stid ");
-                
-             if ( !$get_store ) {
+            $get_store = $wpdb->get_row("SELECT ID FROM $table_store  WHERE ID = $stid ");    
+            if ( !$get_store ) {
                 return array(
                         "status" => "failed",
                         "message" => "No store found.",
