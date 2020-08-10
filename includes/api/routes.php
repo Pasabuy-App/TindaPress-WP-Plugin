@@ -42,10 +42,14 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/class-search.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-stores.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-newest.php';
-        // require plugin_dir_path(__FILE__) . '/v1/stores/class-documents.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-categories.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-popular.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-best-seller.php';
+        
+        // Document Classes
+        require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-delete.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-insert.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-update.php';
         
         //Settings Classes
         require plugin_dir_path(__FILE__) . '/v1/settings/class-banner.php';
@@ -173,9 +177,14 @@
                 'callback' => array('TP_Insert_Documents','listen'),
             ));
 
-            register_rest_route( 'tindapress/v1/stores', 'delete_docs', array(
+            register_rest_route( 'tindapress/v1/documents', 'delete', array(
                 'methods' => 'POST',
-                'callback' => array('TP_Documents','delete_docs'),
+                'callback' => array('TP_Delte_Documents','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/documents', 'update', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Update_Documents','listen'),
             ));
      
             
