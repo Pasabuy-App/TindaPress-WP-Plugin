@@ -69,7 +69,7 @@
             
             //get current date base on user timezone
 
-            $table_revs = TP_REVISION_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
 
             //Get results

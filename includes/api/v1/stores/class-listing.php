@@ -40,7 +40,7 @@
 
             // variables for query
             $table_store = TP_STORES_TABLE;
-            $table_revs = TP_REVISION_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
 
             $table_brgy = DV_BRGY_TABLE;
             $table_city = DV_CITY_TABLE;
@@ -52,11 +52,11 @@
             // Step3 : Query
            $result = $wpdb->get_results("SELECT
                 tp_str.ID,
-            (select child_val from $table_revs where id = tp_str.short_info) AS bio,
-            (select child_val from $table_revs where id = tp_str.long_info) AS details,
-            (select child_val from $table_revs where id = tp_str.logo) AS icon,
-            (select child_val from $table_revs where id = tp_str.banner) AS bg,
-            (select child_val from $table_revs where id = tp_str.`status`) AS stats,
+            (select child_val from $table_revs where id = tp_str.short_info) AS short_info,
+            (select child_val from $table_revs where id = tp_str.long_info) AS long_info,
+            (select child_val from $table_revs where id = tp_str.logo) AS avatar,
+            (select child_val from $table_revs where id = tp_str.banner) AS banner,
+            (select child_val from $table_revs where id = tp_str.`status`) AS status,
             (select child_val from $table_dv_revs where id = dv_add.street) as street,
             (SELECT brgy_name FROM $table_brgy WHERE ID = (select child_val from $table_dv_revs where id = dv_add.brgy)) as brgy,
             (SELECT citymun_name FROM $table_city WHERE city_code = (select child_val from $table_dv_revs where id = dv_add.city)) as city,

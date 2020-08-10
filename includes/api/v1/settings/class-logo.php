@@ -21,8 +21,8 @@
             $table_store = TP_STORES_TABLE;
             $table_store_fields = TP_STORES_FIELDS;
 
-            $table_revs = TP_REVISION_TABLE;
-            $table_revs_fields = TP_REVISIONS_FIELDS;
+            $table_revs = TP_REVISIONS_TABLE;
+            $table_revs_fields = TP_REVISION_FIELDS;
 
             $revs_type = "stores";
             $wpid = $_POST["wpid"];

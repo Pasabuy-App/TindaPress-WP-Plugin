@@ -43,7 +43,7 @@
             $date = TP_Globals::get_user_date($_POST['wpid']);
             
 
-            $table_revs = TP_REVISION_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
 
             //Get results

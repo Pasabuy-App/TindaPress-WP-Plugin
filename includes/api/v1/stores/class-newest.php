@@ -26,13 +26,13 @@
                         "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
-
-            // step2 : Validate if user is existed in datavice 
-            if (TP_Globals::validate_user() == false) {
+            
+            // Step2 : Check if wpid and snky is valid
+            if (DV_Verification::is_verified() == false) {
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
+                        "message" => "Please contact your administrator. Verification Issues!",
                     )
                 );
             }
@@ -74,8 +74,8 @@
             $categories_table      = TP_CATEGORIES_TABLE;
           
             $product_table         = TP_PRODUCT_TABLE;
-
-            $table_revs            = TP_REVISIONS_TABLE;
+            $product_revs_table    = TP_PRODUCT_REVS_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
             
             // datavice table variables declarations
             $dv_geo_brgy = DV_BRGY_TABLE;

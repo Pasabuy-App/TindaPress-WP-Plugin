@@ -24,11 +24,11 @@
             }
             
             // Step2 : Check if wpid and snky is valid
-            if (TP_Globals::validate_user() == false) {
+            if (DV_Verification::is_verified() == false) {
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
+                        "message" => "Please contact your administrator. Verification Issues!",
                     )
                 );
             }
@@ -77,8 +77,8 @@
             $table_store = TP_STORES_TABLE;
             $table_store_fields = TP_STORES_FIELDS;
 
-            $table_revs = TP_REVISION_TABLE;
-            $table_revs_fields = TP_REVISIONS_FIELDS;
+            $table_revs = TP_REVISIONS_TABLE;
+            $table_revs_fields = TP_REVISION_FIELDS;
 
             $revs_type = "stores";
 

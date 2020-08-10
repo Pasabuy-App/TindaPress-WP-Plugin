@@ -59,7 +59,7 @@
 
             // table names and POST Variables
             $store_table           = TP_STORES_TABLE;
-            $table_revs            = TP_REVISIONS_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
             $table_address = 'dv_address';
             // datavice table variables declarations
             $dv_geo_brgy    = DV_BRGY_TABLE;

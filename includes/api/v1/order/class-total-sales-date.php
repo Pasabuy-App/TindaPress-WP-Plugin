@@ -70,7 +70,7 @@
 			$order_items_table = MP_ORDER_ITEMS_TABLE;
 			$order_items = MP_ORDERS_TABLE;
 			$product_table = TP_PRODUCT_TABLE;
-			$tp_revs_table = TP_REVISION_TABLE;
+			$tp_revs_table = TP_REVISIONS_TABLE;
 
 			$store_id = $_POST["stid"];
 			$result = $wpdb->get_row("SELECT COALESCE

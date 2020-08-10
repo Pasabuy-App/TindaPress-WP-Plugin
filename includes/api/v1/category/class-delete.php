@@ -55,7 +55,7 @@
             }
 
             $category_id = $_POST["catid"];
-            $table_revs = TP_REVISION_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
 
             $category = $wpdb->get_row("SELECT `status` FROM $table_categories WHERE `id` = $category_id");

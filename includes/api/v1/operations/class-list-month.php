@@ -46,7 +46,7 @@
             $start = date('Y-m-01 H:i:s', strtotime($date));
             $end = date('Y-m-t H:i:s', strtotime($date));
 
-            $table_revs = TP_REVISION_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
 
             //Get results

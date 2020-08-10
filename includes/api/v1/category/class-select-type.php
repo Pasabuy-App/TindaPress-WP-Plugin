@@ -60,7 +60,7 @@
             }
 
             $types = $_POST['types'];
-            $table_revs = TP_REVISION_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
 
             $categories = $wpdb->get_results("SELECT

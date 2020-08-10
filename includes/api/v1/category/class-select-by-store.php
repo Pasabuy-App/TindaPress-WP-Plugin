@@ -53,7 +53,7 @@
             }
 
             $store_id = $_POST['stid'];
-            $table_revs = TP_REVISION_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
             $table_stores = TP_STORES_TABLE;
 

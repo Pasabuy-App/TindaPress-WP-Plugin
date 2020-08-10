@@ -66,7 +66,7 @@
             $categories_table      = TP_CATEGORIES_TABLE;
             $product_table         = TP_PRODUCT_TABLE;
             $product_revs_table    = TP_PRODUCT_REVS_TABLE;
-            $table_revs            = TP_REVISIONS_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
             // datavice table variables declarations
             $dv_geo_brgy    = DV_BRGY_TABLE;
             $dv_revs        =  DV_REVS_TABLE;

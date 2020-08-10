@@ -26,7 +26,7 @@
             // variables for query
             $table_store = TP_STORES_TABLE;
             $table_products = TP_PRODUCT_TABLE;
-            $table_revs = TP_REVISION_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
             $table_orders = 'mp_orders';
             $table_order_items = 'mp_order_items';
             $dt = TP_Globals::convert_date($_POST["wpid"],$_POST["date"]);

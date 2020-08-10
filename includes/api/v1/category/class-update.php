@@ -76,7 +76,7 @@
             //Store or product
             $types = $_POST["types"]; 
 
-            $table_revs = TP_REVISION_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
             $table_revs_fields = TP_REVISION_FIELDS;
             $table_categories = TP_CATEGORIES_TABLE;
             $categories_fields = TP_CATEGORIES_FIELDS;

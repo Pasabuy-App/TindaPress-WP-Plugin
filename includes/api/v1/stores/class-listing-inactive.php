@@ -38,7 +38,7 @@
 
             // variables for query
             $table_store = TP_STORES_TABLE;
-            $table_revs = TP_REVISION_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
 
             $table_brgy = DV_BRGY_TABLE;
             $table_city = DV_CITY_TABLE;

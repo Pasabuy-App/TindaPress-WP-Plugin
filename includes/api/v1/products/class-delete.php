@@ -59,7 +59,7 @@
             $product_type = "products";
             $date_stamp = TP_Globals::date_stamp();
             $product_table         = TP_PRODUCT_TABLE;
-            $table_revs            = TP_REVISIONS_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
             $table_revs_fields     = TP_REVISION_FIELDS;
 
             // Query

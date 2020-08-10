@@ -30,11 +30,14 @@
                     "message" => "Please contact your administrator. Plugin Missing!",
                 );
 			}
-			//step 2: validate User
-			if (DV_Verification::is_verified() == false) {
-                return array(
-                    "status" => "unknown",
-                    "message" => "Please contact your administrator. Request Unknown!",
+            
+            // Step2 : Check if wpid and snky is valid
+            if (DV_Verification::is_verified() == false) {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. Verification Issues!",
+                    )
                 );
             }
 
