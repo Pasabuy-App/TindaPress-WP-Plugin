@@ -18,18 +18,22 @@
         }
         
         public static function select_by_store(){
-            global $wpdb;
             
-           //Check if prerequisites plugin are missing
-           $plugin = TP_Globals::verify_prerequisites();
-           if ($plugin !== true) {
+            global $wpdb;
+            $table_revs = TP_REVISIONS_TABLE;
+            $table_categories = TP_CATEGORIES_TABLE;
+            $table_stores = TP_STORES_TABLE;
+
+            // Step 1: Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
                return array(
                        "status" => "unknown",
                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                );
-           }
+            }
 			
-			//  Step2 : Validate if user is exist
+			// Step 2: Validate user
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
@@ -38,6 +42,7 @@
                 
             }
             
+            // Step 3: Check if parameters are passed
             if (!isset($_POST["stid"])  ) {
 				return array(
 						"status" => "unknown",
@@ -45,6 +50,7 @@
                 );
             }
 
+            // Step 4: Check if parameters passed are not null
             if (empty($_POST["stid"])  ) {
 				return array(
 						"status" => "failed",
@@ -53,9 +59,6 @@
             }
 
             $store_id = $_POST['stid'];
-            $table_revs = TP_REVISIONS_TABLE;
-            $table_categories = TP_CATEGORIES_TABLE;
-            $table_stores = TP_STORES_TABLE;
 
             $categories = $wpdb->get_results("SELECT
                 cat.ID, cat.types,

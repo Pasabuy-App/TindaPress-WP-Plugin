@@ -22,9 +22,16 @@
         
         //Inserting Category function
         public static function store_insert_category(){
+           
             global $wpdb;
+            $table_revs = TP_REVISIONS_TABLE;
+            $table_revs_fields = TP_REVISION_FIELDS;
+            $table_categories = TP_CATEGORIES_TABLE;
+            $categories_fields = TP_CATEGORIES_FIELDS;
+            $revs_type = "categories";
+            $date = date('Y-m-d h:i:s');
             
-            //Check if prerequisites plugin are missing
+            // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
@@ -33,15 +40,16 @@
                 );
             }
 			
-			//  Step2 : Validate if user is exist
+			// Step 2: Validate user
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification Issues!",
+                        "message" => "Please contact your administrator. Verification issues!",
                 );
                 
             }
 
+            // Step 3: Check if parameters are passed
             if (!isset($_POST["title"]) || !isset($_POST["info"])  || !isset($_POST["types"]) || !isset($_POST["stid"]) ) {
 				return array(
 						"status" => "unknown",
@@ -49,6 +57,7 @@
                 );
             }
 
+            // Step 4: Check if parameters passed are not null
             if (empty($_POST["title"]) || empty($_POST["info"])  || empty($_POST["types"]) || !isset($_POST["stid"]) ) {
 				return array(
 						"status" => "failed",
@@ -56,6 +65,7 @@
                 );
             }
 
+            // Step 5: Check if types value is valid
             if ( !($_POST['types'] === 'store') && !($_POST['types'] === 'product') && !($_POST['types'] === 'tags') ) {
                 return array(
                     "status" => "failed",
@@ -74,17 +84,10 @@
             //Store or product
             $types = $_POST["types"]; 
 
-            $table_revs = TP_REVISIONS_TABLE;
-            $table_revs_fields = TP_REVISION_FIELDS;
-            $table_categories = TP_CATEGORIES_TABLE;
-            $categories_fields = TP_CATEGORIES_FIELDS;
-
-            $revs_type = "categories";
-
-            $date = date('Y-m-d h:i:s');
-
+            // Step 6: Check if this store id exists
             $get_store = $wpdb->get_row("SELECT `ID` FROM `tp_stores` WHERE `ID` = $store_id");
 
+            //Return if no rows found
             if (!$get_store) {
                 return array(
                     "status" => "failed",
@@ -92,6 +95,7 @@
                 );
             }
 
+            // Step 7: Start mysql query
             $wpdb->query("START TRANSACTION");
 
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'title', '$title', $wpid, '$date')");
@@ -114,6 +118,7 @@
 
                 $store_result = $wpdb->query("UPDATE `tp_stores` SET `ctid` = $parent_id WHERE `ID` = $store_id ");
 
+            // Step 8: Check if any of the queries above failed
             if ($title_id < 1 || $info_id < 1 || $status_id < 1 || $parent_id < 1 || $result < 1 || $store_result < 1) {
                 // when insert failed rollback all inserted data
                 $wpdb->query("ROLLBACK");
@@ -127,9 +132,10 @@
             // commits all insert if true
             $wpdb->query("COMMIT");
 
+            // Step 9: Return a success status and message 
             return array(
                 "status" => "success",
-                "message" => "Data has been added successfully!",
+                "message" => "Data has been added successfully.",
             );
 
 

@@ -18,9 +18,12 @@
         }
         
         public static function list_type(){
+           
             global $wpdb;
+            $table_revs = TP_REVISIONS_TABLE;
+            $table_categories = TP_CATEGORIES_TABLE;
 
-            //Check if prerequisites plugin are missing
+            // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
@@ -29,7 +32,7 @@
                 );
             }
 			
-			//  Step2 : Validate if user is exist
+			// Step 2: Validate user
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
@@ -38,6 +41,7 @@
                 
             }
             
+            // Step 3: Check if parameters are passed
             if (!isset($_POST["types"])  ) {
 				return array(
 						"status" => "unknown",
@@ -45,6 +49,7 @@
                 );
             }
 
+            // Step 4: Check if parameters passed are not null
             if (empty($_POST["types"])  ) {
 				return array(
 						"status" => "failed",
@@ -52,6 +57,7 @@
                 );
             }
 
+            // Step 5: Check if types value is valid
             if ( !($_POST['types'] === 'store') && !($_POST['types'] === 'product') && !($_POST['types'] === 'tags') ) {
                 return array(
                     "status" => "failed",
@@ -60,9 +66,8 @@
             }
 
             $types = $_POST['types'];
-            $table_revs = TP_REVISIONS_TABLE;
-            $table_categories = TP_CATEGORIES_TABLE;
 
+            // Step 6: Start mysql query
             $categories = $wpdb->get_results("SELECT
                 cat.ID, cat.types,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.title ) AS title,
@@ -79,6 +84,7 @@
             GROUP BY
                 cat.id");
             
+            // Step 7: Check results if empty
             if (!$categories) {
                 return array(
                     "status" => "failed",
@@ -86,6 +92,7 @@
                 );
             }
 
+            // Step 8: Return a success status and message 
             return array(
                 "status" => "success",
                 "data" => $categories

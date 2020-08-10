@@ -48,6 +48,7 @@
                         "status" => "unknown",
                         "message" => "Please contact your administrator. Verification issues!",
                 );
+            }
 
             // Step 3 : Query  
             $result =  $wpdb->get_results("SELECT
@@ -76,7 +77,7 @@
             }else{
                 return array(
                     "status" => "success",
-                    "data" =>  max($result),
+                    "data" =>  max($result)
                 );
 
             }
