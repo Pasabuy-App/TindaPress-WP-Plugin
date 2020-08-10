@@ -11,6 +11,7 @@
 	*/
 
 	//Defining Global Variables
+	define('TP_CUSTOM', 'eCommerce'); 
 	define('TP_PREFIX', 'tp_'); 
 	
 	//Categories config

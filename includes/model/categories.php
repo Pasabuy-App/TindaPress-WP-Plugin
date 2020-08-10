@@ -20,28 +20,28 @@
 
         //#region Page = APPLICATION LIST 
             //GET THE REFERENCE OF THE CURRENT PAGE DATTABLES.
-            var storeTables = $('#stores-datatables');
+            var categoryTables = $('#categories-datatables');
 
             //SHOW NOTIFICATION THAT WE ARE CURRENTLY LOADING APPS.
 
             //SET INTERVAL DRAW UPDATE.
-            loadingAppList( storeTables );
+            loadingAppList( categoryTables );
             // setInterval( function()
             // { 
-            //     loadingAppList( storeTables );
+            //     loadingAppList( categoryTables );
             // }, 10000);
 
             $('#RefreshAppList').click(function() {
-                loadingAppList( storeTables );
+                loadingAppList( categoryTables );
             });
 
             console.log('<?php echo site_url() . "/wp-json/"; ?>');
         
             //LOAD APPLIST WITH AJAX.
             var tptables = 'undefined';
-            function loadingAppList( storeTables )
+            function loadingAppList( categoryTables )
             {
-                if( storeTables.length != 0 )
+                if( categoryTables.length != 0 )
                 {
                     if( $('#stores-notification').hasClass('tp-display-hide') )
                     {
@@ -120,7 +120,7 @@
                 ];
 
                 //Displaying data on datatables.
-                tptables = $('#stores-datatables').DataTable({
+                tptables = $('#categories-datatables').DataTable({
                     destroy: true,
                     searching: true,
                     buttons: ['copy', 'excel', 'print'],
@@ -210,7 +210,7 @@
                         $('#CNAMessage').removeClass('tp-display-hide');
                         $('#CNAMcontent').text( data.message );
 
-                        loadingAppList( storeTables );
+                        loadingAppList( categoryTables );
                         $('#create-app-btn').removeClass('disabled');
                         activeTimeout = setTimeout( function() {
                             $('#CNAMessage').removeClass('alert-'+data.status);
@@ -339,7 +339,7 @@
                         $('#DFAMessage').removeClass('tp-display-hide');
                         $('#DFAMcontent').text( data.message );
 
-                        loadingAppList( storeTables );
+                        loadingAppList( categoryTables );
                         activeTimeout = setTimeout( function() {
                             $('#DFAMessage').removeClass('alert-'+data.status);
                             $('#DFAMessage').addClass('tp-display-hide');
