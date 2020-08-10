@@ -9,9 +9,7 @@
      * @version 0.1.0
      * Here is where you add hook to WP to create our custom database if not found.
 	*/
-?>
-<?php
-	
+
 	function tp_dbhook_activate() {
 	
 		global $wpdb;
@@ -28,11 +26,6 @@
 		$tbl_roles_meta = TP_ROLES_META_TABLE;
 		$tbl_stores = TP_STORES_TABLE;
 
-		$tbl_address = TP_ADDRESS_TABLE;
-		$tbl_orders = TP_ORDERS_TABLE;
-		$tbl_order_items = TP_ORDERS_ITEMS_TABLE;
-		$tbl_plugin_config = TP_PLUGIN_CONFIG_TABLE;
-		$tbl_roles_access = TP_ROLES_ACCESS_TABLE;
 		
 		//Database table creation for stores
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_stores'" ) != $tbl_stores) {
@@ -188,7 +181,3 @@
 	
     } 
     add_action( 'activated_plugin', 'tp_dbhook_activate' );
-
-
-
-?>
