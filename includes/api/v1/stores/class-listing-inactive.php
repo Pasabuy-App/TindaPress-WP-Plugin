@@ -16,51 +16,63 @@
         public static function listen(){
             global $wpdb;
 
-                  // Step1 : check if datavice plugin is activated
-                  if (TP_Globals::verify_datavice_plugin() == false) {
-                    return rest_ensure_response( 
-                        array(
-                            "status" => "unknown",
-                            "message" => "Please contact your administrator. Plugin Missing!",
-                        )
-                    );
-                }
+            // Step1 : check if datavice plugin is activated
+            if (TP_Globals::verify_datavice_plugin() == false) {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. Plugin Missing!",
+                    )
+                );
+            }
                 
-                // Step2 : Check if wpid and snky is valid
-                if (DV_Verification::is_verified() == false) {
-                    return rest_ensure_response( 
-                        array(
-                            "status" => "unknown",
-                            "message" => "Please contact your administrator. Request Unknown!",
-                        )
-                    );
-                }
+            // Step2 : Check if wpid and snky is valid
+            if (DV_Verification::is_verified() == false) {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. Request Unknown!",
+                    )
+                );
+            }
 
+
+            // variables for query
+            $table_store = TP_STORES_TABLE;
+            $table_revs = TP_REVISION_TABLE;
+
+            $table_brgy = DV_BRGY_TABLE;
+            $table_city = DV_CITY_TABLE;
+            $table_province = DV_PROVINCE_TABLE;
+            $table_country = DV_COUNTRY_TABLE;
+            $table_add = DV_ADDRESS_TABLE;
+
+            $table_dv_revs = DV_REVS_TABLE;
 
             $result = $wpdb->get_results("SELECT
                     tp_str.ID,
-                    ( SELECT tp_rev.child_val FROM tp_revisions tp_rev WHERE ID = tp_str.short_info ) AS `short_info`,
-                    ( SELECT tp_rev.child_val FROM tp_revisions tp_rev WHERE ID = tp_str.long_info ) AS `long_info`,
-                    ( SELECT tp_rev.child_val FROM tp_revisions tp_rev WHERE ID = tp_str.logo ) AS `logo`,
-                    ( SELECT tp_rev.child_val FROM tp_revisions tp_rev WHERE ID = tp_str.banner ) AS `banner`,
-                    ( SELECT dv_revisions.child_val FROM dv_revisions WHERE ID = dv_add.street ) AS `street`,
-                    ( SELECT brgy_name FROM dv_geo_brgys WHERE ID = ( SELECT child_val FROM dv_revisions WHERE ID = dv_add.brgy ) ) AS brgy,
-                    ( SELECT citymun_name FROM dv_geo_city WHERE city_code = ( SELECT child_val FROM dv_revisions WHERE ID = dv_add.city ) ) AS city,
-                    ( SELECT prov_name FROM dv_geo_province WHERE prov_code = ( SELECT child_val FROM dv_revisions WHERE ID = dv_add.province ) ) AS province,
-                    ( SELECT country_name FROM dv_geo_countries WHERE ID = ( SELECT child_val FROM dv_revisions WHERE ID = dv_add.country ) ) AS country 
+                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.short_info ) AS `short_info`,
+                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.long_info ) AS `long_info`,
+                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.logo ) AS `logo`,
+                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.banner ) AS `banner`,
+                    ( SELECT dv_rev.child_val FROM $table_dv_revs dv_rev WHERE dv_rev.ID = dv_add.street ) AS `street`,
+                    ( SELECT brgy_name FROM $table_brgy WHERE ID = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.brgy ) ) AS brgy,
+                    ( SELECT citymun_name FROM $table_city WHERE city_code = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.city ) ) AS city,
+                    ( SELECT prov_name FROM $table_province WHERE prov_code = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.province ) ) AS province,
+                    ( SELECT country_name FROM $table_country WHERE ID = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.country ) ) AS country 
                 FROM
-                    tp_stores tp_str
-                    INNER JOIN tp_revisions tp_rev ON tp_rev.ID = tp_str.`status` 
-                    INNER JOIN dv_address dv_add ON tp_str.address = dv_add.ID	
+                    $table_store tp_str
+                    INNER JOIN $table_revs tp_rev ON tp_rev.ID = tp_str.`status` 
+                    INNER JOIN $table_add dv_add ON tp_str.address = dv_add.ID	
                     WHERE tp_rev.child_val = 0
                 ");
 
-
-            if (!$result ) {
+            if ($result < 1 ) {
                 return array(
                     "status" => "failed",
                     "message" => "An error occured while fetching data to database.",
                 );
+
             }else{
                 return  array(
                     "status" => "success",
@@ -69,6 +81,7 @@
                         
                     )
                 );
+
             }
         }
     }

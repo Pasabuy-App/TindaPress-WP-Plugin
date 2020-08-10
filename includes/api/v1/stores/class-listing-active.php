@@ -16,25 +16,25 @@
         public static function listen(){
             global $wpdb;
 
-                  // Step1 : check if datavice plugin is activated
-                  if (TP_Globals::verify_datavice_plugin() == false) {
-                    return rest_ensure_response( 
-                        array(
-                            "status" => "unknown",
-                            "message" => "Please contact your administrator. Plugin Missing!",
-                        )
-                    );
-                }
+            // Step1 : check if datavice plugin is activated
+            if (TP_Globals::verify_datavice_plugin() == false) {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. Plugin Missing!",
+                    )
+                );
+            }
                 
-                // Step2 : Check if wpid and snky is valid
-                if (DV_Verification::is_verified() == false) {
-                    return rest_ensure_response( 
-                        array(
-                            "status" => "unknown",
-                            "message" => "Please contact your administrator. Request Unknown!",
-                        )
-                    );
-                }
+            // Step2 : Check if wpid and snky is valid
+            if (DV_Verification::is_verified() == false) {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. Request Unknown!",
+                    )
+                );
+            }
 
             // variables for query
             $table_store = TP_STORES_TABLE;
@@ -47,9 +47,6 @@
             $table_add = DV_ADDRESS_TABLE;
 
             $table_dv_revs = DV_REVS_TABLE;
-
-            
-
 
             $result = $wpdb->get_results("SELECT
                     tp_str.ID,
@@ -70,11 +67,12 @@
                 ");
 
 
-            if ($result < 0 ) {
+            if ($result < 1 ) {
                 return array(
                     "status" => "failed",
                     "message" => "An error occured while fetching data to database.",
                 );
+                
             }else{
                 return  array(
                     "status" => "success",
@@ -83,6 +81,7 @@
                         
                     )
                 );
+
             }
         }
     }
