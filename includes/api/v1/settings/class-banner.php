@@ -28,13 +28,12 @@
             $wpid = $_POST["wpid"];
             $stid = $_POST["stid"];
 
-            // Step1 : check if datavice plugin is activated
-            if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+            //Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                    )
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
             
@@ -61,15 +60,6 @@
 				);
             }
             
-            // Step4 : Check if ID is in valid format (integer)
-            if ( !is_numeric($_POST["stid"]) ) {
-                return rest_ensure_response( 
-                    array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. ID is not in valid format!",
-                    )
-                );
-            }
 
             // Step5 : sanitize if all variables is empty
             if ( empty($_POST["stid"]) ){

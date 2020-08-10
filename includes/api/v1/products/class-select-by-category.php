@@ -23,15 +23,15 @@
         public static function get_prods_by_cat(){
             global $wpdb;
             
-            // Step 1 : Verfy if Datavice Plugin is Activated
-			if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+            //Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                    )
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
-			}
+            }
+
 			//  Step2 : Validate if user is exist
 			if (DV_Verification::is_verified() == false) {
                 return array(
@@ -60,7 +60,7 @@
 
             $category_id = $_POST['catid'];
 
-            $tp_revs = TP_REVISION_TABLE;
+            $tp_revs = TP_REVISIONS_TABLE;
             $table_product = TP_PRODUCT_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
 

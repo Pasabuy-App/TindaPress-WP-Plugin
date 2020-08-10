@@ -23,20 +23,23 @@
         }
 
         public static function listing_price_by_Store_ID(){
+            
             global $wpdb;
 
-            if (TP_Globals::verify_datavice_plugin() == false) {
-                return array(
-                    "status" => "unknown",
-                    "message" => "Please contact your administrator. Plugin Missing!",
-                );
-            }
+           //Check if prerequisites plugin are missing
+           $plugin = TP_Globals::verify_prerequisites();
+           if ($plugin !== true) {
+               return array(
+                       "status" => "unknown",
+                       "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+               );
+           }
 
 			//  Step2 : Validate if user is exist
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
+                        "message" => "Please contact your administrator. Verification issues!",
                 );
                 
             }
@@ -44,7 +47,7 @@
             if (!isset($_POST['stid'])) {
                 return array(
                     "status" => "unknown",
-                    "message" => "Please contact your administrator. Missing Paramiters",
+                    "message" => "Please contact your administrator. Request unknown!",
                 );
             }
 
@@ -55,12 +58,7 @@
                 );
             }
 
-            if (!is_numeric($_POST['stid'])) {
-                return array(
-                    "status" => "unknown",
-                    "message" => "Please contact your administrator. ID is not in valid format.",
-                );
-            }
+
             $stid = $_POST['stid'];
             $get_store = $wpdb->get_row("SELECT ID FROM tp_stores  WHERE ID = $stid ");
                 
@@ -78,7 +76,7 @@
             $table_product = TP_PRODUCT_TABLE;
             $table_stores = TP_STORES_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
-            $table_revs = TP_REVISION_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
 
             $result = $wpdb->get_results("SELECT
                     tp_prod.ID,
@@ -101,8 +99,8 @@
             if(empty($result)){
                 //Step 6: Return result
                 return array(
-                    "status" => "success",
-                    "message" => "Please Contact your Administrator. Product fetch failed"
+                    "status" => "failed",
+                    "message" => "No results found"
                 );   
 
             }else {

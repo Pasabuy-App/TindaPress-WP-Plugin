@@ -16,13 +16,13 @@
 
         public static function listen(){
             global $wpdb;
-            // Step1 : check if datavice plugin is activated
-            if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+
+            //Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                    )
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 
@@ -30,7 +30,7 @@
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
+                        "message" => "Please contact your administrator. Verification issues!",
                 );
             }
 
@@ -43,29 +43,13 @@
                 
             }
 
-            // Step 1: Check if ID is in valid format (integer)
-            if (!is_numeric($_POST["wpid"]) || !is_numeric($_POST["pid"]) ) {
-                return array(
-                        "status" => "failed",
-                        "message" => "Please contact your administrator. ID not in valid format!",
-                );
-                
-            }
-
             // Step6 : Sanitize all Request
 			if ( empty($_POST['pid']) ) {
 				return array(
 						"status" => "unknown",
-						"message" => "Please contact your administrator. Request unknown!",
+						"message" => "Required fields cannot be empty!",
                 );
             }
-
-            //             // Check user role 
-            // if (TP_Globals::verify_role( )) {
-            //     return rest_ensure_response( 
-            //         TP_Globals::verify_role(),
-            //     );
-            // }
 
 
             // variables
@@ -75,7 +59,7 @@
             $product_type = "products";
             $date_stamp = TP_Globals::date_stamp();
             $product_table         = TP_PRODUCT_TABLE;
-            $table_revs            = TP_REVISION_TABLE;
+            $table_revs            = TP_REVISIONS_TABLE;
             $table_revs_fields     = TP_REVISION_FIELDS;
 
             // Query
@@ -89,7 +73,7 @@
                 return rest_ensure_response( 
 					array(
 						"status" => "failed",
-						"message" => "Please contact your administrator. Deletion Failed",
+						"message" => "An error occured while submitting data to the server",
 					)
                 );
 
@@ -99,7 +83,7 @@
                 return rest_ensure_response( 
 					array(
 						"status" => "success",
-						"message" => "Product has been deleted successfully",
+						"message" => "Data has been deleted successfully",
 					)
                 );
 

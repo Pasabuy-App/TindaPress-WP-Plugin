@@ -17,20 +17,20 @@
         public static function listen(){
             global $wpdb;
             
-            // Step 1 : Verfy if Datavice Plugin is Activated
-			if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+            //Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                    )
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
-			}
+            }
+            
 			//  Step2 : Validate if user is exist
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Rawdawdequest Unknown!",
+                        "message" => "Please contact your administrator. Verification issues!",
                 );
                 
             }
@@ -43,26 +43,7 @@
                 );
                 
             }
-
-
-            // Step 4: Check if ID is in valid format (integer)
-			if (!is_numeric($_POST["wpid"]) || !is_numeric($_POST['stid']) ) {
-				return array(
-					"status" => "failed",
-					"message" => "Please contact your administrator. ID not in valid format!",
-                );
-                
-            }
             
-			// Step 5: Check if ID exists
-			if (!get_user_by("ID", $_POST['wpid'])) {
-				return array(
-					"status" => "failed",
-					"message" => "User not found!",
-                );
-                
-            }
-
             // Step6 : Sanitize all Request if emply
 			if (empty($_POST["wpid"]) || empty($_POST["snky"]) || empty($_POST['stid']) ) {
 				return array(
@@ -73,7 +54,7 @@
 
             $stid = $_POST['stid'];
 
-            $tp_revs = TP_REVISION_TABLE;
+            $tp_revs = TP_REVISIONS_TABLE;
             $table_product = TP_PRODUCT_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
 
@@ -100,15 +81,13 @@
 
             if(empty($result)){
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator.",
+                        "status" => "failed",
+                        "message" => "No results found.",
                 );
             }else{
                 return array(
                     "status" => "success",
-                    "data" => array(
-                        'list' => $result, 
-                    )
+                    "data" => $result
                 );
             }
 

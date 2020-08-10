@@ -17,13 +17,12 @@
         public static function listen(){
             global $wpdb;
             
-            // Step1 : check if datavice plugin is activated
-            if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+            //Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                    )
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 
@@ -31,7 +30,7 @@
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
+                        "message" => "Please contact your administrator. Verification Issues!",
                 );
             }
 
@@ -114,7 +113,7 @@
             $table_product = TP_PRODUCT_TABLE;
             $table_product_fields = TP_PRODUCT_FIELDS;
 
-            $table_revs = TP_REVISION_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
             $table_revs_fields = TP_REVISION_FIELDS;
 
             $revs_type = "products";
@@ -174,7 +173,7 @@
             $wpdb->query("COMMIT");
                 return array(
                         "status" => "success",
-                        "message" => "Product added successfully!",
+                        "message" => "Data has been added successfully!",
                 );
             }
 

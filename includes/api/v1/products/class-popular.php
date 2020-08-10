@@ -16,13 +16,12 @@
         public static function listen(){
             global $wpdb;
 
-             // Step 1 : Verfy if Datavice Plugin is Activated
-			if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+            //Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                    )
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
             
@@ -31,7 +30,7 @@
                 return rest_ensure_response(  
                     array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
+                        "message" => "Please contact your administrator. Verification issues!",
                         )
                     );
             }
@@ -46,7 +45,7 @@
             }
 
             $table_product = TP_PRODUCT_TABLE;
-            $tp_revs = TP_REVISION_TABLE;
+            $tp_revs = TP_REVISIONS_TABLE;
             $mp_order_items = MP_ORDER_ITEMS_TABLE;
 
             $result = $wpdb->get_results("SELECT
@@ -74,8 +73,8 @@
 
             if(is_null($result)){
                 return array(
-                    "status" => "unknown",
-                    "message" => "Please contact your administrator.",
+                    "status" => "failed",
+                    "message" => "No results found.",
                 );
 
             }else{

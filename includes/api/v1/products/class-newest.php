@@ -16,13 +16,12 @@
         public static function listen(){
             global $wpdb;
 
-            // Step1: validate if dative plugin is activated
-            if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+            //Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                    )
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 
@@ -30,7 +29,7 @@
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
+                        "message" => "Please contact your administrator. Verification issues!",
                 );
                 
             }
@@ -55,7 +54,7 @@
             $store_table           = TP_STORES_TABLE;
             $categories_table      = TP_CATEGORIES_TABLE;
             $product_table         = TP_PRODUCT_TABLE;
-            $table_revs            = TP_REVISION_TABLE;
+            $table_revs            = TP_REVISIONS_TABLE;
             
             // step 8: fetch data from databse
             $result = $wpdb->get_results("SELECT

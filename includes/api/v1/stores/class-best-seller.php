@@ -16,13 +16,12 @@
         public static function listen(){
             global $wpdb;
 
-            // Step1 : check if datavice plugin is activated
-            if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+            //Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                    )
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 
@@ -30,14 +29,14 @@
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
+                        "message" => "Please contact your administrator. Verification issues!",
                 );
             }
 
 			$order_items_table  = MP_ORDER_ITEMS_TABLE;
 			$order_items        = MP_ORDERS_TABLE;
 			$product_table      = TP_PRODUCT_TABLE;
-			$tp_revs_table      = TP_REVISION_TABLE;
+			$tp_revs_table      = TP_REVISIONS_TABLE;
 			$tp_store_table      = TP_STORES_TABLE;
 
             $table_brgy = DV_BRGY_TABLE;
@@ -71,7 +70,7 @@
             if (!$result) {
                 return array(
                     "status" => "failed",
-                    "message" =>  "An error occured while fetching data to server.",
+                    "message" =>  "No results found.",
                 );
 
             }else{

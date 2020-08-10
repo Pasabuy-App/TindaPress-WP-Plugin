@@ -21,14 +21,14 @@
            
             global $wpdb;
 
-            //  Step1 : Verify if Datavice Plugin is Active
-			if (TP_Globals::verify_datavice_plugin() == false) {
-                return  array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                );
-                
-			}
+           //Check if prerequisites plugin are missing
+           $plugin = TP_Globals::verify_prerequisites();
+           if ($plugin !== true) {
+               return array(
+                       "status" => "unknown",
+                       "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+               );
+           }
 			
 			//  Step2 : Validate if user is exist
 			if (DV_Verification::is_verified() == false) {

@@ -17,13 +17,12 @@
         public static function listen(){
             global $wpdb;
 
-            // Step1 : check if datavice plugin is activated
-            if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+            //Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                    )
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 
@@ -31,7 +30,7 @@
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
+                        "message" => "Please contact your administrator. Verification issues!",
                 );
                 
             }
@@ -55,23 +54,6 @@
                     "message" => "Please contact your administrator. Request unknown!",
                 );
                 
-            }
-
-            // Step 4: Check if ID is in valid format (integer)
-            if (!is_numeric($_POST["wpid"]) || !is_numeric($_POST["ctid"]) || !is_numeric($_POST["stid"]) ) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Please contact your administrator. ID not in valid format!",
-                );
-                
-            }
-
-            // Step 5: Check if ID exists
-            if (!get_user_by("ID", $_POST['wpid'])) {
-                return array(
-                    "status" => "failed",
-                    "message" => "User not found!",
-                );
             }
 
             // Step6: Sanitize all Request if empty
@@ -117,7 +99,7 @@
             $child_keys = array('title', 'short_info', 'long_info', 'sku', 'price',  'weight',  'dimension', 'preview' );
             $last_id_product = array();
 
-            $table_revs = TP_REVISION_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
             $table_revs_fields = TP_REVISION_FIELDS;
 
             $table_product = TP_PRODUCT_TABLE;
@@ -168,14 +150,14 @@
                 $wpdb->query("ROLLBACK");
                 return array(
                     "status" => "failed",
-                    "message" => "An error occured while submitting data to database.",
+                    "message" => "An error occured while submitting data to the server.",
                 );
 
             }else{
                 $wpdb->query("COMMIT");
                 return array(
                     "status" => "success",
-                    "message" => "Product has been updated successfully!",
+                    "message" => "Data has been updated successfully!",
                 );
             }
          

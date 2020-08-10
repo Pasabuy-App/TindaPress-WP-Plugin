@@ -25,10 +25,12 @@
         public static function listing_price(){
             global $wpdb;
 
-            if (TP_Globals::verify_datavice_plugin() == false) {
+            //Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
                 return array(
-                    "status" => "unknown",
-                    "message" => "Please contact your administrator. Plugin Missing!",
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 
@@ -36,7 +38,7 @@
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
+                        "message" => "Please contact your administrator. Verification issues!",
                 );
                 
             }
@@ -44,7 +46,7 @@
             $table_product = TP_PRODUCT_TABLE;
             $table_stores = TP_STORES_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
-            $table_revs = TP_REVISION_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
 
             $result = $wpdb->get_results("SELECT
                     tp_prod.ID,
@@ -67,8 +69,8 @@
             if(empty($result)){
                 //Step 6: Return result
                 return array(
-                    "status" => "success",
-                    "message" => "Please Contact your Administrator. Product fetch failed"
+                    "status" => "failed",
+                    "message" => "No results found"
                 );   
 
             }else {

@@ -18,22 +18,21 @@
             // Initialize WP global variable
 			global $wpdb;
 
-			//  Step1 : Verify if Datavice Plugin is Active
-			if (TP_Globals::verifiy_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+			//Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                    )
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
-			}
+            }
 			
 			//  Step2 : Validate if user is exist
-			if (TP_Globals::validate_user() == false) {
+			if (TP_Globals::is_verified() == false) {
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
+                        "message" => "Please contact your administrator. verification issues!",
                     )
                 );
             }
@@ -49,29 +48,6 @@
                 
             }
 
-
-            // Step 4: Check if ID is in valid format (integer)
-			if (!is_numeric($_POST["wpid"]) || !is_numeric($_POST['ctid'])) {
-				return rest_ensure_response( 
-					array(
-						"status" => "failed",
-						"message" => "Please contact your administrator. ID not in valid format!",
-					)
-                );
-                
-			}
-
-			// Step 5: Check if ID exists
-			if (!get_user_by("ID", $_POST['wpid'])) {
-				return rest_ensure_response( 
-					array(
-						"status" => "failed",
-						"message" => "User not found!",
-					)
-                );
-                
-			}
-			
             // Step6 : Sanitize all Request
 			if (empty($_POST["wpid"]) || empty($_POST["snky"]) || empty($_POST["ctid"]) || empty($_POST["types"])) {
 				return rest_ensure_response( 
@@ -90,7 +66,7 @@
             $categories_table      = TP_CATEGORIES_TABLE;
             $product_table         = TP_PRODUCT_TABLE;
             $product_revs_table    = TP_PRODUCT_REVS_TABLE;
-            $table_revs            = TP_REVISION_TABLE;
+            $table_revs            = TP_REVISIONS_TABLE;
             // datavice table variables declarations
             $dv_geo_brgy    = DV_BRGY_TABLE;
             $dv_revs        =  DV_REVS_TABLE;
@@ -131,8 +107,8 @@
 
 				return rest_ensure_response( 
 					array(
-						"status" => "success",
-						"message" => "Please contact your Administrator. Empty result"
+						"status" => "failed",
+						"message" => "No results found"
 						
 					)
 				);
@@ -143,10 +119,7 @@
 				return rest_ensure_response( 
 					array(
 						"status" => "success",
-						"data" => array(
-							'list' => $result, 
-						
-						)
+						"data" => $result
 					)
 				);
 			}

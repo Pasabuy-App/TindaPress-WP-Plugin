@@ -17,13 +17,12 @@
         public static function listen(){
             global $wpdb;
 
-            // Step1 : validate if datavice plugin is activated
-            if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+            //Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                    )
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
             
@@ -31,7 +30,7 @@
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
+                        "message" => "Please contact your administrator. Verification issues!",
                 );
                 
             }
@@ -40,7 +39,7 @@
             $table_product = TP_PRODUCT_TABLE;
             $table_stores = TP_STORES_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
-            $table_revs = TP_REVISION_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
 
             // Step5 : if last insert id is not in Request
             if(!isset($_POST['lid'])){

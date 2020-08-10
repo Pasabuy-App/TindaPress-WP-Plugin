@@ -16,37 +16,31 @@
         public static function listen(){
             global $wpdb;
 
-            // Step1 : check if datavice plugin is activated
-            if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+            //Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                    )
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
-            }
+            }}
 
             //  Step2 : Validate if user is exist
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
+                        "message" => "Please contact your administrator. Verification issues!",
                 );
             }
 
             if (!isset($_POST['stid'])) {
                 return array(
                     "status" => "unknown",
-                    "message" => "Please contact your administrator. Missing parameters",
+                    "message" => "Please contact your administrator. Request unknown!",
                 );
             }
 
-            if (!is_numeric($_POST['stid'])) {
-                return array(
-                    "status" => "unknown",
-                    "message" => "Please contact your administrator. ID is not in valid format.",
-                );
-            }
+
 
             if (empty($_POST['stid'])) {
                 return array(
@@ -84,7 +78,7 @@
             if (!$result) {
                 return array(
                     "status" => "failed",
-                    "message" =>  "An error occured while fetching data to server.",
+                    "message" =>  "No results found.",
                 );
             }else{
                 return array(

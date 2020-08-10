@@ -18,20 +18,20 @@
 
             global $wpdb;
 
-              // Step 1 : Verfy if Datavice Plugin is Activated
-			if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+            //Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                    )
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
-			}
+            }
+
 			//  Step2 : Validate if user is exist
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
+                        "message" => "Please contact your administrator. Verification issues!",
                 );
                 
             }
@@ -60,7 +60,7 @@
 
             $user = TP_Search_Products::catch_post();
 
-            $tp_revs = TP_REVISION_TABLE;
+            $tp_revs = TP_REVISIONS_TABLE;
             $table_product = TP_PRODUCT_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
 
@@ -88,7 +88,7 @@
                 return rest_ensure_response( 
                     array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. No Product with this value",
+                        "message" => "No results found",
                     )
                 );
                 
@@ -96,10 +96,7 @@
                 return rest_ensure_response( 
                     array(
                         "status" => "success",
-                        "data" => array(
-                            'list' => $result, 
-                        
-                        )
+                        "data" => $result
                     )
                 );
             }
