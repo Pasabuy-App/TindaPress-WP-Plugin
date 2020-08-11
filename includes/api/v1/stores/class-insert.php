@@ -57,6 +57,7 @@
             // Step3 : Sanitize all request
             if (!isset($_POST["wpid"]) 
                 || !isset($_POST["title"]) 
+                || !isset($_POST["catid"]) 
                 || !isset($_POST["short_info"]) 
                 || !isset($_POST["long_info"]) 
                 || !isset($_POST["logo"]) 
@@ -80,6 +81,7 @@
                 || empty($_POST["title"]) 
                 || empty($_POST["short_info"]) 
                 || empty($_POST["long_info"]) 
+                || empty($_POST["catid"]) 
                 || empty($_POST["logo"]) 
                 || empty($_POST["banner"]) 
                 || empty($_POST["phone"]) 
@@ -392,7 +394,7 @@
               $cur_user = array();
                
                 $cur_user['created_by']  = $_POST["wpid"];
-                $cur_user['ctid']        = $_POST["ctid"];
+                $cur_user['catid']        = $_POST["catid"];
 
                 $cur_user['title']       = $_POST["title"];
                 $cur_user['short_info']  = $_POST["short_info"];
