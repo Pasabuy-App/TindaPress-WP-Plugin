@@ -44,6 +44,8 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/class-newest.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-popular.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-best-seller.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-activate.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-select-by-category.php';
         
         // Document Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-delete.php';
@@ -207,24 +209,24 @@
 
             register_rest_route( 'tindapress/v1/stores', 'select', array(
                 'methods' => 'POST',
-                'callback' => array('TP_Select_Store','listen'),
+                'callback' => array('TP_Store_Select','listen'),
             ));
 
-            register_rest_route( 'tindapress/v1/stores', 'list/all', array(
+            register_rest_route( 'tindapress/v1/stores/list', 'all', array(
                 'methods' => 'POST',
-                'callback' => array('TP_Listing_Store','listen'),
+                'callback' => array('TP_Store_Listing','listen'),
             ));
 
             register_rest_route( 'tindapress/v1/stores', 'listbycat', array(
                 'methods' => 'POST',
                 'callback' => array('TP_StorebyCategory','listen'),
             ));
-            register_rest_route( 'tindapress/v1/stores', 'list/store/active', array(
+            register_rest_route( 'tindapress/v1/stores/list', 'active', array(
                 'methods' => 'POST',
-                'callback' => array('TP_Listing_Active_Store','listen'),
+                'callback' => array('TP_Store_Listing_Active','listen'),
             ));
 
-            register_rest_route( 'tindapress/v1/stores', 'list/store/inactive', array(
+            register_rest_route( 'tindapress/v1/stores/list', 'inactive', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Listing_Inactive_Store','listen'),
             ));
@@ -241,14 +243,23 @@
 
             register_rest_route( 'tindapress/v1/stores', 'best_seller', array(
                 'methods' => 'POST',
-                'callback' => array('TP_Best_Seller_Store','listen'),
+                'callback' => array('TP_Store_Best_Seller','listen'),
             ));
 
-            register_rest_route( 'tindapress/v1/stores', 'popular_store', array(
+            register_rest_route( 'tindapress/v1/stores', 'popular', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Popular_Store','listen'),
             ));
 
+            register_rest_route( 'tindapress/v1/stores', 'activate', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Activate_Store','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/stores/category', 'select', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Store_Select_by_Category','listen'),
+            ));
         /*
          * ORDER RESTAPI
         */
