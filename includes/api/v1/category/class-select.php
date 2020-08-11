@@ -19,6 +19,7 @@
         
         public static function select(){
             
+            //Inital QA done 2020-08-11 10:30 AM
             global $wpdb;
             $table_revs = TP_REVISIONS_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
@@ -63,8 +64,7 @@
             $category = $wpdb->get_row("SELECT
                 cat.ID, cat.types,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.title ) AS title,
-                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.info ) AS info,
-                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.status ) AS status
+                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.info ) AS info
             FROM
                 $table_categories cat
             INNER JOIN 

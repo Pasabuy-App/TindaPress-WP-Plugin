@@ -22,7 +22,8 @@
         
         //Inserting Category function
         public static function store_insert_category(){
-           
+            
+            //Inital QA done 2020-08-11 10:20 AM
             global $wpdb;
             $table_revs = TP_REVISIONS_TABLE;
             $table_revs_fields = TP_REVISION_FIELDS;
@@ -50,7 +51,7 @@
             }
 
             // Step 3: Check if parameters are passed
-            if (!isset($_POST["title"]) || !isset($_POST["info"])  || !isset($_POST["types"]) || !isset($_POST["stid"]) ) {
+            if (!isset($_POST["title"]) || !isset($_POST["info"]) || !isset($_POST["stid"]) ) {
 				return array(
 						"status" => "unknown",
 						"message" => "Please contact your administrator. Request unknown!",
@@ -58,20 +59,14 @@
             }
 
             // Step 4: Check if parameters passed are not null
-            if (empty($_POST["title"]) || empty($_POST["info"])  || empty($_POST["types"]) || !isset($_POST["stid"]) ) {
+            if (empty($_POST["title"]) || empty($_POST["info"])  || !isset($_POST["stid"]) ) {
 				return array(
 						"status" => "failed",
 						"message" => "Required fields cannot be empty.",
                 );
             }
 
-            // Step 5: Check if types value is valid
-            if ( !($_POST['types'] === 'store') && !($_POST['types'] === 'product') && !($_POST['types'] === 'tags') ) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Category must be product or store only.",
-                );
-            }
+   
 
             $title = $_POST['title'];
             
@@ -81,8 +76,7 @@
 
             $store_id = $_POST["stid"]; 
 
-            //Store or product
-            $types = $_POST["types"]; 
+            $types = 'product'; 
 
             // Step 6: Check if this store id exists
             $get_store = $wpdb->get_row("SELECT `ID` FROM `tp_stores` WHERE `ID` = $store_id");

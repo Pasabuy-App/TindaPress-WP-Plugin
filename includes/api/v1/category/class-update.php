@@ -23,6 +23,7 @@
         //Inserting Category function
         public static function update_category(){
             
+            //Inital QA done 2020-08-11 09:56AM
             global $wpdb;
             $table_revs = TP_REVISIONS_TABLE;
             $table_revs_fields = TP_REVISION_FIELDS;
@@ -66,10 +67,10 @@
             }
 
             // Step 5: Check if types value is valid
-            if ( !($_POST['types'] === 'store') && !($_POST['types'] === 'product') && !($_POST['types'] === 'tags') && !($_POST['types'] === 'categories') ) {
+            if ( !($_POST['types'] === 'store') && !($_POST['types'] === 'product') && !($_POST['types'] === 'tags') ) {
                 return array(
                     "status" => "failed",
-                    "message" => "Category must be product, store only or categories.",
+                    "message" => "Category must be product or store only.",
                 );
             }
 

@@ -18,7 +18,8 @@
         }
         
         public static function delete_category(){
-           
+            
+            //Inital QA done 2020-08-11 10:55 AM
             global $wpdb;
             $category_id = $_POST["catid"];
             $table_revs = TP_REVISIONS_TABLE;

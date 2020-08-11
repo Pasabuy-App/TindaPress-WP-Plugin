@@ -9,7 +9,7 @@ REQUEST:
 
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
 - code: 'failed' message: 'Required fields cannot be empty' data: null
 - code: 'failed' message: 'Category must be product or store only' data: null
 - code: 'error' message: 'An error occured while submitting data to database' data: null
@@ -31,7 +31,7 @@ REQUEST:
 - Params: key=snky (value=session key), key=wpid (value=wordpress id), key=title (value= title of category), key=info (value= information of category),  key = types (types of category), key = catid (Category iD)
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
 - code: 'unknown' message: 'Required fields cannot be empty' data: null
 - code: 'failed' message: 'Category must be product or store only' data: null
 - code: 'failed' message: 'This category does not exists' data: null
@@ -53,9 +53,7 @@ REQUEST:
 - Params: key=snky (value=session key), key=wpid (value=wordpress id), key = catid (Category iD)
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
-- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
-- code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
 - code: 'unknown' message: 'Required fields cannot be empty' data: null
 - code: 'failed' message: 'Category not found' data: null
 
@@ -75,7 +73,7 @@ REQUEST:
 - Params: key=snky (value=session key), key=wpid (value=wordpress id)
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
 - code: 'failed' message: 'No results found' data: null
 
 
@@ -88,29 +86,25 @@ IF SUCCESS:
             "ID": "3",
             "types": "product",
             "title": "Chicken Meals",
-            "info": "Category food product",
-            "status": "1"
+            "info": "Category food product"
         },
         {
             "ID": "6",
             "types": "product",
             "title": "Happy Meal",
-            "info": "Happy na, Meal pa.",
-            "status": "1"
+            "info": "Happy na, Meal pa."
         },
         {
             "ID": "7",
             "types": "product",
             "title": "Classic Pizzas",
-            "info": "Not special pizza.",
-            "status": "1"
+            "info": "Not special pizza."
         },
         {
             "ID": "8",
             "types": "product",
             "title": "Overloaded Pizzas",
-            "info": "Pizza with meat, cheese, bacon, etc.",
-            "status": "1"
+            "info": "Pizza with meat, cheese, bacon, etc."
         }
     ]
 }
@@ -124,7 +118,7 @@ REQUEST:
 - Params: key=snky (value=session key), key=wpid (value=wordpress id), key = type (value= store or product)
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
 - code: 'unknown' message: 'Required fields cannot be empty' data: null
 - code: 'failed' message: 'Category must be product or store only' data: null
 - code: 'failed' message: 'No results found' data: null
@@ -137,17 +131,13 @@ IF SUCCESS:
     "data": [
         {
             "ID": "3",
-            "types": "product",
             "title": "Chicken Meals",
-            "info": "Category food product",
-            "status": "1"
+            "info": "Category food product"
         },
         {
             "ID": "6",
-            "types": "product",
             "title": "Happy Meal",
-            "info": "Happy na, Meal pa.",
-            "status": "1"
+            "info": "Happy na, Meal pa."
         }
 }
 ```
@@ -160,7 +150,7 @@ REQUEST:
 - Params: key=snky (value=session key), key=wpid (value=wordpress id), key = type (value= store or product), key = catid (value= category id) 
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
 - code: 'unknown' message: 'Required fields cannot be empty' data: null
 - code: 'failed' message: 'No results found' data: null
 
@@ -188,7 +178,7 @@ REQUEST:
 - Params: key=snky (value=session key), key=wpid (value=wordpress id), key = type (value= store or product), key = stid (value= category id) 
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
 - code: 'unknown' message: 'Required fields cannot be empty' data: null
 - code: 'failed' message: 'No results found' data: null
 
@@ -202,8 +192,7 @@ IF SUCCESS:
             "ID": "16",
             "types": "product",
             "title": "Milktea",
-            "info": "A combination of milk, tea, and sugar",
-            "status": "1"
+            "info": "A combination of milk, tea, and sugar"
         }
 }
 ```
@@ -213,13 +202,12 @@ IF SUCCESS:
 REQUEST:
 - Method: POST
 - Header: key=Content-Type, value=application/x-www-form-urlencoded
-- Params: key=snky (value=session key), key=wpid (value=wordpress id), key=title (value= title of category), key=info (value= information of category), key = types (store or product) , key = stid (store id)
+- Params: key=snky (value=session key), key=wpid (value=wordpress id), key=title (value= title of category), key=info (value= information of category), key = stid (store id)
 
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
 - code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
 - code: 'failed' message: 'Required fields cannot be empty' data: null
-- code: 'failed' message: 'Category must be product or store only' data: null
 - code: 'failed' message: 'This store does not exists' data: null
 - code: 'error' message: 'An error occured while submitting data to database' data: null
 

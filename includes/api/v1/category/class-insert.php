@@ -21,7 +21,9 @@
         
         //Inserting Category function
         public static function insert_category(){
-           
+            
+            //Inital QA done 2020-08-10 08:14 PM
+
             global $wpdb;
             $table_revs = TP_REVISIONS_TABLE;
             $table_revs_fields = TP_REVISION_FIELDS;
