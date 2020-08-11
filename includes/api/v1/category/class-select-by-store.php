@@ -18,26 +18,32 @@
         }
         
         public static function select_by_store(){
-            global $wpdb;
             
-            //  Step1 : Verify if Datavice Plugin is Active
-			if (TP_Globals::verify_datavice_plugin() == false) {
-                return  array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                );
-                
-			}
+            //Inital QA done 2020-08-11 10:40 AM
+            global $wpdb;
+            $table_revs = TP_REVISIONS_TABLE;
+            $table_categories = TP_CATEGORIES_TABLE;
+            $table_stores = TP_STORES_TABLE;
+
+            // Step 1: Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+               return array(
+                       "status" => "unknown",
+                       "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+               );
+            }
 			
-			//  Step2 : Validate if user is exist
+			// Step 2: Validate user
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
+                        "message" => "Please contact your administrator. Verification issues!",
                 );
                 
             }
             
+            // Step 3: Check if parameters are passed
             if (!isset($_POST["stid"])  ) {
 				return array(
 						"status" => "unknown",
@@ -45,6 +51,7 @@
                 );
             }
 
+            // Step 4: Check if parameters passed are not null
             if (empty($_POST["stid"])  ) {
 				return array(
 						"status" => "failed",
@@ -53,15 +60,12 @@
             }
 
             $store_id = $_POST['stid'];
-            $table_revs = TP_REVISION_TABLE;
-            $table_categories = TP_CATEGORIES_TABLE;
-            $table_stores = TP_STORES_TABLE;
 
+            // Step 5: Start mysql query
             $categories = $wpdb->get_results("SELECT
                 cat.ID, cat.types,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.title ) AS title,
-                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.info ) AS info,
-                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.status ) AS status
+                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.info ) AS info
             FROM
                 $table_categories cat
             INNER JOIN
@@ -75,6 +79,7 @@
             GROUP BY
                 cat.id");
             
+            // Step 6: Check results if empty
             if (!$categories) {
                 return array(
                     "status" => "failed",
@@ -82,6 +87,7 @@
                 );
             }
 
+            // Step 7: Return a success status and message 
             return array(
                 "status" => "success",
                 "data" => $categories

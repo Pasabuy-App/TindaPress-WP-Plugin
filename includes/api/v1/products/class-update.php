@@ -12,35 +12,46 @@
 ?>
 <?php
 
-    class TP_Update_Products {
+    class TP_Product_Update {
 
         public static function listen(){
+            return rest_ensure_response( 
+                TP_Product_Update:: update_product()
+            );
+        }
+
+        public static function update_product(){
+            
             global $wpdb;
 
-            // Step1 : check if datavice plugin is activated
-            if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                    )
+            // Variables for Tables
+            $table_revs = TP_REVISIONS_TABLE;
+            $table_revs_fields = TP_REVISION_FIELDS;
+            $table_product = TP_PRODUCT_TABLE;
+            $table_product_fields = TP_PRODUCT_FIELDS;
+            $revs_type = "products";
+            
+            //Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 
 			//  Step2 : Validate if user is exist
 			if (DV_Verification::is_verified() == false) {
-                return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
-                );
                 
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification issues!",
+                );
             }
 
             // Step3 : Sanitize all Request
-            if (!isset($_POST["wpid"]) 
-                || !isset($_POST["snky"]) 
-                || !isset($_POST["ctid"]) 
-                || !isset($_POST['pdid']) 
+            if (!isset($_POST['pdid']) 
                 || !isset($_POST["stid"]) 
                 || !isset($_POST["title"]) 
                 || !isset($_POST["short_info"]) 
@@ -57,28 +68,8 @@
                 
             }
 
-            // Step 4: Check if ID is in valid format (integer)
-            if (!is_numeric($_POST["wpid"]) || !is_numeric($_POST["ctid"]) || !is_numeric($_POST["stid"]) ) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Please contact your administrator. ID not in valid format!",
-                );
-                
-            }
-
-            // Step 5: Check if ID exists
-            if (!get_user_by("ID", $_POST['wpid'])) {
-                return array(
-                    "status" => "failed",
-                    "message" => "User not found!",
-                );
-            }
-
             // Step6: Sanitize all Request if empty
-            if (empty($_POST["wpid"]) 
-                || empty($_POST["snky"]) 
-                || empty($_POST["ctid"]) 
-                || empty($_POST['pdid']) 
+            if (empty($_POST['pdid']) 
                 || empty($_POST["stid"]) 
                 || empty($_POST["title"]) 
                 || empty($_POST["short_info"]) 
@@ -95,43 +86,61 @@
                
            }
 
+            // Check user role 
+            if (TP_Globals::verify_role( $_POST['wpid'], $_POST['stid'], 'can_update_product' )) {
+                return array( 
+                    TP_Globals::verify_role($_POST['wpid'], $_POST['stid'], 'can_update_product' ),
+                );
+            }
+            
             // variables for query    
             $later = TP_Globals::date_stamp();
             $created_by = $_POST['wpid'];
-            $parent_id = $_POST['pdid'];
-            $ctid = $_POST['ctid'];
+            $product_id = $_POST['pdid'];
             $stid = $_POST['stid'];
             $revs_type = "products";
 
-            $child_vals = array(
-                $_POST['title'],
-                $_POST['short_info'],
-                $_POST['long_info'],
-                $_POST['sku'],
-                $_POST['price'],
-                $_POST['weight'],
-                $_POST['dimension'],
-                $_POST['preview'],
-            );
+            $get_product = $wpdb->get_row("SELECT
+                    tp_prod.ID, tp_prod.ctid, tp_prod.status as status_id,
+                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE tp_rev.ID = tp_prod.title ) AS product_name,
+                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.short_info ) AS `short_info`,
+                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.long_info ) AS `long_info`,
+                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.sku ) AS `sku`,
+                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.price ) AS `price`,
+                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.weight ) AS `weight`,
+                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.dimension ) AS `dimension`,
+                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.status ) AS `status`
+                FROM
+                    $table_product tp_prod
+                INNER JOIN 
+                    $table_revs tp_rev ON tp_rev.ID = tp_prod.title
+                WHERE
+                    tp_prod.ID = $product_id
+                GROUP BY
+                    tp_prod.ID
+            ");
             
-            $child_keys = array('title', 'short_info', 'long_info', 'sku', 'price',  'weight',  'dimension', 'preview' );
-            $last_id_product = array();
+            if (!$get_product) {
+                return array(
+                    "status" => "failed",
+                    "message" => "This product does not exists",
+                );
+            }
 
-            $table_revs = TP_REVISION_TABLE;
-            $table_revs_fields = TP_REVISION_FIELDS;
+            if ($get_product->status == 0) {
+                return array(
+                    "status" => "failed",
+                    "message" => "This product is currently deactivated.",
+                );
+            }
 
-            $table_product = TP_PRODUCT_TABLE;
-            $table_product_fields = TP_PRODUCT_FIELDS;
+            $status_id = $get_product->status_id;
 
-            $user = TP_Update_Products::catch_post();
-            
-            $revs_type = "products";
-
+            $user = TP_Product_Update::catch_post();
+            // Query
             $wpdb->query("START TRANSACTION");
 
-                $last_status = $wpdb->get_row("SELECT `status` FROM $table_product WHERE ID = {$user["pdid"]} ");
-
-                $wpdb->query("UPDATE $table_revs SET child_val = '0' WHERE ID = $last_status->status ");
+                $wpdb->query("UPDATE $table_revs SET child_val = '0' WHERE ID = $status_id ");
 
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '{$user["pdid"]}', 'title', '{$user["title"]}', '{$user["created_by"]}', '$later')");
                 $title = $wpdb->insert_id;
@@ -163,19 +172,21 @@
                 //  (stid, ctid, title, preview, short_info, long_info, status, sku, price,  weight,  dimension , created_by, date_created)
                  $result = $wpdb->query("UPDATE $table_product SET `title` = $title, `preview` = $preview, `short_info` = $short_info, `long_info` = $long_info, `status` = $status, `sku` = $sku, `price` = $price,  `weight` = $weight,  `dimension` = $dimension  WHERE ID = {$user["pdid"]} ");
 
-            if (empty($last_status) ||$result < 0 || $title < 1 || $short_info < 1 || $long_info < 1 || $sku < 1 || $price < 1 || $weight < 1 || $dimension < 1 || $preview < 1 ) {
+            if ($result < 1 || $title < 1 || $short_info < 1 || $long_info < 1 || $sku < 1 || $price < 1 || $weight < 1 || $dimension < 1 || $preview < 1 ) {
+               
                 // when insert failed rollback all inserted data
                 $wpdb->query("ROLLBACK");
                 return array(
                     "status" => "failed",
-                    "message" => "An error occured while submitting data to database.",
+                    "message" => "An error occured while submitting data to the server.",
                 );
 
             }else{
+                
                 $wpdb->query("COMMIT");
                 return array(
                     "status" => "success",
-                    "message" => "Product has been updated successfully!",
+                    "message" => "Data has been updated successfully.",
                 );
             }
          
@@ -190,7 +201,6 @@
                 $cur_user['created_by'] = $_POST["wpid"];
                 $cur_user['pdid']       = $_POST["pdid"];
                 $cur_user['stid']       = $_POST["stid"];
-
                 $cur_user['title']      = $_POST["title"];
                 $cur_user['short_info'] = $_POST["short_info"];
                 $cur_user['long_info']  = $_POST["long_info"];

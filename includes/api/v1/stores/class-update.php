@@ -9,31 +9,48 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
-
     class TP_Update_Store {
+
         public static function listen(){
+            return rest_ensure_response( 
+                TP_Update_Store:: list_open()
+            );
+        }
+
+        public static function list_open(){
+
             global $wpdb;
 
-            // Step1 : check if datavice plugin is activated
-            if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+            $user = TP_Update_Store::catch_post();
+            $later = TP_Globals::date_stamp();
+
+            // declaring table names to variable
+            $table_store = TP_STORES_TABLE;
+            $table_store_fields = TP_STORES_FIELDS;
+            $table_revs = TP_REVISIONS_TABLE;
+            $table_revs_fields = TP_REVISION_FIELDS;
+
+            // declaring variable
+            $revs_type = "stores";
+
+            // Step1 : Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                    )
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
             
             // Step2 : Check if wpid and snky is valid
-            if (TP_Globals::validate_user() == false) {
-                return rest_ensure_response( 
-                    array(
+            if (DV_Verification::is_verified() == false) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
-                    )
+                        "message" => "Please contact your administrator. Verification Issues!",
                 );
             }
 
+            // Step3 : Sanitize all request
             if (!isset($_POST["wpid"]) 
                 || !isset($_POST["ctid"]) 
                 || !isset($_POST["title"]) 
@@ -42,65 +59,38 @@
                 || !isset($_POST["logo"]) 
                 || !isset($_POST["banner"]) 
                 || !isset($_POST["address"]) ) {
-				return rest_ensure_response( 
-					array(
+				return array(
 						"status" => "unknown",
 						"message" => "Please contact your administrator. Request unknown!",
-					)
                 );
-                
             }
 
+            // Step4 : Sanitize all variable is empty
             if (empty($_POST["wpid"]) 
-            || empty($_POST["ctid"]) 
-            || empty($_POST["title"]) 
-            || empty($_POST["short_info"]) 
-            || empty($_POST["long_info"]) 
-            || empty($_POST["logo"]) 
-            || empty($_POST["banner"]) 
-            || empty($_POST["address"]) ) {
-                return rest_ensure_response( 
-                    array(
-                        "status" => "unknown",
-                        "message" => "Required fields cannot be empty",
-                    )
-                );
-            
-            }
-
-            if (  !is_numeric($_POST["ctid"]) || !is_numeric($_POST["address"]) ) {
+                || empty($_POST["ctid"]) 
+                || empty($_POST["title"]) 
+                || empty($_POST["short_info"]) 
+                || empty($_POST["long_info"]) 
+                || empty($_POST["logo"]) 
+                || empty($_POST["banner"]) 
+                || empty($_POST["address"]) ) {
                 return array(
-                    "status" => "unknown",
-                    "message" => "Please contact your administrator. Id is not in Valid format!",
+                        "status" => "failed",
+                        "message" => "Required fields cannot be empty.",
                 );
-            }
-
-            $later = TP_Globals::date_stamp();
-            
-            $user = TP_Update_Store::catch_post();
-
-            // variables for query
-            $table_store = TP_STORES_TABLE;
-            $table_store_fields = TP_STORES_FIELDS;
-
-            $table_revs = TP_REVISION_TABLE;
-            $table_revs_fields = TP_REVISION_FIELDS;
-
-            $revs_type = "stores";
-
+            }   
 
              $get_store = $wpdb->get_row("SELECT ID FROM tp_stores  WHERE ID = '{$user["store_id"]}' ");
                 
-            //Check if this store id exists
+            // Step5 : Check if this store id exists
             if ( !$get_store ) {
-                return rest_ensure_response( 
-                    array(
-                        "status" => "error",
-                        "message" => "An error occurred while fetching data to the server.",
-                    )
+                return array(
+                        "status" => "failed",
+                        "message" => "This store does not exists.",
                 );
             }
 
+            // Step6 : Query
             $wpdb->query("START TRANSACTION");
 
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'title', '{$user["title"]}', '{$user["created_by"]}', '$later')");
@@ -117,8 +107,8 @@
 
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'banner', '{$user["banner"]}', '{$user["created_by"]}', '$later')");
                 $banner = $wpdb->insert_id;
-                
 
+            // Step7 : Check if failed
             if ( $title < 1 || $short_info < 1 || $long_info < 1 || $logo < 1 || $banner < 1 ) {
             $wpdb->query("ROLLBACK");
                 return array(
@@ -127,11 +117,12 @@
                 );
             }
 
+            // Step8 : Query
             $update_store = $wpdb->query("UPDATE $table_store SET `title` = $title, `short_info` = $short_info, `long_info` = $long_info, `logo` = $logo, `banner` = $banner WHERE ID = '{$user["store_id"]}' ");
-     
 
             $result = $wpdb->query("UPDATE $table_revs SET `parent_id` =  '{$user["store_id"]}' WHERE ID IN ($title, $short_info, $long_info, $logo, $banner) ");
             
+            // Step9 : Check if failed
             if ($result < 1 ) {
                 $wpdb->query("ROLLBACK");
                 return array(
@@ -142,7 +133,7 @@
                 $wpdb->query("COMMIT");
                 return array(
                     "status" => "success",
-                    "message" => "Store has successfully updated.",
+                    "message" => "Data has been updated successfully.",
                 );
             }
 
@@ -155,15 +146,14 @@
                
                 $cur_user['created_by'] = $_POST["wpid"];
                 $cur_user['ctid']       = $_POST["ctid"];
-                $cur_user['address']       = $_POST["address"];
-                $cur_user['store_id']       = $_POST["stid"];
-
+                $cur_user['address']    = $_POST["address"];
+                $cur_user['store_id']   = $_POST["stid"];
+                
                 $cur_user['title']      = $_POST["title"];
                 $cur_user['short_info'] = $_POST["short_info"];
                 $cur_user['long_info']  = $_POST["long_info"];
-                $cur_user['logo']        = $_POST["logo"];
-                $cur_user['banner']      = $_POST["banner"];
-            
+                $cur_user['logo']       = $_POST["logo"];
+                $cur_user['banner']     = $_POST["banner"];
   
               return  $cur_user;
         }

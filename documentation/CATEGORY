@@ -1,5 +1,51 @@
 ### REST API Implementation
 
+#### ACTIVATE CATEGORY => tindapress/v1/category/activate
+
+REQUEST: 
+- Method: POST
+- Header: key=Content-Type, value=application/x-www-form-urlencoded
+- Params: key=snky (value=session key), key=wpid (value=wordpress id), key=catid (value= id of the category)
+
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
+- code: 'failed' message: 'Required fields cannot be empty' data: null
+- code: 'failed' message: 'This category does not exists' data: null
+- code: 'failed' message: 'This category is already activated' data: null
+- code: 'error' message: 'An error occured while submitting data to database' data: null
+
+
+IF SUCCESS:
+```
+    {
+        "status": "success",
+        "message": "Data has been activated successfully."
+    }
+```
+
+#### DELETE CATEGORY by CATEGORY `ID` => => tindapress/v1/category/delete
+ 
+REQUEST:
+- Method: POST
+- Header: key=Content-Type, value=application/x-www-form-urlencoded
+- Params: key=snky (value=session key), key=wpid (value=wordpress id), key = catid (value = id of the category)
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
+- code: 'unknown' message: 'Required fields cannot be empty' data: null
+- code: 'failed' message: 'This category does not exists' data: null
+- code: 'failed' message: 'This category is already deactivated' data: null
+- code: 'error' message: 'An error occured while submitting data to database' data: null
+
+IF SUCCESS:
+```
+    {
+        "status": "success",
+        "message": "Data has been deleted successfully!"
+    }
+```
+
 #### INSERT CATEGORY => tindapress/v1/category/insert
 
 REQUEST: 
@@ -9,7 +55,7 @@ REQUEST:
 
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
 - code: 'failed' message: 'Required fields cannot be empty' data: null
 - code: 'failed' message: 'Category must be product or store only' data: null
 - code: 'error' message: 'An error occured while submitting data to database' data: null
@@ -22,52 +68,7 @@ IF SUCCESS:
         "message": "Data has been added successfully!"
     }
 ```
-
-#### UPDATE CATEGORY by CATEGORY `ID` => tindapress/v1/category/update
-
-REQUEST:
-- Method: POST
-- Header: key=Content-Type, value=application/x-www-form-urlencoded
-- Params: key=snky (value=session key), key=wpid (value=wordpress id), key=title (value= title of category), key=info (value= information of category),  key = types (types of category), key = catid (Category iD)
-RESPONSE:
-- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty' data: null
-- code: 'failed' message: 'Category must be product or store only' data: null
-- code: 'failed' message: 'This category does not exists' data: null
-
-
-IF SUCCESS:
-```
-    {
-        "status": "success",
-        "message": "Data has been updated successfully!"
-    }
-```
-
-#### DELETE CATEGORY by CATEGORY `ID` => => tindapress/v1/category/delete
- 
-REQUEST:
-- Method: POST
-- Header: key=Content-Type, value=application/x-www-form-urlencoded
-- Params: key=snky (value=session key), key=wpid (value=wordpress id), key = catid (Category iD)
-RESPONSE:
-- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
-- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
-- code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty' data: null
-- code: 'failed' message: 'Category not found' data: null
-
-IF SUCCESS:
-```
-    {
-        "status": "success",
-        "message": "Data has been deleted successfully!"
-    }
-```
-
-#### LIST of CATEGORIES => tindapress/v1/category/list/all
+#### LIST of ACTIVE CATEGORIES => tindapress/v1/category/list/active
 
 REQUEST:
 - Method: POST
@@ -75,81 +76,265 @@ REQUEST:
 - Params: key=snky (value=session key), key=wpid (value=wordpress id)
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
 - code: 'failed' message: 'No results found' data: null
 
 
 IF SUCCESS:
 ```
   {
-    "status": "success",
-    "data": [
-        {
-            "ID": "3",
-            "types": "product",
-            "title": "Chicken Meals",
-            "info": "Category food product",
-            "status": "1"
-        },
-        {
-            "ID": "6",
-            "types": "product",
-            "title": "Happy Meal",
-            "info": "Happy na, Meal pa.",
-            "status": "1"
-        },
-        {
-            "ID": "7",
-            "types": "product",
-            "title": "Classic Pizzas",
-            "info": "Not special pizza.",
-            "status": "1"
-        },
-        {
-            "ID": "8",
-            "types": "product",
-            "title": "Overloaded Pizzas",
-            "info": "Pizza with meat, cheese, bacon, etc.",
-            "status": "1"
-        }
-    ]
-}
+        "status": "success",
+        "data": [
+            {
+                "ID": "1",
+                "types": "store",
+                "title": "Foods and Drinks",
+                "info": "A combination of food and drinks"
+            },
+            {
+                "ID": "2",
+                "types": "product",
+                "title": "MIlk Shake",
+                "info": "Combination of milk, sugar, and flavours"
+            },
+            {
+                "ID": "5",
+                "types": "store",
+                "title": "Gadgets & Mobiles",
+                "info": "Technologies"
+            },
+            {
+                "ID": "7",
+                "types": "store",
+                "title": "Grocery",
+                "info": "Basic Neccessities"
+            },
+            {
+                "ID": "8",
+                "types": "product",
+                "title": "Burger",
+                "info": "Patty with Bread on Top and Down"
+            }
+        ]
+    }
 ```
 
-#### LIST CATEGORIES by `STORE` or `PRODUCT` => => tindapress/v1/category/list/type
+#### LIST of INACTIVE CATEGORIES => tindapress/v1/category/list/inactive
 
 REQUEST:
 - Method: POST
 - Header: key=Content-Type, value=application/x-www-form-urlencoded
-- Params: key=snky (value=session key), key=wpid (value=wordpress id), key = type (value= store or product)
+- Params: key=snky (value=session key), key=wpid (value=wordpress id)
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty' data: null
-- code: 'failed' message: 'Category must be product or store only' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
+- code: 'failed' message: 'No results found' data: null
+
+
+IF SUCCESS:
+```
+    {
+        "status": "success",
+        "data": [
+            {
+                "ID": "6",
+                "types": "store",
+                "title": "Clothes and Apparels",
+                "info": "Fashions Blablabla"
+            },
+            {
+                "ID": "9",
+                "types": "product",
+                "title": "Rice Meals",
+                "info": "Rice with combination of ulam"
+            }
+        ]
+    }
+```
+
+#### LIST of ALL CATEGORIES => tindapress/v1/category/list/all
+
+REQUEST:
+- Method: POST
+- Header: key=Content-Type, value=application/x-www-form-urlencoded
+- Params: key=snky (value=session key), key=wpid (value=wordpress id)
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
 - code: 'failed' message: 'No results found' data: null
 
 
 IF SUCCESS:
 ```
   {
-    "status": "success",
-    "data": [
-        {
-            "ID": "3",
-            "types": "product",
-            "title": "Chicken Meals",
-            "info": "Category food product",
-            "status": "1"
-        },
-        {
-            "ID": "6",
-            "types": "product",
-            "title": "Happy Meal",
-            "info": "Happy na, Meal pa.",
-            "status": "1"
-        }
-}
+        "status": "success",
+        "data": [
+            {
+                "ID": "1",
+                "types": "store",
+                "title": "Foods and Drinks",
+                "info": "A combination of food and drinks",
+                "status": "1"
+            },
+            {
+                "ID": "2",
+                "types": "product",
+                "title": "MIlk Shake",
+                "info": "Combination of milk, sugar, and flavours",
+                "status": "1"
+            },
+            {
+                "ID": "5",
+                "types": "store",
+                "title": "Gadgets & Mobiles",
+                "info": "Technologies",
+                "status": "1"
+            },
+            {
+                "ID": "6",
+                "types": "store",
+                "title": "Clothes and Apparels",
+                "info": "Fashions Blablabla",
+                "status": "0"
+            },
+            {
+                "ID": "7",
+                "types": "store",
+                "title": "Grocery",
+                "info": "Basic Neccessities",
+                "status": "1"
+            },
+            {
+                "ID": "8",
+                "types": "product",
+                "title": "Burger",
+                "info": "Patty with Bread on Top and Down",
+                "status": "1"
+            },
+            {
+                "ID": "9",
+                "types": "product",
+                "title": "Rice Meals",
+                "info": "Rice with combination of ulam",
+                "status": "0"
+            }
+        ]
+    }
+```
+
+#### LIST of ALL ACTIVE PRODUCT CATEGORIES => tindapress/v1/category/list/product/active
+
+REQUEST:
+- Method: POST
+- Header: key=Content-Type, value=application/x-www-form-urlencoded
+- Params: key=snky (value=session key), key=wpid (value=wordpress id)
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
+- code: 'failed' message: 'No results found' data: null
+
+IF SUCCESS:
+```
+    {
+        "status": "success",
+        "data": [
+            {
+                "ID": "2",
+                "title": "MIlk Shake",
+                "info": "Combination of milk, sugar, and flavours"
+            },
+            {
+                "ID": "8",
+                "title": "Burger",
+                "info": "Patty with Bread on Top and Down"
+            }
+        ]
+    }
+```
+
+#### LIST of ALL INACTIVE PRODUCT CATEGORIES => tindapress/v1/category/list/product/inactive
+
+REQUEST:
+- Method: POST
+- Header: key=Content-Type, value=application/x-www-form-urlencoded
+- Params: key=snky (value=session key), key=wpid (value=wordpress id)
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
+- code: 'failed' message: 'No results found' data: null
+
+IF SUCCESS:
+```
+    {
+        "status": "success",
+        "data": [
+            {
+                "ID": "9",
+                "title": "Rice Meals",
+                "info": "Rice with combination of ulam"
+            }
+        ]
+    }
+```
+
+#### LIST of ALL ACTIVE STORE CATEGORIES => tindapress/v1/category/list/store/active
+
+REQUEST:
+- Method: POST
+- Header: key=Content-Type, value=application/x-www-form-urlencoded
+- Params: key=snky (value=session key), key=wpid (value=wordpress id)
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
+- code: 'failed' message: 'No results found' data: null
+
+IF SUCCESS:
+```
+    {
+        "status": "success",
+        "data": [
+            {
+                "ID": "1",
+                "title": "Foods and Drinks",
+                "info": "A combination of food and drinks"
+            },
+            {
+                "ID": "5",
+                "title": "Gadgets & Mobiles",
+                "info": "Technologies"
+            },
+            {
+                "ID": "7",
+                "title": "Grocery",
+                "info": "Basic Neccessities"
+            }
+        ]
+    }
+```
+
+#### LIST of ALL INACTIVE STORE CATEGORIES => tindapress/v1/category/list/store/inactive
+
+REQUEST:
+- Method: POST
+- Header: key=Content-Type, value=application/x-www-form-urlencoded
+- Params: key=snky (value=session key), key=wpid (value=wordpress id)
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
+- code: 'failed' message: 'No results found' data: null
+
+IF SUCCESS:
+```
+    {
+        "status": "success",
+        "data": [
+            {
+                "ID": "6",
+                "title": "Clothes and Apparels",
+                "info": "Fashions Blablabla"
+            }
+        ]
+    }
 ```
 
 #### SELECT CATEGORY by `ID` => tindapress/v1/category/select
@@ -160,10 +345,10 @@ REQUEST:
 - Params: key=snky (value=session key), key=wpid (value=wordpress id), key = type (value= store or product), key = catid (value= category id) 
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
 - code: 'unknown' message: 'Required fields cannot be empty' data: null
-- code: 'failed' message: 'No results found' data: null
-
+- code: 'failed' message: 'This category does not exists' data: null
+- code: 'failed' message: 'This category is currently inactive' data: null
 
 IF SUCCESS:
 ```
@@ -180,54 +365,25 @@ IF SUCCESS:
 }
 ```
 
-#### SELECT CATEGORY by `STORE ID` => tindapress/v1/category/select/store
+
+#### UPDATE CATEGORY by CATEGORY `ID` => tindapress/v1/category/update
 
 REQUEST:
 - Method: POST
 - Header: key=Content-Type, value=application/x-www-form-urlencoded
-- Params: key=snky (value=session key), key=wpid (value=wordpress id), key = type (value= store or product), key = stid (value= category id) 
-RESPONSE:
-- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty' data: null
-- code: 'failed' message: 'No results found' data: null
-
-
-IF SUCCESS:
-```
-  {
-    "status": "success",
-    "data": [
-        {
-            "ID": "16",
-            "types": "product",
-            "title": "Milktea",
-            "info": "A combination of milk, tea, and sugar",
-            "status": "1"
-        }
-}
-```
-
-#### INSERT CATEGORY within the STORE => tindapress/v1/category/store/insert
-
-REQUEST:
-- Method: POST
-- Header: key=Content-Type, value=application/x-www-form-urlencoded
-- Params: key=snky (value=session key), key=wpid (value=wordpress id), key=title (value= title of category), key=info (value= information of category), key = types (store or product) , key = stid (store id)
-
+- Params: key=snky (value=session key), key=wpid (value=wordpress id), key=title (value= title of category), key=info (value= information of category), key = catid (Category iD)
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
 - code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
-- code: 'failed' message: 'Required fields cannot be empty' data: null
-- code: 'failed' message: 'Category must be product or store only' data: null
-- code: 'failed' message: 'This store does not exists' data: null
+- code: 'unknown' message: 'Required fields cannot be empty' data: null
+- code: 'failed' message: 'This category does not exists' data: null
+- code: 'failed' message: 'This category is currently inactive' data: null
 - code: 'error' message: 'An error occured while submitting data to database' data: null
-
 
 IF SUCCESS:
 ```
     {
         "status": "success",
-        "message": "Data has been added successfully!"
+        "message": "Data has been updated successfully!"
     }
 ```

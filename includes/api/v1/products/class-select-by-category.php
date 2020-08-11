@@ -12,26 +12,32 @@
 ?>
 <?php
 
-    class TP_Select_Store_Category_Product {
+    class TP_Product_Select_Category {
 
         public static function listen(){
             return rest_ensure_response( 
-                TP_Select_Store_Category_Product:: get_prods_by_cat()
+                TP_Product_Select_Category:: get_prods_by_cat()
             );
         }
 
         public static function get_prods_by_cat(){
+
             global $wpdb;
+            // Variables for Table
+            $tp_revs = TP_REVISIONS_TABLE;
+            $table_product = TP_PRODUCT_TABLE;
+            $table_categories = TP_CATEGORIES_TABLE;
             
-            // Step 1 : Verfy if Datavice Plugin is Activated
-			if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+            //Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                    )
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
-			}
+            }
+
 			//  Step2 : Validate if user is exist
 			if (DV_Verification::is_verified() == false) {
                 return array(
@@ -43,27 +49,41 @@
 
             // Step3 : Sanitize all Request
 			if (!isset($_POST['catid']) ) {
+
 				return array(
 					"status" => "unknown",
 					"message" => "Please contact your administrator. Request unknown!",
                 );
-                
             }
 
             // Step6 : Sanitize all Request if emply
 			if (empty($_POST['catid']) ) {
+
 				return array(
 					"status" => "unknown",
-					"message" => "Required fields cannot be empyty.",
+					"message" => "Required fields cannot be empty.",
+                );
+            }
+
+            if (  !is_numeric($_POST['catid'])  ) {
+                return array(
+					"status" => "unknown",
+					"message" => "Please contact your administrator. ID is not in valid format!",
                 );
             }
 
             $category_id = $_POST['catid'];
+            
+            $get_category = $wpdb->get_row("SELECT `ID` FROM $table_categories WHERE ID = $category_id  ");
 
-            $tp_revs = TP_REVISION_TABLE;
-            $table_product = TP_PRODUCT_TABLE;
-            $table_categories = TP_CATEGORIES_TABLE;
-
+            if ( empty($get_category)  ) {
+                return array(
+                    "status" => "failed",
+                    "message" => "This category does not exists.",
+                );
+            }
+            
+            // query
             $result = $wpdb->get_results("SELECT
                 tp_prod.ID,
                 ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.title ) AS `category_name`,
@@ -82,20 +102,21 @@
                 tp_prod.ctid = $category_id
             GROUP BY
                 tp_prod.ID ");
-
+            // Return results 
             if(!$result){
+
                 return array(
-                        "status" => "failed",
-                        "message" => "No results found.",
+                    "status" => "failed",
+                    "message" => "No product found.",
                 );
+
             }else{
+
                 return array(
                     "status" => "success",
                     "data" => $result
                 );
             }
-
-
         }
 
     }

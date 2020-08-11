@@ -15,15 +15,16 @@
     class TP_Total_sales_date {
 
         public static function listen(){
+			
+			//Initial QA done 2020-08-11 11:32 AM
 			global $wpdb;
 
-			// Step1 : check if datavice plugin is activated
-            if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+			//Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                    )
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 
@@ -32,7 +33,7 @@
 				return rest_ensure_response(  
 					array(
 						"status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
+                        "message" => "Please contact your administrator. Verification issues!",
 					)
 				);
             }
@@ -46,20 +47,11 @@
                 
             }
 
-            // Step 1: Check if ID is in valid format (integer)
-            if (!is_numeric($_POST["stid"]) ) {
-                return array(
-                        "status" => "failed",
-                        "message" => "Please contact your administrator. ID not in valid format!",
-                );
-                
-            }
-
             // Step6 : Sanitize all Request
 			if ( empty($_POST['stid']) ) {
 				return array(
 						"status" => "unknown",
-						"message" => "Please contact your administrator. Request unknown!",
+						"message" => "Required fields cannot be empty.",
                 );
 			}
 			$store_id = $_POST['stid'];
@@ -68,19 +60,19 @@
              if ( !$get_store ) {
                 return rest_ensure_response( 
                     array(
-                        "status" => "error",
-                        "message" => "An error occurred while fetching data to the server.",
+                        "status" => "failed",
+                        "message" => "This store does not exists.",
                     )
                 );
 			}
 			
 			$date = TP_Globals::get_user_date($_POST['wpid']);
-			$expected_date  = $date_expected = date('Y-m-d h:i:s', strtotime($date. ' - 1 month'));
+			$expected_date  = date('Y-m-d H:i:s', strtotime($date. ' - 1 month'));
 			
 			$order_items_table = MP_ORDER_ITEMS_TABLE;
 			$order_items = MP_ORDERS_TABLE;
 			$product_table = TP_PRODUCT_TABLE;
-			$tp_revs_table = TP_REVISION_TABLE;
+			$tp_revs_table = TP_REVISIONS_TABLE;
 
 			$store_id = $_POST["stid"];
 			$result = $wpdb->get_row("SELECT COALESCE
@@ -93,18 +85,16 @@
 					mp_ord.stid = 2  AND MONTH(mp_ord.date_created)  BETWEEN MONTH('$expected_date')  AND  MONTH('$date')
 			");
 
-			if ($result->total_sales <  1) {
+			if (!$result) {
 				return array(
-					"status" => "unknown",
-					"message" => "No sales found.",
+					"status" => "failed",
+					"message" => "No results found.",
 				);
 
 			}else {
 				return array(
 					"status" => "success",
-					"data" => array(
-						'list' => $result
-					)
+					"data" => $result
 				);
 
 			}

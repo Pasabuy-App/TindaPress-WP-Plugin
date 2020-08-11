@@ -9,15 +9,15 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
-    class TP_Category_Delete {
+    class TP_Category_Activate {
         
         public static function listen(){
             return rest_ensure_response( 
-                TP_Category_Delete:: delete_category()
+                TP_Category_Activate:: activate_category()
             );
         }
         
-        public static function delete_category(){
+        public static function activate_category(){
             
             //Inital QA done 2020-08-11 10:55 AM
             global $wpdb;
@@ -80,17 +80,17 @@
                 );
             }
 
-            if ( $category->status == 0 ) {
+            if ( $category->status == 1) {
 				return array(
 						"status" => "failed",
-						"message" => "This category is already deactivated.",
+						"message" => "This category is already activated.",
                 );
             }
-
+            
             $status_id = $category->status_id;
 
-            // Step 7: Set the status of this category to 0 or inactive
-            $result = $wpdb->query("UPDATE $table_revs SET `child_val` = 0 WHERE `ID` = $status_id");
+            // Step 7: Activate this category by setting its status to 1
+            $result = $wpdb->query("UPDATE $table_revs SET `child_val` = 1 WHERE `ID` = $status_id");
             
             // Step 8: Check if there's problem in query
             if ($result < 1) {
@@ -103,7 +103,7 @@
             // Step 9: Return a success status and message 
             return array(
                 "status" => "success",
-                "message" => "Data has been deleted successfully.",
+                "message" => "Data has been activated successfully.",
             );
 
         

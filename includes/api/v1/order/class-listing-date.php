@@ -26,16 +26,17 @@
             // variables for query
             $table_store = TP_STORES_TABLE;
             $table_products = TP_PRODUCT_TABLE;
-            $table_revs = TP_REVISION_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
             $table_orders = 'mp_orders';
             $table_order_items = 'mp_order_items';
             $dt = TP_Globals::convert_date($_POST["wpid"],$_POST["date"]);
 
-            // Step1 : check if datavice plugin is activated
-            if (TP_Globals::verify_datavice_plugin() == false) {
+            //Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
                 return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
            
@@ -105,7 +106,7 @@
             {
                 return array(
                         "status" => "failed",
-                        "message" => "No orders found!",
+                        "message" => "No results found!",
                 );
             }
             

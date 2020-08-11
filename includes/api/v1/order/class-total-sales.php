@@ -17,13 +17,14 @@
         public static function listen(){
 			global $wpdb;
 
-			// Step1 : check if datavice plugin is activated
-            if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+			//Initial QA done 2020-08-10 11:28 am
+
+			//Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                    )
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 
@@ -32,7 +33,7 @@
 				return rest_ensure_response(  
 					array(
 						"status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
+                        "message" => "Please contact your administrator. Verification issues!",
 					)
 				);
             }
@@ -46,15 +47,6 @@
                 
             }
 
-            // Step 1: Check if ID is in valid format (integer)
-            if (!is_numeric($_POST["stid"]) ) {
-                return array(
-                        "status" => "failed",
-                        "message" => "Please contact your administrator. ID not in valid format!",
-                );
-                
-            }
-
             // Step6 : Sanitize all Request
 			if ( empty($_POST['stid']) ) {
 				return array(
@@ -62,14 +54,16 @@
 						"message" => "Please contact your administrator. Request unknown!",
                 );
 			}
+
 			$store_id = $_POST['stid'];
+
             $get_store = $wpdb->get_row("SELECT ID FROM tp_stores  WHERE ID = $store_id  ");
                 
              if ( !$get_store ) {
                 return rest_ensure_response( 
                     array(
-                        "status" => "error",
-                        "message" => "An error occurred while fetching data to the server.",
+                        "status" => "failed",
+                        "message" => "This store does not exists.",
                     )
                 );
             }
@@ -86,10 +80,10 @@
 					mp_ord.stid = $store_id");
 
 
-			if ($result->total_sales <  1) {
+			if (!$result) {
 				return array(
-					"status" => "unknown",
-					"message" => "No sales found.",
+					"status" => "failed",
+					"message" => "No results found.",
 				);
 
 			}else {

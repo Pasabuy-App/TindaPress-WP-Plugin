@@ -9,52 +9,55 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
-    class TP_Category_All {
+    class TP_Category_List_Product_Inactive {
         
         public static function listen(){
             return rest_ensure_response( 
-                TP_Category_All:: list_all()
+                TP_Category_List_Product_Inactive:: list_product_inactive()
             );
         }
         
-        public static function list_all(){
-            global $wpdb;
+        public static function list_product_inactive(){
             
-            //  Step1 : Verify if Datavice Plugin is Active
-			if (TP_Globals::verify_datavice_plugin() == false) {
-                return  array(
+            global $wpdb;
+            $table_revs = TP_REVISIONS_TABLE;
+            $table_categories = TP_CATEGORIES_TABLE;
+
+            // Step 1: Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
-                
-			}
+            }
 			
-			//  Step2 : Validate if user is exist
+			// Step 2: Validate user
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!!",
+                        "message" => "Please contact your administrator. Verification issues!",
                 );
                 
             }
             
-            $table_revs = TP_REVISION_TABLE;
-            $table_categories = TP_CATEGORIES_TABLE;
-
+            // Step 3: Start a query
             $categories = $wpdb->get_results("SELECT
-                cat.ID, cat.types,
+                cat.ID,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.title ) AS title,
-                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.info ) AS info,
-                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.status ) AS status
+                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.info ) AS info
             FROM
                 $table_categories cat
             INNER JOIN
-                $table_revs rev ON rev.parent_id = cat.id 
+                $table_revs rev ON rev.parent_id = cat.id
             WHERE
-                (SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.status) = 1
+                (SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.status) = 0
+            AND 
+                cat.types = 'product' 
             GROUP BY
                 cat.id");
             
+            // Step 4: Check results if empty
             if (!$categories) {
                 return array(
                     "status" => "failed",
@@ -62,6 +65,7 @@
                 );
             }
 
+            // Step 5: Return a success status and message 
             return array(
                 "status" => "success",
                 "data" => $categories

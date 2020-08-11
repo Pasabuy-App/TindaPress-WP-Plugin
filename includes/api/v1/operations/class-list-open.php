@@ -18,19 +18,22 @@
         }
         
         public static function list_open(){
-           
+            
+            //Initial QA done 2020-08-11 11:10 AM
             global $wpdb;
+            $table_revs = TP_REVISIONS_TABLE;
+            $table_categories = TP_CATEGORIES_TABLE;
 
-            //  Step1 : Verify if Datavice Plugin is Active
-			if (TP_Globals::verify_datavice_plugin() == false) {
-                return  array(
+            // Step 1: Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
-                
-			}
+            }
 			
-			//  Step2 : Validate if user is exist
+			// Step 2: Validate user
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
@@ -39,14 +42,10 @@
                 
             }
             
-            //get current date base on user timezone
+            // Step 3: Convert timezone to user specific timezone
             $date = TP_Globals::get_user_date($_POST['wpid']);
             
-
-            $table_revs = TP_REVISION_TABLE;
-            $table_categories = TP_CATEGORIES_TABLE;
-
-            //Get results
+            // Step 4: Start mysql query
             $open_stores = $wpdb->get_results("SELECT st.ID, date_open, date_close,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = st.title ) AS `title`,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = st.short_info ) AS `short_info`,
@@ -71,7 +70,7 @@
                 AND
                     '$date' BETWEEN `date_open` AND `date_close`");
 
-
+            // Step 5: Check results if empty
             if ( !$open_stores) {
                 return array(
                     "status" => "failed",
@@ -79,6 +78,7 @@
                 );
             }
 
+            // Step 8: Return a success status and message
             return array(
                 "status" => "success",
                 "data" => $open_stores

@@ -19,18 +19,21 @@
         
         public static function list_month_orders(){
             
+            //Initial QA done 2020-08-11 11:20 AM
             global $wpdb;
+            $table_revs = TP_REVISIONS_TABLE;
+            $table_categories = TP_CATEGORIES_TABLE;
 
-            //  Step1 : Verify if Datavice Plugin is Active
-			if (TP_Globals::verify_datavice_plugin() == false) {
-                return  array(
+            // Step 1: Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
-                
-			}
+            }
 			
-			//  Step2 : Validate if user is exist
+			// Step 2: Validate user
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
@@ -39,46 +42,46 @@
                 
             }
 
-            //get current date base on user timezone
+            // Step 3: Convert timezone to user specific timezone
             $date = TP_Globals::get_user_date($_POST['wpid']);
 
             //Create start date and end date of current month
             $start = date('Y-m-01 H:i:s', strtotime($date));
             $end = date('Y-m-t H:i:s', strtotime($date));
 
-            $table_revs = TP_REVISION_TABLE;
-            $table_categories = TP_CATEGORIES_TABLE;
 
-            //Get results
+            // Step 4: Start mysql query
             $list_month = $wpdb->get_results("SELECT o.date_created as date, st.ID, ops.id as operation_id, o.id as order_id,
-            ( SELECT rev.child_val FROM $table_revs rev WHERE ID = st.title ) AS `store_name`,
-            ( SELECT rev.child_val FROM $table_revs rev WHERE ID = p.title ) AS `product_name`,
-            ( SELECT rev.child_val FROM $table_revs rev WHERE ID = p.price ) AS `product_price`,
-            oi.quantity as quantity
-            FROM
-                tp_stores st
-            INNER JOIN 
-                $table_revs rev ON rev.ID = st.`status` 
-            INNER JOIN
-                mp_operations ops ON ops.stid = st.ID
-            INNER JOIN
-                mp_orders o	ON o.opid = ops.id
-            INNER JOIN
-                mp_order_items oi ON oi.odid = o.id
-            INNER JOIN
-                tp_products p ON p.id = oi.pdid
-            WHERE 
-                rev.child_val = 1
-            AND
-                o.date_created BETWEEN '$start' AND '$end'");
+                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = st.title ) AS `store_name`,
+                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = p.title ) AS `product_name`,
+                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = p.price ) AS `product_price`,
+                oi.quantity as quantity
+                FROM
+                    tp_stores st
+                INNER JOIN 
+                    $table_revs rev ON rev.ID = st.`status` 
+                INNER JOIN
+                    mp_operations ops ON ops.stid = st.ID
+                INNER JOIN
+                    mp_orders o	ON o.opid = ops.id
+                INNER JOIN
+                    mp_order_items oi ON oi.odid = o.id
+                INNER JOIN
+                    tp_products p ON p.id = oi.pdid
+                WHERE 
+                    rev.child_val = 1
+                AND
+                    o.date_created BETWEEN '$start' AND '$end'");
 
+            // Step 5: Check results if empty
             if ( !$list_month) {
                 return array(
                     "status" => "failed",
                     "message" => "No results found.",
                 );
             }
-
+            
+            // Step 6: Return a success status and message 
             return array(
                 "status" => "success",
                 "data" => $list_month

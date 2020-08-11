@@ -21,20 +21,19 @@
             $table_store = TP_STORES_TABLE;
             $table_store_fields = TP_STORES_FIELDS;
 
-            $table_revs = TP_REVISION_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
             $table_revs_fields = TP_REVISION_FIELDS;
 
             $revs_type = "stores";
             $wpid = $_POST["wpid"];
             $stid = $_POST["stid"];
 
-            // Step1 : check if datavice plugin is activated
-            if (TP_Globals::verify_datavice_plugin() == false) {
-                return rest_ensure_response( 
-                    array(
+            // Step1 : Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
-                    )
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
             
@@ -47,7 +46,6 @@
                     )
                 );
             }
-
            
             $files = $request->get_file_params();
             
@@ -60,18 +58,8 @@
 					)
 				);
             }
-            
-            // Step4 : Check if ID is in valid format (integer)
-            if ( !is_numeric($_POST["stid"]) ) {
-                return rest_ensure_response( 
-                    array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. ID is not in valid format.",
-                    )
-                );
-            }
 
-            // Step5 : sanitize if all variables is empty
+            // Step4 : sanitize if all variables is empty
             if ( empty($_POST["stid"]) ){
                 return rest_ensure_response( 
                     array(
@@ -81,7 +69,7 @@
                 );
             }
             
-            // Step6 : Validation of store
+            // Step5 : Validation of store
             $get_store = $wpdb->get_row("SELECT ID FROM $table_store  WHERE ID = $stid  ");
                 
              if ( !$get_store ) {
@@ -93,12 +81,12 @@
                 );
 			}
 
-            // Step7 : sanitize if all variables is empty
+            // Step6 : sanitize if all variables is empty
             if ( $files['img']['name'] == NULL  || $files['img']['type'] == NULL) {
 				return rest_ensure_response( 
 					array(
 						"status" => "failed",
-						"message" => "Please select an image!",
+						"message" => "Please select an image.",
 					)
 				);
             }
@@ -142,7 +130,7 @@
                 return rest_ensure_response( 
 					array(
 						"status" => "failed",
-						"message" => "A file with this name already exists",
+						"message" => "A file with this name already exists.",
 					)
 				);
             }
@@ -164,7 +152,7 @@
                 return rest_ensure_response( 
 					array(
 						"status" => "failed",
-						"message" => "Invalid image file type. JPG, PNG, JPEG and GIF types are only accepted",
+						"message" => "Invalid image file type. JPG, PNG, JPEG and GIF types are only accepted.",
 					)
 				);
             }
@@ -180,23 +168,20 @@
 
                 $var = $target_dir['path'];
 
-                //Logo Name
+                //Logo name
                 $logo_name = trailingslashit($target_dir['subdir']).$completed_file_name;
 
                 if (move_uploaded_file($files['img']['tmp_name'], $target_file)) {
-              
-                // Query
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '$stid', 'logo', '$logo_name', '$wpid', '$later')");
-                $logo_id = $wpdb->insert_id;
-                $result = $wpdb->query("UPDATE $table_store SET `logo` = $logo_id WHERE ID = '$stid' ");
-
+                    // Query
+                    $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '$stid', 'logo', '$logo_name', '$wpid', '$later')");
+                    $logo_id = $wpdb->insert_id;
+                    $result = $wpdb->query("UPDATE $table_store SET `logo` = $logo_id WHERE ID = '$stid' ");
                     return rest_ensure_response( 
                         array(
                             "status" => "success",
                             "message" => "Data has been updated successfully.",
                         )
                     );  
-               
                 } else {
                     return rest_ensure_response( 
                         array(

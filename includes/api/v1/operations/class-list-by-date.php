@@ -19,18 +19,21 @@
         
         public static function list_orders_date(){
             
+            //Initial QA done 2020-08-11 11:18 AM
             global $wpdb;
+            $table_revs = TP_REVISIONS_TABLE;
+            $table_categories = TP_CATEGORIES_TABLE;
             
-            //  Step1 : Verify if Datavice Plugin is Active
-			if (TP_Globals::verify_datavice_plugin() == false) {
-                return  array(
+            // Step 1: Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Plugin Missing!",
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
-                
-			}
+            }
 			
-			//  Step2 : Validate if user is exist
+			// Step 2: Validate user
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
@@ -39,6 +42,7 @@
                 
             }
 
+            // Step 3: Check if parameters are passed
             if (!isset($_POST["start"]) || !isset($_POST["end"])) {
                 return array(
                         "status" => "unknown",
@@ -46,7 +50,7 @@
                 );
             }
 
-            // Step4 : sanitize if all variables is empty
+            // Step 4: Check if parameters passed are not null
             if (empty($_POST["start"]) || empty($_POST["end"])) {
                 return array(
                         "status" => "failed",
@@ -54,47 +58,44 @@
                 );
             }
 
-            //Using global function, convert date to user specific timezone
+            // Step 5: Using global function, convert date to user specific timezone
             $start = TP_Globals::convert_date($_POST["wpid"],$_POST["start"]);
             $end = TP_Globals::convert_date($_POST["wpid"],$_POST["end"]);
 
 
-            
+            //Check if dates passed are in valid format
+            //Invalid dates such as 2020-02-31 will return false
             if ( TP_List_Date::validateDate($start) == false || TP_List_Date::validateDate($end) == false ) {
                 return array(
                     "status" => "failed",
                     "message" => "Date not in valid format",
                 );
             }
-            
-            //get current date base on user timezone
-
-            $table_revs = TP_REVISION_TABLE;
-            $table_categories = TP_CATEGORIES_TABLE;
-
-            //Get results
+      
+            // Step 6: Start mysql query
             $list_date = $wpdb->get_results("SELECT o.date_created as date, st.ID, ops.id as operation_id, o.id as order_id,
-            ( SELECT rev.child_val FROM $table_revs rev WHERE ID = st.title ) AS `store_name`,
-            ( SELECT rev.child_val FROM $table_revs rev WHERE ID = p.title ) AS `product_name`,
-            ( SELECT rev.child_val FROM $table_revs rev WHERE ID = p.price ) AS `product_price`,
-            oi.quantity as quantity
-            FROM
-                mp_orders o
-            INNER JOIN
-                mp_operations ops ON ops.id = o.opid
-            INNER JOIN
-                tp_stores st ON st.id = ops.stid
-            INNER JOIN 
-                tp_revisions rev ON rev.ID = st.`status` 
-            INNER JOIN
-                mp_order_items oi ON oi.odid = o.id
-            INNER JOIN
-                tp_products p ON p.id = oi.pdid
-            WHERE 
-                rev.child_val = 1
-            AND
-                o.date_created BETWEEN '$start' AND '$end'");
+                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = st.title ) AS `store_name`,
+                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = p.title ) AS `product_name`,
+                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = p.price ) AS `product_price`,
+                oi.quantity as quantity
+                FROM
+                    mp_orders o
+                INNER JOIN
+                    mp_operations ops ON ops.id = o.opid
+                INNER JOIN
+                    tp_stores st ON st.id = ops.stid
+                INNER JOIN 
+                    tp_revisions rev ON rev.ID = st.`status` 
+                INNER JOIN
+                    mp_order_items oi ON oi.odid = o.id
+                INNER JOIN
+                    tp_products p ON p.id = oi.pdid
+                WHERE 
+                    rev.child_val = 1
+                AND
+                    o.date_created BETWEEN '$start' AND '$end'");
 
+            // Step 7: Check results if empty
             if ( !$list_date) {
                 return array(
                     "status" => "failed",
@@ -102,6 +103,7 @@
                 );
             }
 
+            // Step 8: Return a success status and message
             return array(
                 "status" => "success",
                 "data" => $list_date

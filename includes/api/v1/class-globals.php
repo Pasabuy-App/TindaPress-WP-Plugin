@@ -70,12 +70,18 @@
             return false;
         }
 
-        public static function verify_datavice_plugin(){
+        public static function verify_prerequisites(){
+
             if(!class_exists('DV_Verification') ){
-                return false;
-            }else{
-                return true;
+                return 'DataVice';
             }
+
+            if(!class_exists('MP_Process') ){
+                return 'MobilePOS';
+            }
+
+            return true;
+
         }
 
         public static function verify_role($wpid, $store_id, $role){
