@@ -59,7 +59,7 @@
                         dataType: 'json',
                         type: 'POST', 
                         data: {
-                            "wpid": "1",
+                            "wpid": "<?php echo get_current_user_id(); ?>",
                             "snky": "<?php echo wp_get_session_token(); ?>"
                         },
                         url: '<?php echo $root_url; ?>', //TODO: RESTAPI FOR STORE LIST

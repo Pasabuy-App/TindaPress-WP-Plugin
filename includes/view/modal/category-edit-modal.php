@@ -41,7 +41,7 @@
                             </div>
                         </div>
                         <div class="tp-center-item">
-                            <input id="appid_edit" type="hidden" value="">
+                            <input id="edit_id" type="hidden" value="">
                             <button id="delete-app-btn" type="submit" class="btn btn-danger"> - DELETE - </button>
                             <button id="update-app-btn" type="submit" class="btn btn-success"> - UPDATE - </button>
                         </div>

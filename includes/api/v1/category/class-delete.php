@@ -21,10 +21,7 @@
             
             //Inital QA done 2020-08-11 10:55 AM
             global $wpdb;
-            $category_id = $_POST["catid"];
-            $table_revs = TP_REVISIONS_TABLE;
-            $table_categories = TP_CATEGORIES_TABLE;
-
+            
             // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
@@ -44,20 +41,24 @@
             }
             
             // Step 3: Check if parameters are passed
-            if (!isset($_POST["catid"])  ) {
+            if ( !isset($_POST["catid"])  ) {
 				return array(
 						"status" => "unknown",
-						"message" => "Please contact your administrator. Request unknown!",
+						"message" => "Please contact your administrator. Request Unknownaaa!",
                 );
             }
 
             // Step 4: Check if parameters passed are not null
-            if (empty($_POST["catid"])  ) {
+            if ( empty($_POST["catid"])  ) {
 				return array(
 						"status" => "failed",
 						"message" => "Required fields cannot be empty.",
                 );
             }
+
+            $category_id = $_POST["catid"];
+            $table_revs = TP_REVISIONS_TABLE;
+            $table_categories = TP_CATEGORIES_TABLE;
             
             // Step 5: Get status of this category
             $category = $wpdb->get_row("SELECT cat.ID, cat.types, cat.status as status_id,

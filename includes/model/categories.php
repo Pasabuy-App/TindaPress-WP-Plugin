@@ -51,7 +51,7 @@
                         dataType: 'json',
                         type: 'POST', 
                         data: {
-                            "wpid": "1",
+                            "wpid": "<?php echo get_current_user_id(); ?>",
                             "snky": "<?php echo wp_get_session_token(); ?>"
                         },
                         url: '<?php echo site_url() . "/wp-json/tindapress/v1/category/list/all"; ?>', //TODO: RESTAPI FOR STORE LIST
@@ -183,29 +183,27 @@
                 $('#create-app-btn').addClass('disabled');
 
                 //From native form object to json object.
-                var unindexed_array = $('#create-app-form').serializeArray();
-                var indexed_array = {};
-
-                $.map(unindexed_array, function(n, i){
-                    indexed_array[n['name']] = n['value'];
-                });
-                indexed_array.action = 'CreateNewApp';
+                var postParam = {};
+                    postParam.wpid = "<?php echo get_current_user_id(); ?>";
+                    postParam.snky = "<?php echo wp_get_session_token(); ?>";
+                    postParam.title = $('#new_title').val();
+                    postParam.info = $('#new_info').val();
+                    postParam.types = $('#new_types').val();
 
                 // This will be handled by create-app.php.
                 $.ajax({
                     dataType: 'json',
                     type: 'POST', 
-                    data: indexed_array,
-                    url: 'admin-ajax.php',
+                    data: postParam,
+                    url: '<?php echo site_url() . "/wp-json/tindapress/v1/category/insert"; ?>',
                     success : function( data )
                     {
                         if( data.status == 'success' ) {
-                            // $('#appname_create').val(''); // TODO: Set the item to empty.
-                            // $('#appdesc_create').val(''); // TODO: Set the item to empty.
-                            // $('#appurl_create').val(''); // TODO: Set the item to empty.
-                            // $('#appmtcap_create').val(''); // TODO: Set the item to empty.
-                            // $('#appcap_create').val(''); // TODO: Set the item to empty.
+                            $('#new_title').val('');
+                            $('#new_info').val('');
+                            $('#new_category').val('');
                         }
+
                         $('#CNAMessage').addClass('alert-'+data.status);
                         $('#CNAMessage').removeClass('tp-display-hide');
                         $('#CNAMcontent').text( data.message );
@@ -297,25 +295,16 @@
 
                 //From native form object to json object.
                 var postParam = {};
+                    postParam.wpid = "<?php echo get_current_user_id(); ?>";
+                    postParam.snky = "<?php echo wp_get_session_token(); ?>";
+                    postParam.catid = $('#edit_id').val();
 
-                if( clickedBtnId == 'delete-app-btn' )
-                {
-                    // TODO: Contact Delete RestAPI
-                    // postParam.action = 'DeleteThisApp';
-                    // postParam.appid_edit = $('#appid_edit').val();
-                }
-
-                else
-                {
-                    // TODO: Contact Update RestAPI
-                    // postParam.action = 'UpdateThisApp';
-                    // postParam.appid_edit = $('#appid_edit').val();
-                    // postParam.appsta_edit = $('#appsta_edit').val();
-                    // postParam.appname_edit = $('#appname_edit').val();
-                    // postParam.appdesc_edit = $('#appdesc_edit').val();
-                    // postParam.appurl_edit = $('#appurl_edit').val();
-                    // postParam.appmtcap_edit = $('#appmtcap_edit').val();
-                    // postParam.appcap_edit = $('#appcap_edit').val();
+                if( clickedBtnId == 'delete-app-btn' ) {
+                    <?php $postUrl = site_url() . "/wp-json/tindapress/v1/category/delete"; ?>
+                } else {
+                    <?php $postUrl = site_url() . "/wp-json/tindapress/v1/category/update"; ?>
+                    postParam.title = $('#edit_title').val();
+                    postParam.info = $('#edit_info').val();
                 }
 
                 // This will be handled by create-app.php.
@@ -323,13 +312,12 @@
                     dataType: 'json',
                     type: 'POST', 
                     data: postParam,
-                    url: 'admin-ajax.php',
+                    url: '<?php echo $postUrl; ?>',
                     success : function( data )
                     {
                         if( clickedBtnId == 'delete-app-btn' ) {
-                            // $('#appname_edit').val(''); //TODO: Set item input to empty.
-                            // $('#appdesc_edit').val(''); //TODO: Set item input to empty.
-                            // $('#appurl_edit').val(''); //TODO: Set item input to empty.
+                            $('#edit_title').val('');
+                            $('#edit_info').val('');
                         } else {
                             $('#delete-app-btn').removeClass('disabled');
                             $('#update-app-btn').removeClass('disabled');
@@ -369,13 +357,9 @@
             // LISTEN FOR MODAL SHOW AND ATTACHED ID.
             $('#EditAppOption').on('show.bs.modal', function(e) {
                 var data = e.relatedTarget.dataset;
-                // $('#appid_edit').val( data.aid ); //TODO: Set item display from data.
-                // $('#appname_edit').val( data.aname ); //TODO: Set item display from data.
-                // $('#appdesc_edit').val( data.ainfo ); //TODO: Set item display from data.
-                // $('#appurl_edit').val( data.aurl ); //TODO: Set item display from data.
-                // $('#appsta_edit').val( data.asta ); //TODO: Set item display from data.
-                // $('#appmtcap_edit').val( data.mcap ); //TODO: Set item display from data.
-                // $('#appcap_edit').val( data.acap ); //TODO: Set item display from data.
+                $('#edit_id').val( data.id ); 
+                $('#edit_title').val( data.title ); 
+                $('#edit_info').val( data.info ); 
 
                 $('#delete-app-btn').removeClass('disabled');
                 $('#update-app-btn').removeClass('disabled');

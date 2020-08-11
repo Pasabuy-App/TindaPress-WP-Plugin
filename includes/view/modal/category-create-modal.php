@@ -35,6 +35,13 @@
                                 placeholder="Short description of your Category." ></textarea>
                         </div>
                         <div class="form-group">
+                            <label for="new_types">TYPES:</label><br>
+                            <select class="form-control" id="new_types" name="new_types">
+                                <option selected="selected">store</option>
+                                <option>product</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <div class="alert alert-dark tp-center-item" role="alert">
                                 <strong>NOTE:</strong> Before we submit your request a dialog confirmation will appear 
                                 to ask for your permission to complete the task.
