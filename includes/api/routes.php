@@ -14,22 +14,16 @@
     //Require the USocketNet class which have the core function of this plguin. 
         
         //Products Classes
-        require plugin_dir_path(__FILE__) . '/v1/products/class-insert.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-listing.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-update.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-select-byid.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-activate.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-delete.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-select-by-storeid.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-search.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-newest.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-popular.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-product.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-listing-price.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-listing-price-storeid.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-insert.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-list-active.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-list-all.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-list-inactive.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-select-by-category.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-best-seller.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-best-seller-local.php';
-        // require plugin_dir_path(__FILE__) . '/v1/products/filter/class-categories.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-select-by-id.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-select-by-store.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-update.php';
 
         //Stores Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/class-insert.php';
@@ -95,87 +89,56 @@
         /*
          * PRODUCT RESTAPI
         */
-            
-            register_rest_route( 'tindapress/v1/products', 'insert', array(
+            register_rest_route( 'tindapress/v1/products', 'activate', array(
                 'methods' => 'POST',
-                'callback' => array('TP_Insert_Product','listen'),
+                'callback' => array('TP_Product_Activate','listen'),
             ));
 
+            register_rest_route( 'tindapress/v1/products', 'delete', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Product_Delete','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/products', 'insert', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Product_Insert','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/products/list', 'active', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Product_List_Active','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/products/list', 'all', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Product_List_All','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/products/list', 'inactive', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Product_List_Inactive','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/products/category', 'select', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Product_Select_Category','listen'),
+            ));
+
+            //Select by product id
             register_rest_route( 'tindapress/v1/products', 'select', array(
                 'methods' => 'POST',
-                'callback' => array('TP_Select_Product','listen'),
+                'callback' => array('TP_Product_Select','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/products/store', 'select', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Product_Select_Store','listen'),
             ));
 
             register_rest_route( 'tindapress/v1/products', 'update', array(
                 'methods' => 'POST',
-                'callback' => array('TP_Update_Products','listen'),
+                'callback' => array('TP_Product_Update','listen'),
             ));
-
-            register_rest_route( 'tindapress/v1/products', 'retriveById', array(
-                'methods' => 'POST',
-                'callback' => array('TP_Select_Byid_Product','listen'),
-            ));
-            
-            register_rest_route( 'tindapress/v1/products', 'delete', array(
-                'methods' => 'POST',
-                'callback' => array('TP_Delete_Product','listen'),
-            ));
-
-            register_rest_route( 'tindapress/v1/products', 'get_all_product_bystid', array(
-                'methods' => 'POST',
-                'callback' => array('TP_Select_By_StoreId_Products','listen'),
-            ));
-
-            register_rest_route( 'tindapress/v1/products', 'search', array(
-                'methods' => 'POST',
-                'callback' => array('TP_Search_Products','listen'),
-            ));
-
-            register_rest_route( 'tindapress/v1/products', 'get_product_store', array(
-                'methods' => 'POST',
-                'callback' => array('TP_Products','listen'),
-            ));
-            
-            register_rest_route( 'tindapress/v1/products', 'newest', array(
-                'methods' => 'POST',
-                'callback' => array('TP_Product_Newest','listen'),
-            ));
-
-            register_rest_route( 'tindapress/v1/products', 'popular', array(
-                'methods' => 'POST',
-                'callback' => array('TP_Product_popular','listen'),
-            ));
-
-            register_rest_route( 'tindapress/v1/products', 'filter/category', array(
-                'methods' => 'POST',
-                'callback' => array('TP_Select_Store_Category_Product','listen'),
-            ));
-
-            register_rest_route( 'tindapress/v1/products', 'list/price', array(
-                'methods' => 'POST',
-                'callback' => array('TP_Listing_Product_by_Price','listen'),
-            ));
-
-            register_rest_route( 'tindapress/v1/products', 'list/price/store', array(
-                'methods' => 'POST',
-                'callback' => array('TP_Listing_Product_Price_by_storeId','listen'),
-            ));
-            
-            register_rest_route( 'tindapress/v1/products', 'select/category', array(
-                'methods' => 'POST',
-                'callback' => array('TP_Select_Store_Category_Product','listen'),
-            ));
-            
-            register_rest_route( 'tindapress/v1/products', 'best_seller/global', array(
-                'methods' => 'POST',
-                'callback' => array('TP_Best_Seller_Product','listen'),
-            ));
-
-            register_rest_route( 'tindapress/v1/products', 'best_seller/local', array(
-                'methods' => 'POST',
-                'callback' => array('TP_Best_Seller_Product_Local','listen'),
-            ));
-
 
         /*
          * DOCUMENTS RESTAPI

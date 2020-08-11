@@ -47,7 +47,6 @@
                         "message" => "Please contact your administrator. Verification Issues!",
                 );
             }
-
      
             // Step3 : Query
             $result = $wpdb->get_results("SELECT

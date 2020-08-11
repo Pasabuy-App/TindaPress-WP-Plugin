@@ -9,8 +9,6 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
-?>
-<?php
 
     class TP_Insert_Product {
         
@@ -51,7 +49,7 @@
                 );
             }
 
-            // Step 3 : Sanitize all Request
+            // Step 3 : Validate all Request
             if (  !isset($_POST["ctid"])      || !isset($_POST["stid"]) 
                || !isset($_POST["title"])     || !isset($_POST["short_info"]) 
                || !isset($_POST["long_info"]) || !isset($_POST["sku"]) 
@@ -65,18 +63,6 @@
                 );
                 
             }
-
-            // Step 4 : Check if ID is in valid format (integer)
-			if (!is_numeric($_POST["wpid"]) || !is_numeric($_POST["ctid"]) || !is_numeric($_POST["stid"]) ) {
-				return rest_ensure_response( 
-					array(
-						"status" => "failed",
-						"message" => "Please contact your administrator. ID not in valid format!",
-					)
-                );
-                
-			}
-
 
             // Step 6 : Check if all variable is not empty
             if (empty($_POST["ctid"]) 
