@@ -59,7 +59,7 @@
                 (select child_val from $table_revs where id = tp_str.`status`) AS status,
                 (select child_val from $table_dv_revs where id = dv_add.street) as street,
                 (SELECT brgy_name FROM $table_brgy WHERE ID = (select child_val from $table_dv_revs where id = dv_add.brgy)) as brgy,
-                (SELECT citymun_name FROM $table_city WHERE city_code = (select child_val from $table_dv_revs where id = dv_add.city)) as city,
+                (SELECT city_name FROM $table_city WHERE city_code = (select child_val from $table_dv_revs where id = dv_add.city)) as city,
                 (SELECT prov_name FROM $table_province WHERE prov_code = (select child_val from $table_dv_revs where id = dv_add.province)) as province,
                 (SELECT country_name FROM $table_country WHERE id = (select child_val from $table_dv_revs where id = dv_add.country)) as country
             FROM
@@ -67,7 +67,7 @@
             INNER JOIN 
                 $table_revs tp_rev ON tp_rev.ID = tp_str.`status` 
             INNER JOIN 
-                $table_add dv_add ON tp_str.address = dv_add.ID	
+                $table_address dv_add ON tp_str.address = dv_add.ID	
             ");
 
             // Step4 : Check if no result

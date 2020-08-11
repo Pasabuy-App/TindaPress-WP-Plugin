@@ -67,13 +67,13 @@
 
             // Step4 : Sanitize all variable is empty
             if (empty($_POST["wpid"]) 
-            || empty($_POST["ctid"]) 
-            || empty($_POST["title"]) 
-            || empty($_POST["short_info"]) 
-            || empty($_POST["long_info"]) 
-            || empty($_POST["logo"]) 
-            || empty($_POST["banner"]) 
-            || empty($_POST["address"]) ) {
+                || empty($_POST["ctid"]) 
+                || empty($_POST["title"]) 
+                || empty($_POST["short_info"]) 
+                || empty($_POST["long_info"]) 
+                || empty($_POST["logo"]) 
+                || empty($_POST["banner"]) 
+                || empty($_POST["address"]) ) {
                 return array(
                         "status" => "failed",
                         "message" => "Required fields cannot be empty.",

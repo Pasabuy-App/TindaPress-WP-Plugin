@@ -25,12 +25,12 @@
             $table_store = TP_STORES_TABLE;
             $table_category = TP_CATEGORIES_TABLE;
             $table_revs = TP_REVISIONS_TABLE;
+            $table_address = DV_ADDRESS_TABLE;
+            $table_dv_revs = DV_REVS_TABLE;
             $table_brgy = DV_BRGY_TABLE;
             $table_city = DV_CITY_TABLE;
             $table_province = DV_PROVINCE_TABLE;
             $table_country = DV_COUNTRY_TABLE;
-            $table_dv_revs = DV_REVS_TABLE;
-            $table_add = DV_ADDRESS_TABLE;
 
             // declaring variable
             $ctid = $_POST["catid"];
@@ -89,15 +89,15 @@
                 (select child_val from $table_revs where id = tp_str.`status`) AS status,
                 (select child_val from $table_dv_revs where id = dv_add.street) as street,
                 (SELECT brgy_name FROM $table_brgy WHERE ID = (select child_val from $table_dv_revs where id = dv_add.brgy)) as brgy,
-                (SELECT citymun_name FROM $table_city WHERE city_code = (select child_val from $table_dv_revs where id = dv_add.city)) as city,
+                (SELECT city_name FROM $table_city WHERE city_code = (select child_val from $table_dv_revs where id = dv_add.city)) as city,
                 (SELECT prov_name FROM $table_province WHERE prov_code = (select child_val from $table_dv_revs where id = dv_add.province)) as province,
                 (SELECT country_name FROM $table_country WHERE id = (select child_val from $table_dv_revs where id = dv_add.country)) as country
             FROM
                 $table_store tp_str
             INNER JOIN 
-                $table_add dv_add ON tp_str.address = dv_add.ID
+                $table_address dv_add ON tp_str.address = dv_add.ID
             WHERE
-                tp_str.ctid = '$catid'
+                tp_str.ctid = '$ctid'
             ");
             
             // Step7 : Check if no result

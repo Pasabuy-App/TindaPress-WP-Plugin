@@ -64,7 +64,7 @@
             }
             
             // Step5 :  Query
-            $store_data = $wpdb->get_row("SELECT tp_str.* FROM $table_store tp_str INNER JOIN $table_revs tp_revs ON tp_revs.ID = tp_str.`status` WHERE tp_str.ID = '17' AND tp_revs.child_val = 1 ");
+            $store_data = $wpdb->get_row("SELECT tp_str.* FROM $table_store tp_str INNER JOIN $table_revs tp_revs ON tp_revs.ID = tp_str.`status` WHERE tp_str.ID = '{$user["store_id"]}' AND tp_revs.child_val = 1 ");
                
             // Step6 :  Check if failed
             if (!$store_data) {
