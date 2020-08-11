@@ -69,7 +69,7 @@
                 tp_rev.child_val = 0
             ");
 
-            if ($result < 1 ) {
+            if (!$result ) {
                 return array(
                     "status" => "failed",
                     "message" => "No results found.",

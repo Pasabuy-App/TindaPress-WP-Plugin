@@ -9,11 +9,11 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
-    class TP_Store_Select {
+    class TP_Store_Select_by_Category {
 
         public static function listen(){
             return rest_ensure_response( 
-                TP_Store_Select:: list_open()
+                TP_Store_Select_by_Category:: list_open()
             );
         }
 
@@ -21,7 +21,7 @@
 
             global $wpdb;
 
-            $user = TP_Store_Select::catch_post();
+            $user = TP_Store_Select_by_Category::catch_post();
 
             // declaring table names to variable
             $table_store = TP_STORES_TABLE;
@@ -34,8 +34,6 @@
             $table_dv_revisions = DV_REVS_TABLE;
             $table_add = DV_ADDRESS_TABLE;
 
-            // declaring variable
-            $stid = $_POST["stid"];
 
            //Check if prerequisites plugin are missing
            $plugin = TP_Globals::verify_prerequisites();
@@ -54,7 +52,7 @@
             }
 
             // Step3 : Sanitize request
-            if (!isset($_POST["stid"])) {
+            if (!isset($_POST["catid"])) {
                 return array(
                         "status" => "unknown",
                         "message" => "Please contact your administrator. Request unknown!",
@@ -62,21 +60,12 @@
             }
 
             // Step4 : Sanitize if variable is empty
-            if ( empty($_POST["stid"]) ){
+            if ( empty($_POST["catid"]) ){
                 return array(
                         "status" => "failed",
                         "message" => "Required fields cannot be empty.",
                 );
             }
-
-            // Step5 : Validation of store id
-            $get_store = $wpdb->get_row("SELECT ID FROM $table_store  WHERE ID = $stid ");    
-            if ( !$get_store ) {
-                return array(
-                        "status" => "failed",
-                        "message" => "No store found.",
-                );
-			}
 
             // Step6 : Query
             $result = $wpdb->get_results("SELECT
@@ -102,16 +91,16 @@
             INNER JOIN 
                 $table_add dv_add ON tp_str.address = dv_add.ID
             INNER JOIN 
-                $table_cotnacts as dv_cont ON tp_str.ID = dv_cont.stid
+                $table_cotnacts dv_cont ON tp_str.ID = dv_cont.stid
             WHERE 
-                tp_str.ID = '{$user["store_id"]}'
+                tp_str.ctid  = '{$user["category_id"]}'
             ");
             
             // Step7 : Check if no result
             if (!$result)
             {
                 return array(
-                        "status" => "failed",
+                        "status" => "unknown",
                         "message" => "No results found.",
                 );
             }
@@ -128,8 +117,8 @@
         {
               $cur_user = array();
                
-                $cur_user['created_by'] = $_POST["wpid"];
-                $cur_user['store_id'] = $_POST["stid"];
+                $cur_user['created_by']  = $_POST["wpid"];
+                $cur_user['category_id'] = $_POST["catid"];
   
               return  $cur_user;
         }

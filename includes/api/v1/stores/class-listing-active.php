@@ -9,11 +9,11 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
-    class TP_Listing_Active_Store {
+    class TP_Store_Listing_Active {
 
         public static function listen(){
             return rest_ensure_response( 
-                TP_Listing_Active_Store:: list_open()
+                TP_Store_Listing_Active:: list_open()
             );
         }
 

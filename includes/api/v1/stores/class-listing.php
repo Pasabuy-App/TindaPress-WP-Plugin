@@ -9,11 +9,11 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
-    class TP_Listing_Store {
+    class TP_Store_Listing {
 
         public static function listen(){
             return rest_ensure_response( 
-                TP_Listing_Store:: list_open()
+                TP_Store_Listing:: list_open()
             );
         }
 
@@ -65,9 +65,7 @@
             FROM
                 $table_store tp_str
             INNER JOIN 
-                $table_revs tp_rev ON tp_rev.ID = tp_str.`status` 
-            INNER JOIN 
-                $table_add dv_add ON tp_str.address = dv_add.ID	
+                $table_address dv_add ON tp_str.address = dv_add.ID	
             ");
 
             // Step4 : Check if no result

@@ -9,7 +9,7 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
-    class TP_Best_Seller_Store {
+    class TP_Store_Best_Seller {
 
         public static function listen(){
             return rest_ensure_response( 
@@ -75,10 +75,12 @@
 
             //  Step4 : Check result
             if (!$result) {
+                
                 return array(
                     "status" => "failed",
                     "message" =>  "No results found.",
                 );
+
             }else{
                 return array(
                     "status" => "success",

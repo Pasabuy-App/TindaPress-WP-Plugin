@@ -21,15 +21,21 @@
 
             global $wpdb;
 
-            $later = TP_Globals::date_stamp();
-            $user = TP_Insert_Store::catch_post();
-
             // declaring table names to variable
             $table_store = TP_STORES_TABLE;
             $table_store_fields = TP_STORES_FIELDS;
-            $table_revs = TP_REVISIONS_TABLE;
+            $table_tp_revs = TP_REVISIONS_TABLE;
             $table_revs_fields = TP_REVISION_FIELDS;
             $revs_type = "stores";
+
+            $table_contact = DV_CONTACTS_TABLE;
+            $table_dv_revs = DV_REVS_TABLE;
+
+            $rev_fields = DV_INSERT_REV_FIELDS;
+            $dv_rev_table = DV_REVS_TABLE;
+
+            $table_address = DV_ADDRESS_TABLE;
+            $address_fields = DV_INSERT_ADDRESS_FIELDS;
 
             // Step1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -55,6 +61,13 @@
                 || !isset($_POST["long_info"]) 
                 || !isset($_POST["logo"]) 
                 || !isset($_POST["banner"]) 
+                || !isset($_POST["phone"]) 
+                || !isset($_POST["email"]) 
+                || !isset($_POST["st"]) 
+                || !isset($_POST["co"]) 
+                || !isset($_POST["pv"]) 
+                || !isset($_POST["ct"]) 
+                || !isset($_POST["bg"]) 
                 ) {
 				return array(
 						"status" => "unknown",
@@ -69,10 +82,176 @@
                 || empty($_POST["long_info"]) 
                 || empty($_POST["logo"]) 
                 || empty($_POST["banner"]) 
-            ) {
+                || empty($_POST["phone"]) 
+                || empty($_POST["email"]) 
+                || empty($_POST["st"]) 
+                || empty($_POST["co"]) 
+                || empty($_POST["pv"]) 
+                || empty($_POST["ct"]) 
+                || empty($_POST["bg"]) 
+                ) {
                 return array(
                         "status" => "unknown",
                         "message" => "Required fields cannot be empty.",
+                );
+            }
+
+            
+            //Country input validation
+                // Step 2 : Check if country passed is in integer format.
+                if ( !is_numeric($_POST['co']) ) {
+                    return rest_ensure_response( 
+                        array(
+                                "status" => "failed",
+                                "message" => "Invalid value for country.",
+                        )
+                    );
+                }
+
+                // Step 2 : Check if country_id is in database. 
+                $co_status = DV_Globals:: check_availability(DV_COUNTRY_TABLE, 'WHERE ID = '.$_POST['co']);
+                
+                if ( $co_status == false ) {
+                    return rest_ensure_response( 
+                        array(
+                                "status" => "failed",
+                                "message" => "Invalid value for country.",
+                        )
+                    );
+                }
+                
+                if ( $co_status === "unavail" ) {
+                    return rest_ensure_response( 
+                        array(
+                                "status" => "failed",
+                                "message" => "Not available yet in selected country",
+                        )
+                    );
+                }
+            //end of country validation
+
+            //Province input validation
+                // Step 2 : Check if province passed is in integer format.
+                if ( !is_numeric($_POST['pv']) ) {
+                    return rest_ensure_response( 
+                        array(
+                                "status" => "failed",
+                                "message" => "Invalid value for province.",
+                        )
+                    );
+                }
+
+                // Step 2 : Check if province is in database. 
+                $pv_status = DV_Globals:: check_availability(DV_PROVINCE_TABLE, 'WHERE ID = '.$_POST['pv']);
+                
+                if ( $pv_status == false ) {
+                    return rest_ensure_response( 
+                        array(
+                                "status" => "failed",
+                                "message" => "Invalid value for province.",
+                        )
+                    );
+                }
+                
+                if ( $pv_status === "unavail" ) {
+                    return rest_ensure_response( 
+                        array(
+                                "status" => "failed",
+                                "message" => "Not available yet in selected province",
+                        )
+                    );
+                }
+            // end of province validation
+
+            //City input validation
+                // Step 2 : Check if city passed is in integer format.
+                if ( !is_numeric($_POST['ct']) ) {
+                    return rest_ensure_response( 
+                        array(
+                                "status" => "failed",
+                                "message" => "Invalid value for city.",
+                        )
+                    );
+                }
+
+                // Step 2 : Check if city is in database. 
+                $ct_status = DV_Globals:: check_availability(DV_CITY_TABLE, 'WHERE ID = '.$_POST['ct']);
+                
+                if ( $ct_status == false ) {
+                    return rest_ensure_response( 
+                        array(
+                                "status" => "failed",
+                                "message" => "Invalid value for city.",
+                        )
+                    );
+                }
+                
+                if ( $ct_status === "unavail" ) {
+                    return rest_ensure_response( 
+                        array(
+                                "status" => "failed",
+                                "message" => "Not available yet in selected city",
+                        )
+                    );
+                }
+            // end of city validation
+
+            //Barangay input validation
+                // Step 2 : Check if barangay passed is in integer format.
+                if ( !is_numeric($_POST['bg']) ) {
+                    return rest_ensure_response( 
+                        array(
+                                "status" => "failed",
+                                "message" => "Invalid value for barangay.",
+                        )
+                    );
+                }
+
+                // Step 2 : Check if barangay is in database. 
+                $bg_status = DV_Globals:: check_availability(DV_BRGY_TABLE, 'WHERE ID = '.$_POST['bg']);
+                
+                if ( $bg_status == false ) {
+                    return rest_ensure_response( 
+                        array(
+                                "status" => "failed",
+                                "message" => "Invalid value for barangay.",
+                        )
+                    );
+                }
+                
+                if ( $bg_status === "unavail" ) {
+                    return rest_ensure_response( 
+                        array(
+                                "status" => "failed",
+                                "message" => "Not available yet in selected barangay",
+                        )
+                    );
+                }
+            // end of barangay validation
+            
+
+            if (!is_email($_POST['email'])) {
+                return array(
+                    "status" => "failed",
+                    "message" => "Email not in valid format."
+                );
+            }
+
+            // Remove all illegal characters from a url
+            $banner_url = filter_var($_POST["banner"], FILTER_SANITIZE_URL);
+            $logo_url = filter_var($_POST["logo"], FILTER_SANITIZE_URL);
+            
+            if (filter_var($banner_url, FILTER_VALIDATE_URL)) {
+                return array(
+                    "status" => "failed",
+                    "message" => "Banner $banner_url is a valid URL"
+                );
+            }
+
+            if (filter_var($logo_url, FILTER_VALIDATE_URL)) {
+                return array(
+                    "status" => "failed",
+                    "message" => "Banner $banner_url is a valid URL"
                 );
             }
 
@@ -91,45 +270,107 @@
                     TP_Globals::verify_role($_POST['wpid'], '0', 'can_add_store' ),
                 );
             }
+            
+            $later = TP_Globals::date_stamp();
+            $user = TP_Insert_Store::catch_post();
 
             // Step7 : Query
             $wpdb->query("START TRANSACTION");
-
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'title', '{$user["title"]}', '{$user["created_by"]}', '$later')");
+                 $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'title', '{$user["title"]}', '{$user["created_by"]}', '$later')");
                 $title = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'short_info', '{$user["title"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'short_info', '{$user["title"]}', '{$user["created_by"]}', '$later')");
                 $short_info = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'long_info', '{$user["long_info"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'long_info', '{$user["long_info"]}', '{$user["created_by"]}', '$later')");
                 $long_info = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'logo', '{$user["logo"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'logo', '{$user["logo"]}', '{$user["created_by"]}', '$later')");
                 $logo = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'banner', '{$user["banner"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'banner', '{$user["banner"]}', '{$user["created_by"]}', '$later')");
                 $banner = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'status', '1', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'status', '1', '{$user["created_by"]}', '$later')");
                 $status = $wpdb->insert_id;
 
+                // Insert query for store                                          
+                $wpdb->query("INSERT INTO $table_store $table_store_fields VALUES ('{$user["ctid"]}', $title, $short_info, $long_info, $logo, $banner, $status, '0', '{$user["created_by"]}', '$later' )");
+                $store_id = $wpdb->insert_id;
+                // End query for store
+
+                // update table revision
+                 $result_update_tp_rev_store = $wpdb->query("UPDATE $table_tp_revs SET `parent_id` = $store_id WHERE ID IN ($title, $short_info, $long_info, $logo, $banner, $status) ");
+
+                // Query of store contact.
+                // Phone
+                $wpdb->query("INSERT INTO `$table_dv_revs` (revs_type, parent_id, child_key, child_val, created_by, date_created) 
+                                                VALUES ( 'contacts', 0, 'phone', '{$user["phone"]}', '{$user["created_by"]}', '$later'  )");
+                $phone_last_id = $wpdb->insert_id;
+
+                $wpdb->query("INSERT INTO `$table_contact` (`status`, `types`, `revs`, `stid`, `created_by`, `date_created`) 
+                                                    VALUES ('1', 'phone', '$phone_last_id', $store_id, '{$user["created_by"]}', '$later');");
+                $contact_phone_id = $wpdb->insert_id;
+                
+                $update_contact_phone = $wpdb->query("UPDATE `$table_dv_revs` SET `parent_id` = $contact_phone_id WHERE ID = $phone_last_id ");
+
+                // Email
+                $wpdb->query("INSERT INTO `$table_dv_revs` (revs_type, parent_id, child_key, child_val, created_by, date_created) 
+                                                VALUES ( 'contacts', 0, 'email', '{$user["phone"]}', '{$user["created_by"]}', '$later'  )");
+                $email_last_id = $wpdb->insert_id;
+
+                $wpdb->query("INSERT INTO `$table_contact` (`status`, `types`, `revs`, `stid`, `created_by`, `date_created`) 
+                                                    VALUES ('1', 'email', '$email_last_id', $store_id, '{$user["created_by"]}', '$later');");
+                $contact_email_id = $wpdb->insert_id;
+                
+                 $update_contact_email = $wpdb->query("UPDATE `$table_dv_revs` SET `parent_id` = $contact_email_id WHERE ID = $email_last_id ");
+
+                // End of store contact query
+
+                // Query of store address.
+                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'status', '1', '{$user["created_by"]}', '$later');");
+                $status = $wpdb->insert_id;
+
+                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'street', '{$user["street"]}', '{$user["created_by"]}', '$later');");
+                $street = $wpdb->insert_id;
+    
+                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'brgy', {$user["barangy"]}, '{$user["created_by"]}', '$later');");
+                $brgy = $wpdb->insert_id;
+    
+                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'city', {$user["city"]}, '{$user["created_by"]}', '$later');");
+                $city = $wpdb->insert_id;
+                    
+                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'province', {$user["province"]}, '{$user["created_by"]}', '$later');");
+                $province = $wpdb->insert_id;
+    
+                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'country', {$user["country"]}, '{$user["created_by"]}', '$later');");
+                $country = $wpdb->insert_id;
+
+                //Save the address in the parent table
+                 $wpdb->query("INSERT INTO $table_address ($address_fields) VALUES ('$status', '0', '$store_id', 'business', $street, $brgy, $city, $province, $country, '$later')");
+                $address_id = $wpdb->insert_id;
+
+                //Update revision table for saving the parent_id(address_id)
+                $result_update_dv_rev_address =  $wpdb->query("UPDATE $dv_rev_table SET `parent_id` = {$address_id} WHERE ID IN ($status, $street, $brgy, $city, $province, $country)");
+                
+                // End of store address.
+
+                // Update store for address column
+                $result = $wpdb->query("UPDATE $table_store SET `address` = $address_id WHERE ID = $store_id ");
+
+           
+
             // Step8 : Check if failed
-            if ( $title < 1 || $short_info < 1 || $long_info < 1 || $logo < 1 || $banner < 1 || $status < 0 ) {
-                $wpdb->query("ROLLBACK");
-                return array(
-                    "status" => "failed",
-                    "message" => "An error occured while submitting data to database.",
-                );
-            }
-
-            // Step9 : Query
-            $wpdb->query("INSERT INTO $table_store $table_store_fields VALUES ('{$user["ctid"]}', $title, $short_info, $long_info, $logo, $banner, $status, '{$user["address"]}', '{$user["created_by"]}', '$later' )");
-            $store_id = $wpdb->insert_id;
-
-            $result = $wpdb->query("UPDATE $table_revs SET `parent_id` = $store_id WHERE ID IN ($title, $short_info, $long_info, $logo, $banner, $status) ");
-            
-            // Step10 : Check if failed
-            if ($store_id < 1 || $result < 1 ) {
+            if ( $title < 1 || $short_info < 1 || $long_info < 1 
+               || $logo < 1 || $banner < 1 || $status < 1
+               || $store_id < 1 || $result_update_tp_rev_store < 1 || $phone_last_id < 1
+               || $contact_phone_id < 1 || $result_update_tp_rev_store < 1 || $update_contact_phone < 1
+               || $email_last_id < 1 || $contact_email_id < 1 || $update_contact_email < 1
+               || $status < 1 || $street < 1 || $brgy < 1
+               || $city < 1 || $province < 1 || $country < 1 
+               || $address_id < 1 || $result_update_dv_rev_address < 1 || $result < 1 
+               
+               ) {
                 $wpdb->query("ROLLBACK");
                 return array(
                     "status" => "failed",
@@ -149,15 +390,26 @@
         {
               $cur_user = array();
                
-                $cur_user['created_by'] = $_POST["wpid"];
-                $cur_user['ctid']       = $_POST["ctid"];
-                $cur_user['address']    = $_POST["address"];
-                $cur_user['title']      = $_POST["title"];
-                $cur_user['short_info'] = $_POST["short_info"];
-                $cur_user['long_info']  = $_POST["long_info"];
+                $cur_user['created_by']  = $_POST["wpid"];
+                $cur_user['ctid']        = $_POST["ctid"];
+
+                $cur_user['title']       = $_POST["title"];
+                $cur_user['short_info']  = $_POST["short_info"];
+                $cur_user['long_info']   = $_POST["long_info"];
                 $cur_user['logo']        = $_POST["logo"];
                 $cur_user['banner']      = $_POST["banner"];
-  
+
+                // Address Listen
+                $cur_user['street']     = $_POST["st"];
+                $cur_user['country']    = $_POST["co"];
+                $cur_user['province']   = $_POST["pv"];
+                $cur_user['city']       = $_POST["ct"];
+                $cur_user['barangy']    = $_POST["bg"];
+                
+                // Contact Listen
+                $cur_user['phone']     = $_POST["phone"];
+                $cur_user['email']     = $_POST["email"];
+
               return  $cur_user;
         }
     }

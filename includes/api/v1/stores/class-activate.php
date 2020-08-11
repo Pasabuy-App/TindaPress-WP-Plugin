@@ -12,11 +12,11 @@
 ?>
 <?php
 
-    class TP_Delete_Store {
+    class TP_Activate_Store {
 
         public static function listen(){
             return rest_ensure_response( 
-                TP_Delete_Store::list_open()
+                TP_Activate_Store::list_open()
             );
         }
         
@@ -24,7 +24,7 @@
 
             global $wpdb;
             
-            $user = TP_Delete_Store::catch_post();
+            $user = TP_Activate_Store::catch_post();
 
             // declaring table names to variable
             $table_store = TP_STORES_TABLE;
@@ -64,7 +64,7 @@
             }
             
             // Step5 :  Query
-            $store_data = $wpdb->get_row("SELECT tp_str.*, tp_revs.child_val as `status` FROM $table_store tp_str INNER JOIN $table_revs tp_revs ON tp_revs.ID = tp_str.`status` WHERE tp_str.ID = '{$user["store_id"]}' AND tp_revs.child_val = 1 ");
+            $store_data = $wpdb->get_row("SELECT tp_str.* FROM $table_store tp_str INNER JOIN $table_revs tp_revs ON tp_revs.ID = tp_str.`status` WHERE tp_str.ID = '{$user["store_id"]}' AND tp_revs.child_val = 0 ");
                
             // Step6 :  Check if failed
             if (!$store_data) {
@@ -74,16 +74,8 @@
                 );
             }
 
-            if ($store_data->status == 0) {
-                return array(
-                    "status" => "failed",
-                    "message" => "This store is already deactivated.",
-                );
-            }
-
-
             // Step7 :  Query
-            $result = $wpdb->query("UPDATE $table_revs SET `child_val` = '0' WHERE ID = $store_data->status ");
+            $result = $wpdb->query("UPDATE $table_revs SET `child_val` = '1' WHERE ID = $store_data->status ");
 
             // Step8 :  Check if failed
             if ($result < 1 ) {
@@ -94,7 +86,7 @@
             } else{
                 return array(
                     "status" => "success",
-                    "message" => "Data has been deleted successfully.",
+                    "message" => "Data has been activate successfully.",
                 );
             }
         }  
