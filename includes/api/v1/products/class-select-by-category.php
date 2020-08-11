@@ -73,6 +73,16 @@
             }
 
             $category_id = $_POST['catid'];
+            
+            $get_category = $wpdb->get_row("SELECT `ID` FROM $table_categories WHERE ID = $category_id  ");
+
+            if ( empty($get_category)  ) {
+                return array(
+                    "status" => "failed",
+                    "message" => "This category does not exists.",
+                );
+            }
+            
             // query
             $result = $wpdb->get_results("SELECT
                 tp_prod.ID,

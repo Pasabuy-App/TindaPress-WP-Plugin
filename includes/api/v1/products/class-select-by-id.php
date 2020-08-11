@@ -74,6 +74,15 @@
 
             $pdid = $_POST['pid'];
 
+            $get_product = $wpdb->get_row("SELECT `status` FROM $product_table WHERE ID = $pdid  ");
+
+            if ( empty($get_product)  ) {
+                return array(
+                    "status" => "failed",
+                    "message" => "This product does not exists.",
+                );
+            }
+
             $result = $wpdb->get_row("SELECT
                 tp_prod.ID,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.title ) AS `store_name`,

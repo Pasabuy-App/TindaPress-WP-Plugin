@@ -103,9 +103,10 @@
             }
        
             // Check user role 
-            if (TP_Globals::verify_role( $_POST['wpid'], $_POST['stid'], 'can_add_product' )) {
-                return rest_ensure_response( 
-                    TP_Globals::verify_role($_POST['wpid'], $_POST['stid'], 'can_add_product' ),
+            if (TP_Globals::verify_role( $_POST['wpid'], $_POST['stid'], 'can_add_product' ) == false) {
+                return array( 
+                    "status" => "failed",
+                    "message" => "Current user has no access in adding product.",
                 );
             }
 

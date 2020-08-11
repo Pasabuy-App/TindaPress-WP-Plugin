@@ -75,29 +75,45 @@
                 );
             }
 
+
+            // Check user role 
+            if (TP_Globals::verify_role( $_POST['wpid'], $_POST['stid'], 'can_delete_product' ) == false) {
+                return array( 
+                    "status" => "failed",
+                    "message" => "Current user has no access in deleting product.",
+                );
+            }
+
             // variables
             $parentid = $_POST['pid'];
             $wpid = $_POST['wpid'];
 
+            $get_status_id = $wpdb->get_row("SELECT `status` FROM $product_table WHERE ID = $parentid  ");
+
+            if ( empty($get_status_id)  ) {
+                return array(
+                    "status" => "failed",
+                    "message" => "This product does not exists.",
+                );
+            }
+
             // Query
             $wpdb->query("START TRANSACTION ");
                 
-                $get_status_id = $wpdb->get_row("SELECT `status` FROM $product_table WHERE ID = $parentid  ");
-
                 $get_status = $wpdb->get_row("SELECT `child_val`as `status` FROM $table_revs WHERE ID = $get_status_id->status  ");
 
                 $result =  $wpdb->query("UPDATE $table_revs  SET child_val = '0', `date_created` = '$date_stamp' WHERE ID =  $get_status_id->status  AND parent_id = $parentid");
 
-                if ($get_status->status != 1  ) {
-                    
-                    $wpdb->query("ROLLBACK");
-                    return array(
-                        "status" => "failed",
-                        "message" => "This product is already inactive.",
-                    );
-                }
+            if ($get_status->status != 1  ) {
+                $wpdb->query("ROLLBACK");
+                return array(
+                    "status" => "failed",
+                    "message" => "This product is already inactive.",
+                );
+            }
+
             // check of retsult is true or not
-            if (empty($get_status_id) || $result < 1 ) {
+            if ($result < 1 ) {
             
                 $wpdb->query("ROLLBACK");
             
