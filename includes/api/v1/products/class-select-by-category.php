@@ -12,11 +12,11 @@
 ?>
 <?php
 
-    class TP_Select_Store_Category_Product {
+    class TP_Product_Select_Category {
 
         public static function listen(){
             return rest_ensure_response( 
-                TP_Select_Store_Category_Product:: get_prods_by_cat()
+                TP_Product_Select_Category:: get_prods_by_cat()
             );
         }
 
@@ -61,7 +61,14 @@
 
 				return array(
 					"status" => "unknown",
-					"message" => "Required fields cannot be empyty.",
+					"message" => "Required fields cannot be empty.",
+                );
+            }
+
+            if (  !is_numeric($_POST['catid'])  ) {
+                return array(
+					"status" => "unknown",
+					"message" => "Please contact your administrator. ID is not in valid format!",
                 );
             }
 
@@ -89,8 +96,8 @@
             if(!$result){
 
                 return array(
-                        "status" => "failed",
-                        "message" => "No results found.",
+                    "status" => "failed",
+                    "message" => "No product found.",
                 );
 
             }else{

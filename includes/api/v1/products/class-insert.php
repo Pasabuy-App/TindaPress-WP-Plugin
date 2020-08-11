@@ -10,13 +10,13 @@
         * @version 0.1.0
 	*/
 
-    class TP_Insert_Product {
+    class TP_Product_Insert {
         
         //REST API Call
         public static function listen(){
             
             return rest_ensure_response( 
-                TP_Insert_Product:: insert_product()
+                TP_Product_Insert:: insert_product()
             );
         }
         
@@ -50,22 +50,20 @@
             }
 
             // Step 3 : Validate all Request
-            if (  !isset($_POST["ctid"])      || !isset($_POST["stid"]) 
+            if (  !isset($_POST["catid"])      || !isset($_POST["stid"]) 
                || !isset($_POST["title"])     || !isset($_POST["short_info"]) 
                || !isset($_POST["long_info"]) || !isset($_POST["sku"]) 
                || !isset($_POST["price"])     || !isset($_POST["weight"]) 
                || !isset($_POST["dimension"]) || !isset($_POST["preview"])) {
-				return rest_ensure_response( 
-					array(
-						"status" => "unknown",
-						"message" => "Please contact your administrator. Request unknown!",
-					)
+				return array(
+					"status" => "unknown",
+					"message" => "Please contact your administrator. Request unknown!",
                 );
                 
             }
 
             // Step 6 : Check if all variable is not empty
-            if (empty($_POST["ctid"]) 
+            if (empty($_POST["catid"]) 
                 || empty($_POST["stid"]) 
                 || empty($_POST["title"]) 
                 || empty($_POST["short_info"]) 
@@ -75,17 +73,21 @@
                 || empty($_POST["weight"]) 
                 || empty($_POST["dimension"]) 
                 || empty($_POST["preview"])) {
-				return rest_ensure_response( 
-					array(
-						"status" => "unknown",
-						"message" => "Required fields cannot be empty.",
-					)
+				return array(
+					"status" => "unknown",
+					"message" => "Required fields cannot be empty!",
                 );
                 
             }
-            // catch all post request
-            $user = TP_Insert_Product::catch_post();
 
+            if ( !is_numeric($_POST['stid']) || !is_numeric($_POST['catid'])  ) {
+                return array(
+					"status" => "unknown",
+					"message" => "Please contact your administrator. ID is not in valid format!",
+                );
+            }
+            // catch all post request
+            $user = TP_Product_Insert::catch_post();
 
             //Check if this store id exists
             $store_id = $user['stid'];
@@ -146,7 +148,7 @@
             }
             
             // Insert Product
-            $wpdb->query("INSERT INTO $table_product $table_product_fields VALUES ('{$user["stid"]}', '{$user["ctid"]}', '$title', '$preview', '$short_info', '$long_info', '$status', '$sku', '$price', '$weight', '$dimension', '{$user["created_by"]}', '$date')");
+            $wpdb->query("INSERT INTO $table_product $table_product_fields VALUES ('{$user["stid"]}', '{$user["catid"]}', '$title', '$preview', '$short_info', '$long_info', '$status', '$sku', '$price', '$weight', '$dimension', '{$user["created_by"]}', '$date')");
             $product_id = $wpdb->insert_id;
 
             $result = $wpdb->query("UPDATE $table_revs SET `parent_id` = $product_id WHERE ID IN ($title, $preview, $short_info, $long_info, $status, $sku, $price, $weight, $dimension) ");
@@ -176,7 +178,7 @@
                 $cur_user = array();
                
                 $cur_user['created_by'] = $_POST["wpid"];
-                $cur_user['ctid']       = $_POST["ctid"];
+                $cur_user['catid']       = $_POST["catid"];
                 $cur_user['stid']       = $_POST["stid"];
 
                 $cur_user['title']      = $_POST["title"];

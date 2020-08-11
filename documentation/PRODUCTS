@@ -41,7 +41,7 @@ IF SUCCESS:
     
 ```
 
-#### INSERT PRODUCT
+#### INSERT PRODUCT => tindapress/v1/product/insert
 
 REQUEST:
 - Method: GET
@@ -49,39 +49,81 @@ REQUEST:
 - Params: key=wpid (value=User ID), key=session key (value=User snky), key=stid (value = Store id), key=title (value = title of product ), key = preview (value = preview of product ), key=short_info (value = short info of product ), key= long_info (value = long info of product ), key=sku (value = stock keeping unit ), key= price (value = price ), key= weight (value = weight ), key= dimension (value = dimension )
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
-- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
-- code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty' data: null
-- code: 'failed' message: 'An error occured while submiting data to server' data: null
+- code: 'unknown' message: 'Please contact your administrator.  Verification Issues!' data: null
+- code: 'unknown' message: 'Please contact your administrator.  Request unknown!' data: null
+- code: 'unknown' message: 'Required fields cannot be empty!' data: null
+- code: 'unknown' message: 'Please contact your administrator. ID is not in valid format!' data: null
+- code: 'failed' message: 'This store does not exists..' data: null
+- code: 'failed' message: 'An error occured while submitting data to database.' data: null
 
 IF SUCCESS:
 ```
-  
+    {
+        "status": "success",
+        "message": "Data has been added successfully!"
+    }
 ```
 
-#### UPDATE PRODUCT
+
+#### SELECT PRODUCT BY CATEGORY ID => tindapress/v1/product/category/select
 
 REQUEST:
 - Method: GET
 - Header: key=Content-Type, value=application/x-www-form-urlencoded
-- Params: key=wpid (value=User ID), key=session key (value=User snky), key=stid (value = Store id), key=title (value = title of product ), key = preview (value = preview of product ), key=short_info (value = short info of product ), key= long_info (value = long info of product ), key=sku (value = stock keeping unit ), key= price (value = price ), key= weight (value = weight ), key= dimension (value = dimension ), key = prod_id (Value = product id)
+- Params: key=snky (value=session key), key=wpid (value=wordpress id), key = pid (Value = product id)
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
 - code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
 - code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
-- code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty' data: null
-- code: 'failed' message: 'Product not found' data: null
-- code: 'failed' message: 'Category not found' data: null
+- code: 'unknown' message: 'Please contact your administrator. ID not in valid format!' data: null
+- code: 'unknown' message: 'Required fields cannot be empty!' data: null
+- code: 'failed' message: 'No product found.' data: null
 
 IF SUCCESS:
 ```
+
+{
+    "status": "success",
+    "data": [
+        {
+            "ID": "1",
+            "category_name": "1pc. Burger Steak",
+            "product_name": "1pc. Burger Steak",
+            "short_info": "Burger steak and rice.",
+            "long_info": "Pure beef patty with mushroom gravy and steamed rice.",
+            "sku": "JLB-BS-SML-BR",
+            "price": "59.00",
+            "weight": "0.52 kg",
+            "dimension": "25 x 25"
+        },
+        {
+            "ID": "2",
+            "category_name": "2pc. Burger Steak",
+            "product_name": "2pc. Burger Steak",
+            "short_info": "Two burger steak and rice.",
+            "long_info": "Two pieces of pure beef patty with mushroom gravy and steamed rice.",
+            "sku": "JLB-2BS-MED-BR",
+            "price": "79.00",
+            "weight": "0.65 kg",
+            "dimension": "30 x 30"
+        },
+        {
+            "ID": "3",
+            "category_name": "1pc. Burger Steak with Joly Spaghetti",
+            "product_name": "1pc. Burger Steak with Joly Spaghetti",
+            "short_info": "1pc Burger steak and rice with jolly spaghetti.",
+            "long_info": "Pure beef patty with mushroom gravy and steamed rice with jolly spaghetti.",
+            "sku": "JLB-BSJS-SML-BR",
+            "price": "69.00",
+            "weight": "0.60 kg",
+            "dimension": "27 x 27"
+        }
+    ]
+}
   
 ```
 
-
-#### SELECT SINGLE PRODUCT
+#### SELECT PRODUCT BY ID => tindapress/v1/product/select
 
 REQUEST:
 - Method: GET
@@ -91,14 +133,58 @@ RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
 - code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
 - code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
-- code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty' data: null
-- code: 'failed' message: 'Product not found' data: null
+- code: 'unknown' message: 'Please contact your administrator. ID not in valid format!' data: null
+- code: 'unknown' message: 'Required fields cannot be empty!' data: null
+- code: 'failed' message: 'No product found.' data: null
 
 IF SUCCESS:
 ```
   
+{
+    "status": "success",
+    "data": {
+        "ID": "2",
+        "store_name": "Jollibee",
+        "category": "product",
+        "title": "2pc. Burger Steak",
+        "preview": "images/products/jollibee/2pcburgersteak.jpg",
+        "short_info": "Two burger steak and rice.",
+        "long_info": "Two pieces of pure beef patty with mushroom gravy and steamed rice.",
+        "status": "1",
+        "sku": "JLB-2BS-MED-BR",
+        "price": "79.00",
+        "weight": "0.65 kg",
+        "dimension": "30 x 30"
+    }
+}
+
 ```
+
+#### ACTIVATE PRODUCT => tindapress/v1/product/activate
+
+REQUEST:
+- Method: GET
+- Header: key=Content-Type, value=application/x-www-form-urlencoded
+- Params: key=snky (value=session key), key=wpid (value=wordpress id)
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
+- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
+- code: 'unknown' message: 'Please contact your administrator. ID not in valid format!' data: null
+- code: 'unknown' message: 'Required fields cannot be empty!' data: null
+- code: 'failed' message: 'This product is already activated.' data: null
+- code: 'failed' message: 'An error occured while submitting data to the server.' data: null
+
+IF SUCCESS:
+```
+{
+   "status" => "success",
+   "message" => "Data has been activate successfully."
+}
+
+```
+
+
 
 #### LIST ALL PRODUCT
 

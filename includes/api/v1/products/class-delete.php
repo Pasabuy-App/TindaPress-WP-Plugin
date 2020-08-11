@@ -12,13 +12,13 @@
 ?>
 <?php
 
-    class TP_Delete_Product {
+    class TP_Product_Delete {
 
         //REST API Call
         public static function listen(){
             
             return rest_ensure_response( 
-                TP_Delete_Product:: delete_product()
+                TP_Product_Delete:: delete_product()
             );
         }
 
@@ -51,7 +51,7 @@
             }
 
              // Step3 : Sanitize all Request
-			if (!isset($_POST["wpid"]) || !isset($_POST['pid']) ) {
+			if (!isset($_POST['pid']) ) {
 				return array(
 						"status" => "unknown",
 						"message" => "Please contact your administrator. Request unknown!",
@@ -67,33 +67,43 @@
                 );
             }
 
+            // Step5 : Sanitize all Request
+			if ( !is_numeric($_POST['pid']) ) {
+				return array(
+						"status" => "unknown",
+						"message" => "Please contact your administrator. ID not in valid format!",
+                );
+            }
+
             // variables
             $parentid = $_POST['pid'];
             $wpid = $_POST['wpid'];
 
-            $product_type = "products";
-            $date_stamp = TP_Globals::date_stamp();
-            $product_table         = TP_PRODUCT_TABLE;
-            $table_revs = TP_REVISIONS_TABLE;
-            $table_revs_fields     = TP_REVISION_FIELDS;
-
             // Query
             $wpdb->query("START TRANSACTION ");
                 
-                $inactive = $wpdb->get_row("SELECT `status` FROM $product_table WHERE ID = $parentid  ");
-                
-                $wpdb->query("UPDATE $table_revs  SET child_val = '0' WHERE ID =  $inactive->status  AND parent_id = $parentid");
+                $get_status_id = $wpdb->get_row("SELECT `status` FROM $product_table WHERE ID = $parentid  ");
 
+                $get_status = $wpdb->get_row("SELECT `child_val`as `status` FROM $table_revs WHERE ID = $get_status_id->status  ");
+
+                $result =  $wpdb->query("UPDATE $table_revs  SET child_val = '0', `date_created` = '$date_stamp' WHERE ID =  $get_status_id->status  AND parent_id = $parentid");
+
+                if ($get_status->status != 1  ) {
+                    
+                    $wpdb->query("ROLLBACK");
+                    return array(
+                        "status" => "failed",
+                        "message" => "This product is already inactive.",
+                    );
+                }
             // check of retsult is true or not
-            if ($last_id < 1 || $result2 < 1 ) {
+            if (empty($get_status_id) || $result < 1 ) {
             
                 $wpdb->query("ROLLBACK");
             
-                return rest_ensure_response( 
-					array(
-						"status" => "failed",
-						"message" => "An error occured while submitting data to the server.",
-					)
+                return array(
+					"status" => "failed",
+					"message" => "An error occured while submitting data to the server.",
                 );
 
             }else{
@@ -101,11 +111,9 @@
                 $wpdb->query("COMMIT");
                 
                 // return Success result
-                return rest_ensure_response( 
-					array(
-						"status" => "success",
-						"message" => "Data has been deleted successfully.",
-					)
+                return array(
+					"status" => "success",
+					"message" => "Data has been deleted successfully.",
                 );
 
             }
