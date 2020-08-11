@@ -9,8 +9,13 @@ REQUEST:
 - Params: key=id (value=id)
 
 RESPONSE:
-- code: 'unknown_product' message: 'Please contact your administrator. Authentication Unknown!'
-- code: 'invalid_id' message: 'Something went wrong. Please contact your administrator!. product: not found.'
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
+- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
+- code: 'unknown' message: 'Please contact your administrator. ID not in valid format!' data: null
+- code: 'unknown' message: 'Required fields cannot be empty!' data: null
+- code: 'failed' message: 'This product is already inactive.' data: null
+- code: 'failed' message: 'An error occured while submitting data to the server.' data: null
 
 IF SUCCESS:
 ```
