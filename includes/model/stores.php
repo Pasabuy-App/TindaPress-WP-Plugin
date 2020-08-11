@@ -51,7 +51,7 @@
                         type: 'POST', 
                         data: {
                             "wpid": "1",
-                            "snky": "HhRxnpbQ2TimO0kV5WXePm7lKdb9k1Q1SAh66x4VX72"
+                            "snky": "<?php echo wp_get_session_token(); ?>"
                         },
                         url: '<?php echo site_url() . "/wp-json/tindapress/v1/stores/list/all"; ?>', //TODO: RESTAPI FOR STORE LIST
                         success : function( data )
