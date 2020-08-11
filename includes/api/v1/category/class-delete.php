@@ -60,7 +60,17 @@
             }
             
             // Step 5: Get status of this category
-            $category = $wpdb->get_row("SELECT `status` FROM $table_categories WHERE `id` = $category_id");
+            $category = $wpdb->get_row("SELECT cat.ID, cat.types, cat.status as status_id,
+                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.status) as status
+                FROM
+                    $table_categories cat
+                INNER JOIN
+                    $table_revs rev ON rev.parent_id = cat.id
+                WHERE 
+                    cat.id = $category_id
+                GROUP BY
+                    cat.id
+            ");
 
             // Step 6: Check if this category id exists
             if ( !$category ) {
@@ -70,7 +80,14 @@
                 );
             }
 
-            $status_id = $category->status;
+            if ( $category->status == 0 ) {
+				return array(
+						"status" => "failed",
+						"message" => "This category is already deactivated.",
+                );
+            }
+
+            $status_id = $category->status_id;
 
             // Step 7: Set the status of this category to 0 or inactive
             $result = $wpdb->query("UPDATE $table_revs SET `child_val` = 0 WHERE `ID` = $status_id");

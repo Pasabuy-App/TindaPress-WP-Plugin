@@ -35,6 +35,7 @@ RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
 - code: 'unknown' message: 'Required fields cannot be empty' data: null
 - code: 'failed' message: 'This category does not exists' data: null
+- code: 'failed' message: 'This category is already deactivated' data: null
 - code: 'error' message: 'An error occured while submitting data to database' data: null
 
 IF SUCCESS:
