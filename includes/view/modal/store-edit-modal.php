@@ -26,33 +26,19 @@
                 <div class="modal-body">
                     <form id="edit-app-form">
                         <div class="form-group">
-                            <label for="appname_edit">Name:</label>
-                            <input required type="text" class="form-control" id="appname_edit" name="appname_edit" placeholder="Public name of this Project.">
+                            <label for="edit_title">Name:</label>
+                            <input required type="text" class="form-control" id="edit_title" name="edit_title" placeholder="Public name of this Store.">
                         </div>
                         <div class="form-group">
-                            <label for="appdesc_edit">Description:</label>
-                            <textarea required type="text" class="form-control" id="appdesc_edit" name="appdesc_edit" rows="3"
-                                placeholder="Short description of your Project." ></textarea>
+                            <label for="edit_info">Description:</label>
+                            <textarea required type="text" class="form-control" id="edit_info" name="edit_info" rows="3"
+                                placeholder="Short description of your Store." ></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="appurl_edit">URL:</label>
-                            <input required type="text" class="form-control" id="appurl_edit" name="appurl_edit" placeholder="http:/www.host.com/games/test">
-                        </div>
-                        <div class="form-group">
-                            <label for="appmtcap_edit">USER / MATCH:</label>
-                            <input required oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                                type="number" maxlength="7" class="form-control" id="appmtcap_edit" name="appmtcap_edit" placeholder="10">
-                        </div>	
-                        <div class="form-group">
-                            <label for="appcap_edit">MAX USER:</label>
-                            <input required oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                                type="number" maxlength="7" class="form-control" id="appcap_edit" name="appcap_edit" placeholder="1,000,000">
-                        </div>	
-                        <div class="form-group">
-                            <label for="appsta_edit">STATUS:</label><br>
-                            <select class="form-control" id="appsta_edit" name="appsta_edit">
-                                <option selected="selected">Active</option>
-                                <option>Inactive</option>
+                            <label for="edit_category">CATEGORY:</label><br>
+                            <select class="form-control" id="edit_category" name="edit_category">
+                                <option selected="selected">Restaurant</option>
+                                <option>Fast Foods</option>
                             </select>
                         </div>
                         <div class="form-group">
