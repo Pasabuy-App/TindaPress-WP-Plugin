@@ -93,6 +93,13 @@
                
            }
 
+            // Check user role 
+            if (TP_Globals::verify_role( $_POST['wpid'], $_POST['stid'], 'can_update_product' )) {
+                return rest_ensure_response( 
+                    TP_Globals::verify_role($_POST['wpid'], $_POST['stid'], 'can_update_product' ),
+                );
+            }
+
             // variables for query    
             $later = TP_Globals::date_stamp();
             $created_by = $_POST['wpid'];
