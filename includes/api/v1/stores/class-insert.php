@@ -99,17 +99,19 @@
             
             //Country input validation
                 // Step 2 : Check if country passed is in integer format.
-                if ( !is_numeric($_POST['co']) ) {
-                    return rest_ensure_response( 
-                        array(
-                                "status" => "failed",
-                                "message" => "Invalid value for country.",
-                        )
-                    );
-                }
-
+                // TODO : char length == 2 and trim and convert to ucase
+                // if ( !is_numeric($_POST['co']) ) {
+                //     return rest_ensure_response( 
+                //         array(
+                //                 "status" => "failed",
+                //                 "message" => "Invalid value for country.",
+                //         )
+                //     );
+                // }
+                
                 // Step 2 : Check if country_id is in database. 
-                $co_status = DV_Globals:: check_availability(DV_COUNTRY_TABLE, 'WHERE ID = '.$_POST['co']);
+                $country_code = $_POST['co'];
+                $co_status = DV_Globals:: check_availability(DV_COUNTRY_TABLE, "WHERE `country_code` = '$country_code'");
                 
                 if ( $co_status == false ) {
                     return rest_ensure_response( 
@@ -142,7 +144,7 @@
                 }
 
                 // Step 2 : Check if province is in database. 
-                $pv_status = DV_Globals:: check_availability(DV_PROVINCE_TABLE, 'WHERE ID = '.$_POST['pv']);
+                $pv_status = DV_Globals:: check_availability(DV_PROVINCE_TABLE, 'WHERE `prov_code` = '.$_POST['pv']);
                 
                 if ( $pv_status == false ) {
                     return rest_ensure_response( 
@@ -175,7 +177,7 @@
                 }
 
                 // Step 2 : Check if city is in database. 
-                $ct_status = DV_Globals:: check_availability(DV_CITY_TABLE, 'WHERE ID = '.$_POST['ct']);
+                $ct_status = DV_Globals:: check_availability(DV_CITY_TABLE, 'WHERE `city_code` = '.$_POST['ct']);
                 
                 if ( $ct_status == false ) {
                     return rest_ensure_response( 
@@ -208,7 +210,7 @@
                 }
 
                 // Step 2 : Check if barangay is in database. 
-                $bg_status = DV_Globals:: check_availability(DV_BRGY_TABLE, 'WHERE ID = '.$_POST['bg']);
+                $bg_status = DV_Globals:: check_availability(DV_BRGY_TABLE, 'WHERE `id` = '.$_POST['bg']);
                 
                 if ( $bg_status == false ) {
                     return rest_ensure_response( 
@@ -241,17 +243,17 @@
             $banner_url = filter_var($_POST["banner"], FILTER_SANITIZE_URL);
             $logo_url = filter_var($_POST["logo"], FILTER_SANITIZE_URL);
             
-            if (filter_var($banner_url, FILTER_VALIDATE_URL)) {
+            if (!filter_var($banner_url, FILTER_VALIDATE_URL)) {
                 return array(
                     "status" => "failed",
-                    "message" => "Banner $banner_url is a valid URL"
+                    "message" => "Banner $banner_url is not valid URL"
                 );
             }
 
-            if (filter_var($logo_url, FILTER_VALIDATE_URL)) {
+            if (!filter_var($logo_url, FILTER_VALIDATE_URL)) {
                 return array(
                     "status" => "failed",
-                    "message" => "Banner $banner_url is a valid URL"
+                    "message" => "Banner $banner_url is not valid URL"
                 );
             }
 
@@ -276,7 +278,11 @@
 
             // Step7 : Query
             $wpdb->query("START TRANSACTION");
-                 $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'title', '{$user["title"]}', '{$user["created_by"]}', '$later')");
+
+                //get country id
+                $get_country = $wpdb->get_row("SELECT ID FROM dv_geo_countries WHERE `country_code` = '$country_code'");
+
+                $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'title', '{$user["title"]}', '{$user["created_by"]}', '$later')");
                 $title = $wpdb->insert_id;
 
                 $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'short_info', '{$user["title"]}', '{$user["created_by"]}', '$later')");
@@ -334,20 +340,20 @@
                 $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'street', '{$user["street"]}', '{$user["created_by"]}', '$later');");
                 $street = $wpdb->insert_id;
     
-                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'brgy', {$user["barangy"]}, '{$user["created_by"]}', '$later');");
+                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'brgy', '{$user["barangy"]}', '{$user["created_by"]}', '$later');");
                 $brgy = $wpdb->insert_id;
     
-                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'city', {$user["city"]}, '{$user["created_by"]}', '$later');");
+                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'city', '{$user["city"]}', '{$user["created_by"]}', '$later');");
                 $city = $wpdb->insert_id;
                     
-                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'province', {$user["province"]}, '{$user["created_by"]}', '$later');");
+                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'province', '{$user["province"]}', '{$user["created_by"]}', '$later');");
                 $province = $wpdb->insert_id;
-    
-                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'country', {$user["country"]}, '{$user["created_by"]}', '$later');");
+                
+                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'country', '$get_country->ID', '{$user["created_by"]}', '$later');");
                 $country = $wpdb->insert_id;
 
                 //Save the address in the parent table
-                 $wpdb->query("INSERT INTO $table_address ($address_fields) VALUES ('$status', '0', '$store_id', 'business', $street, $brgy, $city, $province, $country, '$later')");
+                $wpdb->query("INSERT INTO $table_address ($address_fields) VALUES ('$status', '0', '$store_id', 'business', $street, $brgy, $city, $province, $country, '$later')");
                 $address_id = $wpdb->insert_id;
 
                 //Update revision table for saving the parent_id(address_id)
@@ -361,15 +367,10 @@
            
 
             // Step8 : Check if failed
-            if ( $title < 1 || $short_info < 1 || $long_info < 1 
-               || $logo < 1 || $banner < 1 || $status < 1
-               || $store_id < 1 || $result_update_tp_rev_store < 1 || $phone_last_id < 1
-               || $contact_phone_id < 1 || $result_update_tp_rev_store < 1 || $update_contact_phone < 1
-               || $email_last_id < 1 || $contact_email_id < 1 || $update_contact_email < 1
-               || $status < 1 || $street < 1 || $brgy < 1
-               || $city < 1 || $province < 1 || $country < 1 
-               || $address_id < 1 || $result_update_dv_rev_address < 1 || $result < 1 
-               
+            if ( $title < 1 || $short_info < 1 || $long_info < 1 || $logo < 1 || $banner < 1 || $status < 1 || $store_id < 1 || $result_update_tp_rev_store < 1 || 
+                $phone_last_id < 1 || $contact_phone_id < 1 || $result_update_tp_rev_store < 1 || $update_contact_phone < 1 || $email_last_id < 1 || $contact_email_id < 1 || 
+                $update_contact_email < 1 || $status < 1 || $street < 1 || $brgy < 1 || $city < 1 || $province < 1 || $country < 1 || $address_id < 1 || 
+                $result_update_dv_rev_address < 1 || $result < 1
                ) {
                 $wpdb->query("ROLLBACK");
                 return array(
