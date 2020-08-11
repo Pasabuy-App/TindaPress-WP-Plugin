@@ -40,7 +40,7 @@
 		<div class="tp-panel-body">
 			<div class="tp-panel-first">
 				<div class="alert alert-secondary header-info">
-					<strong>Project: </strong><strong id="parent-name"><?php echo $_GET['name']; ?></strong>
+					<strong>Category: </strong><strong id="parent-name"><?php echo $_GET['name']; ?></strong>
 				</div>
 				<button type="button" class="btn btn-dark" onclick="window.location.href = '<?php echo get_home_url()."/wp-admin/admin.php?tp=".$_GET['tp']; ?>';" >Go Back</button>
 				<button id="RefreshAppList" type="button" class="btn btn-dark">Refresh List</button>

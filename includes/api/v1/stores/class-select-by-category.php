@@ -79,7 +79,7 @@
                 (select child_val from $table_revisions where id = tp_str.`status`) AS status,
                 (select child_val from $table_dv_revisions where id = dv_add.street) as street,
                 (SELECT brgy_name FROM $table_brgy WHERE ID = (select child_val from $table_dv_revisions where id = dv_add.brgy)) as brgy,
-                (SELECT citymun_name FROM $table_city WHERE city_code = (select child_val from $table_dv_revisions where id = dv_add.city)) as city,
+                (SELECT city_name FROM $table_city WHERE city_code = (select child_val from $table_dv_revisions where id = dv_add.city)) as city,
                 (SELECT prov_name FROM $table_province WHERE prov_code = (select child_val from $table_dv_revisions where id = dv_add.province)) as province,
                 (SELECT country_name FROM $table_country WHERE id = (select child_val from $table_dv_revisions where id = dv_add.country)) as country,
                 (SELECT child_val from dv_revisions where id = max( IF ( dv_cont.types = 'phone', dv_cont.revs, '' )) ) AS phone,

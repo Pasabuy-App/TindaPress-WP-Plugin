@@ -103,7 +103,7 @@
             }
        
             // Check user role 
-            if (TP_Globals::verify_role( $_POST['wpid'], $_POST['stid'], 'can_add_product' ) == false) {
+            if (TP_Globals::verify_role( $_POST['wpid'], $_POST['stid'], 'can_add_product' ) == false && DV_Globals::check_roles('editor') == false) {
                 return array( 
                     "status" => "failed",
                     "message" => "Current user has no access in adding product.",

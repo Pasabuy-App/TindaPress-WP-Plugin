@@ -34,8 +34,6 @@
             $('#RefreshAppList').click(function() {
                 loadingAppList( categoryTables );
             });
-
-            console.log('<?php echo site_url() . "/wp-json/"; ?>');
         
             //LOAD APPLIST WITH AJAX.
             var tptables = 'undefined';
@@ -52,11 +50,19 @@
                     $.ajax({
                         dataType: 'json',
                         type: 'POST', 
-                        data: appListAction,
-                        url: 'admin-ajax.php', //TODO: RESTAPI FOR STORE LIST
+                        data: {
+                            "wpid": "1",
+                            "snky": "HhRxnpbQ2TimO0kV5WXePm7lKdb9k1Q1SAh66x4VX72"
+                        },
+                        url: '<?php echo site_url() . "/wp-json/tindapress/v1/category/list/all"; ?>', //TODO: RESTAPI FOR STORE LIST
                         success : function( data )
                         {
-                            displayingLoadedApps( data.message );
+                            if(data.status == "success") {
+                                displayingLoadedApps( data.data );
+                            } else {
+                                displayingLoadedApps( [] );
+                            }
+
                             if( !$('#stores-notification').hasClass('tp-display-hide') )
                             {
                                 $('#stores-notification').addClass('tp-display-hide');
@@ -77,12 +83,10 @@
                 //Set table column header.
                 var columns = [
                     // { "sTitle": "IDENTITY",   "mData": "ID" },
-                    { "sTitle": "NAME",   "mData": "app_name" },
-                    { "sTitle": "DESCRIPTION",   "mData": "app_info" },
-                    { "sTitle": "USER / MATCH",   "mData": "match_cap" },
-                    { "sTitle": "MAX USER",   "mData": "max_connect" },
-                    { "sTitle": "STATUS",   "mData": "app_status" },
-                    { "sTitle": "OWNER",   "mData": "user_login" },
+                    { "sTitle": "NAME",   "mData": "title" },
+                    { "sTitle": "DESCRIPTION",   "mData": "info" },
+                    { "sTitle": "TYPES",   "mData": "types" },
+                    { "sTitle": "STATUS",   "mData": "status" },
                     {"sTitle": "Action", "mRender": function(data, type, item)
                         {
                             return '' + 
@@ -92,25 +96,21 @@
                                     '<button type="button" class="btn btn-primary btn-sm"' +
                                         ' data-toggle="modal" data-target="#EditAppOption"' +
                                         ' title="Click this to modified or delete this project."' +
-                                        ' data-aid="' + item.ID + '"' +  
-                                        ' data-aname="' + item.app_name + '"' +  
-                                        ' data-ainfo="' + item.app_info + '"' + 
-                                        ' data-mcap="' + item.match_cap + '"' +   
-                                        ' data-aurl="' + item.app_website + '"' +  
-                                        ' data-asta="' + item.app_status + '"' +  
-                                        ' data-acap="' + item.max_connect + '"' +
+                                        ' data-id="' + item.ID + '"' +  
+                                        ' data-title="' + item.title + '"' +  
+                                        ' data-info="' + item.info + '"' + 
                                         ' >Options</button>' +
 
                                     '<button type="button" class="btn btn-secondary btn-sm appkey-' + item.ID + '"' +
-                                        ' data-clipboard-text="' + item.app_secret + '"' +
-                                        ' onclick="copyFromId(\'appkey-' + item.ID + '\')" ' +
-                                        ' title="Click this to copy the project apikey to your clipboard."' +
-                                        '>Copy Key</button>' +  
+                                        ' data-clipboard-text="' + item.ID + '"' +
+                                        ' onclick="copyFromId(\'CategoryID-' + item.ID + '\')" ' +
+                                        ' title="Click this to copy the ID to your clipboard."' +
+                                        '>Copy ID</button>' +  
 
                                     '<button type="button" class="btn btn-success btn-sm"' +
-                                        ' onclick="window.location.href = `<?php echo get_home_url()."/wp-admin/admin.php?page=".$_GET['page']."&id="; ?>' + item.ID + '&name=' +item.app_name+ '`;" ' +
+                                        ' onclick="window.location.href = `<?php echo get_home_url()."/wp-admin/admin.php?page="."tp-store_browser"."&id="; ?>' + item.ID + '&name=' +item.title+ '`;" ' +
                                         ' title="Click this to navigate to variant list of this project."' + 
-                                        ' >Variants</button>' +
+                                        ' >Stores</button>' +
 
                                              
                                         

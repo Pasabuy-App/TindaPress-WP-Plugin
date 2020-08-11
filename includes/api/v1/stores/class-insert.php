@@ -285,7 +285,7 @@
                 $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'title', '{$user["title"]}', '{$user["created_by"]}', '$later')");
                 $title = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'short_info', '{$user["title"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'short_info', '{$user["short_info"]}', '{$user["created_by"]}', '$later')");
                 $short_info = $wpdb->insert_id;
 
                 $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'long_info', '{$user["long_info"]}', '{$user["created_by"]}', '$later')");
@@ -353,7 +353,8 @@
                 $country = $wpdb->insert_id;
 
                 //Save the address in the parent table
-                $wpdb->query("INSERT INTO $table_address ($address_fields) VALUES ('$status', '0', '$store_id', 'business', $street, $brgy, $city, $province, $country, '$later')");
+                $wpdb->query("INSERT INTO $table_address (`status`, `types`, `stid`, `street`, `brgy`, `city`, `province`, `country`, `date_created`) 
+                    VALUES ('$status', 'business', '$store_id', $street, $brgy, $city, $province, $country, '$later')");
                 $address_id = $wpdb->insert_id;
 
                 //Update revision table for saving the parent_id(address_id)
