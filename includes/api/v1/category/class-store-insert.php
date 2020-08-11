@@ -110,7 +110,8 @@
 
                 $result = $wpdb->query("UPDATE $table_revs SET `parent_id` = $parent_id WHERE ID IN ($title_id, $info_id, $status_id) ");
 
-                $store_result = $wpdb->query("UPDATE `tp_stores` SET `ctid` = $parent_id WHERE `ID` = $store_id ");
+                // Questionable. 
+                // $store_result = $wpdb->query("UPDATE `tp_stores` SET `ctid` = $parent_id WHERE `ID` = $store_id ");
 
             // Step 8: Check if any of the queries above failed
             if ($title_id < 1 || $info_id < 1 || $status_id < 1 || $parent_id < 1 || $result < 1 || $store_result < 1) {

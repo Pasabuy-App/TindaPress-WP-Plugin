@@ -23,7 +23,7 @@
             
             // declaring table names to variable
 			$table_order = MP_ORDERS_TABLE;
-			$table_revs = TP_REVISIONS_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
 			$table_store = TP_STORES_TABLE;
             $table_address = DV_ADDRESS_TABLE;
             $table_dv_revs = DV_REVS_TABLE;
