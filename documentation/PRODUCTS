@@ -10,10 +10,9 @@ REQUEST:
 
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
-- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
-- code: 'unknown' message: 'Please contact your administrator. ID not in valid format!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification issues!' data: null
+- code: 'failed' message: 'Required fields cannot be empty!' data: null
+- code: 'failed' message: 'This product does not exists.' data: null
 - code: 'failed' message: 'This product is already inactive.' data: null
 - code: 'failed' message: 'An error occured while submitting data to the server.' data: null
 
@@ -21,7 +20,7 @@ IF SUCCESS:
 ```
     {
         "status": "success",
-        "message": "Product has been deleted successfully!"
+        "message": "Data has been deleted successfully."
     }
 ```
 
@@ -189,345 +188,17 @@ IF SUCCESS:
 
 ```
 
-
-
-#### LIST ALL PRODUCT
+#### LIST ALL PRODUCTS => tindapress/v1/products/list/all
 
 REQUEST:
-- Method: GET
+- Method: POST
 - Header: key=Content-Type, value=application/x-www-form-urlencoded
 - Params: key=snky (value=session key), key=wpid (value=wordpress id)
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
-- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
-- code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty' data: null
-
-IF SUCCESS:
-```
-  {
-    "status": "success",
-    "data": {
-        "list": [
-            {
-                "ID": "16",
-                "store_title": "Jollibee - Bayan",
-                "category_title": "asdasd",
-                "product_title": "awdwadw",
-                "product_preview": "auwygdauwyd",
-                "product_short_info": "awdawd",
-                "product_long_info": "awdawd",
-                "product_sku": "uaywgdawd",
-                "product_price": "awudgyaw",
-                "product_weight": "awuydgawd",
-                "product_dimension": "some dimension",
-                "date_created": "2020-08-08 01:05:53"
-            },
-            {
-                "ID": "15",
-                "store_title": null,
-                "category_title": "Chicken Meals",
-                "product_title": "some title",
-                "product_preview": "some preview",
-                "product_short_info": "some short info",
-                "product_long_info": "some long info",
-                "product_sku": "sone sku",
-                "product_price": "1000000000",
-                "product_weight": "1kg",
-                "product_dimension": "some Dimension",
-                "date_created": "2020-08-06 11:21:14"
-            },
-            {
-                "ID": "14",
-                "store_title": "McDonald’s",
-                "category_title": "Overloaded Pizzas",
-                "product_title": "All-In Overloaded",
-                "product_preview": "preview/all_in_overloaded",
-                "product_short_info": "Classic na classic",
-                "product_long_info": "All-In",
-                "product_sku": "NULL",
-                "product_price": "119",
-                "product_weight": "NULL",
-                "product_dimension": "NULL",
-                "date_created": "2020-08-06 11:21:14"
-            },
-            {
-                "ID": "13",
-                "store_title": "McDonald’s",
-                "category_title": "Overloaded Pizzas",
-                "product_title": "Hawaiian Overloaded",
-                "product_preview": "preview/hawaian_overloaded",
-                "product_short_info": "Hawaiian",
-                "product_long_info": "Overloaded",
-                "product_sku": "NULL",
-                "product_price": "99",
-                "product_weight": "NULL",
-                "product_dimension": "NULL",
-                "date_created": "2020-08-06 11:21:14"
-            },
-            {
-                "ID": "12",
-                "store_title": "McDonald’s",
-                "category_title": "Classic Pizzas",
-                "product_title": "some new title",
-                "product_preview": "some new preview",
-                "product_short_info": "some new short info",
-                "product_long_info": "some new long info",
-                "product_sku": "some new skuu",
-                "product_price": "some new price",
-                "product_weight": "some new weight",
-                "product_dimension": "some new dimension",
-                "date_created": "2020-08-06 11:21:14"
-            },
-            {
-                "ID": "11",
-                "store_title": "McDonald’s",
-                "category_title": "Classic Pizzas",
-                "product_title": "Ham and Pineapple Classic",
-                "product_preview": "preview/ham_pineapple",
-                "product_short_info": "Ham na",
-                "product_long_info": "Pineapple pa.",
-                "product_sku": "NULL",
-                "product_price": "150",
-                "product_weight": "NULL",
-                "product_dimension": "NULL",
-                "date_created": "2020-08-06 11:21:14"
-            },
-            {
-                "ID": "10",
-                "store_title": "Jollibee - Bayan",
-                "category_title": "McDo Happy Meal",
-                "product_title": "Cheesy Burger McDo",
-                "product_preview": "preview/cheesy_burger_mcdo",
-                "product_short_info": "Cheesy na Burger",
-                "product_long_info": "sa McDo yun",
-                "product_sku": "NULL",
-                "product_price": "100",
-                "product_weight": "NULL",
-                "product_dimension": "NULL",
-                "date_created": "2020-08-06 11:21:14"
-            },
-            {
-                "ID": "9",
-                "store_title": "Jollibee - Bayan",
-                "category_title": "McDo Happy Meal",
-                "product_title": "Burger Mcdo",
-                "product_preview": "preview/burger_mcdo",
-                "product_short_info": "Burger",
-                "product_long_info": "McDo",
-                "product_sku": "NULL",
-                "product_price": "90",
-                "product_weight": "NULL",
-                "product_dimension": "NULL",
-                "date_created": "2020-08-07 11:21:14"
-            },
-            {
-                "ID": "8",
-                "store_title": "Jollibee - Bayan",
-                "category_title": "Mcdo Secret Meal",
-                "product_title": "Double BigMac",
-                "product_preview": "preview/double_mcchicken",
-                "product_short_info": "Double na",
-                "product_long_info": "BigMac pa",
-                "product_sku": "NULL",
-                "product_price": "95",
-                "product_weight": "NULL",
-                "product_dimension": "NULL",
-                "date_created": "2020-08-06 11:21:14"
-            },
-            {
-                "ID": "7",
-                "store_title": "Jollibee - Bayan",
-                "category_title": "Mcdo Secret Meal",
-                "product_title": "Double McChicken",
-                "product_preview": "preview/double_mcchicken",
-                "product_short_info": "Double na",
-                "product_long_info": "McChicken pa",
-                "product_sku": "NULL",
-                "product_price": "92",
-                "product_weight": "NULL",
-                "product_dimension": "NULL",
-                "date_created": "2020-08-05 11:21:14"
-            },
-            {
-                "ID": "6",
-                "store_title": "Jollibee - Bayan",
-                "category_title": "Breakfast Meals",
-                "product_title": "Hotdog Meal",
-                "product_preview": "preview/hahakdog_meal",
-                "product_short_info": "HaHakDog",
-                "product_long_info": "with Eggs",
-                "product_sku": "NULL",
-                "product_price": "75.90",
-                "product_weight": "2 rounds",
-                "product_dimension": "6 by 6",
-                "date_created": "2020-08-02 11:21:14"
-            },
-            {
-                "ID": "5",
-                "store_title": "McDonald’s",
-                "category_title": "Breakfast Meals",
-                "product_title": "2pc Pancake Meal",
-                "product_preview": "preview/2pc_pancake_meal",
-                "product_short_info": "Pancake Meal - Original/Spicy",
-                "product_long_info": "Pancake na dalawa",
-                "product_sku": "NULL",
-                "product_price": "60.50",
-                "product_weight": "2pnds",
-                "product_dimension": "12 by 12",
-                "date_created": "2020-08-03 11:21:14"
-            }
-        ],
-        "last_id": {
-            "ID": "5",
-            "store_title": "McDonald’s",
-            "category_title": "Breakfast Meals",
-            "product_title": "2pc Pancake Meal",
-            "product_preview": "preview/2pc_pancake_meal",
-            "product_short_info": "Pancake Meal - Original/Spicy",
-            "product_long_info": "Pancake na dalawa",
-            "product_sku": "NULL",
-            "product_price": "60.50",
-            "product_weight": "2pnds",
-            "product_dimension": "12 by 12",
-            "date_created": "2020-08-03 11:21:14"
-        }
-    }
-}
-  
-```
-
-#### LIST ALL PRODUCT BY FEEDS
-
-REQUEST:
-- Method: GET
-- Header: key=Content-Type, value=application/x-www-form-urlencoded
-- Params: key=snky (value=session key), key=wpid (value=wordpress id), key = lid = (VALUE = Last id of product)
-RESPONSE:
-- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
-- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
-- code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty' data: null
-
-IF SUCCESS:
-```
-{
-    "status": "success",
-    "data": {
-        "list": [
-            {
-                "ID": "4",
-                "store_title": "McDonald’s",
-                "category_title": "Chicken Meals",
-                "product_title": "2pc ChikecnJoy Meal",
-                "product_preview": "preview/2pc_chickenjoy_meal",
-                "product_short_info": "ChickenJoy Meal - Original/Spicy",
-                "product_long_info": "May chicken ka na, masaya ka pa.",
-                "product_sku": "wala pa din",
-                "product_price": "161.70",
-                "product_weight": "16pnds",
-                "product_dimension": "2x2",
-                "date_created": "2020-08-04 11:21:14"
-            },
-            {
-                "ID": "3",
-                "store_title": "Jollibee - Bayan",
-                "category_title": "Chicken Meals",
-                "product_title": "1pc Chicken Meal",
-                "product_preview": "preview/1pc_chicken_meal",
-                "product_short_info": "Chicken Meal - Original/Spicy",
-                "product_long_info": "walang long info",
-                "product_sku": "wala pa",
-                "product_price": "95.70",
-                "product_weight": "8pnds",
-                "product_dimension": "1x1",
-                "date_created": "2020-08-01 11:21:14"
-            }
-        ],
-        "last_id": {
-            "ID": "3",
-            "store_title": "Jollibee - Bayan",
-            "category_title": "Chicken Meals",
-            "product_title": "1pc Chicken Meal",
-            "product_preview": "preview/1pc_chicken_meal",
-            "product_short_info": "Chicken Meal - Original/Spicy",
-            "product_long_info": "walang long info",
-            "product_sku": "wala pa",
-            "product_price": "95.70",
-            "product_weight": "8pnds",
-            "product_dimension": "1x1",
-            "date_created": "2020-08-01 11:21:14"
-        }
-    }
-}
-```
-
-
-#### LIST ALL PRODUCT BY STORE ID AND CATEGORY ID
-
-REQUEST:
-- Method: GET
-- Header: key=Content-Type, value=application/x-www-form-urlencoded
-- Params: key=snky (value=session key), key=wpid (value=wordpress id), key=stid (value=store id), key=ctid (value=category id)
-RESPONSE:
-- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
-- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
-- code: 'failed' message: 'Please contact your administrator. ID not in valid format!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty' data: null
-
-IF SUCCESS:
-```
-{
-    "status": "success",
-    "data": [
-            {
-                 "ID": "16",
-                "store_title": "Jollibee - Bayan",
-                "category_title": "asdasd",
-                "product_title": "awdwadw",
-                "product_preview": "auwygdauwyd",
-                "product_short_info": "awdawd",
-                "product_long_info": "awdawd",
-                "product_sku": "uaywgdawd",
-                "product_price": "awudgyaw",
-                "product_weight": "awuydgawd",
-                "product_dimension": "some dimension",
-                "date_created": "2020-08-08 01:05:53"
-            },
-            {
-                "ID": "17",
-                "store_title": "Jollibee - Bayan",
-                "category_title": "asdasd",
-                "product_title": "awdwadw",
-                "product_preview": "auwygdauwyd",
-                "product_short_info": "awdawd",
-                "product_long_info": "awdawd",
-                "product_sku": "uaywgdawd",
-                "product_price": "awudgyaw",
-                "product_weight": "awuydgawd",
-                "product_dimension": "some dimension",
-                "date_created": "2020-08-08 01:05:53"
-            }
-        
-    ]
-}
-
-```
-
-#### LIST ALL PRODUCT BY `CATEGORY ID`
-
-REQUEST:
-- Method: GET
-- Header: key=Content-Type, value=application/x-www-form-urlencoded
-- Params: key=snky (value=session key), key=wpid (value=wordpress id), key=catid (value=category id)
-RESPONSE:
-- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Verification Issues!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request unknown!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification issues!' data: null
+- code: 'unknown' message: 'Required fields cannot be empty!' data: null
+- code: 'failed' message: 'No results found.' data: null
 
 IF SUCCESS:
 ```
@@ -536,360 +207,147 @@ IF SUCCESS:
     "data": [
         {
             "ID": "1",
-            "category_name": "Pizza",
-            "product_name": "Thin Crust Pizza",
-            "short_info": "Thin Pizza",
-            "long_info": "Thin Pizza Crust and Crunchy",
-            "sku": "231234",
-            "price": "500",
-            "weight": "135g",
-            "dimension": "19inches"
+            "category_name": "Milk Shake",
+            "product_name": "Wintermelon",
+            "short_info": "winter plus melon",
+            "long_info": "winter plus melon plus water plus sugar",
+            "sku": "0004856",
+            "price": "$10 ",
+            "weight": "70g",
+            "dimension": "10x15"
+        },
+        {
+            "ID": "2",
+            "category_name": "Gadgets & Mobiles",
+            "product_name": "LorzPhone 5",
+            "short_info": "16gb RAM + 1tb ROM",
+            "long_info": "16gb RAM + 1tb ROM + 50mp + 10k mAh",
+            "sku": "1000525",
+            "price": "$10000",
+            "weight": "700g",
+            "dimension": "6x8inches"
         }
     ]
 }
-
 ```
 
-
-#### LIST ALL PRODUCT BY PRICE
+#### LIST ALL ACTIVE PRODUCTS => tindapress/v1/products/list/active
 
 REQUEST:
-- Method: GET
+- Method: POST
 - Header: key=Content-Type, value=application/x-www-form-urlencoded
 - Params: key=snky (value=session key), key=wpid (value=wordpress id)
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
-- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
-- code: 'failed'  message: 'Please contact your administrator. ID not in valid format!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty' data: null
-
-IF SUCCESS:
-```
-    {
-    "status": "success",
-    "data": {
-        "list": [
-            {
-                "ID": "3",
-                "price": "95.70",
-                "store_title": "Jollibee - Bayan",
-                "category_title": "Chicken Meals",
-                "product_title": "1pc Chicken Meal",
-                "product_preview": "preview/1pc_chicken_meal",
-                "product_short_info": "Chicken Meal - Original/Spicy",
-                "product_long_info": "walang long info",
-                "product_sku": "wala pa",
-                "product_weight": "8pnds",
-                "product_dimension": "1x1",
-                "date_created": "2020-08-01 11:21:14"
-            },
-            {
-                "ID": "4",
-                "price": "161.70",
-                "store_title": "McDonald’s",
-                "category_title": "Chicken Meals",
-                "product_title": "2pc ChikecnJoy Meal",
-                "product_preview": "preview/2pc_chickenjoy_meal",
-                "product_short_info": "ChickenJoy Meal - Original/Spicy",
-                "product_long_info": "May chicken ka na, masaya ka pa.",
-                "product_sku": "wala pa din",
-                "product_weight": "16pnds",
-                "product_dimension": "2x2",
-                "date_created": "2020-08-04 11:21:14"
-            },
-            {
-                "ID": "5",
-                "price": "60.50",
-                "store_title": "McDonald’s",
-                "category_title": "Breakfast Meals",
-                "product_title": "2pc Pancake Meal",
-                "product_preview": "preview/2pc_pancake_meal",
-                "product_short_info": "Pancake Meal - Original/Spicy",
-                "product_long_info": "Pancake na dalawa",
-                "product_sku": "NULL",
-                "product_weight": "2pnds",
-                "product_dimension": "12 by 12",
-                "date_created": "2020-08-03 11:21:14"
-            },
-            {
-                "ID": "6",
-                "price": "75.90",
-                "store_title": "Jollibee - Bayan",
-                "category_title": "Breakfast Meals",
-                "product_title": "Hotdog Meal",
-                "product_preview": "preview/hahakdog_meal",
-                "product_short_info": "HaHakDog",
-                "product_long_info": "with Eggs",
-                "product_sku": "NULL",
-                "product_weight": "2 rounds",
-                "product_dimension": "6 by 6",
-                "date_created": "2020-08-02 11:21:14"
-            },
-            {
-                "ID": "7",
-                "price": "92",
-                "store_title": "Jollibee - Bayan",
-                "category_title": "Mcdo Secret Meal",
-                "product_title": "Double McChicken",
-                "product_preview": "preview/double_mcchicken",
-                "product_short_info": "Double na",
-                "product_long_info": "McChicken pa",
-                "product_sku": "NULL",
-                "product_weight": "NULL",
-                "product_dimension": "NULL",
-                "date_created": "2020-08-05 11:21:14"
-            },
-            {
-                "ID": "8",
-                "price": "95",
-                "store_title": "Jollibee - Bayan",
-                "category_title": "Mcdo Secret Meal",
-                "product_title": "Double BigMac",
-                "product_preview": "preview/double_mcchicken",
-                "product_short_info": "Double na",
-                "product_long_info": "BigMac pa",
-                "product_sku": "NULL",
-                "product_weight": "NULL",
-                "product_dimension": "NULL",
-                "date_created": "2020-08-06 11:21:14"
-            },
-            {
-                "ID": "9",
-                "price": "90",
-                "store_title": "Jollibee - Bayan",
-                "category_title": "McDo Happy Meal",
-                "product_title": "Burger Mcdo",
-                "product_preview": "preview/burger_mcdo",
-                "product_short_info": "Burger",
-                "product_long_info": "McDo",
-                "product_sku": "NULL",
-                "product_weight": "NULL",
-                "product_dimension": "NULL",
-                "date_created": "2020-08-07 11:21:14"
-            },
-            {
-                "ID": "10",
-                "price": "100",
-                "store_title": "Jollibee - Bayan",
-                "category_title": "McDo Happy Meal",
-                "product_title": "Cheesy Burger McDo",
-                "product_preview": "preview/cheesy_burger_mcdo",
-                "product_short_info": "Cheesy na Burger",
-                "product_long_info": "sa McDo yun",
-                "product_sku": "NULL",
-                "product_weight": "NULL",
-                "product_dimension": "NULL",
-                "date_created": "2020-08-06 11:21:14"
-            },
-            {
-                "ID": "11",
-                "price": "150",
-                "store_title": "McDonald’s",
-                "category_title": "Classic Pizzas",
-                "product_title": "Ham and Pineapple Classic",
-                "product_preview": "preview/ham_pineapple",
-                "product_short_info": "Ham na",
-                "product_long_info": "Pineapple pa.",
-                "product_sku": "NULL",
-                "product_weight": "NULL",
-                "product_dimension": "NULL",
-                "date_created": "2020-08-06 11:21:14"
-            },
-            {
-                "ID": "12",
-                "price": "some new price",
-                "store_title": "McDonald’s",
-                "category_title": "Classic Pizzas",
-                "product_title": "some new title",
-                "product_preview": "some new preview",
-                "product_short_info": "some new short info",
-                "product_long_info": "some new long info",
-                "product_sku": "some new skuu",
-                "product_weight": "some new weight",
-                "product_dimension": "some new dimension",
-                "date_created": "2020-08-06 11:21:14"
-            },
-            {
-                "ID": "13",
-                "price": "99",
-                "store_title": "McDonald’s",
-                "category_title": "Overloaded Pizzas",
-                "product_title": "Hawaiian Overloaded",
-                "product_preview": "preview/hawaian_overloaded",
-                "product_short_info": "Hawaiian",
-                "product_long_info": "Overloaded",
-                "product_sku": "NULL",
-                "product_weight": "NULL",
-                "product_dimension": "NULL",
-                "date_created": "2020-08-06 11:21:14"
-            },
-            {
-                "ID": "14",
-                "price": "119",
-                "store_title": "McDonald’s",
-                "category_title": "Overloaded Pizzas",
-                "product_title": "All-In Overloaded",
-                "product_preview": "preview/all_in_overloaded",
-                "product_short_info": "Classic na classic",
-                "product_long_info": "All-In",
-                "product_sku": "NULL",
-                "product_weight": "NULL",
-                "product_dimension": "NULL",
-                "date_created": "2020-08-06 11:21:14"
-            },
-            {
-                "ID": "15",
-                "price": "1000000000",
-                "store_title": null,
-                "category_title": "Chicken Meals",
-                "product_title": "some title",
-                "product_preview": "some preview",
-                "product_short_info": "some short info",
-                "product_long_info": "some long info",
-                "product_sku": "sone sku",
-                "product_weight": "1kg",
-                "product_dimension": "some Dimension",
-                "date_created": "2020-08-06 11:21:14"
-            },
-            {
-                "ID": "16",
-                "price": "awudgyaw",
-                "store_title": "Jollibee - Bayan",
-                "category_title": "asdasd",
-                "product_title": "awdwadw",
-                "product_preview": "auwygdauwyd",
-                "product_short_info": "awdawd",
-                "product_long_info": "awdawd",
-                "product_sku": "uaywgdawd",
-                "product_weight": "awuydgawd",
-                "product_dimension": "some dimension",
-                "date_created": "2020-08-08 01:05:53"
-            },
-            {
-                "ID": "17",
-                "price": "awudgyaw",
-                "store_title": "Jollibee - Bayan",
-                "category_title": "asdasd",
-                "product_title": "awdwadw",
-                "product_preview": "auwygdauwyd",
-                "product_short_info": "awdawd",
-                "product_long_info": "awdawd",
-                "product_sku": "uaywgdawd",
-                "product_weight": "awuydgawd",
-                "product_dimension": "some dimension",
-                "date_created": "2020-08-08 01:05:53"
-            }
-        ]
-    }
-}
-```
-
-
-#### LIST ALL PRODUCT PRICE BY STORE ID
-
-REQUEST:
-- Method: GET
-- Header: key=Content-Type, value=application/x-www-form-urlencoded
-- Params: key=snky (value=session key), key=wpid (value=wordpress id), key=stid (value=store id)
-RESPONSE:
-- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
-- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
-- code: 'failed'  message: 'Please contact your administrator. ID not in valid format!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification issues!' data: null
+- code: 'unknown' message: 'Required fields cannot be empty!' data: null
+- code: 'failed' message: 'No results found.' data: null
 
 IF SUCCESS:
 ```
 {
     "status": "success",
-    "data": {
-        "list": [
-            {
-                "ID": "4",
-                "price": "161.70",
-                "store_title": "McDonald’s",
-                "category_title": "Chicken Meals",
-                "product_title": "2pc ChikecnJoy Meal",
-                "product_preview": "preview/2pc_chickenjoy_meal",
-                "product_short_info": "ChickenJoy Meal - Original/Spicy",
-                "product_long_info": "May chicken ka na, masaya ka pa.",
-                "product_sku": "wala pa din",
-                "product_weight": "16pnds",
-                "product_dimension": "2x2",
-                "date_created": "2020-08-04 11:21:14"
-            },
-            {
-                "ID": "5",
-                "price": "60.50",
-                "store_title": "McDonald’s",
-                "category_title": "Breakfast Meals",
-                "product_title": "2pc Pancake Meal",
-                "product_preview": "preview/2pc_pancake_meal",
-                "product_short_info": "Pancake Meal - Original/Spicy",
-                "product_long_info": "Pancake na dalawa",
-                "product_sku": "NULL",
-                "product_weight": "2pnds",
-                "product_dimension": "12 by 12",
-                "date_created": "2020-08-03 11:21:14"
-            },
-            {
-                "ID": "11",
-                "price": "150",
-                "store_title": "McDonald’s",
-                "category_title": "Classic Pizzas",
-                "product_title": "Ham and Pineapple Classic",
-                "product_preview": "preview/ham_pineapple",
-                "product_short_info": "Ham na",
-                "product_long_info": "Pineapple pa.",
-                "product_sku": "NULL",
-                "product_weight": "NULL",
-                "product_dimension": "NULL",
-                "date_created": "2020-08-06 11:21:14"
-            },
-            {
-                "ID": "12",
-                "price": "some new price",
-                "store_title": "McDonald’s",
-                "category_title": "Classic Pizzas",
-                "product_title": "some new title",
-                "product_preview": "some new preview",
-                "product_short_info": "some new short info",
-                "product_long_info": "some new long info",
-                "product_sku": "some new skuu",
-                "product_weight": "some new weight",
-                "product_dimension": "some new dimension",
-                "date_created": "2020-08-06 11:21:14"
-            },
-            {
-                "ID": "13",
-                "price": "99",
-                "store_title": "McDonald’s",
-                "category_title": "Overloaded Pizzas",
-                "product_title": "Hawaiian Overloaded",
-                "product_preview": "preview/hawaian_overloaded",
-                "product_short_info": "Hawaiian",
-                "product_long_info": "Overloaded",
-                "product_sku": "NULL",
-                "product_weight": "NULL",
-                "product_dimension": "NULL",
-                "date_created": "2020-08-06 11:21:14"
-            },
-            {
-                "ID": "14",
-                "price": "119",
-                "store_title": "McDonald’s",
-                "category_title": "Overloaded Pizzas",
-                "product_title": "All-In Overloaded",
-                "product_preview": "preview/all_in_overloaded",
-                "product_short_info": "Classic na classic",
-                "product_long_info": "All-In",
-                "product_sku": "NULL",
-                "product_weight": "NULL",
-                "product_dimension": "NULL",
-                "date_created": "2020-08-06 11:21:14"
-            }
-        ]
-    }
+    "data": [
+        {
+            "ID": "1",
+            "category_name": "Milk Shake",
+            "product_name": "Wintermelon",
+            "short_info": "winter plus melon",
+            "long_info": "winter plus melon plus water plus sugar",
+            "sku": "0004856",
+            "price": "$10 ",
+            "weight": "70g",
+            "dimension": "10x15"
+        }
+    ]
 }
+```
+
+#### LIST ALL INACTIVE PRODUCTS => tindapress/v1/products/list/inactive
+
+REQUEST:
+- Method: POST
+- Header: key=Content-Type, value=application/x-www-form-urlencoded
+- Params: key=snky (value=session key), key=wpid (value=wordpress id)
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification issues!' data: null
+- code: 'unknown' message: 'Required fields cannot be empty!' data: null
+- code: 'failed' message: 'No results found.' data: null
+
+IF SUCCESS:
+```
+{
+    "status": "success",
+    "data": [
+        {
+            "ID": "2",
+            "category_name": "Gadgets & Mobiles",
+            "product_name": "LorzPhone 5",
+            "short_info": "16gb RAM + 1tb ROM",
+            "long_info": "16gb RAM + 1tb ROM + 50mp + 10k mAh",
+            "sku": "1000525",
+            "price": "$10000",
+            "weight": "700g",
+            "dimension": "6x8inches"
+        }
+    ]
+}
+```
+
+#### LIST ALL PRODUCTS by STORE `ID` => tindapress/v1/products/store/select
+
+REQUEST:
+- Method: POST
+- Header: key=Content-Type, value=application/x-www-form-urlencoded
+- Params: key=snky (value=session key), key=wpid (value=wordpress id), key=stid (value=store id) 
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification issues!' data: null
+- code: 'unknown' message: 'Required fields cannot be empty.' data: null
+- code: 'unknown' message: 'This store does not exists.' data: null
+- code: 'failed' message: 'No results found.' data: null
+
+IF SUCCESS:
+```
+{
+    "status": "success",
+    "data": [
+        {
+            "ID": "2",
+            "category_name": "Gadgets & Mobiles",
+            "product_name": "LorzPhone 5",
+            "short_info": "16gb RAM + 1tb ROM",
+            "long_info": "16gb RAM + 1tb ROM + 50mp + 10k mAh",
+            "sku": "1000525",
+            "price": "$10000",
+            "weight": "700g",
+            "dimension": "6x8inches"
+        }
+    ]
+}
+```
+
+#### UPDATE PRODUCTS BY `ID` => tindapress/v1/products/update
+
+REQUEST:
+- Method: POST
+- Header: key=Content-Type, value=application/x-www-form-urlencoded
+- Params: key=snky (value=session key), key=wpid (value=wordpress id), key=stid (value=store id), key=pdid (value=product id), key=title (value=name of product), key=short_info (value=short information about the product), key=long_info (value=long information about the product),  key=sku (value=stock keeping unit of the product), key=price (value=price of product), key=weight (value=weight of the product), key=dimension (value=size of the product), key=preview (value=image of the product),
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification issues!' data: null
+- code: 'failed' message: 'Required fields cannot be empty.' data: null
+- code: 'failed' message: 'Current user has no access in updating products.' data: null
+- code: 'failed' message: 'This product does not exists.' data: null
+- code: 'failed' message: 'This product is currently deactivated.' data: null
+- code: 'error' message: 'An error occured while submitting data to the server.' data: null
+- code: 'failed' message: 'No results found.' data: null
+
+IF SUCCESS:
+```
+    {
+    "status" => "success",
+    "message" => "Data has been activated successfully."
+    }
 ```
