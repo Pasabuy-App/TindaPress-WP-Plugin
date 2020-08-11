@@ -35,7 +35,6 @@
             $dv_rev_table = DV_REVS_TABLE;
 
             $table_address = DV_ADDRESS_TABLE;
-            $address_fields = DV_INSERT_ADDRESS_FIELDS;
 
             // Step1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -55,8 +54,8 @@
             }
 
             // Step3 : Sanitize all request
-            if (!isset($_POST["wpid"]) 
-                || !isset($_POST["title"]) 
+            if ( !isset($_POST["title"]) 
+                || !isset($_POST["catid"]) 
                 || !isset($_POST["short_info"]) 
                 || !isset($_POST["long_info"]) 
                 || !isset($_POST["logo"]) 
@@ -80,6 +79,7 @@
                 || empty($_POST["title"]) 
                 || empty($_POST["short_info"]) 
                 || empty($_POST["long_info"]) 
+                || empty($_POST["catid"]) 
                 || empty($_POST["logo"]) 
                 || empty($_POST["banner"]) 
                 || empty($_POST["phone"]) 
@@ -239,23 +239,23 @@
                 );
             }
 
-            // Remove all illegal characters from a url
-            $banner_url = filter_var($_POST["banner"], FILTER_SANITIZE_URL);
-            $logo_url = filter_var($_POST["logo"], FILTER_SANITIZE_URL);
+            // // Remove all illegal characters from a url
+            // $banner_url = filter_var($_POST["banner"], FILTER_SANITIZE_URL);
+            // $logo_url = filter_var($_POST["logo"], FILTER_SANITIZE_URL);
             
-            if (!filter_var($banner_url, FILTER_VALIDATE_URL)) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Banner $banner_url is not valid URL"
-                );
-            }
+            // if (!filter_var($banner_url, FILTER_VALIDATE_URL)) {
+            //     return array(
+            //         "status" => "failed",
+            //         "message" => "Banner $banner_url is not valid URL"
+            //     );
+            // }
 
-            if (!filter_var($logo_url, FILTER_VALIDATE_URL)) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Banner $banner_url is not valid URL"
-                );
-            }
+            // if (!filter_var($logo_url, FILTER_VALIDATE_URL)) {
+            //     return array(
+            //         "status" => "failed",
+            //         "message" => "Logo $banner_url is not valid URL"
+            //     );
+            // }
 
             // Step5 : Validate permission
             $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_add_store' );
@@ -301,7 +301,7 @@
                 $status = $wpdb->insert_id;
 
                 // Insert query for store                                          
-                $wpdb->query("INSERT INTO $table_store $table_store_fields VALUES ('{$user["ctid"]}', $title, $short_info, $long_info, $logo, $banner, $status, '0', '{$user["created_by"]}', '$later' )");
+                $wpdb->query("INSERT INTO $table_store $table_store_fields VALUES ('{$user["catid"]}', $title, $short_info, $long_info, $logo, $banner, $status, '0', '{$user["created_by"]}', '$later' )");
                 $store_id = $wpdb->insert_id;
                 // End query for store
 
@@ -393,7 +393,7 @@
               $cur_user = array();
                
                 $cur_user['created_by']  = $_POST["wpid"];
-                $cur_user['ctid']        = $_POST["ctid"];
+                $cur_user['catid']        = $_POST["catid"];
 
                 $cur_user['title']       = $_POST["title"];
                 $cur_user['short_info']  = $_POST["short_info"];
