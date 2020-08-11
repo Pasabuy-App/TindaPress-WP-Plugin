@@ -35,7 +35,6 @@
             $dv_rev_table = DV_REVS_TABLE;
 
             $table_address = DV_ADDRESS_TABLE;
-            $address_fields = DV_INSERT_ADDRESS_FIELDS;
 
             // Step1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -241,23 +240,23 @@
                 );
             }
 
-            // Remove all illegal characters from a url
-            $banner_url = filter_var($_POST["banner"], FILTER_SANITIZE_URL);
-            $logo_url = filter_var($_POST["logo"], FILTER_SANITIZE_URL);
+            // // Remove all illegal characters from a url
+            // $banner_url = filter_var($_POST["banner"], FILTER_SANITIZE_URL);
+            // $logo_url = filter_var($_POST["logo"], FILTER_SANITIZE_URL);
             
-            if (!filter_var($banner_url, FILTER_VALIDATE_URL)) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Banner $banner_url is not valid URL"
-                );
-            }
+            // if (!filter_var($banner_url, FILTER_VALIDATE_URL)) {
+            //     return array(
+            //         "status" => "failed",
+            //         "message" => "Banner $banner_url is not valid URL"
+            //     );
+            // }
 
-            if (!filter_var($logo_url, FILTER_VALIDATE_URL)) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Banner $banner_url is not valid URL"
-                );
-            }
+            // if (!filter_var($logo_url, FILTER_VALIDATE_URL)) {
+            //     return array(
+            //         "status" => "failed",
+            //         "message" => "Logo $banner_url is not valid URL"
+            //     );
+            // }
 
             // Step5 : Validate permission
             $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_add_store' );
@@ -303,7 +302,7 @@
                 $status = $wpdb->insert_id;
 
                 // Insert query for store                                          
-                $wpdb->query("INSERT INTO $table_store $table_store_fields VALUES ('{$user["ctid"]}', $title, $short_info, $long_info, $logo, $banner, $status, '0', '{$user["created_by"]}', '$later' )");
+                $wpdb->query("INSERT INTO $table_store $table_store_fields VALUES ('{$user["catid"]}', $title, $short_info, $long_info, $logo, $banner, $status, '0', '{$user["created_by"]}', '$later' )");
                 $store_id = $wpdb->insert_id;
                 // End query for store
 
@@ -355,7 +354,7 @@
                 $country = $wpdb->insert_id;
 
                 //Save the address in the parent table
-                $wpdb->query("INSERT INTO $table_address ($address_fields) VALUES ('$status', '0', '$store_id', 'business', $street, $brgy, $city, $province, $country, '$later')");
+                $wpdb->query("INSERT INTO $table_address (`status`, `stid`, `types`, `street`, `brgy`, `city`, `province`, `country`, `date_created` ) VALUES ('$status', '$store_id', 'business', $street, $brgy, $city, $province, $country, '$later')");
                 $address_id = $wpdb->insert_id;
 
                 //Update revision table for saving the parent_id(address_id)
