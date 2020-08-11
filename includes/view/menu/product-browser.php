@@ -33,7 +33,6 @@
 				Currently fetching updates for all available products. Please wait...
 			</div>
 		</div>
-		<?php include_once( TP_PLUGIN_PATH . "/includes/model/products.php" ); ?>
 
 	<?php } else { ?>
 
@@ -42,7 +41,6 @@
 				<div class="alert alert-secondary header-info">
 					<strong>Project: </strong><strong id="parent-name"><?php echo $_GET['name']; ?></strong>
 				</div>
-				<button type="button" class="btn btn-dark" onclick="window.location.href = '<?php echo get_home_url()."/wp-admin/admin.php?tp=".$_GET['tp']; ?>';" >Go Back</button>
 				<button id="RefreshAppList" type="button" class="btn btn-dark">Refresh List</button>
 				<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#CreateNewApp">Create Variant</button>
 			</div>
@@ -54,6 +52,7 @@
 		<?php //include_once( plugin_dir_path( __FILE__ ) . "/project-browser/variants.php" ); ?>
 	<?php } ?>
 
+	<?php include_once( TP_PLUGIN_PATH . "/includes/model/products.php" ); ?>
 	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/product-create-modal.php" ); ?>
 	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/product-edit-modal.php" ); ?>
 	<div id="jquery-overlay" class="modal-backdrop fade show tp-display-hide" style="z-index: 9999;"></div>

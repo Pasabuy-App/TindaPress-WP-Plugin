@@ -45,8 +45,16 @@
                     {
                         $('#stores-notification').removeClass('tp-display-hide');
                     }
+
+                    <?php 
+                        $root_url = site_url() . "/wp-json/tindapress/v1/products/";
+                        if(isset($_GET['id'])) {
+                            $root_url .= "store/select";
+                        } else {
+                            $root_url .= "list/all";
+                        }
+                    ?>
                     
-                    var appListAction = { action: 'ReloadProjects' };
                     $.ajax({
                         dataType: 'json',
                         type: 'POST', 
@@ -54,7 +62,7 @@
                             "wpid": "1",
                             "snky": "<?php echo wp_get_session_token(); ?>"
                         },
-                        url: '<?php echo site_url() . "/wp-json/tindapress/v1/products/list/all"; ?>', //TODO: RESTAPI FOR STORE LIST
+                        url: '<?php echo $root_url; ?>', //TODO: RESTAPI FOR STORE LIST
                         success : function( data )
                         {
                             if(data.status == "success") {
