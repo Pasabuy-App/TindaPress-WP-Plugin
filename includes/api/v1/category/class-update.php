@@ -51,7 +51,7 @@
             }
 
             // Step 3: Check if parameters are passed
-            if (!isset($_POST["title"]) || !isset($_POST["info"])  || !isset($_POST["types"]) || !isset($_POST["catid"])) {
+            if (!isset($_POST["title"]) || !isset($_POST["info"]) || !isset($_POST["catid"])) {
 				return array(
 						"status" => "unknown",
 						"message" => "Please contact your administrator. Request unknown!",
@@ -59,20 +59,14 @@
             }
 
             // Step 4: Check if parameters passed are not null
-            if (empty($_POST["title"]) || empty($_POST["info"])  || empty($_POST["types"]) || empty($_POST["catid"]) ) {
+            if (empty($_POST["title"]) || empty($_POST["info"]) || empty($_POST["catid"]) ) {
 				return array(
 						"status" => "failed",
 						"message" => "Required fields cannot be empty.",
                 );
             }
 
-            // Step 5: Check if types value is valid
-            if ( !($_POST['types'] === 'store') && !($_POST['types'] === 'product') && !($_POST['types'] === 'tags') ) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Category must be product or store only.",
-                );
-            }
+            // Step 5: Catching post values
 
             $title = $_POST['title'];
             
@@ -82,12 +76,20 @@
 
             $category_id = $_POST["catid"];
 
-            //Store or product
-            $types = $_POST["types"]; 
-
-
             // Step 6: Check if this category exists
-            $get_status = $wpdb->get_row("SELECT `status` FROM $table_categories WHERE ID = $category_id  ");
+            $get_status = $wpdb->get_row("SELECT cat.ID, cat.types, cat.status as status_id,
+                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.title ) AS title,
+                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.info ) AS info,
+                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.status) as status
+                FROM
+                    $table_categories cat
+                INNER JOIN
+                    $table_revs rev ON rev.parent_id = cat.id
+                WHERE 
+                    cat.id = $category_id
+                GROUP BY
+                    cat.id
+            ");
 
             //Return a failed status if no rows found
             if (!$get_status) {
@@ -97,7 +99,15 @@
                 );
             }
 
-            $status_id = $get_status->status;
+            //Check if category is active or inactive
+            if ($get_status->status == 0) {
+                return array(
+                    "status" => "failed",
+                    "message" => "This category is currently inactive.",
+                );
+            }
+
+            $status_id = $get_status->status_id;
 
             // Step 7: Start mysql query
             $wpdb->query("START TRANSACTION");
@@ -114,7 +124,7 @@
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'status', 1, $wpid, '$date')");
                 $status_id = $wpdb->insert_id;
 
-                $wpdb->query("UPDATE $table_categories SET `title` = $title_id, `info` = $info_id, `status` = $status_id, `types` = $types WHERE ID = $category_id ");
+                $wpdb->query("UPDATE $table_categories SET `title` = $title_id, `info` = $info_id, `status` = $status_id WHERE ID = $category_id ");
                 
                 $result = $wpdb->query("UPDATE $table_revs SET `parent_id` = $category_id WHERE ID IN ($title_id, $info_id, $status_id) ");
 

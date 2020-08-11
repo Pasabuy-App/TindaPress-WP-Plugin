@@ -9,17 +9,16 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
-    class TP_Category_All {
+    class TP_Category_List_Store_Inactive {
         
         public static function listen(){
             return rest_ensure_response( 
-                TP_Category_All:: list_all()
+                TP_Category_List_Store_Inactive:: list_store_inactive()
             );
         }
         
-        public static function list_all(){
+        public static function list_store_inactive(){
             
-            //Inital QA done 2020-08-11 10:07AM
             global $wpdb;
             $table_revs = TP_REVISIONS_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
@@ -37,22 +36,24 @@
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. verification issues!",
+                        "message" => "Please contact your administrator. Verification issues!",
                 );
                 
             }
             
             // Step 3: Start a query
             $categories = $wpdb->get_results("SELECT
-                cat.ID, cat.types,
+                cat.ID,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.title ) AS title,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.info ) AS info
             FROM
                 $table_categories cat
             INNER JOIN
-                $table_revs rev ON rev.parent_id = cat.id 
+                $table_revs rev ON rev.parent_id = cat.id
             WHERE
-                (SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.status) = 1
+                (SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.status) = 0
+            AND 
+                cat.types = 'store' 
             GROUP BY
                 cat.id");
             

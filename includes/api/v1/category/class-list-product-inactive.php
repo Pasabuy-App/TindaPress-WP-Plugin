@@ -9,22 +9,21 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
-    class TP_Category_Select {
+    class TP_Category_List_Product_Inactive {
         
         public static function listen(){
             return rest_ensure_response( 
-                TP_Category_Select:: select()
+                TP_Category_List_Product_Inactive:: list_product_inactive()
             );
         }
         
-        public static function select(){
+        public static function list_product_inactive(){
             
-            //Inital QA done 2020-08-11 10:30 AM
             global $wpdb;
             $table_revs = TP_REVISIONS_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
 
-			// Step 1: Check if prerequisites plugin are missing
+            // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
@@ -42,50 +41,34 @@
                 
             }
             
-            // Step 3: Check if parameters are passed
-            if (!isset($_POST["catid"])  ) {
-				return array(
-						"status" => "unknown",
-						"message" => "Please contact your administrator. Request unknown!",
-                );
-            }
-
-            // Step 4: Check if parameters passed are not null
-            if (empty($_POST["catid"])  ) {
-				return array(
-						"status" => "failed",
-						"message" => "Required fields cannot be empty.",
-                );
-            }
-
-            $category_id = $_POST['catid'];
-
-            // Step 5: Start mysql query
-            $category = $wpdb->get_row("SELECT
-                cat.ID, cat.types,
+            // Step 3: Start a query
+            $categories = $wpdb->get_results("SELECT
+                cat.ID,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.title ) AS title,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.info ) AS info
             FROM
                 $table_categories cat
-            INNER JOIN 
-                $table_revs rev ON rev.parent_id = cat.id 
+            INNER JOIN
+                $table_revs rev ON rev.parent_id = cat.id
             WHERE
-                cat.id = $category_id
-            AND
-                (SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.status) = 1");
+                (SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.status) = 0
+            AND 
+                cat.types = 'product' 
+            GROUP BY
+                cat.id");
             
-            // Step 6: Check results if empty
-            if (!$category) {
+            // Step 4: Check results if empty
+            if (!$categories) {
                 return array(
                     "status" => "failed",
                     "message" => "No results found.",
                 );
             }
 
-            // Step 7: Return a success status and message 
+            // Step 5: Return a success status and message 
             return array(
                 "status" => "success",
-                "data" => $category
+                "data" => $categories
             );
         
         }

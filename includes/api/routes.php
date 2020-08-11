@@ -57,12 +57,19 @@
         //Category Classes
          require plugin_dir_path(__FILE__) . '/v1/category/class-delete.php';
          require plugin_dir_path(__FILE__) . '/v1/category/class-insert.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-listing.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-select.php';
+         require plugin_dir_path(__FILE__) . '/v1/category/class-list-all.php';
+         require plugin_dir_path(__FILE__) . '/v1/category/class-list-active.php';
+         require plugin_dir_path(__FILE__) . '/v1/category/class-list-inactive.php';
+         require plugin_dir_path(__FILE__) . '/v1/category/class-list-store-active.php';
+         require plugin_dir_path(__FILE__) . '/v1/category/class-list-store-inactive.php';
+         require plugin_dir_path(__FILE__) . '/v1/category/class-list-product-active.php';
+         require plugin_dir_path(__FILE__) . '/v1/category/class-list-product-inactive.php';
+         require plugin_dir_path(__FILE__) . '/v1/category/class-select-by-category.php';
          require plugin_dir_path(__FILE__) . '/v1/category/class-select-type.php';
          require plugin_dir_path(__FILE__) . '/v1/category/class-select-by-store.php';
          require plugin_dir_path(__FILE__) . '/v1/category/class-store-insert.php';
          require plugin_dir_path(__FILE__) . '/v1/category/class-update.php';
+         require plugin_dir_path(__FILE__) . '/v1/category/class-activate.php';
 
         //Operations Classes
         require plugin_dir_path(__FILE__) . '/v1/operations/class-list-open.php';
@@ -276,6 +283,40 @@
         /*
          * CATEGORIES RESTAPI
         */
+            register_rest_route( 'tindapress/v1/category/list', 'all', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Category_List_All','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/category/list', 'active', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Category_List_Active','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/category/list', 'inactive', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Category_List_Inactive','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/category/list/store', 'active', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Category_List_Store_Active','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/category/list/store', 'inactive', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Category_List_Store_Inactive','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/category/list/product', 'active', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Category_List_Product_Active','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/category/list/product', 'inactive', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Category_List_Product_Inactive','listen'),
+            ));
 
             register_rest_route( 'tindapress/v1/category', 'insert', array(
                 'methods' => 'POST',
@@ -287,14 +328,14 @@
                 'callback' => array('TP_Category_Delete','listen'),
             ));
 
+            register_rest_route( 'tindapress/v1/category', 'activate', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Category_Activate','listen'),
+            ));
+
             register_rest_route( 'tindapress/v1/category', 'update', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Category_Update','listen'),
-            ));
-
-            register_rest_route( 'tindapress/v1/category', 'list/all', array(
-                'methods' => 'POST',
-                'callback' => array('TP_Category_All','listen'),
             ));
 
             register_rest_route( 'tindapress/v1/category', 'list/type', array(
