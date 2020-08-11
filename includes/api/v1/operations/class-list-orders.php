@@ -18,7 +18,8 @@
         }
         
         public static function list_orders(){
-           
+            
+            //Initial QA done 2020-08-11 11:03 AM
             global $wpdb;
             $table_revs = TP_REVISIONS_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;

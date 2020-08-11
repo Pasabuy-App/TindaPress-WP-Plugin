@@ -15,6 +15,8 @@
     class TP_Total_sales_date {
 
         public static function listen(){
+			
+			//Initial QA done 2020-08-11 11:32 AM
 			global $wpdb;
 
 			//Check if prerequisites plugin are missing
@@ -65,7 +67,7 @@
 			}
 			
 			$date = TP_Globals::get_user_date($_POST['wpid']);
-			$expected_date  = $date_expected = date('Y-m-d h:i:s', strtotime($date. ' - 1 month'));
+			$expected_date  = date('Y-m-d H:i:s', strtotime($date. ' - 1 month'));
 			
 			$order_items_table = MP_ORDER_ITEMS_TABLE;
 			$order_items = MP_ORDERS_TABLE;
@@ -83,18 +85,16 @@
 					mp_ord.stid = 2  AND MONTH(mp_ord.date_created)  BETWEEN MONTH('$expected_date')  AND  MONTH('$date')
 			");
 
-			if ($result->total_sales <  1) {
+			if (!$result) {
 				return array(
-					"status" => "unknown",
-					"message" => "No sales found.",
+					"status" => "failed",
+					"message" => "No results found.",
 				);
 
 			}else {
 				return array(
 					"status" => "success",
-					"data" => array(
-						'list' => $result
-					)
+					"data" => $result
 				);
 
 			}

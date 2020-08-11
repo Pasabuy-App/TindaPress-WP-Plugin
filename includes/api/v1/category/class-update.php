@@ -59,7 +59,7 @@
             }
 
             // Step 4: Check if parameters passed are not null
-            if (empty($_POST["title"]) || empty($_POST["info"])  || empty($_POST["types"]) || !isset($_POST["catid"]) ) {
+            if (empty($_POST["title"]) || empty($_POST["info"])  || empty($_POST["types"]) || empty($_POST["catid"]) ) {
 				return array(
 						"status" => "failed",
 						"message" => "Required fields cannot be empty.",
@@ -114,7 +114,7 @@
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'status', 1, $wpid, '$date')");
                 $status_id = $wpdb->insert_id;
 
-                $wpdb->query("UPDATE $table_categories SET `title` = $title_id, `info` = $info_id, `status` = $status_id WHERE ID = $category_id ");
+                $wpdb->query("UPDATE $table_categories SET `title` = $title_id, `info` = $info_id, `status` = $status_id, `types` = $types WHERE ID = $category_id ");
                 
                 $result = $wpdb->query("UPDATE $table_revs SET `parent_id` = $category_id WHERE ID IN ($title_id, $info_id, $status_id) ");
 

@@ -106,7 +106,7 @@
             {
                 return array(
                         "status" => "failed",
-                        "message" => "No orders found!",
+                        "message" => "No results found!",
                 );
             }
             

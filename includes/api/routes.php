@@ -258,14 +258,9 @@
                 'callback' => array('TP_Total_sales','listen'),
             ));
 
-            register_rest_route( 'tindapress/v1/order', 'total/sales/date', array(
+            register_rest_route( 'tindapress/v1/order', 'total/monthly', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Total_sales_date','listen'),
-            ));
-
-            register_rest_route( 'tindapress/v1/globals', 'delete', array(
-                'methods' => 'POST',
-                'callback' => array('TP_Initialization','delete_product'),
             ));
 
             register_rest_route( 'tindapress/v1/order', 'stage', array(
