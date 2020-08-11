@@ -25,24 +25,14 @@
 
             // declaring table names to variable
             $table_store = TP_STORES_TABLE;
-<<<<<<< HEAD
             $table_revisions = TP_REVISIONS_TABLE;
             $table_cotnacts = DV_CONTACTS_TABLE;
-=======
-            $table_revs = TP_REVISIONS_TABLE;
-            $table_address = DV_ADDRESS_TABLE;
-            $table_contacts = DV_CONTACTS_TABLE;
-            $table_dv_revs = DV_REVS_TABLE;
->>>>>>> 9d33a812571ec6fcefe42f9d729f6b62c73833ab
             $table_brgy = DV_BRGY_TABLE;
             $table_city = DV_CITY_TABLE;
             $table_province = DV_PROVINCE_TABLE;
             $table_country = DV_COUNTRY_TABLE;
-<<<<<<< HEAD
             $table_dv_revisions = DV_REVS_TABLE;
             $table_add = DV_ADDRESS_TABLE;
-=======
->>>>>>> 9d33a812571ec6fcefe42f9d729f6b62c73833ab
 
             // declaring variable
             $stid = $_POST["stid"];

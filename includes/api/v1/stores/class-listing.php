@@ -47,6 +47,7 @@
                         "message" => "Please contact your administrator. Verification Issues!",
                 );
             }
+
      
             // Step3 : Query
             $result = $wpdb->get_results("SELECT
@@ -65,11 +66,6 @@
             FROM
                 $table_store tp_str
             INNER JOIN 
-<<<<<<< HEAD
-=======
-                $table_revs tp_rev ON tp_rev.ID = tp_str.`status` 
-            INNER JOIN 
->>>>>>> 9d33a812571ec6fcefe42f9d729f6b62c73833ab
                 $table_address dv_add ON tp_str.address = dv_add.ID	
             ");
 
