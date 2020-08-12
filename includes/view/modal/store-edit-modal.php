@@ -35,22 +35,16 @@
                                 placeholder="Short description of your Store." ></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="edit_category">CATEGORY:</label><br>
-                            <select class="form-control" id="edit_category" name="edit_category">
-                                <option selected="selected">Restaurant</option>
-                                <option>Fast Foods</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
                             <div class="alert alert-dark tp-center-item" role="alert">
                                 <strong>NOTE:</strong> Before we submit your request a dialog confirmation will appear 
                                 to ask for your permission to complete the task.
                             </div>
                         </div>
                         <div class="tp-center-item">
-                            <input id="appid_edit" type="hidden" value="">
+                            <input id="edit_id" type="hidden" value="">
                             <button id="delete-app-btn" type="submit" class="btn btn-danger"> - DELETE - </button>
-                            <button id="update-app-btn" type="submit" class="btn btn-success"> - UPDATE - </button>
+                            <button id="activate-app-btn" type="submit" class="btn btn-success"> - ACTIVATE - </button>
+                            <!-- <button id="update-app-btn" type="submit" class="btn btn-primary"> - UPDATE - </button> -->
                         </div>
                         <div id="dialog-confirm-edit" title="Confirmation">
                             <p id="confirm-content-edit"></p>

@@ -118,19 +118,20 @@
 
                                 '<div class="btn-group" role="group" aria-label="Basic example">' +
 
-                                    '<button type="button" class="btn btn-primary btn-sm"' +
-                                        ' data-toggle="modal" data-target="#EditAppOption"' +
-                                        ' title="Click this to modified or delete this project."' +
-                                        ' data-id="' + item.ID + '"' +  
-                                        ' data-title="' + item.title + '"' +  
-                                        ' data-sinfo="' + item.short_info + '"' + 
-                                        ' >Options</button>' +
+                                    // '<button type="button" class="btn btn-primary btn-sm"' +
+                                    //     ' data-toggle="modal" data-target="#EditAppOption"' +
+                                    //     ' title="Click this to modified or delete this project."' +
+                                    //     ' data-id="' + item.ID + '"' +  
+                                    //     ' data-status="' + item.ID + '"' +  
+                                    //     ' data-title="' + item.title + '"' +  
+                                    //     ' data-sinfo="' + item.short_info + '"' + 
+                                    //     ' >Options</button>' +
 
-                                    '<button type="button" class="btn btn-secondary btn-sm appkey-' + item.ID + '"' +
-                                        ' data-clipboard-text="' + item.ID + '"' +
-                                        ' onclick="copyFromId(\'CategoryID-' + item.ID + '\')" ' +
-                                        ' title="Click this to copy the ID to your clipboard."' +
-                                        '>Copy ID</button>' +  
+                                    // '<button type="button" class="btn btn-secondary btn-sm appkey-' + item.ID + '"' +
+                                    //     ' data-clipboard-text="' + item.ID + '"' +
+                                    //     ' onclick="copyFromId(\'CategoryID-' + item.ID + '\')" ' +
+                                    //     ' title="Click this to copy the ID to your clipboard."' +
+                                    //     '>Copy ID</button>' +  
 
                                     '<button type="button" class="btn btn-success btn-sm"' +
                                         ' onclick="window.location.href = `<?php echo get_home_url()."/wp-admin/admin.php?page="."tp-product_browser"."&id="; ?>' + item.ID + '&name=' +item.title+ '`;" ' +
@@ -138,7 +139,6 @@
                                         ' >Products</button>' +
 
                                              
-                                        
                                 '</div>'; 
                         }
                     }
@@ -387,6 +387,17 @@
 
                 //From native form object to json object.
                 var postParam = {};
+                    postParam.wpid = "<?php echo get_current_user_id(); ?>";
+                    postParam.snky = "<?php echo wp_get_session_token(); ?>";
+                    postParam.stid = $('#edit_id').val();
+
+                if( clickedBtnId == 'delete-app-btn' ) {
+                    <?php $postUrl = site_url() . "/wp-json/tindapress/v1/store/delete"; ?>
+                } else {
+                    <?php $postUrl = site_url() . "/wp-json/tindapress/v1/category/update"; ?>
+                    postParam.title = $('#edit_title').val();
+                    postParam.info = $('#edit_info').val();
+                }
 
                 if( clickedBtnId == 'delete-app-btn' )
                 {
@@ -413,7 +424,7 @@
                     dataType: 'json',
                     type: 'POST', 
                     data: postParam,
-                    url: 'admin-ajax.php',
+                    url: '<?php echo $postUrl; ?>',
                     success : function( data )
                     {
                         if( clickedBtnId == 'delete-app-btn' ) {
@@ -466,9 +477,9 @@
             // LISTEN FOR MODAL SHOW AND ATTACHED ID.
             $('#EditAppOption').on('show.bs.modal', function(e) {
                 var data = e.relatedTarget.dataset;
-                // $('#appid_edit').val( data.aid ); //TODO: Set item display from data.
-                // $('#appname_edit').val( data.aname ); //TODO: Set item display from data.
-                // $('#appdesc_edit').val( data.ainfo ); //TODO: Set item display from data.
+                $('#edit_id').val( data.id );
+                $('#edit_title').val( data.title );
+                $('#edit_info').val( data.sinfo );
 
                 $('#delete-app-btn').removeClass('disabled');
                 $('#update-app-btn').removeClass('disabled');
