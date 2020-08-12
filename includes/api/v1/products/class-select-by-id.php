@@ -22,6 +22,7 @@
             );
         }
 
+        //QA done 2020-08-12 4:55 pm
         public static function select_by_id_product(){
             global $wpdb;
 
@@ -39,7 +40,7 @@
                 );
             }
 
-            // Step2 : Validate if user is exist
+            // Step 2: Validate user
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
@@ -47,8 +48,8 @@
                 );
             }
 
-            // Step3 : Sanitize all Request
-			if (!isset($_POST['pid']) ) {
+            // Step 3: Check if parameters are passed
+			if (!isset($_POST['pdid']) ) {
 				return array(
 						"status" => "unknown",
 						"message" => "Please contact your administrator. Request unknown!",
@@ -56,16 +57,17 @@
                 
             }
 
-            // Step4 : Sanitize all Request
-			if ( empty($_POST['pid']) ) {
+            // Step 4: Check if parameters passed are empty
+			if ( empty($_POST['pdid']) ) {
 				return array(
 						"status" => "unknown",
 						"message" => "Required fields cannot be empty!",
                 );
             }
 
-            $pdid = $_POST['pid'];
-
+            $pdid = $_POST['pdid'];
+            
+            // Step 5: Check if this product exists
             $get_product = $wpdb->get_row("SELECT
                     tp_prod.ID, tp_prod.ctid, tp_prod.status as status_id,
                     ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE tp_rev.ID = tp_prod.title ) AS product_name,
@@ -96,8 +98,10 @@
                 );
             }
 
+            // Step 6: Start mysql query
             $result = $wpdb->get_row("SELECT
                 tp_prod.ID,
+                tp_prod.stid,
                 tp_prod.ctid as catid,
                 (select child_val from $table_revs where id = (select title from tp_categories where id = tp_prod.ctid)) AS cat_name,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.title ) AS `store_name`,
@@ -120,11 +124,13 @@
             GROUP BY
                 tp_prod.ID");
 
+            // Step 8: Check if 0 rows found
             if (!$result ) {
                 return array(
                     "status" => "failed",
-                    "message" => "No product found."
+                    "message" => "No results found."
                 );
+            // Returns a success status and complete object
             }else{
                 return array(
                     "status" => "success",

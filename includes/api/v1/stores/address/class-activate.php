@@ -10,12 +10,12 @@
         * @version 0.1.0
 	*/
 
-    class TP_Store_Delete_Address {
+    class TP_Store_Activate_Address {
         
         //REST API Call
         public static function listen(){
             return rest_ensure_response( 
-                TP_Store_Delete_Address:: listen_open()
+                TP_Store_Activate_Address:: listen_open()
             );
         }
 
@@ -74,17 +74,17 @@
                     "message" => "This address does not exists..",
                 );
             }
-            if ($get_address_status->status != 1) {
+            if ($get_address_status->status != 0) {
                 return array(
                     "status" => "failed",
-                    "message" => "This address is already deactivated..",
+                    "message" => "This address is already activated..",
                 );
             }
 
             $wpdb->query("START TRANSACTION");
                $get_address_data =  $wpdb->get_row("SELECT * FROM $table_address WHERE ID = $address_id");
 
-                $result = $wpdb->query("UPDATE $dv_rev_table SET `child_val` = 0, `date_created` = '$date_created' WHERE ID = $get_address_data->status   ");
+                $result = $wpdb->query("UPDATE $dv_rev_table SET `child_val` = 1, `date_created` = '$date_created' WHERE ID = $get_address_data->status   ");
 
             if ($result < 1 || empty($get_address_data) ) {
                 $wpdb->query("ROLLBACK");
@@ -99,7 +99,7 @@
                 
                 return array(
                     "status" => "success",
-                    "message" => "Data has been deleted successfully.",
+                    "message" => "Data has been activated successfully.",
                 );
 
             }

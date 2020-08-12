@@ -18,6 +18,7 @@
             );
         }
 
+        //QA done 2020-08-12 4:18pm
         public static function list_active(){
             
             global $wpdb;
@@ -49,8 +50,10 @@
             // Step 3: Start mysql query
             $result = $wpdb->get_results("SELECT
                 tp_prod.ID,
+                tp_prod.stid,
                 tp_prod.ctid as catid,
-                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = c.title ) AS `category_name`,
+                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = (SELECT `title` FROM tp_stores WHERE ID  = tp_prod.stid ) ) AS `store_name`,
+                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = c.title ) AS `cat_name`,
                 IF (( select child_val from $table_revs where id = tp_prod.`status` ) = 1, 'Active' , 'Inactive' ) AS `status`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE tp_rev.ID = tp_prod.title ) AS product_name,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.short_info ) AS `short_info`,

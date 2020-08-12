@@ -114,7 +114,7 @@ IF SUCCESS:
 ```
 
 
-#### SELECT PRODUCT BY CATEGORY ID => tindapress/v1/product/category/select
+#### SELECT PRODUCT BY CATEGORY ID => tindapress/v1/products/category/select
 
 REQUEST:
 - Method: POST
@@ -126,66 +126,76 @@ RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator.  Request Unknown!' data: null
 - code: 'unknown' message: 'Required fields cannot be empty!' data: null
 - code: 'failed' message: 'This category does not exists.' data: null
-- code: 'failed' message: 'This category is currently deactivated.' data: null
+- code: 'failed' message: 'This category is currently inactive.' data: null
 - code: 'failed' message: 'No product found.' data: null
 
 IF SUCCESS:
 ```
-
 {
     "status": "success",
     "data": [
         {
-            "ID": "1",
-            "category_name": "1pc. Burger Steak",
-            "product_name": "1pc. Burger Steak",
-            "short_info": "Burger steak and rice.",
-            "long_info": "Pure beef patty with mushroom gravy and steamed rice.",
-            "sku": "JLB-BS-SML-BR",
-            "price": "59.00",
-            "weight": "0.52 kg",
-            "dimension": "25 x 25"
-        },
-        {
             "ID": "2",
-            "category_name": "2pc. Burger Steak",
-            "product_name": "2pc. Burger Steak",
-            "short_info": "Two burger steak and rice.",
-            "long_info": "Two pieces of pure beef patty with mushroom gravy and steamed rice.",
-            "sku": "JLB-2BS-MED-BR",
-            "price": "79.00",
-            "weight": "0.65 kg",
-            "dimension": "30 x 30"
+            "stid": "39",
+            "catid": "5",
+            "cat_name": "Gadgets & Mobiles",
+            "store_name": "Lorz Phone Shop",
+            "product_name": "LorzPhone 5",
+            "status": "Active",
+            "short_info": "16gb RAM + 1tb ROM",
+            "long_info": "16gb RAM + 1tb ROM + 50mp + 10k mAh",
+            "sku": "1000525",
+            "price": "$10000",
+            "weight": "700g",
+            "dimension": "6x8inches"
         },
         {
             "ID": "3",
-            "category_name": "1pc. Burger Steak with Joly Spaghetti",
-            "product_name": "1pc. Burger Steak with Joly Spaghetti",
-            "short_info": "1pc Burger steak and rice with jolly spaghetti.",
-            "long_info": "Pure beef patty with mushroom gravy and steamed rice with jolly spaghetti.",
-            "sku": "JLB-BSJS-SML-BR",
-            "price": "69.00",
-            "weight": "0.60 kg",
-            "dimension": "27 x 27"
+            "stid": "38",
+            "catid": "5",
+            "cat_name": "Gadgets & Mobiles",
+            "store_name": "Lorz Phone Shop 2",
+            "product_name": "LorzStarPhone 3E",
+            "status": "Active",
+            "short_info": "Lorem Ipsum",
+            "long_info": "Lorem Ipsum Dolor Bla Dolor Ipsum",
+            "sku": "00055566",
+            "price": "$2232",
+            "weight": "600g",
+            "dimension": "10x7"
+        },
+        {
+            "ID": "4",
+            "stid": "38",
+            "catid": "5",
+            "cat_name": "Gadgets & Mobiles",
+            "store_name": "Lorz Phone Shop 2",
+            "product_name": "UniTablet",
+            "status": "Active",
+            "short_info": "Lorem Ipsum",
+            "long_info": "Lorem Ipsum Dolor Bla Dolor Ipsum",
+            "sku": "00055236",
+            "price": "$2232",
+            "weight": "600g",
+            "dimension": "15x10"
         }
     ]
 }
-  
 ```
 
-#### SELECT PRODUCT BY ID => tindapress/v1/product/select
+#### SELECT PRODUCT BY ID => tindapress/v1/products/select
 
 REQUEST:
-- Method: GET
+- Method: POST
 - Header: key=Content-Type, value=application/x-www-form-urlencoded
 - Params: key=snky (value=session key), key=wpid (value=wordpress id), key = pdid (Value = product id)
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
-- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
-- code: 'unknown' message: 'Please contact your administrator. ID not in valid format!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty!' data: null
-- code: 'failed' message: 'No product found.' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification issues!' data: null
+- code: 'failed' message: 'Required fields cannot be empty.' data: null
+- code: 'failed' message: 'This product does not exists.' data: null
+- code: 'failed' message: 'This product is currently inactive.' data: null
+- code: 'failed' message: 'No results found.' data: null
 
 IF SUCCESS:
 ```
@@ -194,42 +204,45 @@ IF SUCCESS:
     "status": "success",
     "data": {
         "ID": "2",
-        "store_name": "Jollibee",
-        "category": "product",
-        "title": "2pc. Burger Steak",
-        "preview": "images/products/jollibee/2pcburgersteak.jpg",
-        "short_info": "Two burger steak and rice.",
-        "long_info": "Two pieces of pure beef patty with mushroom gravy and steamed rice.",
-        "status": "1",
-        "sku": "JLB-2BS-MED-BR",
-        "price": "79.00",
-        "weight": "0.65 kg",
-        "dimension": "30 x 30"
+        "stid": "39",
+        "catid": "5",
+        "cat_name": "Gadgets & Mobiles",
+        "store_name": "Lorz Kikay Shop",
+        "category": "store",
+        "title": "LorzPhone 5",
+        "preview": "lorzphone.jpeg",
+        "short_info": "16gb RAM + 1tb ROM",
+        "long_info": "16gb RAM + 1tb ROM + 50mp + 10k mAh",
+        "status": "Active",
+        "sku": "1000525",
+        "price": "$10000",
+        "weight": "700g",
+        "dimension": "6x8inches"
     }
 }
 
 ```
 
-#### ACTIVATE PRODUCT => tindapress/v1/product/activate
+#### ACTIVATE PRODUCT => tindapress/v1/products/activate
 
 REQUEST:
 - Method: GET
 - Header: key=Content-Type, value=application/x-www-form-urlencoded
-- Params: key=snky (value=session key), key=wpid (value=wordpress id)
+- Params: key=snky (value=session key), key=wpid (value=wordpress id), key=pdid (value=product id)
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
-- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
-- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
-- code: 'unknown' message: 'Please contact your administrator. ID not in valid format!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification issues!' data: null
+- code: 'failed' message: 'Required fields cannot be empty.' data: null
+- code: 'failed' message: 'Current user has no access in activating products' data: null
+- code: 'failed' message: 'This product does not exists.' data: null
 - code: 'failed' message: 'This product is already activated.' data: null
-- code: 'failed' message: 'An error occured while submitting data to the server.' data: null
+- code: 'error' message: 'An error occured while submitting data to the server.' data: null
 
 IF SUCCESS:
 ```
 {
    "status" => "success",
-   "message" => "Data has been activate successfully."
+   "message" => "Data has been activated successfully."
 }
 
 ```
@@ -243,7 +256,6 @@ REQUEST:
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
 - code: 'unknown' message: 'Please contact your administrator. Verification issues!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty!' data: null
 - code: 'failed' message: 'No results found.' data: null
 
 IF SUCCESS:
@@ -253,25 +265,48 @@ IF SUCCESS:
     "data": [
         {
             "ID": "1",
-            "category_name": "Milk Shake",
+            "stid": "38",
+            "catid": "2",
+            "store_name": "Lorz Kikay Shop",
+            "cat_name": "MIlk Shake",
             "product_name": "Wintermelon",
-            "short_info": "winter plus melon",
-            "long_info": "winter plus melon plus water plus sugar",
+            "short_info": "Winter melon milkshake flavor",
+            "long_info": "winter plus melon plus water plus sugar plus pearls",
             "sku": "0004856",
-            "price": "$10 ",
+            "price": "$10",
             "weight": "70g",
-            "dimension": "10x15"
+            "dimension": "10x15",
+            "status": "Active"
         },
         {
             "ID": "2",
-            "category_name": "Gadgets & Mobiles",
+            "stid": "39",
+            "catid": "5",
+            "store_name": "Lorz Kikay Shop",
+            "cat_name": "Gadgets & Mobiles",
             "product_name": "LorzPhone 5",
             "short_info": "16gb RAM + 1tb ROM",
             "long_info": "16gb RAM + 1tb ROM + 50mp + 10k mAh",
             "sku": "1000525",
             "price": "$10000",
             "weight": "700g",
-            "dimension": "6x8inches"
+            "dimension": "6x8inches",
+            "status": "Active"
+        },
+        {
+            "ID": "4",
+            "stid": "38",
+            "catid": "5",
+            "store_name": "Lorz Kikay Shop",
+            "cat_name": "Gadgets & Mobiles",
+            "product_name": "Lugaw Special",
+            "short_info": "lugaw with egg special",
+            "long_info": "lugaw with egg with tokwa baboy",
+            "sku": "0058956",
+            "price": "35",
+            "weight": "20g",
+            "dimension": "20x50",
+            "status": "Inactive"
         }
     ]
 }
@@ -286,7 +321,6 @@ REQUEST:
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
 - code: 'unknown' message: 'Please contact your administrator. Verification issues!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty!' data: null
 - code: 'failed' message: 'No results found.' data: null
 
 IF SUCCESS:
@@ -296,14 +330,48 @@ IF SUCCESS:
     "data": [
         {
             "ID": "1",
-            "category_name": "Milk Shake",
+            "stid": "38",
+            "catid": "2",
+            "store_name": "Lorz Kikay Shop",
+            "cat_name": "Milk Shake",
+            "status": "Active",
             "product_name": "Wintermelon",
-            "short_info": "winter plus melon",
-            "long_info": "winter plus melon plus water plus sugar",
+            "short_info": "Winter melon milkshake flavor",
+            "long_info": "winter plus melon plus water plus sugar plus pearls",
             "sku": "0004856",
-            "price": "$10 ",
+            "price": "$10",
             "weight": "70g",
             "dimension": "10x15"
+        },
+        {
+            "ID": "2",
+            "stid": "39",
+            "catid": "5",
+            "store_name": "Lorz Kikay Shop",
+            "cat_name": "Gadgets & Mobiles",
+            "status": "Active",
+            "product_name": "LorzPhone 5",
+            "short_info": "16gb RAM + 1tb ROM",
+            "long_info": "16gb RAM + 1tb ROM + 50mp + 10k mAh",
+            "sku": "1000525",
+            "price": "$10000",
+            "weight": "700g",
+            "dimension": "6x8inches"
+        },
+        {
+            "ID": "3",
+            "stid": "38",
+            "catid": "5",
+            "store_name": "Lorz Kikay Shop",
+            "cat_name": "Gadgets & Mobiles",
+            "status": "Active",
+            "product_name": "some new title",
+            "short_info": "some new short info",
+            "long_info": "some new long info",
+            "sku": "some new skuu",
+            "price": "some new price",
+            "weight": "some new weight",
+            "dimension": "some new dimension"
         }
     ]
 }
@@ -318,7 +386,6 @@ REQUEST:
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
 - code: 'unknown' message: 'Please contact your administrator. Verification issues!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty!' data: null
 - code: 'failed' message: 'No results found.' data: null
 
 IF SUCCESS:
@@ -327,15 +394,19 @@ IF SUCCESS:
     "status": "success",
     "data": [
         {
-            "ID": "2",
-            "category_name": "Gadgets & Mobiles",
-            "product_name": "LorzPhone 5",
-            "short_info": "16gb RAM + 1tb ROM",
-            "long_info": "16gb RAM + 1tb ROM + 50mp + 10k mAh",
-            "sku": "1000525",
-            "price": "$10000",
-            "weight": "700g",
-            "dimension": "6x8inches"
+            "ID": "4",
+            "stid": "38",
+            "catid": "5",
+            "cat_name": "Foods and Drinks",
+            "store_name": "Lorz Lugawan",
+            "status": "Inactive",
+            "product_name": "Lugaw Special",
+            "short_info": "lugaw with egg special",
+            "long_info": "lugaw with egg with tokwa baboy",
+            "sku": "0058956",
+            "price": "35",
+            "weight": "20g",
+            "dimension": "20x50"
         }
     ]
 }
@@ -350,8 +421,9 @@ REQUEST:
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
 - code: 'unknown' message: 'Please contact your administrator. Verification issues!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty.' data: null
-- code: 'unknown' message: 'This store does not exists.' data: null
+- code: 'failed' message: 'Required fields cannot be empty.' data: null
+- code: 'failed' message: 'This store does not exists.' data: null
+- code: 'failed' message: 'This store is currently inactive.' data: null
 - code: 'failed' message: 'No results found.' data: null
 
 IF SUCCESS:
@@ -360,15 +432,34 @@ IF SUCCESS:
     "status": "success",
     "data": [
         {
-            "ID": "2",
-            "category_name": "Gadgets & Mobiles",
-            "product_name": "LorzPhone 5",
-            "short_info": "16gb RAM + 1tb ROM",
-            "long_info": "16gb RAM + 1tb ROM + 50mp + 10k mAh",
-            "sku": "1000525",
-            "price": "$10000",
-            "weight": "700g",
-            "dimension": "6x8inches"
+            "ID": "1",
+            "catid": "2",
+            "stid": "38",
+            "store_name": "Lorz Food Shop",
+            "cat_name": "Foods and Drinks",
+            "product_name": "Wintermelon",
+            "short_info": "Winter melon milkshake flavor",
+            "long_info": "winter plus melon plus water plus sugar plus pearls",
+            "sku": "0004856",
+            "price": "$10",
+            "weight": "70g",
+            "dimension": "10x15",
+            "status": "Active"
+        },
+        {
+            "ID": "4",
+            "catid": "5",
+            "stid": "38",
+            "store_name": "Lorz Food Shop",
+            "cat_name": "Foods and Drinks",
+            "product_name": "Lugaw Special",
+            "short_info": "lugaw with egg special",
+            "long_info": "lugaw with egg with tokwa baboy",
+            "sku": "0058956",
+            "price": "35",
+            "weight": "20g",
+            "dimension": "20x50",
+            "status": "Inactive"
         }
     ]
 }

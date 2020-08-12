@@ -18,6 +18,7 @@
             );
         }
 
+        //QA done 2020-08-12 5:09 pm
         public static function list_by_store(){
             
             global $wpdb;
@@ -97,8 +98,10 @@
             // Step 6: Start mysql query
             $result = $wpdb->get_results("SELECT
                 tp_prod.ID,
+                tp_prod.ctid as catid,
+                tp_prod.stid,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = s.title ) AS `store_name`,
-                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = c.title ) AS `category_name`,
+                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = c.title ) AS `cat_name`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE tp_rev.ID = tp_prod.title ) AS product_name,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.short_info ) AS `short_info`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.long_info ) AS `long_info`,
