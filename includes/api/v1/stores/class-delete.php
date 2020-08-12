@@ -27,8 +27,16 @@
             $user = TP_Delete_Store::catch_post();
 
             // declaring table names to variable
+                  // declaring table names to variable
             $table_store = TP_STORES_TABLE;
-            $table_revs = TP_REVISIONS_TABLE;
+            $table_revisions = TP_REVISIONS_TABLE;
+            $table_contacts = DV_CONTACTS_TABLE;
+            $table_brgy = DV_BRGY_TABLE;
+            $table_city = DV_CITY_TABLE;
+            $table_province = DV_PROVINCE_TABLE;
+            $table_country = DV_COUNTRY_TABLE;
+            $table_dv_revisions = DV_REVS_TABLE;
+            $table_add = DV_ADDRESS_TABLE;
 
             // Step1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -80,6 +88,34 @@
                     "message" => "This store is already deactivated.",
                 );
             }
+
+            $wpdb->query("START TRANSACTION");
+
+                $get_last_value = $wpdb->get_row("SELECT
+                    tp_rev.child_val AS title,
+                    (select child_val from $table_revisions where id = tp_str.short_info) AS short_info,
+                    (select child_val from $table_revisions where id = tp_str.long_info) AS long_info,
+                    (select child_val from $table_revisions where id = tp_str.logo) AS logo,
+                    (select child_val from $table_revisions where id = tp_str.banner) AS banner,
+                    (select child_val from $table_revisions where id = tp_str.status) AS `status`
+                FROM
+                    $table_store tp_str
+                INNER JOIN 
+                    $table_revisions tp_rev ON tp_rev.ID = tp_str.title 
+                INNER JOIN 
+                    $table_add dv_add ON tp_str.address = dv_add.ID
+                INNER JOIN 
+                    $table_contacts as dv_cont ON tp_str.ID = dv_cont.stid
+                WHERE 
+                    tp_str.ID = '{$user["store_id"]}'
+                ");
+
+                $wpdb->query("INSERT INTO $table_revisions ");
+
+
+
+
+            $wpdb->query("ROLLBACK");
 
             $get_store_data = $wpdb->get_row("SELECT * FROM tp_stores WHERE ID = '{$user["store_id"]}'");
 
