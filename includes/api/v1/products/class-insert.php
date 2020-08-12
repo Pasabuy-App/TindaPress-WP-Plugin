@@ -20,6 +20,7 @@
             );
         }
         
+        //QA Done 2020-08-12 10:45 am
         public static function insert_product(){
 
             global $wpdb;
@@ -29,6 +30,7 @@
             $table_product_fields = TP_PRODUCT_FIELDS;
             $table_revs           = TP_REVISIONS_TABLE;
             $table_revs_fields    = TP_REVISION_FIELDS;
+            $table_store        = TP_STORES_TABLE;
             $date = TP_Globals::date_stamp();
             $revs_type = "products";
             
@@ -62,7 +64,7 @@
                 
             }
 
-            // Step 6 : Check if all variable is not empty
+            // Step 4 : Check if all variable is not empty
             if (empty($_POST["catid"]) 
                 || empty($_POST["stid"]) 
                 || empty($_POST["title"]) 
@@ -80,36 +82,52 @@
                 
             }
 
-            if ( !is_numeric($_POST['stid']) || !is_numeric($_POST['catid'])  ) {
-                return array(
-					"status" => "unknown",
-					"message" => "Please contact your administrator. ID is not in valid format!",
-                );
-            }
-            // catch all post request
+            // Step 5: Catch all post request
             $user = TP_Product_Insert::catch_post();
-
-            //Check if this store id exists
+  
             $store_id = $user['stid'];
-            $get_store = $wpdb->get_row("SELECT ID FROM tp_stores  WHERE ID = $store_id  ");
-                
-             if ( !$get_store ) {
+            
+            // Step 6: Get store and status
+            $get_store = $wpdb->get_row("SELECT
+                    tp_str.ID,
+                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.status ) AS `status`
+                FROM
+                    $table_store tp_str
+                INNER JOIN 
+                    $table_revs tp_rev ON tp_rev.ID = tp_str.`status` 
+                WHERE tp_str.ID = $store_id
+            ");
+            
+            //Check if no rows found
+            if ( !$get_store ) {
                 return rest_ensure_response( 
                     array(
                         "status" => "failed",
-                        "message" => "This store does not exists..",
+                        "message" => "This store does not exists.",
+                    )
+                );
+            }
+
+            //Check if status = 0
+            if ( $get_store->status == 0 ) {
+                return rest_ensure_response( 
+                    array(
+                        "status" => "failed",
+                        "message" => "This store is currently deactivated.",
                     )
                 );
             }
        
-            // Check user role 
-            if (TP_Globals::verify_role( $_POST['wpid'], $_POST['stid'], 'can_add_product' ) == false && DV_Globals::check_roles('editor') == false) {
-                return array( 
+            // Step 7: Check if user has roles_access of can_activate_store or either contributor or editor
+            $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_add_products' );
+            
+            if ($permission == true) {
+                return array(
                     "status" => "failed",
-                    "message" => "Current user has no access in adding product.",
+                    "message" => "Current user has no access in adding products.",
                 );
             }
-
+            // Step 8: Start mysql transaction
             $wpdb->query("START TRANSACTION");
 
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'title', '{$user["title"]}', '{$user["created_by"]}', '$date')");
@@ -139,6 +157,7 @@
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'dimension', '{$user["dimension"]}', '{$user["created_by"]}', '$date')");
                 $dimension = $wpdb->insert_id;
 
+            // Step 9: Check if any of the queries above failed
             if ($title < 1 || $short_info < 1 || $long_info < 1 || $sku < 1 || $price < 1 || $weight < 1 || $dimension < 1 || $preview < 1 ) {
                 // when insert failed rollback all inserted data
                 $wpdb->query("ROLLBACK");
@@ -155,7 +174,7 @@
             $result = $wpdb->query("UPDATE $table_revs SET `parent_id` = $product_id WHERE ID IN ($title, $preview, $short_info, $long_info, $status, $sku, $price, $weight, $dimension) ");
 
             if ($product_id < 1 || $result < 1 ) {
-
+                //Do a rollback to disregard all queries
                 $wpdb->query("ROLLBACK");
                 return array(
                         "status" => "failed",
@@ -163,11 +182,11 @@
                 );
 
             }else {
-
+                //If no errors found, do a commit to finalize the transaction
                 $wpdb->query("COMMIT");
                 return array(
                         "status" => "success",
-                        "message" => "Data has been added successfully!",
+                        "message" => "Data has been added successfully.",
                 );
             }
 
@@ -181,7 +200,6 @@
                 $cur_user['created_by'] = $_POST["wpid"];
                 $cur_user['catid']       = $_POST["catid"];
                 $cur_user['stid']       = $_POST["stid"];
-
                 $cur_user['title']      = $_POST["title"];
                 $cur_user['short_info'] = $_POST["short_info"];
                 $cur_user['long_info']  = $_POST["long_info"];

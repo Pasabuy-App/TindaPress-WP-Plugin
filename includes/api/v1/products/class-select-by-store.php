@@ -66,16 +66,34 @@
             $store_id = $_POST['stid'];
 
             // Step 5: Check is store exists
-            $get_store = $wpdb->get_row("SELECT ID FROM $table_stores  WHERE ID = $store_id ");    
+             $get_store = $wpdb->get_row("SELECT
+                    tp_prod.ID, tp_prod.ctid, tp_prod.status as status_id,
+                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE tp_rev.ID = tp_prod.title ) AS product_name,
+                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.status ) AS `status`
+                FROM
+                    $table_product tp_prod
+                INNER JOIN 
+                    $table_revs tp_rev ON tp_rev.ID = tp_prod.title
+                WHERE
+                    tp_prod.stid = $store_id
+                GROUP BY
+                    tp_prod.ID
+            ");  
             
             if ( !$get_store ) {
                 return array(
                         "status" => "failed",
                         "message" => "This store does not exists.",
                 );
+            }
+            
+            if ( $get_store->status == 0 ) {
+                return array(
+                        "status" => "failed",
+                        "message" => "This store is currently inactive.",
+                );
 			}
 
-        
             // Step 6: Start mysql query
             $result = $wpdb->get_results("SELECT
                 tp_prod.ID,
