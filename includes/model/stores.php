@@ -54,13 +54,18 @@
                     <?php
 
                         if(isset($_GET['id'])) {
-                            if($_GET['status'] == 1) {
-                                $postUrl = "category/list/store/active";
-                            } else if($_GET['status'] == 2) {
-                                $postUrl = "category/list/store/inactive";
+                            if( isset($_GET['status']) ) {
+                                if($_GET['status'] == 1) {
+                                    $postUrl = "category/list/store/active";
+                                } else if($_GET['status'] == 2) {
+                                    $postUrl = "category/list/store/inactive";
+                                } else {
+                                    $postUrl = "stores/category/select";
+                                }
                             } else {
-                                $postUrl = "category/select";
+                                $postUrl = "stores/category/select";
                             }
+                            
                             ?>
                             postParam.catid = '<?= $_GET['id']; ?>';
                             <?php
