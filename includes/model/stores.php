@@ -20,11 +20,10 @@
                 $("#set_status").val('<?php echo $_GET['status']; ?>');
             <?php } ?>
         }
-        
-        <?php global $wp; ?>
-        $("#set_status").live('change', function() {
-            window.location.href = '<?php echo site_url().$_SERVER['REQUEST_URI']."&status="; ?>' + $(this).val();
-        });  
+
+        $("#filter").click(() => {
+            window.location.href = '<?php echo site_url().$_SERVER['REQUEST_URI']."&status="; ?>' + $('#set_status').val();
+        });
 
         //THIS ARE ALL THE PUBLIC VARIABLES.
         var activeTimeout = 'undefined';
@@ -33,18 +32,8 @@
             //GET THE REFERENCE OF THE CURRENT PAGE DATTABLES.
             var storeTables = $('#stores-datatables');
 
-            //SHOW NOTIFICATION THAT WE ARE CURRENTLY LOADING APPS.
-
             //SET INTERVAL DRAW UPDATE.
             loadingAppList( storeTables );
-            // setInterval( function()
-            // { 
-            //     loadingAppList( storeTables );
-            // }, 10000);
-
-            $('#RefreshAppList').click(function() {
-                loadingAppList( storeTables );
-            });
         
             //LOAD APPLIST WITH AJAX.
             var tptables = 'undefined';
@@ -105,7 +94,6 @@
                         },
                         error : function(jqXHR, textStatus, errorThrown) 
                         {
-                            //$('#apps-notification').text = "";
                             console.log("" + JSON.stringify(jqXHR) + " :: " + textStatus + " :: " + errorThrown);
                         }
                     });
@@ -173,7 +161,20 @@
                     searching: true,
                     dom: 'Bfrtip',
                     buttons: [
-                        'copy', 'csv', 'excel', 'pdf', 'print'
+                        {
+                            text: 'Create',
+                            action: function ( e, dt, node, config ) {
+                                //loadingAppList( storeTables );
+                                $('#CreateNewApp').modal('show');
+                            }
+                        },
+                        {
+                            text: 'Refresh',
+                            action: function ( e, dt, node, config ) {
+                                loadingAppList( storeTables );
+                            }
+                        }, //'copy', 'csv', 'excel', 'pdf', 
+                        'print',
                     ],
                     responsive: true,
                     "aaData": data,
@@ -345,7 +346,6 @@
 
             // LISTEN FOR MODAL SHOW AND ATTACHED ID.
             $('#CreateNewApp').on('show.bs.modal', function(e) {
-                var data = e.relatedTarget.dataset;
                 $('#create-app-btn').removeClass('disabled');
                 $('#new_title').val('');
                 $('#new_info').val('');
