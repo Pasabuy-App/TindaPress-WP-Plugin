@@ -20,6 +20,7 @@
             );
         }
 
+        //QA done 2020-08-12 4:44pm 
         public static function get_prods_by_cat(){
 
             global $wpdb;
@@ -28,7 +29,7 @@
             $table_product = TP_PRODUCT_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
             
-            //Check if prerequisites plugin are missing
+            // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
 
@@ -38,7 +39,7 @@
                 );
             }
 
-			//  Step2 : Validate if user is exist
+			//  Step 2: Validate user
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
@@ -47,7 +48,7 @@
                 
             }
 
-            // Step3 : Sanitize all Request
+            // Step 3: Check is params are passed
 			if (!isset($_POST['catid']) ) {
 
 				return array(
@@ -56,7 +57,7 @@
                 );
             }
 
-            // Step6 : Sanitize all Request if emply
+            // Step 4: Check if params passed are not empty
 			if (empty($_POST['catid']) ) {
 
 				return array(
@@ -65,9 +66,9 @@
                 );
             }
 
-
+            // Step 5: Check if this category exists and if its activated
             $category_id = $_POST['catid'];
-             $get_category = $wpdb->get_row("SELECT
+            $get_category = $wpdb->get_row("SELECT
                     cat.ID, 
                     ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.title ) AS title,
                     ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.info ) AS info,
@@ -82,7 +83,8 @@
                     p.ctid = $category_id
                 GROUP BY
                     cat.id");
-
+            
+            //Check if 0 rows found
             if ( !$get_category ) {
                 return array(
                     "status" => "failed",
@@ -90,6 +92,7 @@
                 );
             }
 
+            //Check if category is activated
             if ( $get_category->status == 0 ) {
                 return array(
                     "status" => "failed",
@@ -97,7 +100,7 @@
                 );
             }
             
-            // query
+            // Step 6: Start mysql query
             $result = $wpdb->get_results("SELECT
                 tp_prod.ID,
                 tp_prod.stid,
@@ -120,14 +123,15 @@
                 tp_prod.ctid = $category_id
             GROUP BY
                 tp_prod.ID ");
-            // Return results 
+           
+           // Step 7: Check if 0 rows found 
             if(!$result){
 
                 return array(
                     "status" => "failed",
                     "message" => "No results found.",
                 );
-
+            // Return success status and complete object
             }else{
 
                 return array(

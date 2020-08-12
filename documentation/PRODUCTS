@@ -114,7 +114,7 @@ IF SUCCESS:
 ```
 
 
-#### SELECT PRODUCT BY CATEGORY ID => tindapress/v1/product/category/select
+#### SELECT PRODUCT BY CATEGORY ID => tindapress/v1/products/category/select
 
 REQUEST:
 - Method: POST
@@ -126,51 +126,61 @@ RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator.  Request Unknown!' data: null
 - code: 'unknown' message: 'Required fields cannot be empty!' data: null
 - code: 'failed' message: 'This category does not exists.' data: null
-- code: 'failed' message: 'This category is currently deactivated.' data: null
+- code: 'failed' message: 'This category is currently inactive.' data: null
 - code: 'failed' message: 'No product found.' data: null
 
 IF SUCCESS:
 ```
-
 {
     "status": "success",
     "data": [
         {
-            "ID": "1",
-            "category_name": "1pc. Burger Steak",
-            "product_name": "1pc. Burger Steak",
-            "short_info": "Burger steak and rice.",
-            "long_info": "Pure beef patty with mushroom gravy and steamed rice.",
-            "sku": "JLB-BS-SML-BR",
-            "price": "59.00",
-            "weight": "0.52 kg",
-            "dimension": "25 x 25"
-        },
-        {
             "ID": "2",
-            "category_name": "2pc. Burger Steak",
-            "product_name": "2pc. Burger Steak",
-            "short_info": "Two burger steak and rice.",
-            "long_info": "Two pieces of pure beef patty with mushroom gravy and steamed rice.",
-            "sku": "JLB-2BS-MED-BR",
-            "price": "79.00",
-            "weight": "0.65 kg",
-            "dimension": "30 x 30"
+            "stid": "39",
+            "catid": "5",
+            "cat_name": "Gadgets & Mobiles",
+            "store_name": "Lorz Phone Shop",
+            "product_name": "LorzPhone 5",
+            "status": "Active",
+            "short_info": "16gb RAM + 1tb ROM",
+            "long_info": "16gb RAM + 1tb ROM + 50mp + 10k mAh",
+            "sku": "1000525",
+            "price": "$10000",
+            "weight": "700g",
+            "dimension": "6x8inches"
         },
         {
             "ID": "3",
-            "category_name": "1pc. Burger Steak with Joly Spaghetti",
-            "product_name": "1pc. Burger Steak with Joly Spaghetti",
-            "short_info": "1pc Burger steak and rice with jolly spaghetti.",
-            "long_info": "Pure beef patty with mushroom gravy and steamed rice with jolly spaghetti.",
-            "sku": "JLB-BSJS-SML-BR",
-            "price": "69.00",
-            "weight": "0.60 kg",
-            "dimension": "27 x 27"
+            "stid": "38",
+            "catid": "5",
+            "cat_name": "Gadgets & Mobiles",
+            "store_name": "Lorz Phone Shop 2",
+            "product_name": "LorzStarPhone 3E",
+            "status": "Active",
+            "short_info": "Lorem Ipsum",
+            "long_info": "Lorem Ipsum Dolor Bla Dolor Ipsum",
+            "sku": "00055566",
+            "price": "$2232",
+            "weight": "600g",
+            "dimension": "10x7"
+        },
+        {
+            "ID": "4",
+            "stid": "38",
+            "catid": "5",
+            "cat_name": "Gadgets & Mobiles",
+            "store_name": "Lorz Phone Shop 2",
+            "product_name": "UniTablet",
+            "status": "Active",
+            "short_info": "Lorem Ipsum",
+            "long_info": "Lorem Ipsum Dolor Bla Dolor Ipsum",
+            "sku": "00055236",
+            "price": "$2232",
+            "weight": "600g",
+            "dimension": "15x10"
         }
     ]
 }
-  
 ```
 
 #### SELECT PRODUCT BY ID => tindapress/v1/product/select
