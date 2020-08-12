@@ -54,14 +54,14 @@
             // Step3 : Query
             $result = $wpdb->get_results("SELECT
                 tp_str.ID,
-                tp_str.ctid,
-                ( SELECT rev.child_val FROM $table_revs rev WHERE rev.ID = (SELECT ID FROM $table_category WHERE ID = tp_str.ctid and types = 'store' ) ) AS `category_name`,
+                tp_str.ctid AS `catid`,
+                (select child_val from $table_revs where id = (select title from tp_categories where id = tp_str.ctid)) AS catname,
                 ( select child_val from $table_revs where id = tp_str.title) AS title,
                 ( select child_val from $table_revs where id = tp_str.short_info) AS short_info,
                 ( select child_val from $table_revs where id = tp_str.long_info) AS long_info,
                 ( select child_val from $table_revs where id = tp_str.logo) AS avatar,
                 ( select child_val from $table_revs where id = tp_str.banner) AS banner,
-                IF (( select child_val from $table_revs where id = tp_str.`status` ) = 1, 'active' , 'inactive' ) AS `status`,
+                IF (( select child_val from $table_revs where id = tp_str.`status` ) = 1, 'Active' , 'Inactive' ) AS `status`,
                 ( select child_val from $table_dv_revs where id = dv_add.street) as street,
                 ( SELECT brgy_name FROM $table_brgy WHERE ID = (select child_val from $table_dv_revs where id = dv_add.brgy)) as brgy,
                 ( SELECT city_name FROM $table_city WHERE city_code = (select child_val from $table_dv_revs where id = dv_add.city)) as city,

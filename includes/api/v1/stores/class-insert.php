@@ -321,7 +321,7 @@
 
                 // Email
                 $wpdb->query("INSERT INTO `$table_dv_revs` (revs_type, parent_id, child_key, child_val, created_by, date_created) 
-                                                VALUES ( 'contacts', 0, 'email', '{$user["phone"]}', '{$user["created_by"]}', '$date_created'  )");
+                                                VALUES ( 'contacts', 0, 'email', '{$user["email"]}', '{$user["created_by"]}', '$date_created'  )");
                 $email_last_id = $wpdb->insert_id;
 
                 $wpdb->query("INSERT INTO `$table_contact` (`status`, `types`, `revs`, `stid`, `created_by`, `date_created`) 

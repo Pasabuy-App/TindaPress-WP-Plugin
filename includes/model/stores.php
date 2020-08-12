@@ -58,7 +58,7 @@
                             postParam.catid = '<?php echo $_GET['id']; ?>';
                             <?php
                         } else {
-                            $root_url .= "list/active";
+                            $root_url .= "list/all";
                         }
                     ?>
                     
