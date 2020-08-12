@@ -31,7 +31,7 @@
             $table_dv_revisions = DV_REVS_TABLE;
             $table_add = DV_ADDRESS_TABLE;
 
-            // Step1 : Check if prerequisites plugin are missing
+            // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
@@ -40,7 +40,7 @@
                 );
             }
 
-            // Step2 : Check if wpid and snky is valid
+            // Step 2: Validate user
             if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
@@ -48,6 +48,7 @@
                 );
             }
 
+            // Step 3: Check if required parameters are passed
             if (!isset($_POST["stid"])) {
                 return array(
 					"status" => "unknown",
@@ -55,6 +56,7 @@
                 );
             }
 
+            // Step 4: Check if parameters passed are empty
             if (empty($_POST["stid"])) {
                 return array(
                     "status" => "failed",
@@ -62,14 +64,8 @@
                 );
             }
 
-            if (!is_numeric($_POST["stid"])) {
-                return array(
-                    "status" => "unknown",
-                    "message" => "Please contact your administrator. ID is not in valid format!",
-                );
-            }
-
             $user = TP_Store_Listing_Address::catch_post();
+            // Step 5: Check if this store exists in database.
             $check_store = $wpdb->get_row("SELECT ID FROM tp_stores  WHERE ID = '{$user["store_id"]}'  AND  (SELECT `child_val` FROM tp_revisions WHERE ID = tp_stores.`status`  ) = 1");
             if (!$check_store) {
                 return array(
@@ -78,6 +74,7 @@
                 );
             }
 
+            // Step 6: Start mysql query
             $result = $wpdb->get_results("SELECT
                 `add`.ID,
                 `add`.stid,
@@ -95,10 +92,11 @@
             WHERE
              `add`.stid = '{$user["store_id"]}' ");
 
+            // Step 7: Check if no rows found
             if (!$result) {
                 return array(
                     "status" => "unknown",
-                    "message" => "An erro occured whileadwawdwad fetching data to database!"
+                    "message" => "An error occured while fetching data to database!"
                 );
 
             }else{

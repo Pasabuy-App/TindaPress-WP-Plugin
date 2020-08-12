@@ -8,8 +8,9 @@
 	/** 
         * @package tindapress-wp-plugin
         * @version 0.1.0
-	*/
-
+    */
+    
+    //Qa done 2020-08-12 9:45 pm
     class TP_Store_Select_Address {
         public static function listen(){
             return rest_ensure_response( 
@@ -32,7 +33,7 @@
             $table_province = DV_PROVINCE_TABLE;
             $table_country = DV_COUNTRY_TABLE;
 
-            // Step1 : Check if prerequisites plugin are missing
+            // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
@@ -41,7 +42,7 @@
                 );
             }
 
-            // Step2 : Check if wpid and snky is valid
+            // Step 2: Validate user
             if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
@@ -49,6 +50,7 @@
                 );
             }
 
+            // Step 3: Check if required parameters are passed
             if (!isset($_POST["stid"]) || !isset($_POST["addr"])  ) {
                 return array(
 					"status" => "unknown",
@@ -56,6 +58,7 @@
                 );
             }
 
+            // Step 4: Check if parameters passed are empty
             if (empty($_POST["stid"]) || empty($_POST["addr"])  ) {
                 return array(
                     "status" => "failed",
@@ -63,23 +66,19 @@
                 );
             }
 
-            if (!is_numeric($_POST["stid"]) || !is_numeric($_POST["addr"])  ) {
-                return array(
-                    "status" => "unknown",
-                    "message" => "Please contact your administrator. ID is not in valid format!",
-                );
-            }
 
             $user = TP_Store_Select_Address::catch_post();
 
+            // Step 5: Check if address is active.
             $check_addres_id = $wpdb->get_row("SELECT `child_val`as`status` FROM $table_dv_revisions WHERE ID = (SELECT `status` FROM $table_add WHERE ID = '{$user["address_id"]}')");
             if ($check_addres_id->status != 1) {
                 return array(
                     "status" => "failed",
-                    "message" => "This address is deactivated.."
+                    "message" => "This address is deactivated."
                 );
             }
 
+            // Step 6: Start mysql query
             $result = $wpdb->get_row("SELECT
                 `add`.ID,
                 `add`.types,
@@ -95,11 +94,12 @@
                 $table_add `add`
             WHERE
             `add`.id = '{$user["address_id"]}' AND `add`.stid = '{$user["store_id"]}' ");
-
+            
+            // Step 7: Check if no rows found
             if (!$result) {
                 return array(
-                    "status" => "unknown",
-                    "message" => "An erro occured while fetching data to database!"
+                    "status" => "error",
+                    "message" => "An error occured while fetching data from the server."
                 );
 
             }else{
