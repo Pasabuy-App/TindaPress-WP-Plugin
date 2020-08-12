@@ -24,12 +24,13 @@
             $table_store = TP_STORES_TABLE;
             $table_revisions = TP_REVISIONS_TABLE;
             $table_contacts = DV_CONTACTS_TABLE;
+            $table_dv_revisions = DV_REVS_TABLE;
+            
+            $table_add = DV_ADDRESS_TABLE;
             $table_brgy = DV_BRGY_TABLE;
             $table_city = DV_CITY_TABLE;
             $table_province = DV_PROVINCE_TABLE;
             $table_country = DV_COUNTRY_TABLE;
-            $table_dv_revisions = DV_REVS_TABLE;
-            $table_add = DV_ADDRESS_TABLE;
 
             // Step1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -71,7 +72,7 @@
 
             $user = TP_Store_Select_Address::catch_post();
 
-            $check_addres_id = $wpdb->get_row("SELECT `child_val`as`status` FROM dv_revisions WHERE ID = (SELECT `status` FROM dv_address WHERE ID = '{$user["address_id"]}')");
+            $check_addres_id = $wpdb->get_row("SELECT `child_val`as`status` FROM $table_dv_revisions WHERE ID = (SELECT `status` FROM $table_add WHERE ID = '{$user["address_id"]}')");
             if ($check_addres_id->status != 1) {
                 return array(
                     "status" => "failed",
@@ -82,16 +83,16 @@
             $result = $wpdb->get_row("SELECT
                 `add`.ID,
                 `add`.types,
-                ( SELECT `child_val` FROM tp_revisions WHERE ID = ( SELECT `title` FROM tp_stores WHERE ID = `add`.stid ) ) as store_name,
-                ( SELECT child_val FROM dv_revisions WHERE id = `add`.street ) AS street,
-                ( SELECT brgy_name FROM dv_geo_brgys WHERE ID = ( SELECT child_val FROM dv_revisions WHERE id = `add`.brgy ) ) AS brgy,
-                ( SELECT city_name FROM dv_geo_cities WHERE city_code = ( SELECT child_val FROM dv_revisions WHERE id = `add`.city ) ) AS city,
-                ( SELECT prov_name FROM dv_geo_provinces WHERE prov_code = ( SELECT child_val FROM dv_revisions WHERE id = `add`.province ) ) AS province,
-                ( SELECT country_name FROM dv_geo_countries WHERE id = ( SELECT child_val FROM dv_revisions WHERE id = `add`.country ) ) AS country,
-                IF (( select child_val from dv_revisions where id = `add`.`status` ) = 1, 'Active' , 'Inactive' ) AS `status`,
+                ( SELECT `child_val` FROM $table_revisions WHERE ID = ( SELECT `title` FROM tp_stores WHERE ID = `add`.stid ) ) as store_name,
+                ( SELECT child_val FROM $table_dv_revisions WHERE id = `add`.street ) AS street,
+                ( SELECT brgy_name FROM $table_brgy WHERE ID = ( SELECT child_val FROM $table_dv_revisions WHERE id = `add`.brgy ) ) AS brgy,
+                ( SELECT city_name FROM $table_city WHERE city_code = ( SELECT child_val FROM $table_dv_revisions WHERE id = `add`.city ) ) AS city,
+                ( SELECT prov_name FROM $table_province WHERE prov_code = ( SELECT child_val FROM $table_dv_revisions WHERE id = `add`.province ) ) AS province,
+                ( SELECT country_name FROM $table_country WHERE id = ( SELECT child_val FROM $table_dv_revisions WHERE id = `add`.country ) ) AS country,
+                IF (( select child_val from $table_dv_revisions where id = `add`.`status` ) = 1, 'Active' , 'Inactive' ) AS `status`,
                 `add`.date_created
             FROM
-                dv_address `add`
+                $table_add `add`
             WHERE
             `add`.id = '{$user["address_id"]}' AND `add`.stid = '{$user["store_id"]}' ");
 
