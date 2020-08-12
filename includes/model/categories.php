@@ -301,9 +301,9 @@
                 var postUrl = '';
                 
                 if( clickedBtnId === 'delete-app-btn' ) {
-                    postUrl = "<?= site_url() . "/wp-json/tindapress/v1/category/delete" ?>";
+                    postUrl = '<?= site_url() . "/wp-json/tindapress/v1/category/delete" ?>';
                 } else {
-                    postUrl = "<?= site_url() . "/wp-json/tindapress/v1/category/update" ?>";
+                    postUrl = '<?= site_url() . "/wp-json/tindapress/v1/category/update" ?>';
                     postParam.title = $('#edit_title').val();
                     postParam.info = $('#edit_info').val();
                 }
