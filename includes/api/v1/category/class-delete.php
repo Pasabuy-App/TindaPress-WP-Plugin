@@ -54,7 +54,7 @@
             if ( !isset($_POST["catid"])  ) {
 				return array(
 						"status" => "unknown",
-						"message" => "Please contact your administrator. Request Unknown!",
+						"message" => "Please contact your administrator. Request Unknown!!!!!!",
                 );
             }
 
