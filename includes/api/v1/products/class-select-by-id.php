@@ -25,7 +25,7 @@
         public static function select_by_id_product(){
             global $wpdb;
 
-            $product_table     = TP_PRODUCT_TABLE;
+            $table_product     = TP_PRODUCT_TABLE;
             $table_revs        = TP_REVISIONS_TABLE;
             $table_store        = TP_STORES_TABLE;
             $table_category       = TP_CATEGORIES_TABLE;
@@ -75,7 +75,7 @@
                 INNER JOIN 
                     $table_revs tp_rev ON tp_rev.ID = tp_prod.title
                 WHERE
-                    tp_prod.ID = $product_id
+                    tp_prod.ID = $pdid
                 GROUP BY
                     tp_prod.ID
             ");
@@ -98,19 +98,21 @@
 
             $result = $wpdb->get_row("SELECT
                 tp_prod.ID,
+                tp_prod.ctid as catid,
+                (select child_val from $table_revs where id = (select title from tp_categories where id = tp_prod.ctid)) AS cat_name,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.title ) AS `store_name`,
                 ( SELECT tp_cat.types     FROM $table_category tp_cat WHERE ID = tp_prod.ctid ) AS `category`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.title ) AS `title`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.preview ) AS `preview`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.short_info ) AS `short_info`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.long_info ) AS `long_info`,
-                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.`status` ) AS `status`,
+                IF (( select child_val from $table_revs where id = tp_prod.`status` ) = 1, 'Active' , 'Inactive' ) AS `status`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.sku ) AS `sku`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.price ) AS `price`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.weight ) AS `weight`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.dimension ) AS `dimension`
             FROM
-                $product_table tp_prod
+                $table_product tp_prod
                 INNER JOIN $table_revs tp_rev ON tp_rev.ID = tp_prod.title
                 INNER JOIN $table_store tp_str ON tp_str.ID = tp_prod.stid 
             WHERE
