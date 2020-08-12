@@ -243,7 +243,6 @@ REQUEST:
 RESPONSE:
 - code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
 - code: 'unknown' message: 'Please contact your administrator. Verification issues!' data: null
-- code: 'unknown' message: 'Required fields cannot be empty!' data: null
 - code: 'failed' message: 'No results found.' data: null
 
 IF SUCCESS:
@@ -253,25 +252,48 @@ IF SUCCESS:
     "data": [
         {
             "ID": "1",
-            "category_name": "Milk Shake",
+            "stid": "38",
+            "catid": "2",
+            "store_name": "Lorz Kikay Shop",
+            "cat_name": "MIlk Shake",
             "product_name": "Wintermelon",
-            "short_info": "winter plus melon",
-            "long_info": "winter plus melon plus water plus sugar",
+            "short_info": "Winter melon milkshake flavor",
+            "long_info": "winter plus melon plus water plus sugar plus pearls",
             "sku": "0004856",
-            "price": "$10 ",
+            "price": "$10",
             "weight": "70g",
-            "dimension": "10x15"
+            "dimension": "10x15",
+            "status": "Active"
         },
         {
             "ID": "2",
-            "category_name": "Gadgets & Mobiles",
+            "stid": "39",
+            "catid": "5",
+            "store_name": "Lorz Kikay Shop",
+            "cat_name": "Gadgets & Mobiles",
             "product_name": "LorzPhone 5",
             "short_info": "16gb RAM + 1tb ROM",
             "long_info": "16gb RAM + 1tb ROM + 50mp + 10k mAh",
             "sku": "1000525",
             "price": "$10000",
             "weight": "700g",
-            "dimension": "6x8inches"
+            "dimension": "6x8inches",
+            "status": "Active"
+        },
+        {
+            "ID": "4",
+            "stid": "38",
+            "catid": "5",
+            "store_name": "Lorz Kikay Shop",
+            "cat_name": "Gadgets & Mobiles",
+            "product_name": "Lugaw Special",
+            "short_info": "lugaw with egg special",
+            "long_info": "lugaw with egg with tokwa baboy",
+            "sku": "0058956",
+            "price": "35",
+            "weight": "20g",
+            "dimension": "20x50",
+            "status": "Inactive"
         }
     ]
 }

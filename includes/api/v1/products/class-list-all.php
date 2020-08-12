@@ -18,6 +18,7 @@
             );
         }
 
+        //QA done 2020-08-12 4:25pm
         public static function list_all(){
             
             global $wpdb;
