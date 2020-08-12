@@ -42,14 +42,13 @@
 					<strong>Category: </strong><strong id="parent-name"><?php echo $_GET['name']; ?></strong>
 				</div>
 				<button id="RefreshAppList" type="button" class="btn btn-dark">Refresh List</button>
-				<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#CreateNewApp">Create Store</button>
+				<!-- <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#CreateNewApp">Create Store</button> -->
 			</div>
 			<table id="stores-datatables" class="stripe" style="width: 100%;"></table>
 			<div id="stores-notification" class="alert alert-info tp-center-item " role="alert" style="margin-top: 20px;">
 				Currently fetching updates for all available stores. Please wait...
 			</div>
 		</div>
-		<?php //include_once( TP_PLUGIN_PATH . "/project-browser/variants.php" ); ?>
 	<?php } ?>
 
 	<?php include_once( TP_PLUGIN_PATH . "/includes/model/stores.php" ); ?>

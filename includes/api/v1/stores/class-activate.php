@@ -24,7 +24,7 @@
 
             global $wpdb;
             
-            $user = TP_Activate_Store::catch_post();
+            $user = TP_Delete_Store::catch_post();
 
             // declaring table names to variable
             $table_store = TP_STORES_TABLE;
@@ -64,18 +64,28 @@
             }
             
             // Step5 :  Query
-            $store_data = $wpdb->get_row("SELECT tp_str.* FROM $table_store tp_str INNER JOIN $table_revs tp_revs ON tp_revs.ID = tp_str.`status` WHERE tp_str.ID = '{$user["store_id"]}' AND tp_revs.child_val = 0 ");
+            $store_data = $wpdb->get_row("SELECT child_val as stats FROM tp_revisions WHERE ID = (SELECT `status` FROM tp_stores WHERE ID = '{$user["store_id"]}')");
                
             // Step6 :  Check if failed
             if (!$store_data) {
                 return array(
                     "status" => "failed",
-                    "message" => "An error occured while fetching data to database.",
+                    "message" => "This store does not exists..",
                 );
             }
 
+            if ($store_data->stats == 1) {
+                return array(
+                    "status" => "failed",
+                    "message" => "This store is already activated..",
+                );
+            }
+
+            $get_store_data = $wpdb->get_row("SELECT * FROM tp_stores WHERE ID = '{$user["store_id"]}'");
+
+
             // Step7 :  Query
-            $result = $wpdb->query("UPDATE $table_revs SET `child_val` = '1' WHERE ID = $store_data->status ");
+            $result = $wpdb->query("UPDATE $table_revs SET `child_val` = '1' WHERE ID = $get_store_data->status ");
 
             // Step8 :  Check if failed
             if ($result < 1 ) {
@@ -86,7 +96,7 @@
             } else{
                 return array(
                     "status" => "success",
-                    "message" => "Data has been activate successfully.",
+                    "message" => "Data has been activated successfully.",
                 );
             }
         }  

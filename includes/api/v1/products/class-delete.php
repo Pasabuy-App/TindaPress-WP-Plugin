@@ -22,7 +22,7 @@
             );
         }
 
-
+        //QA done 2020-8-12 10:53 am
         public static function delete_product(){
 
             global $wpdb;
@@ -42,7 +42,7 @@
                 );
             }
 
-            // Step2 : Validate if user is exist
+            // Step 2: Validate if user is exist
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
@@ -50,8 +50,8 @@
                 );
             }
 
-             // Step3 : Sanitize all Request
-			if (!isset($_POST['pid']) ) {
+             // Step 3: Check if params are passed
+			if (!isset($_POST['pdid']) ) {
 				return array(
 						"status" => "unknown",
 						"message" => "Please contact your administrator. Request unknown!",
@@ -59,35 +59,29 @@
                 
             }
 
-            // Step4 : Sanitize all Request
-			if ( empty($_POST['pid']) ) {
+            // Step 4: Check if params passed are not null
+			if ( empty($_POST['pdid']) ) {
 				return array(
 						"status" => "unknown",
 						"message" => "Required fields cannot be empty!",
                 );
             }
 
-            // Step5 : Sanitize all Request
-			if ( !is_numeric($_POST['pid']) ) {
-				return array(
-						"status" => "unknown",
-						"message" => "Please contact your administrator. ID not in valid format!",
-                );
-            }
-
-
-            // Check user role 
-            if (TP_Globals::verify_role( $_POST['wpid'], $_POST['stid'], 'can_delete_product' ) == false) {
-                return array( 
+            // Step 5: Check if user has roles_access of can_activate_store or either contributor or editor
+            $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_delete_products' );
+            
+            if ($permission == true) {
+                return array(
                     "status" => "failed",
-                    "message" => "Current user has no access in deleting product.",
+                    "message" => "Current user has no access in deleting products.",
                 );
             }
 
             // variables
-            $parentid = $_POST['pid'];
+            $parentid = $_POST['pdid'];
             $wpid = $_POST['wpid'];
 
+            // Step 6: Check if product exists
             $get_status_id = $wpdb->get_row("SELECT `status` FROM $product_table WHERE ID = $parentid  ");
 
             if ( empty($get_status_id)  ) {
@@ -97,13 +91,15 @@
                 );
             }
 
-            // Query
+            // Step 7: Start mysql transaction
             $wpdb->query("START TRANSACTION ");
                 
+                //Get current status of the product
                 $get_status = $wpdb->get_row("SELECT `child_val`as `status` FROM $table_revs WHERE ID = $get_status_id->status  ");
 
                 $result =  $wpdb->query("UPDATE $table_revs  SET child_val = '0', `date_created` = '$date_stamp' WHERE ID =  $get_status_id->status  AND parent_id = $parentid");
 
+            //Returns failed if product is already deactivated
             if ($get_status->status != 1  ) {
                 $wpdb->query("ROLLBACK");
                 return array(
@@ -112,13 +108,13 @@
                 );
             }
 
-            // check of retsult is true or not
+            // Step 8: Check for results. Do a rollback if error occurs. Else do a commit
             if ($result < 1 ) {
             
                 $wpdb->query("ROLLBACK");
             
                 return array(
-					"status" => "failed",
+					"status" => "error",
 					"message" => "An error occured while submitting data to the server.",
                 );
 

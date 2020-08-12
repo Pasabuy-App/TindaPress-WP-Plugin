@@ -298,21 +298,22 @@
                     postParam.wpid = "<?php echo get_current_user_id(); ?>";
                     postParam.snky = "<?php echo wp_get_session_token(); ?>";
                     postParam.catid = $('#edit_id').val();
-
-                if( clickedBtnId == 'delete-app-btn' ) {
-                    <?php $postUrl = site_url() . "/wp-json/tindapress/v1/category/delete"; ?>
+                var postUrl = '';
+                
+                if( clickedBtnId === 'delete-app-btn' ) {
+                    postUrl = '<?= site_url() . "/wp-json/tindapress/v1/category/delete" ?>';
                 } else {
-                    <?php $postUrl = site_url() . "/wp-json/tindapress/v1/category/update"; ?>
+                    postUrl = '<?= site_url() . "/wp-json/tindapress/v1/category/update" ?>';
                     postParam.title = $('#edit_title').val();
                     postParam.info = $('#edit_info').val();
                 }
-
+              
                 // This will be handled by create-app.php.
                 $.ajax({
                     dataType: 'json',
                     type: 'POST', 
                     data: postParam,
-                    url: '<?php echo $postUrl; ?>',
+                    url: postUrl,
                     success : function( data )
                     {
                         if( clickedBtnId == 'delete-app-btn' ) {

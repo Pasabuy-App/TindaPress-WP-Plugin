@@ -20,15 +20,16 @@
             );
         }
 
+        //QA done 2020-08-12 4:44pm 
         public static function get_prods_by_cat(){
 
             global $wpdb;
             // Variables for Table
-            $tp_revs = TP_REVISIONS_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
             $table_product = TP_PRODUCT_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
             
-            //Check if prerequisites plugin are missing
+            // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
 
@@ -38,7 +39,7 @@
                 );
             }
 
-			//  Step2 : Validate if user is exist
+			//  Step 2: Validate user
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
@@ -47,7 +48,7 @@
                 
             }
 
-            // Step3 : Sanitize all Request
+            // Step 3: Check is params are passed
 			if (!isset($_POST['catid']) ) {
 
 				return array(
@@ -56,7 +57,7 @@
                 );
             }
 
-            // Step6 : Sanitize all Request if emply
+            // Step 4: Check if params passed are not empty
 			if (empty($_POST['catid']) ) {
 
 				return array(
@@ -65,51 +66,72 @@
                 );
             }
 
-            if (  !is_numeric($_POST['catid'])  ) {
-                return array(
-					"status" => "unknown",
-					"message" => "Please contact your administrator. ID is not in valid format!",
-                );
-            }
-
+            // Step 5: Check if this category exists and if its activated
             $category_id = $_POST['catid'];
+            $get_category = $wpdb->get_row("SELECT
+                    cat.ID, 
+                    ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.title ) AS title,
+                    ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.info ) AS info,
+                    ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.status) as `status`
+                FROM
+                    $table_product p
+                INNER JOIN
+                    $table_revs rev ON rev.parent_id = p.id
+                INNER JOIN
+                    $table_categories cat ON cat.id = p.ctid
+                WHERE
+                    p.ctid = $category_id
+                GROUP BY
+                    cat.id");
             
-            $get_category = $wpdb->get_row("SELECT `ID` FROM $table_categories WHERE ID = $category_id  ");
-
-            if ( empty($get_category)  ) {
+            //Check if 0 rows found
+            if ( !$get_category ) {
                 return array(
                     "status" => "failed",
                     "message" => "This category does not exists.",
                 );
             }
+
+            //Check if category is activated
+            if ( $get_category->status == 0 ) {
+                return array(
+                    "status" => "failed",
+                    "message" => "This category is currently inactive.",
+                );
+            }
             
-            // query
+            // Step 6: Start mysql query
             $result = $wpdb->get_results("SELECT
                 tp_prod.ID,
-                ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.title ) AS `category_name`,
-                ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE tp_rev.ID = tp_prod.title ) AS product_name,
-                ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.short_info ) AS `short_info`,
-                ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.long_info ) AS `long_info`,
-                ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.sku ) AS `sku`,
-                ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.price ) AS `price`,
-                ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.weight ) AS `weight`,
-                ( SELECT tp_rev.child_val FROM $tp_revs tp_rev WHERE ID = tp_prod.dimension ) AS `dimension`
+                tp_prod.stid,
+                tp_prod.ctid as catid,
+                (select child_val from $table_revs where id = (select title from tp_categories where id = tp_prod.ctid)) AS cat_name,
+                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = (SELECT `title` FROM tp_stores WHERE ID  = tp_prod.stid ) ) AS `store_name`,
+                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE tp_rev.ID = tp_prod.title ) AS product_name,
+                IF (( select child_val from $table_revs where id = tp_prod.`status` ) = 1, 'Active' , 'Inactive' ) AS `status`,
+                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.short_info ) AS `short_info`,
+                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.long_info ) AS `long_info`,
+                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.sku ) AS `sku`,
+                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.price ) AS `price`,
+                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.weight ) AS `weight`,
+                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.dimension ) AS `dimension`
             FROM
                 $table_product tp_prod
             INNER JOIN 
-                $tp_revs tp_rev ON tp_rev.ID = tp_prod.title 
+                $table_revs tp_rev ON tp_rev.ID = tp_prod.title 
             WHERE
                 tp_prod.ctid = $category_id
             GROUP BY
                 tp_prod.ID ");
-            // Return results 
+           
+           // Step 7: Check if 0 rows found 
             if(!$result){
 
                 return array(
                     "status" => "failed",
-                    "message" => "No product found.",
+                    "message" => "No results found.",
                 );
-
+            // Return success status and complete object
             }else{
 
                 return array(

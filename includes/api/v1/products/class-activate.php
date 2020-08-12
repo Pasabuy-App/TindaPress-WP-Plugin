@@ -22,7 +22,7 @@
             );
         }
 
-
+        //QA Done 2020-08-12 4:10 pm
         public static function activate_product(){
 
             global $wpdb;
@@ -42,7 +42,7 @@
                 );
             }
 
-            // Step2 : Validate if user is exist
+            // Step 2: Validate user
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
@@ -50,8 +50,8 @@
                 );
             }
 
-             // Step3 : Sanitize all Request
-			if ( !isset($_POST['pid']) ) {
+             // Step 3: Check if parameters are passed
+			if ( !isset($_POST['pdid']) ) {
 				return array(
 						"status" => "unknown",
 						"message" => "Please contact your administrator. Request unknown!",
@@ -59,34 +59,31 @@
                 
             }
 
-            // Step4 : Sanitize all Request
-			if ( empty($_POST['pid']) ) {
+            // Step 4: Check if params passed are empty
+			if ( empty($_POST['pdid']) ) {
 				return array(
-						"status" => "unknown",
+						"status" => "failed",
 						"message" => "Required fields cannot be empty!",
                 );
             }
 
-            // Step5 : Sanitize all Request
-			if ( !is_numeric($_POST['pid']) ) {
-				return array(
-						"status" => "unknown",
-						"message" => "Please contact your administrator. ID not in valid format!",
-                );
-            }
 
-            // Check user role 
-            if (TP_Globals::verify_role( $_POST['wpid'], $_POST['stid'], 'can_activate_product' ) == false) {
-                return array( 
+
+            // Step 5: Check if user has roles_access of can_activate_store or either contributor or editor
+            $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_activate_products' );
+            
+            if ($permission == true) {
+                return array(
                     "status" => "failed",
-                    "message" => "Current user has no access in activating product.",
+                    "message" => "Current user has no access in activating products.",
                 );
             }
 
             // variables
-            $parentid = $_POST['pid'];
+            $parentid = $_POST['pdid'];
             $wpid = $_POST['wpid'];
-           
+            
+            // Step 6: Check if products exists
             $get_status_id = $wpdb->get_row("SELECT `status` FROM $product_table WHERE ID = $parentid  ");
 
             if ( empty($get_status_id)  ) {
@@ -96,13 +93,14 @@
                 );
             }
 
-            // Query
+            // Step 7: Start mysql transaction
             $wpdb->query("START TRANSACTION ");
 
                 $get_status = $wpdb->get_row("SELECT `child_val`as `status` FROM $table_revs WHERE ID = $get_status_id->status  ");
 
                 $result =  $wpdb->query("UPDATE $table_revs  SET child_val = '1', `date_created` = '$date_stamp' WHERE ID =  $get_status_id->status  AND parent_id = $parentid");
 
+            //Check if product is already activated
             if ($get_status->status != 0   ) {
                     
                 $wpdb->query("ROLLBACK");
@@ -112,21 +110,20 @@
                 );
             }
 
-            // check of retsult is true or not
+
+            // Step 8: Check for query results. Do a rollback if errors found
             if ( $result < 1 ) {
             
                 $wpdb->query("ROLLBACK");
             
                 return array(
-					"status" => "failed",
+					"status" => "error",
 					"message" => "An error occured while submitting data to the server.",
                 );
 
             }else {
-            
+                //Do a commit and return success status
                 $wpdb->query("COMMIT");
-                
-                // return Success result
                 return array(
 					"status" => "success",
 					"message" => "Data has been activated successfully.",

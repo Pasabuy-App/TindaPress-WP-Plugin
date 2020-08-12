@@ -44,7 +44,7 @@
                         </div>
                         <div class="form-group">
                             <label for="new_category">CATEGORY:</label><br>
-                            <select required class="form-control" id="new_category" name="new_category">
+                            <select class="form-control" id="new_category" name="new_category" required>
                                 <script type="text/javascript">
                                     jQuery(document).ready( function ( $ ) 
                                     {   
@@ -84,7 +84,7 @@
                         </div>
                         <div class="form-group">
                             <label for="new_country">COUNTRY:</label><br>
-                            <select required class="form-control" id="new_country" name="new_country">
+                            <select class="form-control" id="new_country" name="new_country" required>
                                 <script type="text/javascript">
                                     jQuery(document).ready( function ( $ ) 
                                     {   
@@ -123,7 +123,7 @@
                         </div>
                         <div class="form-group">
                             <label for="new_province">PROVINCE:</label><br>
-                            <select required class="form-control" id="new_province" name="new_province">
+                            <select class="form-control" id="new_province" name="new_province" required>
                                 <script type="text/javascript">
                                     jQuery(document).ready( function ( $ ) 
                                     {  
@@ -176,7 +176,7 @@
                         </div>
                         <div class="form-group">
                             <label for="new_city">CITY:</label><br>
-                            <select required class="form-control" id="new_city" name="new_city">
+                            <select class="form-control" id="new_city" name="new_city" required>
                                 <script type="text/javascript">
                                     jQuery(document).ready( function ( $ ) 
                                     {  
@@ -229,7 +229,7 @@
                         </div>
                         <div class="form-group">
                             <label for="new_brgy">Barangay:</label><br>
-                            <select required class="form-control" id="new_brgy" name="new_brgy">
+                            <select class="form-control" id="new_brgy" name="new_brgy" required>
                                 <script type="text/javascript">
                                     jQuery(document).ready( function ( $ ) 
                                     {  

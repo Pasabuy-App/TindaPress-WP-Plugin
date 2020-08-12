@@ -22,10 +22,11 @@
             );
         }
 
+        //QA done 2020-08-12 4:55 pm
         public static function select_by_id_product(){
             global $wpdb;
 
-            $product_table     = TP_PRODUCT_TABLE;
+            $table_product     = TP_PRODUCT_TABLE;
             $table_revs        = TP_REVISIONS_TABLE;
             $table_store        = TP_STORES_TABLE;
             $table_category       = TP_CATEGORIES_TABLE;
@@ -39,7 +40,7 @@
                 );
             }
 
-            // Step2 : Validate if user is exist
+            // Step 2: Validate user
 			if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
@@ -47,8 +48,8 @@
                 );
             }
 
-            // Step3 : Sanitize all Request
-			if (!isset($_POST['pid']) ) {
+            // Step 3: Check if parameters are passed
+			if (!isset($_POST['pdid']) ) {
 				return array(
 						"status" => "unknown",
 						"message" => "Please contact your administrator. Request unknown!",
@@ -56,48 +57,66 @@
                 
             }
 
-            // Step4 : Sanitize all Request
-			if ( empty($_POST['pid']) ) {
+            // Step 4: Check if parameters passed are empty
+			if ( empty($_POST['pdid']) ) {
 				return array(
 						"status" => "unknown",
 						"message" => "Required fields cannot be empty!",
                 );
             }
 
-            // Step4 : Sanitize all Request
-			if ( !is_numeric($_POST['pid']) ) {
-				return array(
-						"status" => "unknown",
-						"message" => "Please contact your administrator. ID not in valid format!",
-                );
-            }
-
-            $pdid = $_POST['pid'];
-
-            $get_product = $wpdb->get_row("SELECT `status` FROM $product_table WHERE ID = $pdid  ");
-
-            if ( empty($get_product)  ) {
+            $pdid = $_POST['pdid'];
+            
+            // Step 5: Check if this product exists
+            $get_product = $wpdb->get_row("SELECT
+                    tp_prod.ID, tp_prod.ctid, tp_prod.status as status_id,
+                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE tp_rev.ID = tp_prod.title ) AS product_name,
+                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.status ) AS `status`
+                FROM
+                    $table_product tp_prod
+                INNER JOIN 
+                    $table_revs tp_rev ON tp_rev.ID = tp_prod.title
+                WHERE
+                    tp_prod.ID = $pdid
+                GROUP BY
+                    tp_prod.ID
+            ");
+            
+            //Check if no rows found
+            if (!$get_product) {
                 return array(
                     "status" => "failed",
-                    "message" => "This product does not exists.",
+                    "message" => "This product does not exists",
                 );
             }
 
+            //Fails if product is currently inactive
+            if ($get_product->status == 0) {
+                return array(
+                    "status" => "failed",
+                    "message" => "This product is currently inactive.",
+                );
+            }
+
+            // Step 6: Start mysql query
             $result = $wpdb->get_row("SELECT
                 tp_prod.ID,
+                tp_prod.stid,
+                tp_prod.ctid as catid,
+                (select child_val from $table_revs where id = (select title from tp_categories where id = tp_prod.ctid)) AS cat_name,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.title ) AS `store_name`,
                 ( SELECT tp_cat.types     FROM $table_category tp_cat WHERE ID = tp_prod.ctid ) AS `category`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.title ) AS `title`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.preview ) AS `preview`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.short_info ) AS `short_info`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.long_info ) AS `long_info`,
-                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.`status` ) AS `status`,
+                IF (( select child_val from $table_revs where id = tp_prod.`status` ) = 1, 'Active' , 'Inactive' ) AS `status`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.sku ) AS `sku`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.price ) AS `price`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.weight ) AS `weight`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.dimension ) AS `dimension`
             FROM
-                $product_table tp_prod
+                $table_product tp_prod
                 INNER JOIN $table_revs tp_rev ON tp_rev.ID = tp_prod.title
                 INNER JOIN $table_store tp_str ON tp_str.ID = tp_prod.stid 
             WHERE
@@ -105,11 +124,13 @@
             GROUP BY
                 tp_prod.ID");
 
+            // Step 8: Check if 0 rows found
             if (!$result ) {
                 return array(
                     "status" => "failed",
-                    "message" => "No product found."
+                    "message" => "No results found."
                 );
+            // Returns a success status and complete object
             }else{
                 return array(
                     "status" => "success",

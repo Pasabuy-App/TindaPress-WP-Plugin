@@ -30,7 +30,8 @@
             $table_country = DV_COUNTRY_TABLE;
             $table_address = DV_ADDRESS_TABLE;
             $table_dv_revs = DV_REVS_TABLE;
-
+            $table_dv_revs = DV_REVS_TABLE;
+            $table_contacts = DV_CONTACTS_TABLE;
            // Step1 : Check if prerequisites plugin are missing
            $plugin = TP_Globals::verify_prerequisites();
            if ($plugin !== true) {
@@ -50,15 +51,20 @@
 
             $result = $wpdb->get_results("SELECT
                 tp_str.ID,
+                tp_str.ctid as catid,
+                (select child_val from $table_revs where id = (select title from tp_categories where id = tp_str.ctid)) AS cat_name,
+                IF (( select child_val from $table_revs where id = tp_str.`status` ) = 0, 'Inactive' , 'Active' ) AS `status`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.short_info ) AS `short_info`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.long_info ) AS `long_info`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.logo ) AS `avatar`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.banner ) AS `banner`,
                 ( SELECT dv_rev.child_val FROM $table_dv_revs dv_rev WHERE dv_rev.ID = dv_add.street ) AS `street`,
                 ( SELECT brgy_name FROM $table_brgy WHERE ID = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.brgy ) ) AS brgy,
-                ( SELECT citymun_name FROM $table_city WHERE city_code = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.city ) ) AS city,
+                ( SELECT city_name FROM $table_city WHERE city_code = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.city ) ) AS city,
                 ( SELECT prov_name FROM $table_province WHERE prov_code = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.province ) ) AS province,
-                ( SELECT country_name FROM $table_country WHERE ID = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.country ) ) AS country 
+                ( SELECT country_name FROM $table_country WHERE ID = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.country ) ) AS country,
+                ( SELECT child_val FROM $table_dv_revs WHERE ID  = ( SELECT revs FROM $table_contacts WHERE  types = 'phone' and stid =tp_str.ID  ) ) AS phone,
+                ( SELECT child_val FROM $table_dv_revs WHERE ID  = ( SELECT revs FROM $table_contacts WHERE  types = 'email' and stid =tp_str.ID  ) ) AS email
             FROM
                 $table_store tp_str
             INNER JOIN 
