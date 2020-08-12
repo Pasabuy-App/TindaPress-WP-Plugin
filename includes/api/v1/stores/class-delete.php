@@ -64,26 +64,28 @@
             }
             
             // Step5 :  Query
-            $store_data = $wpdb->get_row("SELECT tp_str.*, tp_revs.child_val as `status` FROM $table_store tp_str INNER JOIN $table_revs tp_revs ON tp_revs.ID = tp_str.`status` WHERE tp_str.ID = '{$user["store_id"]}' AND tp_revs.child_val = 1 ");
+            $store_data = $wpdb->get_row("SELECT child_val as stats FROM tp_revisions WHERE ID = (SELECT `status` FROM tp_stores WHERE ID = '{$user["store_id"]}')");
                
             // Step6 :  Check if failed
             if (!$store_data) {
                 return array(
                     "status" => "failed",
-                    "message" => "An error occured while fetching data to database.",
+                    "message" => "This store does not exists..",
                 );
             }
 
-            if ($store_data->status == 0) {
+            if ($store_data->stats == 0) {
                 return array(
                     "status" => "failed",
                     "message" => "This store is already deactivated.",
                 );
             }
 
+            $get_store_data = $wpdb->get_row("SELECT * FROM tp_stores WHERE ID = '{$user["store_id"]}'");
+
 
             // Step7 :  Query
-            $result = $wpdb->query("UPDATE $table_revs SET `child_val` = '0' WHERE ID = $store_data->status ");
+            $result = $wpdb->query("UPDATE $table_revs SET `child_val` = '0' WHERE ID = $get_store_data->status ");
 
             // Step8 :  Check if failed
             if ($result < 1 ) {
