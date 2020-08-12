@@ -64,22 +64,35 @@
                 );
             }
 
-            // Step4 : Sanitize all Request
-			if ( !is_numeric($_POST['pid']) ) {
-				return array(
-						"status" => "unknown",
-						"message" => "Please contact your administrator. ID not in valid format!",
+            $pdid = $_POST['pid'];
+
+            $get_product = $wpdb->get_row("SELECT
+                    tp_prod.ID, tp_prod.ctid, tp_prod.status as status_id,
+                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE tp_rev.ID = tp_prod.title ) AS product_name,
+                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.status ) AS `status`
+                FROM
+                    $table_product tp_prod
+                INNER JOIN 
+                    $table_revs tp_rev ON tp_rev.ID = tp_prod.title
+                WHERE
+                    tp_prod.ID = $product_id
+                GROUP BY
+                    tp_prod.ID
+            ");
+            
+            //Check if no rows found
+            if (!$get_product) {
+                return array(
+                    "status" => "failed",
+                    "message" => "This product does not exists",
                 );
             }
 
-            $pdid = $_POST['pid'];
-
-            $get_product = $wpdb->get_row("SELECT `status` FROM $product_table WHERE ID = $pdid  ");
-
-            if ( empty($get_product)  ) {
+            //Fails if product is currently inactive
+            if ($get_product->status == 0) {
                 return array(
                     "status" => "failed",
-                    "message" => "This product does not exists.",
+                    "message" => "This product is currently inactive.",
                 );
             }
 
