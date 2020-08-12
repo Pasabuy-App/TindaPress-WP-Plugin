@@ -30,13 +30,11 @@
                   // declaring table names to variable
             $table_store = TP_STORES_TABLE;
             $table_revisions = TP_REVISIONS_TABLE;
-            $table_contacts = DV_CONTACTS_TABLE;
-            $table_brgy = DV_BRGY_TABLE;
-            $table_city = DV_CITY_TABLE;
-            $table_province = DV_PROVINCE_TABLE;
-            $table_country = DV_COUNTRY_TABLE;
-            $table_dv_revisions = DV_REVS_TABLE;
-            $table_add = DV_ADDRESS_TABLE;
+
+            $table_revision_field = TP_REVISION_FIELDS;
+
+            $date_created = TP_Globals::date_stamp();
+
 
             // Step1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -102,34 +100,41 @@
                     $table_store tp_str
                 INNER JOIN 
                     $table_revisions tp_rev ON tp_rev.ID = tp_str.title 
-                INNER JOIN 
-                    $table_add dv_add ON tp_str.address = dv_add.ID
-                INNER JOIN 
-                    $table_contacts as dv_cont ON tp_str.ID = dv_cont.stid
                 WHERE 
                     tp_str.ID = '{$user["store_id"]}'
                 ");
 
-                $wpdb->query("INSERT INTO $table_revisions ");
+                $wpdb->query("INSERT INTO $table_revisions $table_revision_field VALUES ( 'stores', '{$user["store_id"]}', 'title', '$get_last_value->title', '{$user["created_by"]}', '$date_created'  ) ");
+                $title = $wpdb->insert_id;
 
+                $wpdb->query("INSERT INTO $table_revisions $table_revision_field VALUES ( 'stores', '{$user["store_id"]}', 'short_info', '$get_last_value->short_info', '{$user["created_by"]}', '$date_created'  ) ");
+                $short_info = $wpdb->insert_id;
 
+                $wpdb->query("INSERT INTO $table_revisions $table_revision_field VALUES ( 'stores', '{$user["store_id"]}', 'long_info', '$get_last_value->long_info', '{$user["created_by"]}', '$date_created'  ) ");
+                $long_info = $wpdb->insert_id;
 
+                $wpdb->query("INSERT INTO $table_revisions $table_revision_field VALUES ( 'stores', '{$user["store_id"]}', 'logo', '$get_last_value->logo', '{$user["created_by"]}', '$date_created'  ) ");
+                $logo = $wpdb->insert_id;
 
-            $wpdb->query("ROLLBACK");
+                $wpdb->query("INSERT INTO $table_revisions $table_revision_field VALUES ( 'stores', '{$user["store_id"]}', 'banner', '$get_last_value->banner', '{$user["created_by"]}', '$date_created'  ) ");
+                $banner = $wpdb->insert_id;
 
-            $get_store_data = $wpdb->get_row("SELECT * FROM tp_stores WHERE ID = '{$user["store_id"]}'");
+                $wpdb->query("INSERT INTO $table_revisions $table_revision_field VALUES ( 'stores', '{$user["store_id"]}', 'status', '0', '{$user["created_by"]}', '$date_created'  ) ");
+                $status = $wpdb->insert_id;
 
-
-            // Step7 :  Query
-            $result = $wpdb->query("UPDATE $table_revs SET `child_val` = '0' WHERE ID = $get_store_data->status ");
+                $update_store = $wpdb->query("UPDATE tp_stores SET `title` = '$title', `short_info` = '$short_info', `long_info` = '$long_info', `logo` = '$logo', `banner` = '$banner', `status` = '$status' WHERE ID = '{$user["store_id"]}' ");
 
             // Step8 :  Check if failed
-            if ($result < 1 ) {
+            if ($title < 1 || $short_info < 1 || $long_info < 1 || $logo < 1 || $banner < 1 || $status < 1 || $update_store < 1 ) {
+                $wpdb->query("ROLLBACK");
+
                 return array(
                     "status" => "failed",
                     "message" => "An error occured while submmiting data to database.",
                 );
             } else{
+                $wpdb->query("COMMIT");
+
                 return array(
                     "status" => "success",
                     "message" => "Data has been deleted successfully.",
