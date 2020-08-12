@@ -50,6 +50,16 @@
                 
             }
 
+            //Check if user has roles_access of can_add_category or either contributor or editor
+            $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_add_category' );
+            
+            if ($permission == true) {
+                return array(
+                    "status" => "failed",
+                    "message" => "Current user has no access in adding category.",
+                );
+            }
+
             // Step 3: Check if parameters are passed
             if (!isset($_POST["title"]) || !isset($_POST["info"])  || !isset($_POST["types"]) ) {
 				return array(
