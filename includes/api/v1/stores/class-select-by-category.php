@@ -33,7 +33,7 @@
             $table_country = DV_COUNTRY_TABLE;
             $table_dv_revisions = DV_REVS_TABLE;
             $table_add = DV_ADDRESS_TABLE;
-
+            $table_category = TP_CATEGORIES_TABLE;
 
            //Check if prerequisites plugin are missing
            $plugin = TP_Globals::verify_prerequisites();
@@ -70,30 +70,23 @@
             // Step6 : Query
             $result = $wpdb->get_results("SELECT
                 tp_str.ID,
-                (select child_val from $table_revisions where id = (select title from tp_categories where id = tp_str.ctid)) AS category,
-                tp_rev.child_val AS title,
-                (select child_val from $table_revisions where id = tp_str.short_info) AS short_info,
-                (select child_val from $table_revisions where id = tp_str.long_info) AS long_info,
-                (select child_val from $table_revisions where id = tp_str.logo) AS avatar,
-                (select child_val from $table_revisions where id = tp_str.banner) AS banner,
-                (select child_val from $table_revisions where id = tp_str.`status`) AS status,
-                (select child_val from $table_dv_revisions where id = dv_add.street) as street,
-                (SELECT brgy_name FROM $table_brgy WHERE ID = (select child_val from $table_dv_revisions where id = dv_add.brgy)) as brgy,
-                (SELECT city_name FROM $table_city WHERE city_code = (select child_val from $table_dv_revisions where id = dv_add.city)) as city,
-                (SELECT prov_name FROM $table_province WHERE prov_code = (select child_val from $table_dv_revisions where id = dv_add.province)) as province,
-                (SELECT country_name FROM $table_country WHERE id = (select child_val from $table_dv_revisions where id = dv_add.country)) as country,
-                (SELECT child_val from dv_revisions where id = max( IF ( dv_cont.types = 'phone', dv_cont.revs, '' )) ) AS phone,
-                (SELECT child_val from dv_revisions where id = max( IF ( dv_cont.types = 'email', dv_cont.revs, '' )) ) AS email
+                ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.ID = (SELECT ID FROM $table_category WHERE ID = tp_str.ctid and types = 'store' ) ) AS `category_name`,
+                ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.ID = tp_str.short_info ) AS `short_info`,
+                ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.ID = tp_str.long_info ) AS `long_info`,
+                ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.ID = tp_str.logo ) AS `logo`,
+                ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.ID = tp_str.banner ) AS `banner`,
+                ( SELECT dv_rev.child_val FROM $table_dv_revisions dv_rev WHERE dv_rev.ID = dv_add.street ) AS `street`,
+                ( SELECT brgy_name FROM $table_brgy WHERE ID = ( SELECT child_val FROM $table_dv_revisions WHERE ID = dv_add.brgy ) ) AS brgy,
+                ( SELECT city_name FROM $table_city WHERE city_code = ( SELECT child_val FROM $table_dv_revisions WHERE ID = dv_add.city ) ) AS city,
+                ( SELECT prov_name FROM $table_province WHERE prov_code = ( SELECT child_val FROM $table_dv_revisions WHERE ID = dv_add.province ) ) AS province,
+                ( SELECT country_name FROM $table_country WHERE id = ( SELECT child_val FROM $table_dv_revisions WHERE ID = dv_add.country ) ) AS country, 
+                ( SELECT child_val FROM $table_dv_revisions WHERE ID  = ( SELECT revs FROM $table_cotnacts WHERE  types = 'phone' and stid =tp_str.ID  ) ) AS phone,
+                ( SELECT child_val FROM $table_dv_revisions WHERE ID  = ( SELECT revs FROM $table_cotnacts WHERE  types = 'email' and stid =tp_str.ID  ) ) AS email
             FROM
                 $table_store tp_str
-            INNER JOIN 
-                $table_revisions tp_rev ON tp_rev.ID = tp_str.title 
-            INNER JOIN 
-                $table_add dv_add ON tp_str.address = dv_add.ID
-            INNER JOIN 
-                $table_cotnacts dv_cont ON tp_str.ID = dv_cont.stid
+                INNER JOIN  $table_add dv_add ON tp_str.address = dv_add.ID	
             WHERE 
-                tp_str.ctid  = '{$user["category_id"]}'
+                    tp_str.ctid = '{$user["category_id"]}'
             ");
             
             // Step7 : Check if no result
