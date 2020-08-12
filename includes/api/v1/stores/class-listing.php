@@ -30,6 +30,9 @@
             $table_city = DV_CITY_TABLE;
             $table_province = DV_PROVINCE_TABLE;
             $table_country = DV_COUNTRY_TABLE;
+            $table_category = TP_CATEGORIES_TABLE;
+            $table_contacts = DV_CONTACTS_TABLE;
+            $table_dv_revisions = DV_REVS_TABLE;
             
             // Step1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -60,7 +63,9 @@
                 (SELECT brgy_name FROM $table_brgy WHERE ID = (select child_val from $table_dv_revs where id = dv_add.brgy)) as brgy,
                 (SELECT city_name FROM $table_city WHERE city_code = (select child_val from $table_dv_revs where id = dv_add.city)) as city,
                 (SELECT prov_name FROM $table_province WHERE prov_code = (select child_val from $table_dv_revs where id = dv_add.province)) as province,
-                (SELECT country_name FROM $table_country WHERE id = (select child_val from $table_dv_revs where id = dv_add.country)) as country
+                (SELECT country_name FROM $table_country WHERE id = (select child_val from $table_dv_revs where id = dv_add.country)) as country,
+                ( SELECT child_val FROM $table_dv_revisions WHERE ID  = ( SELECT revs FROM $table_contacts WHERE  types = 'phone' and stid =tp_str.ID  ) ) AS phone,
+                ( SELECT child_val FROM $table_dv_revisions WHERE ID  = ( SELECT revs FROM $table_contacts WHERE  types = 'email' and stid =tp_str.ID  ) ) AS email
             FROM
                 $table_store tp_str
             INNER JOIN 

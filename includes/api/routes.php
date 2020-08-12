@@ -79,6 +79,13 @@
         require plugin_dir_path(__FILE__) . '/v1/order/class-listing-stages.php';
         require plugin_dir_path(__FILE__) . '/v1/order/class-listing-date.php';
 
+        // Address Insert
+        require plugin_dir_path(__FILE__) . '/v1/stores/address/class-insert.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/address/class-update.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/address/class-delete.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/address/class-select.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/address/class-listing.php';
+
         //Global Classes
         require plugin_dir_path(__FILE__) . '/v1/class-globals.php';
          
@@ -230,6 +237,21 @@
                 'methods' => 'POST',
                 'callback' => array('TP_Store_Select_by_Category','listen'),
             ));
+
+            // Address Folder
+            register_rest_route( 'tindapress/v1/stores/address', 'insert', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Store_Insert_address','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/stores/address', 'update', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Store_Update_address','listen'),
+            ));
+            
+            // End of Address folder
+            
+
         /*
          * ORDER RESTAPI
         */

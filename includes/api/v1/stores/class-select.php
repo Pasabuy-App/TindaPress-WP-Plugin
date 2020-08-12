@@ -93,8 +93,8 @@
                 (SELECT city_name FROM $table_city WHERE city_code = (select child_val from $table_dv_revisions where id = dv_add.city)) as city,
                 (SELECT prov_name FROM $table_province WHERE prov_code = (select child_val from $table_dv_revisions where id = dv_add.province)) as province,
                 (SELECT country_name FROM $table_country WHERE id = (select child_val from $table_dv_revisions where id = dv_add.country)) as country,
-                (SELECT child_val from dv_revisions where id = max( IF ( dv_cont.types = 'phone', dv_cont.revs, '' )) ) AS phone,
-                (SELECT child_val from dv_revisions where id = max( IF ( dv_cont.types = 'email', dv_cont.revs, '' )) ) AS email
+                ( SELECT child_val FROM $table_dv_revisions WHERE ID  = ( SELECT revs FROM $table_contacts WHERE  types = 'phone' and stid =tp_str.ID  ) ) AS phone,
+                ( SELECT child_val FROM $table_dv_revisions WHERE ID  = ( SELECT revs FROM $table_contacts WHERE  types = 'email' and stid =tp_str.ID  ) ) AS email
             FROM
                 $table_store tp_str
             INNER JOIN 

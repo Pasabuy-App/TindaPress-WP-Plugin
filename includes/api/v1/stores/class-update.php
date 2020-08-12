@@ -58,7 +58,15 @@
                 || !isset($_POST["long_info"]) 
                 || !isset($_POST["logo"]) 
                 || !isset($_POST["banner"]) 
-                || !isset($_POST["address"]) ) {
+                // NEW
+                || !isset($_POST["phone"]) 
+                || !isset($_POST["email"]) 
+                || !isset($_POST["st"]) 
+                || !isset($_POST["co"]) 
+                || !isset($_POST["pv"]) 
+                || !isset($_POST["ct"]) 
+                || !isset($_POST["bg"]) 
+                ) {
 				return array(
 						"status" => "unknown",
 						"message" => "Please contact your administrator. Request unknown!",
@@ -73,7 +81,15 @@
                 || empty($_POST["long_info"]) 
                 || empty($_POST["logo"]) 
                 || empty($_POST["banner"]) 
-                || empty($_POST["address"]) ) {
+                // NEW
+                || !isset($_POST["phone"]) 
+                || !isset($_POST["email"]) 
+                || !isset($_POST["st"]) 
+                || !isset($_POST["co"]) 
+                || !isset($_POST["pv"]) 
+                || !isset($_POST["ct"]) 
+                || !isset($_POST["bg"]) 
+                ) {
                 return array(
                         "status" => "failed",
                         "message" => "Required fields cannot be empty.",
@@ -93,6 +109,10 @@
             // Step6 : Query
             $wpdb->query("START TRANSACTION");
 
+                //get country id
+                $get_country = $wpdb->get_row("SELECT ID FROM dv_geo_countries WHERE `country_code` = '$country_code'");
+
+
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'title', '{$user["title"]}', '{$user["created_by"]}', '$later')");
                 $title = $wpdb->insert_id;
 
@@ -107,6 +127,33 @@
 
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'banner', '{$user["banner"]}', '{$user["created_by"]}', '$later')");
                 $banner = $wpdb->insert_id;
+
+
+                // Query of store contact.
+                // Phone
+                $wpdb->query();
+                $wpdb->query("INSERT INTO `$table_dv_revs` (revs_type, parent_id, child_key, child_val, created_by, date_created) 
+                                                VALUES ( 'contacts', 0, 'phone', '{$user["phone"]}', '{$user["created_by"]}', '$date_created'  )");
+                $phone_last_id = $wpdb->insert_id;
+
+                $wpdb->query("INSERT INTO `$table_contact` (`status`, `types`, `revs`, `stid`, `created_by`, `date_created`) 
+                                                    VALUES ('1', 'phone', '$phone_last_id', $store_id, '{$user["created_by"]}', '$date_created');");
+                $contact_phone_id = $wpdb->insert_id;
+                
+                $update_contact_phone = $wpdb->query("UPDATE `$table_dv_revs` SET `parent_id` = $contact_phone_id WHERE ID = $phone_last_id ");
+
+                // Email
+                $wpdb->query("INSERT INTO `$table_dv_revs` (revs_type, parent_id, child_key, child_val, created_by, date_created) 
+                                                VALUES ( 'contacts', 0, 'email', '{$user["phone"]}', '{$user["created_by"]}', '$date_created'  )");
+                $email_last_id = $wpdb->insert_id;
+
+                $wpdb->query("INSERT INTO `$table_contact` (`status`, `types`, `revs`, `stid`, `created_by`, `date_created`) 
+                                                    VALUES ('1', 'email', '$email_last_id', $store_id, '{$user["created_by"]}', '$date_created');");
+                $contact_email_id = $wpdb->insert_id;
+                
+                $update_contact_email = $wpdb->query("UPDATE `$table_dv_revs` SET `parent_id` = $contact_email_id WHERE ID = $email_last_id ");
+
+                // End of store contact query
 
             // Step7 : Check if failed
             if ( $title < 1 || $short_info < 1 || $long_info < 1 || $logo < 1 || $banner < 1 ) {

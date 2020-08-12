@@ -74,7 +74,7 @@
                 ); 
             }
 
-            // Step4 : Sanitize all variable is empty
+        // Step4 : Sanitize all variable is empty
             if ( empty($_POST["title"]) 
                 || empty($_POST["short_info"]) 
                 || empty($_POST["long_info"]) 
@@ -121,7 +121,7 @@
                 //     );
                 // }
                 
-                // Step 2 : Check if country_id is in database. 
+              // Step 2 : Check if country_id is in database. 
                 $country_code = $_POST['co'];
                 $co_status = DV_Globals:: check_availability(DV_COUNTRY_TABLE, "WHERE `country_code` = '$country_code'");
                 
