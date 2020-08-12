@@ -82,7 +82,6 @@
             $result = $wpdb->get_results("SELECT
                 tp_str.ID,
                 tp_str.ctid,
-                (select child_val from $table_revisions where id = (select title from tp_categories where id = tp_str.ctid)) AS category,
                 tp_rev.child_val AS title,
                 (select child_val from $table_revisions where id = tp_str.short_info) AS short_info,
                 (select child_val from $table_revisions where id = tp_str.long_info) AS long_info,
