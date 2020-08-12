@@ -15,11 +15,11 @@
         //REST API Call
         public static function listen(){
             return rest_ensure_response( 
-                TP_Store_Insert_address:: insert_store_address()
+                TP_Store_Insert_address:: listen_open()
             );
         }
 
-        public static function insert_store_address (){
+        public static function listen_open(){
             global $wpdb;
 
             // declaring table names to variable

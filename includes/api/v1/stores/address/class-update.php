@@ -15,11 +15,11 @@
         //REST API Call
         public static function listen(){
             return rest_ensure_response( 
-                TP_Store_Update_address:: insert_store_address()
+                TP_Store_Update_address:: listen_open()
             );
         }
 
-        public static function insert_store_address (){
+        public static function listen_open (){
             global $wpdb;
 
             // declaring table names to variable
@@ -79,7 +79,7 @@
                 ) {
                 return array(
                         "status" => "unknown",
-                        "message" => "Required fields cannot be empty.",
+                        "message" => "Required fields cannot be empty!",
                 );
             }
 
@@ -221,7 +221,7 @@
 
             $date_created = TP_Globals::date_stamp();
             
-            $check_store = $wpdb->get_row("SELECT ID FROM tp_stores  WHERE ID = '{$user["store_id"]}' AND  (SELECT child_val FROM tp_revisions WHERE ID = tp_stores.`status`  ) = 1
+            $check_store = $wpdb->get_row("SELECT s.ID FROM $table_store s WHERE s.ID = '{$user["store_id"]}' AND  (SELECT child_val FROM $table_tp_revs WHERE ID = s.`status`  ) = 1
             ");
                 
             // Step5 : Check if this store id exists
@@ -232,7 +232,7 @@
                 );
             }
 
-             $check_address = $wpdb->get_row("SELECT ID FROM dv_address WHERE ID = '{$user["address_id"]}' AND (SELECT child_val FROM dv_revisions WHERE ID = dv_address.`status`  ) = 1 AND stid = '{$user["store_id"]}' ");
+            $check_address = $wpdb->get_row("SELECT ID FROM $table_address  WHERE ID = '{$user["address_id"]}' AND (SELECT child_val FROM $table_dv_revs WHERE ID = $table_address.`status`  ) = 1 AND stid = '{$user["store_id"]}' ");
             
             // Step5 : Check if this store id exists
             if ( !$check_address ) {
@@ -252,22 +252,22 @@
              $get_country = $wpdb->get_row("SELECT ID FROM dv_geo_countries WHERE `country_code` = '{$user["country"]}'");
             
              // Query of store address.
-             $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'status', '1', '{$user["created_by"]}', '$date_created');");
+             $wpdb->query("INSERT INTO $dv_rev_table (parent_id, $rev_fields) VALUES ('$get_address->ID','address', 'status', '1', '{$user["created_by"]}', '$date_created');");
              $status = $wpdb->insert_id;
 
-             $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'street', '{$user["street"]}', '{$user["created_by"]}', '$date_created');");
+             $wpdb->query("INSERT INTO $dv_rev_table (parent_id, $rev_fields) VALUES ('$get_address->ID','address', 'street', '{$user["street"]}', '{$user["created_by"]}', '$date_created');");
              $street = $wpdb->insert_id;
  
-             $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'brgy', '{$user["barangy"]}', '{$user["created_by"]}', '$date_created');");
+             $wpdb->query("INSERT INTO $dv_rev_table (parent_id, $rev_fields) VALUES ('$get_address->ID','address', 'brgy', '{$user["barangy"]}', '{$user["created_by"]}', '$date_created');");
              $brgy = $wpdb->insert_id;
  
-             $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'city', '{$user["city"]}', '{$user["created_by"]}', '$date_created');");
+             $wpdb->query("INSERT INTO $dv_rev_table (parent_id, $rev_fields) VALUES ('$get_address->ID','address', 'city', '{$user["city"]}', '{$user["created_by"]}', '$date_created');");
              $city = $wpdb->insert_id;
                  
-             $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'province', '{$user["province"]}', '{$user["created_by"]}', '$date_created');");
+             $wpdb->query("INSERT INTO $dv_rev_table (parent_id, $rev_fields) VALUES ('$get_address->ID','address', 'province', '{$user["province"]}', '{$user["created_by"]}', '$date_created');");
              $province = $wpdb->insert_id;
              
-             $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'country', '$get_country->ID', '{$user["created_by"]}', '$date_created');");
+             $wpdb->query("INSERT INTO $dv_rev_table (parent_id, $rev_fields) VALUES ('$get_address->ID','address', 'country', '$get_country->ID', '{$user["created_by"]}', '$date_created');");
              $country = $wpdb->insert_id;
 
              //Save the address in the parent table
@@ -295,7 +295,7 @@
 
         public static function catch_post()
         {
-              $cur_user = array();
+                $cur_user = array();
                
                 $cur_user['created_by']  = $_POST["wpid"];
                 $cur_user['store_id']  = $_POST["stid"];
@@ -308,7 +308,6 @@
                 $cur_user['city']       = $_POST["ct"];
                 $cur_user['barangy']    = $_POST["bg"];
 
-
-              return  $cur_user;
+                return  $cur_user;
         }
     }

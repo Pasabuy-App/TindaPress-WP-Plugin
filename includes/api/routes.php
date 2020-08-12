@@ -85,6 +85,7 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/address/class-delete.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/address/class-select.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/address/class-listing.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/address/class-activate.php';
 
         //Global Classes
         require plugin_dir_path(__FILE__) . '/v1/class-globals.php';
@@ -248,6 +249,17 @@
                 'methods' => 'POST',
                 'callback' => array('TP_Store_Update_address','listen'),
             ));
+
+            register_rest_route( 'tindapress/v1/stores/address', 'activate', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Store_Activate_Address','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/stores/address', 'delete', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Store_Delete_Address','listen'),
+            ));
+            
             
             // End of Address folder
             
