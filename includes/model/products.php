@@ -133,7 +133,20 @@
                     searching: true,
                     dom: 'Bfrtip',
                     buttons: [
-                        'copy', 'csv', 'excel', 'pdf', 'print'
+                        {
+                            text: 'Create',
+                            action: function ( e, dt, node, config ) {
+                                //loadingAppList( storeTables );
+                                $('#CreateNewApp').modal('show');
+                            }
+                        },
+                        {
+                            text: 'Refresh',
+                            action: function ( e, dt, node, config ) {
+                                loadingAppList( productTables );
+                            }
+                        }, //'copy', 'csv', 'excel', 'pdf', 
+                        'print',
                     ],
                     responsive: true,
                     "aaData": data,
@@ -247,7 +260,6 @@
 
             // LISTEN FOR MODAL SHOW AND ATTACHED ID.
             $('#CreateNewApp').on('show.bs.modal', function(e) {
-                var data = e.relatedTarget.dataset;
                 $('#create-app-btn').removeClass('disabled');
                 // $('#appsta_create').val( 'Active' ); //TODO: Before appear modal, set input to empty.
                 // $('#appmtcap_create').val(); //TODO: Before appear modal, set input to empty.

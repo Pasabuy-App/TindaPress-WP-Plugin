@@ -26,8 +26,8 @@
                 <div class="modal-body">
                     <form id="edit-app-form">
                         <div class="form-group">
-                            <label for="new_title">Name:</label>
-                            <input required type="text" class="form-control" id="new_title" name="new_title" placeholder="Public name of this Products.">
+                            <label for="edit_title">Name:</label>
+                            <input required type="text" class="form-control" id="edit_title" name="edit_title" placeholder="Public name of this Products.">
                         </div>
                         <div class="form-group">
                             <label for="edit_info">Description:</label>
