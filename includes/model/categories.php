@@ -72,7 +72,6 @@
                     ?>
                     var postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/category/" . $postUrl; ?>';
                     
-                    var appListAction = { action: 'ReloadProjects' };
                     $.ajax({
                         dataType: 'json',
                         type: 'POST', 

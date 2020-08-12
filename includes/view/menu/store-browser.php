@@ -25,6 +25,13 @@
 
 		<div class="tp-panel-body">
 			<div class="tp-panel-first">
+				<div class="alert alert-secondary header-info">
+					<select class="form-control" id="set_status" name="set_status">
+						<option value="0" selected="selected">All Status</option>
+						<option value="1">Active</option>
+						<option value="2">Inactive</option>
+					</select>
+				</div>
 				<button id="RefreshAppList" type="button" class="btn btn-dark">Refresh List</button>
 				<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#CreateNewApp">Create Store</button>
 			</div>
@@ -35,10 +42,16 @@
 		</div>
 
 	<?php } else { ?>
-
 		<div class="tp-panel-body">
 			<div class="tp-panel-first">
 				<div class="alert alert-secondary header-info">
+					<?php if(!isset($_GET['id'])) { ?>
+						<select class="form-control" id="set_status" name="set_status">
+							<option value="0" selected="selected">All Status</option>
+							<option value="1">Active</option>
+							<option value="2">Inactive</option>
+						</select>
+					<?php } ?>
 					<strong>Category: </strong><strong id="parent-name"><?php echo $_GET['name']; ?></strong>
 				</div>
 				<button id="RefreshAppList" type="button" class="btn btn-dark">Refresh List</button>
