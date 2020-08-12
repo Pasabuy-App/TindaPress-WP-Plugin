@@ -37,6 +37,7 @@
             $rev_fields = DV_INSERT_REV_FIELDS;
             $dv_rev_table = DV_REVS_TABLE;
             $table_address = DV_ADDRESS_TABLE;
+            $dv_geo_countries = DV_COUNTRY_TABLE;
            
             $revs_type = "stores";
             
@@ -215,7 +216,7 @@
             $wpdb->query("START TRANSACTION");
 
              //get country id
-             $get_country = $wpdb->get_row("SELECT ID FROM dv_geo_countries WHERE `country_code` = '{$user["country"]}'");
+             $get_country = $wpdb->get_row("SELECT ID FROM $dv_geo_countries WHERE `country_code` = '{$user["country"]}'");
 
              // Query of store address.
              $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'status', '1', '{$user["created_by"]}', '$date_created');");
@@ -245,7 +246,7 @@
             $update_table_rev = $wpdb->query("UPDATE $dv_rev_table SET `parent_id` = $address_id WHERE ID IN ($status, $street, $brgy, $city, $province, $country)  ");
 
             //Update tp_stores table
-            $update_store = $wpdb->query("UPDATE tp_stores SET `address` = $address_id WHERE ID = '{$user["store_id"]}' ");
+            $update_store = $wpdb->query("UPDATE $table_store SET `address` = $address_id WHERE ID = '{$user["store_id"]}' ");
 
             // Step 9: Check if any queries above failed
             if ($status < 1 || $street < 1 || $brgy < 1 || $city < 1 || $province < 1 || $country < 1 || $update_table_rev < 1 || $update_store < 1) {
