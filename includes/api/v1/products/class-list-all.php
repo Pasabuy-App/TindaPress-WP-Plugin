@@ -56,7 +56,8 @@
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.sku ) AS `sku`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.price ) AS `price`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.weight ) AS `weight`,
-                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.dimension ) AS `dimension`
+                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.dimension ) AS `dimension`,
+                IF (( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.status ) = 1, 'Active' , 'Inactive' ) AS `status`
             FROM
                 $table_product tp_prod
             INNER JOIN 
