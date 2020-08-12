@@ -71,20 +71,19 @@
             $result = $wpdb->get_results("SELECT
                 tp_str.ID,
                 tp_str.ctid,
-                ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.ID = (SELECT ID FROM $table_category WHERE ID = tp_str.ctid and types = 'store' ) ) AS `category_name`,
                 ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.ID = tp_str.title ) AS `title`,
                 ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.ID = tp_str.short_info ) AS `short_info`,
                 ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.ID = tp_str.long_info ) AS `long_info`,
                 ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.ID = tp_str.logo ) AS `logo`,
                 ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.ID = tp_str.banner ) AS `banner`,
-                IF (( select child_val from $table_revisions where id = tp_str.`status` ) = 1, 'active' , 'inactive' ) AS `status`,
+                IF (( select child_val from $table_revisions where id = tp_str.`status` ) = 1, 'Active' , 'Inactive' ) AS `status`,
                 ( SELECT dv_rev.child_val FROM $table_dv_revisions dv_rev WHERE dv_rev.ID = dv_add.street ) AS `street`,
                 ( SELECT brgy_name FROM $table_brgy WHERE ID = ( SELECT child_val FROM $table_dv_revisions WHERE ID = dv_add.brgy ) ) AS brgy,
                 ( SELECT city_name FROM $table_city WHERE city_code = ( SELECT child_val FROM $table_dv_revisions WHERE ID = dv_add.city ) ) AS city,
                 ( SELECT prov_name FROM $table_province WHERE prov_code = ( SELECT child_val FROM $table_dv_revisions WHERE ID = dv_add.province ) ) AS province,
                 ( SELECT country_name FROM $table_country WHERE id = ( SELECT child_val FROM $table_dv_revisions WHERE ID = dv_add.country ) ) AS country, 
-                ( SELECT child_val FROM $table_dv_revisions WHERE ID  = ( SELECT revs FROM $table_contacts WHERE  types = 'phone' and stid =tp_str.ID  ) ) AS phone,
-                ( SELECT child_val FROM $table_dv_revisions WHERE ID  = ( SELECT revs FROM $table_contacts WHERE  types = 'email' and stid =tp_str.ID  ) ) AS email
+                ( SELECT child_val FROM $table_dv_revisions WHERE ID  = ( SELECT revs FROM $table_contacts WHERE types = 'phone' and stid =tp_str.ID  ) ) AS phone,
+                ( SELECT child_val FROM $table_dv_revisions WHERE ID  = ( SELECT revs FROM $table_contacts WHERE types = 'email' and stid =tp_str.ID  ) ) AS email
             FROM
                 $table_store tp_str
                 INNER JOIN  $table_add dv_add ON tp_str.address = dv_add.ID	

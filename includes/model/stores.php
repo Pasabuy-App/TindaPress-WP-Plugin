@@ -58,7 +58,7 @@
                             postParam.catid = '<?php echo $_GET['id']; ?>';
                             <?php
                         } else {
-                            $root_url .= "list/all";
+                            $root_url .= "list/active";
                         }
                     ?>
                     
@@ -92,19 +92,27 @@
             //DISPLAY DATA INTO THE TARGET DATATABLES.
             function displayingLoadedApps( data )
             {
+                console.log(data);
                 //Set table column header.
                 var columns = [
                     //{ "sTitle": "IDENTITY",   "mData": "ID" },
                     { "sTitle": "NAME",   "mData": "title" },
+                    { "sTitle": "STATUS",   "mData": "status" },
+                    <?php
+                        if(!isset($_GET['id'])) {
+                    ?>
+                            { "sTitle": "CATEGORY",   "mData": "catid" },
+                    <?php
+                        }
+                    ?>
+                    { "sTitle": "PHONE",   "mData": "phone" },
+                    { "sTitle": "EMAIL",   "mData": "email" },
                     { "sTitle": "SHORT",   "mData": "short_info" },
                     { "sTitle": "Street",   "mData": "street" },
                     { "sTitle": "Barangay",   "mData": "brgy" },
                     { "sTitle": "City",   "mData": "city" },
                     { "sTitle": "province",   "mData": "province" },
                     { "sTitle": "Country",   "mData": "country" },
-                    //{ "sTitle": "CATEGORY",   "mData": "category" },
-                    //{ "sTitle": "CONTACT",   "mData": "contacts" },
-                    //{ "sTitle": "ADDRESS",   "mData": "addresses" },
                     {"sTitle": "Action", "mRender": function(data, type, item)
                         {
                             return '' + 
