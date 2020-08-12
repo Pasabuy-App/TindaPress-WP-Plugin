@@ -71,6 +71,7 @@
             $result = $wpdb->get_results("SELECT
                 tp_str.ID,
                 ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.ID = (SELECT ID FROM $table_category WHERE ID = tp_str.ctid and types = 'store' ) ) AS `category_name`,
+                ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.ID = tp_str.title ) AS `title`,
                 ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.ID = tp_str.short_info ) AS `short_info`,
                 ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.ID = tp_str.long_info ) AS `long_info`,
                 ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.ID = tp_str.logo ) AS `logo`,
