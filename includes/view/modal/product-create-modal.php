@@ -37,7 +37,7 @@
                         <div class="form-group">
                             <label for="new_price">PRICE:</label>
                             <input required oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                                type="number" maxlength="7" class="form-control" id="new_price" name="new_price" placeholder="1,000,000">
+                                type="number" maxlength="7" class="form-control" id="new_price" name="new_price" placeholder="1,000.00">
                         </div>
                         <div class="form-group">
                             <label for="new_store">STORE:</label><br>
