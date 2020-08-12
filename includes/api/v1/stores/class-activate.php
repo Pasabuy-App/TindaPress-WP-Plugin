@@ -69,7 +69,7 @@
                 );
             }
             
-            // Step5 :  Query
+            // Step 5 :  Query
             $store_data = $wpdb->get_row("SELECT child_val as stats FROM tp_revisions WHERE ID = (SELECT `status` FROM tp_stores WHERE ID = '{$user["store_id"]}')");
                
             // Step6 :  Check if failed
@@ -124,7 +124,7 @@
 
                 $update_store = $wpdb->query("UPDATE tp_stores SET `title` = '$title', `short_info` = '$short_info', `long_info` = '$long_info', `logo` = '$logo', `banner` = '$banner', `status` = '$status' WHERE ID = '{$user["store_id"]}' ");
 
-            // Step8 :  Check if failed
+                // Step8 :  Check if failed
             if ($title < 1 || $short_info < 1 || $long_info < 1 || $logo < 1 || $banner < 1 || $status < 1 || $update_store < 1 ) {
                 $wpdb->query("ROLLBACK");
 
