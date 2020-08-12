@@ -52,29 +52,31 @@
             
             // Step 3: Start a query
             $categories = $wpdb->get_results("SELECT
-                tp_str.ID,
-                tp_str.ctid AS `catid`,
-                (select child_val from $table_revisions where id = (select title from tp_categories where id = tp_str.ctid)) AS catname,
-                ( SELECT child_val FROM $table_revisions WHERE ID = (select info from tp_categories where id = tp_str.ctid) ) AS `catinfo`,
-                ( select child_val from $table_revisions where id = tp_str.title) AS title,
-                ( select child_val from $table_revisions where id = tp_str.short_info) AS short_info,
-                ( select child_val from $table_revisions where id = tp_str.long_info) AS long_info,
-                ( select child_val from $table_revisions where id = tp_str.logo) AS avatar,
-                ( select child_val from $table_revisions where id = tp_str.banner) AS banner,
-                IF (( select child_val from $table_revisions where id = tp_str.`status` ) = 1, 'Active' , 'Inactive' ) AS `status`,
-                ( select child_val from $table_dv_revs where id = dv_add.street) as street,
-                ( SELECT brgy_name FROM $table_brgy WHERE ID = (select child_val from $table_dv_revs where id = dv_add.brgy)) as brgy,
-                ( SELECT city_name FROM $table_city WHERE city_code = (select child_val from $table_dv_revs where id = dv_add.city)) as city,
-                ( SELECT prov_name FROM $table_province WHERE prov_code = (select child_val from $table_dv_revs where id = dv_add.province)) as province,
-                ( SELECT country_name FROM $table_country WHERE id = (select child_val from $table_dv_revs where id = dv_add.country)) as country,
-                ( SELECT child_val FROM $table_dv_revisions WHERE ID  = ( SELECT revs FROM $table_contacts WHERE  types = 'phone' and stid =tp_str.ID  ) ) AS phone,
-                ( SELECT child_val FROM $table_dv_revisions WHERE ID  = ( SELECT revs FROM $table_contacts WHERE  types = 'email' and stid =tp_str.ID  ) ) AS email
-            FROM
-                $table_store tp_str
-            INNER JOIN 
-                $table_address dv_add ON tp_str.address = dv_add.ID
-                WHERE 
-                ( SELECT child_val FROM $table_revisions WHERE ID = (select `status` from tp_categories where id = tp_str.ctid) ) = 0");
+            tp_str.ID,
+            tp_str.ctid AS `catid`,
+            ( select child_val from $table_revisions where id = (select title from tp_categories where id = tp_str.ctid)) AS catname,
+            ( SELECT child_val FROM $table_revisions WHERE ID = (select info from tp_categories where id = tp_str.ctid) ) AS `catinfo`,
+            ( select child_val from $table_revisions where id = tp_str.title) AS title,
+            ( select child_val from $table_revisions where id = tp_str.short_info) AS short_info,
+            ( select child_val from $table_revisions where id = tp_str.long_info) AS long_info,
+            ( select child_val from $table_revisions where id = tp_str.logo) AS avatar,
+            ( select child_val from $table_revisions where id = tp_str.banner) AS banner,
+            IF (( select child_val from $table_revisions where id = tp_str.`status` ) = 1, 'Active' , 'Inactive' ) AS `status`,
+            ( select child_val from $table_dv_revs where id = dv_add.street) as street,
+            ( SELECT brgy_name FROM $table_brgy WHERE ID = (select child_val from $table_dv_revs where id = dv_add.brgy)) as brgy,
+            ( SELECT city_name FROM $table_city WHERE city_code = (select child_val from $table_dv_revs where id = dv_add.city)) as city,
+            ( SELECT prov_name FROM $table_province WHERE prov_code = (select child_val from $table_dv_revs where id = dv_add.province)) as province,
+            ( SELECT country_name FROM $table_country WHERE id = (select child_val from $table_dv_revs where id = dv_add.country)) as country,
+            ( SELECT child_val FROM $table_dv_revisions WHERE ID  = ( SELECT revs FROM $table_contacts WHERE  types = 'phone' and stid =tp_str.ID  ) ) AS phone,
+            ( SELECT child_val FROM $table_dv_revisions WHERE ID  = ( SELECT revs FROM $table_contacts WHERE  types = 'email' and stid =tp_str.ID  ) ) AS email
+        FROM
+            $table_store tp_str
+        INNER JOIN 
+            $table_address dv_add ON tp_str.address = dv_add.ID
+            WHERE 
+            ( SELECT child_val FROM $table_revisions WHERE ID = (select `status` from tp_categories where id = tp_str.ctid) ) = 1 AND ( select child_val from $table_revisions where id = tp_str.`status` ) = 0
+            
+                ");
             
             // Step 4: Check results if empty
             if (!$categories) {

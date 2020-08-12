@@ -55,7 +55,7 @@
             $categories = $wpdb->get_results("SELECT
                 tp_str.ID,
                 tp_str.ctid AS `catid`,
-                (select child_val from $table_revisions where id = (select title from tp_categories where id = tp_str.ctid)) AS catname,
+                ( select child_val from $table_revisions where id = (select title from tp_categories where id = tp_str.ctid)) AS catname,
                 ( SELECT child_val FROM $table_revisions WHERE ID = (select info from tp_categories where id = tp_str.ctid) ) AS `catinfo`,
                 ( select child_val from $table_revisions where id = tp_str.title) AS title,
                 ( select child_val from $table_revisions where id = tp_str.short_info) AS short_info,
@@ -74,9 +74,9 @@
                 $table_store tp_str
             INNER JOIN 
                 $table_address dv_add ON tp_str.address = dv_add.ID
-            
                 WHERE 
-                ( SELECT child_val FROM $table_revisions WHERE ID = (select `status` from tp_categories where id = tp_str.ctid) ) = 1
+                ( SELECT child_val FROM $table_revisions WHERE ID = (select `status` from tp_categories where id = tp_str.ctid) ) = 1 AND ( select child_val from $table_revisions where id = tp_str.`status` ) = 1
+                
             
             ");
             
