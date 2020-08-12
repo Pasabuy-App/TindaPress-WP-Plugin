@@ -110,15 +110,15 @@
             $role_id = $personnels->roid;
 
             //Get all access from that role_id 
-             $get_access = $wpdb->get_results("SELECT rm.access
+            $get_access = $wpdb->get_results("SELECT rm.access
                 FROM `tp_roles` r 
                     LEFT JOIN tp_roles_meta rm ON rm.roid = r.ID
                 WHERE r.id = $role_id");
                 
-            $access = array_column($get_access, 'access');
+             $access = array_column($get_access, 'access');
 
             //Check if user has permitted role access or one of our staff
-            if ( !in_array($role , $access, true) || (DV_Globals::check_roles('subscriber') == true) ) {
+            if ( !in_array($role , $access, true) || DV_Globals::check_roles('editor') == false || DV_Globals::check_roles('contributor') == false ) {
                 return true;
             }
             return false;

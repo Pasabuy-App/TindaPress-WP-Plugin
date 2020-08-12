@@ -58,6 +58,16 @@
 						"message" => "Required fields cannot be empty.",
                 );
             }
+
+            //Check if user has roles_access of can_activate_store or either contributor or editor
+            $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_activate_store' );
+            
+            if ($permission == true) {
+                return array(
+                    "status" => "failed",
+                    "message" => "Current user has no access in activating category.",
+                );
+            }
             
             // Step 5: Get status of this category
             $category = $wpdb->get_row("SELECT cat.ID, cat.types, cat.status as status_id,
