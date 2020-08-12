@@ -75,24 +75,36 @@
             }
 
             // Step4 : Sanitize all variable is empty
-            if (empty($_POST["wpid"]) 
-                || empty($_POST["title"]) 
+            if ( empty($_POST["title"]) 
                 || empty($_POST["short_info"]) 
                 || empty($_POST["long_info"]) 
                 || empty($_POST["catid"]) 
                 || empty($_POST["logo"]) 
                 || empty($_POST["banner"]) 
-                || empty($_POST["phone"]) 
-                || empty($_POST["email"]) 
-                || empty($_POST["st"]) 
-                || empty($_POST["co"]) 
-                || empty($_POST["pv"]) 
-                || empty($_POST["ct"]) 
-                || empty($_POST["bg"]) 
+                // || empty($_POST["phone"]) 
+                // || empty($_POST["email"]) 
+                // || empty($_POST["st"]) 
+                // || empty($_POST["co"]) 
+                // || empty($_POST["pv"]) 
+                // || empty($_POST["ct"]) 
+                // || empty($_POST["bg"]) 
                 ) {
                 return array(
                         "status" => "unknown",
                         "message" => "Required fields cannot be empty.",
+                        "title" => empty($_POST["title"]),
+                        "short_info" => empty($_POST["short_info"]),
+                        "long_info" => empty($_POST["long_info"]),
+                        "catid" => empty($_POST["catid"]),
+                        "logo" => empty($_POST["logo"]),
+                        "banner" => empty($_POST["banner"]),
+                        "phone" => empty($_POST["phone"]),
+                        "email" => empty($_POST["email"]),
+                        "st" => empty($_POST["st"]),
+                        "co" => empty($_POST["co"]),
+                        "pv" => empty($_POST["pv"]),
+                        "ct" => empty($_POST["ct"]),
+                        "bg" => empty($_POST["bg"]),
                 );
             }
 

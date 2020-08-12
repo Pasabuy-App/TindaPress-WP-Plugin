@@ -46,10 +46,17 @@
                         $('#stores-notification').removeClass('tp-display-hide');
                     }
 
+                    var postParam = {
+                            "wpid": "<?php echo get_current_user_id(); ?>",
+                            "snky": "<?php echo wp_get_session_token(); ?>"
+                        };
                     <?php 
                         $root_url = site_url() . "/wp-json/tindapress/v1/stores/";
                         if(isset($_GET['id'])) {
                             $root_url .= "category/select";
+                            ?>
+                            postParam.catid = '<?php echo $_GET['id']; ?>';
+                            <?php
                         } else {
                             $root_url .= "list/all";
                         }
@@ -58,10 +65,7 @@
                     $.ajax({
                         dataType: 'json',
                         type: 'POST', 
-                        data: {
-                            "wpid": "<?php echo get_current_user_id(); ?>",
-                            "snky": "<?php echo wp_get_session_token(); ?>"
-                        },
+                        data: postParam,
                         url: '<?php echo $root_url; ?>', //TODO: RESTAPI FOR STORE LIST
                         success : function( data )
                         {
@@ -179,9 +183,25 @@
                     buttons: {
                         "Confirm": function() 
                         {
-                            confirmCreateProcess();
-                            $('#jquery-overlay').addClass('tp-display-hide');
-                            $( this ).dialog( "close" );
+                            var e = document.getElementById("new_category");
+                            var storeCategory = e.options[e.selectedIndex].value;
+                            
+                            if(storeCategory == 0) {
+                                $('#CNAMessage').addClass('alert-failed');
+                                $('#CNAMessage').removeClass('tp-display-hide');
+                                alert( "Please select category!" );
+
+                                $('#create-app-btn').removeClass('disabled');
+                                activeTimeout = setTimeout( function() {
+                                    $('#CNAMessage').removeClass('alert-failed');
+                                    $('#CNAMessage').addClass('tp-display-hide');
+                                    activeTimeout = 'undefined';
+                                }, 4000);
+                            } else {
+                                confirmCreateProcess();
+                                $('#jquery-overlay').addClass('tp-display-hide');
+                                $( this ).dialog( "close" );
+                            }
                         },
                         Cancel: function() 
                         {
@@ -197,29 +217,54 @@
                 $('#create-app-btn').addClass('disabled');
 
                 //From native form object to json object.
-                var unindexed_array = $('#create-app-form').serializeArray();
-                var indexed_array = {};
+                var e = document.getElementById("new_category");
+                var storeCategory = e.options[e.selectedIndex].value;
 
-                $.map(unindexed_array, function(n, i){
-                    indexed_array[n['name']] = n['value'];
-                });
-                indexed_array.action = 'CreateNewApp';
+                var e = document.getElementById("new_country");
+                var countryValue = e.options[e.selectedIndex].value;
+
+                var e = document.getElementById("new_province");
+                var provinceValue = e.options[e.selectedIndex].value;
+
+                var e = document.getElementById("new_city");
+                var cityValue = e.options[e.selectedIndex].value;
+
+                var e = document.getElementById("new_brgy");
+                var brgyValue = e.options[e.selectedIndex].value;
+
+                var postParam = {};
+                    postParam.wpid = "<?php echo get_current_user_id(); ?>";
+                    postParam.snky = "<?php echo wp_get_session_token(); ?>";
+                    postParam.catid = storeCategory;
+                    postParam.title = $('#new_title').val();
+                    postParam.short_info = $('#new_info').val();
+                    postParam.long_info = "None";
+                    postParam.logo = "None";
+                    postParam.banner = "None";
+                    postParam.phone = $('#new_phone').val();
+                    postParam.email = $('#new_email').val();
+                    postParam.st = $('#new_street').val();
+                    postParam.bg = brgyValue;
+                    postParam.ct = cityValue;
+                    postParam.pv = provinceValue;
+                    postParam.co = countryValue;
 
                 // This will be handled by create-app.php.
                 $.ajax({
                     dataType: 'json',
                     type: 'POST', 
-                    data: indexed_array,
-                    url: 'admin-ajax.php',
+                    data: postParam,
+                    url:  '<?php echo site_url() . "/wp-json/tindapress/v1/stores/insert"; ?>',
                     success : function( data )
                     {
+                        console.log(data);
+
                         if( data.status == 'success' ) {
-                            // $('#appname_create').val(''); // TODO: Set the item to empty.
-                            // $('#appdesc_create').val(''); // TODO: Set the item to empty.
-                            // $('#appurl_create').val(''); // TODO: Set the item to empty.
-                            // $('#appmtcap_create').val(''); // TODO: Set the item to empty.
-                            // $('#appcap_create').val(''); // TODO: Set the item to empty.
+                            $('#new_title').val('');
+                            $('#new_info').val('');
+                            $('#new_category').prop('selectedIndex',0);
                         }
+
                         $('#CNAMessage').addClass('alert-'+data.status);
                         $('#CNAMessage').removeClass('tp-display-hide');
                         $('#CNAMcontent').text( data.message );
@@ -386,10 +431,6 @@
                 // $('#appid_edit').val( data.aid ); //TODO: Set item display from data.
                 // $('#appname_edit').val( data.aname ); //TODO: Set item display from data.
                 // $('#appdesc_edit').val( data.ainfo ); //TODO: Set item display from data.
-                // $('#appurl_edit').val( data.aurl ); //TODO: Set item display from data.
-                // $('#appsta_edit').val( data.asta ); //TODO: Set item display from data.
-                // $('#appmtcap_edit').val( data.mcap ); //TODO: Set item display from data.
-                // $('#appcap_edit').val( data.acap ); //TODO: Set item display from data.
 
                 $('#delete-app-btn').removeClass('disabled');
                 $('#update-app-btn').removeClass('disabled');

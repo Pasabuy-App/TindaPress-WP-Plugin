@@ -35,11 +35,255 @@
                                 placeholder="Short description of your Store." ></textarea>
                         </div>
                         <div class="form-group">
+                            <label for="new_phone">Phone:</label>
+                            <input required type="phone" class="form-control" id="new_phone" name="new_phone" placeholder="Phone of this Store.">
+                        </div>
+                        <div class="form-group">
+                            <label for="new_email">Email:</label>
+                            <input required type="email" class="form-control" id="new_email" name="new_email" placeholder="Email of this Store.">
+                        </div>
+                        <div class="form-group">
                             <label for="new_category">CATEGORY:</label><br>
-                            <select class="form-control" id="new_category" name="new_category">
-                                <option selected="selected">Restaurant</option>
-                                <option>Fast Foods</option>
+                            <select required class="form-control" id="new_category" name="new_category">
+                                <script type="text/javascript">
+                                    jQuery(document).ready( function ( $ ) 
+                                    {   
+                                        $.ajax({
+                                                dataType: 'json',
+                                                type: 'POST', 
+                                                data: {
+                                                    wpid: "<?php echo get_current_user_id(); ?>",
+                                                    snky: "<?php echo wp_get_session_token(); ?>"
+                                                },
+                                                url: '<?php echo site_url() . "/wp-json/tindapress/v1/category/list/all"; ?>',
+                                                success: function(data) {
+                                                    
+                                                    if(data.status == "success") {
+                                                        var $country = $('#new_category');
+                                                        $country.empty();
+                                                        $country.append("<option value='0' selected='selected'>Select Category</option>");
+                                                        for(var i=0; i<data.data.length; i++ ) {
+                                                            $country.append('<option value=' + data.data[i].ID + '>' + data.data[i].title + '</option>');
+                                                        }
+                                                    } else {
+                                                        $('#CNAMessage').addClass('alert-'+data.status);
+                                                        $('#CNAMessage').removeClass('tp-display-hide');
+                                                        $('#CNAMcontent').text( data.message );
+                                                    }
+
+                                                },
+                                                error : function(){
+                                                    alert('Some error occurred!');
+                                                }
+                                        });
+                                    });
+                                </script>
+                                <!-- <option selected="selected">Restaurant</option> -->
+                                
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="new_country">COUNTRY:</label><br>
+                            <select required class="form-control" id="new_country" name="new_country">
+                                <script type="text/javascript">
+                                    jQuery(document).ready( function ( $ ) 
+                                    {   
+                                        $.ajax({
+                                                dataType: 'json',
+                                                type: 'POST', 
+                                                data: {
+                                                    mkey: "<?php echo DV_Library_Config::dv_get_config('master_key', 123); ?>"
+                                                },
+                                                url: '<?php echo site_url() . "/wp-json/datavice/v1/location/country/active"; ?>',
+                                                success: function(data) {
+                                                    
+                                                    if(data.status == "success") {
+                                                        var $country = $('#new_country');
+                                                        $country.empty();
+                                                        $country.append("<option value='0' selected='selected'>Select Country</option>");
+                                                        for(var i=0; i<data.data.length; i++ ) {
+                                                            $country.append('<option value=' + data.data[i].code + '>' + data.data[i].name + '</option>');
+                                                        }
+                                                    } else {
+                                                        $('#CNAMessage').addClass('alert-'+data.status);
+                                                        $('#CNAMessage').removeClass('tp-display-hide');
+                                                        $('#CNAMcontent').text( data.message );
+                                                    }
+
+                                                },
+                                                error : function(){
+                                                    alert('Some error occurred!');
+                                                }
+                                        });
+                                    });
+                                </script>
+                                <!-- <option selected="selected">Restaurant</option> -->
+                                
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="new_province">PROVINCE:</label><br>
+                            <select required class="form-control" id="new_province" name="new_province">
+                                <script type="text/javascript">
+                                    jQuery(document).ready( function ( $ ) 
+                                    {  
+                                        var $country = $('#new_province');
+                                        $country.empty();
+                                        $country.append("<option value='0' selected='selected'>Select Country First</option>");
+
+                                        $("#new_country").live('change', function() {
+                                            if($(this).val() != 0) {
+                                                var e = document.getElementById("new_country");
+                                                var countryCode = e.options[e.selectedIndex].value;
+                                                $.ajax({
+                                                    dataType: 'json',
+                                                    type: 'POST', 
+                                                    data: {
+                                                        mkey: "<?php echo DV_Library_Config::dv_get_config('master_key', 123); ?>",
+                                                        country_code: countryCode
+                                                    },
+                                                    url: '<?php echo site_url() . "/wp-json/datavice/v1/location/province/active"; ?>',
+                                                    success: function(data) {
+                                                        
+                                                        if(data.status == "success") {
+                                                            var $country = $('#new_province');
+                                                            $country.empty();
+                                                            $country.append("<option value='0' selected='selected'>Select Province</option>");
+                                                            for(var i=0; i<data.data.length; i++ ) {
+                                                                $country.append('<option value=' + data.data[i].code + '>' + data.data[i].name + '</option>');
+                                                            }
+                                                        } else {
+                                                            $('#CNAMessage').addClass('alert-'+data.status);
+                                                            $('#CNAMessage').removeClass('tp-display-hide');
+                                                            $('#CNAMcontent').text( data.message );
+                                                        }
+
+                                                    },
+                                                    error : function(){
+                                                        alert('Some error occurred!');
+                                                    }
+                                                });
+                                            } else {
+                                                var $country = $('#new_province');
+                                                $country.empty();
+                                                $country.append("<option value='0' selected='selected'>Select Country First</option>");
+                                            }
+                                            
+                                        });
+                                    });
+                                </script>                                
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="new_city">CITY:</label><br>
+                            <select required class="form-control" id="new_city" name="new_city">
+                                <script type="text/javascript">
+                                    jQuery(document).ready( function ( $ ) 
+                                    {  
+                                        var $city = $('#new_city');
+                                        $city.empty();
+                                        $city.append("<option value='0' selected='selected'>Select Province First</option>");
+
+                                        $("#new_province").live('change', function() {
+                                            if($(this).val() != 0) {
+                                                var e = document.getElementById("new_province");
+                                                var provinceCode = e.options[e.selectedIndex].value;
+                                                $.ajax({
+                                                    dataType: 'json',
+                                                    type: 'POST', 
+                                                    data: {
+                                                        mkey: "<?php echo DV_Library_Config::dv_get_config('master_key', 123); ?>",
+                                                        prov_code: provinceCode
+                                                    },
+                                                    url: '<?php echo site_url() . "/wp-json/datavice/v1/location/city/active"; ?>',
+                                                    success: function(data) {
+                                                        
+                                                        if(data.status == "success") {
+                                                            var $city = $('#new_city');
+                                                            $city.empty();
+                                                            $city.append("<option value='0' selected='selected'>Select City</option>");
+                                                            for(var i=0; i<data.data.length; i++ ) {
+                                                                $city.append('<option value=' + data.data[i].code + '>' + data.data[i].name + '</option>');
+                                                            }
+                                                        } else {
+                                                            $('#CNAMessage').addClass('alert-'+data.status);
+                                                            $('#CNAMessage').removeClass('tp-display-hide');
+                                                            $('#CNAMcontent').text( data.message );
+                                                        }
+
+                                                    },
+                                                    error : function(){
+                                                        alert('Some error occurred!');
+                                                    }
+                                                });
+                                            } else {
+                                                var $city = $('#new_city');
+                                                $city.empty();
+                                                $city.append("<option value='0' selected='selected'>Select Province First</option>");
+                                            }
+                                            
+                                        });
+                                    });
+                                </script>                                
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="new_brgy">Barangay:</label><br>
+                            <select required class="form-control" id="new_brgy" name="new_brgy">
+                                <script type="text/javascript">
+                                    jQuery(document).ready( function ( $ ) 
+                                    {  
+                                        var $city = $('#new_brgy');
+                                        $city.empty();
+                                        $city.append("<option value='0' selected='selected'>Select City First</option>");
+
+                                        $("#new_city").live('change', function() {
+                                            if($(this).val() != 0) {
+                                                var e = document.getElementById("new_city");
+                                                var cityCode = e.options[e.selectedIndex].value;
+                                                $.ajax({
+                                                    dataType: 'json',
+                                                    type: 'POST', 
+                                                    data: {
+                                                        mkey: "<?php echo DV_Library_Config::dv_get_config('master_key', 123); ?>",
+                                                        city_code: cityCode
+                                                    },
+                                                    url: '<?php echo site_url() . "/wp-json/datavice/v1/location/brgy/active"; ?>',
+                                                    success: function(data) {
+                                                        
+                                                        if(data.status == "success") {
+                                                            var $city = $('#new_brgy');
+                                                            $city.empty();
+                                                            $city.append("<option value='0' selected='selected'>Select Barangay</option>");
+                                                            for(var i=0; i<data.data.length; i++ ) {
+                                                                $city.append('<option value=' + data.data[i].code + '>' + data.data[i].name + '</option>');
+                                                            }
+                                                        } else {
+                                                            $('#CNAMessage').addClass('alert-'+data.status);
+                                                            $('#CNAMessage').removeClass('tp-display-hide');
+                                                            $('#CNAMcontent').text( data.message );
+                                                        }
+
+                                                    },
+                                                    error : function(){
+                                                        alert('Some error occurred!');
+                                                    }
+                                                });
+                                            } else {
+                                                var $city = $('#new_brgy');
+                                                $city.empty();
+                                                $city.append("<option value='0' selected='selected'>Select City First</option>");
+                                            }
+                                            
+                                        });
+                                    });
+                                </script>                                
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="new_street">Street Address:</label>
+                            <textarea required type="text" class="form-control" id="new_street" name="new_street" rows="3"
+                                placeholder="Short description of your Store." ></textarea>
                         </div>
                         <div class="form-group">
                             <div class="alert alert-dark tp-center-item" role="alert">
