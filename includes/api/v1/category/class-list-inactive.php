@@ -44,6 +44,7 @@
             // Step 3: Start a query
             $categories = $wpdb->get_results("SELECT
                 cat.ID, cat.types,
+                IF(( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.status ) = 1, 'Active', 'Inactive') AS status,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.title ) AS title,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.info ) AS info
             FROM

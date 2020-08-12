@@ -91,10 +91,12 @@
                 //Set table column header.
                 var columns = [
                     // { "sTitle": "IDENTITY",   "mData": "ID" },
+                    { "sTitle": "STORE",   "mData": "store_name" },
+                    { "sTitle": "CATEGORY",   "mData": "cat_name" },
                     { "sTitle": "NAME",   "mData": "product_name" },
                     { "sTitle": "DESCRIPTION",   "mData": "short_info" },
                     { "sTitle": "PRICE",   "mData": "price" },
-                    { "sTitle": "STATUS",   "mData": "category_name" },
+                    { "sTitle": "STATUS",   "mData": "status" },
                     {"sTitle": "Action", "mRender": function(data, type, item)
                         {
                             return '' + 

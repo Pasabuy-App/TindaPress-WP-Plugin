@@ -42,7 +42,7 @@
 					<strong>Project: </strong><strong id="parent-name"><?php echo $_GET['name']; ?></strong>
 				</div>
 				<button id="RefreshAppList" type="button" class="btn btn-dark">Refresh List</button>
-				<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#CreateNewApp">Create Variant</button>
+				<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#CreateNewApp">Create Product</button>
 			</div>
 			<table id="products-datatables" class="stripe" style="width: 100%;"></table>
 			<div id="stores-notification" class="alert alert-info tp-center-item " role="alert" style="margin-top: 20px;">

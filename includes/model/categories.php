@@ -15,6 +15,17 @@
 <script type="text/javascript">
     jQuery(document).ready( function ( $ ) 
     {
+        if($("#set_status").val() !== 0) {
+            <?php if(isset($_GET['status'])) { ?>
+                $("#set_status").val('<?php echo $_GET['status']; ?>');
+            <?php } ?>
+        }
+        
+        <?php global $wp; ?>
+        $("#set_status").live('change', function() {
+            window.location.href = '<?php echo site_url().$_SERVER['REQUEST_URI']."&status="; ?>' + $(this).val();
+        });   
+        
         //THIS ARE ALL THE PUBLIC VARIABLES.
         var activeTimeout = 'undefined';
 
@@ -45,8 +56,22 @@
                     {
                         $('#stores-notification').removeClass('tp-display-hide');
                     }
+
+                    <?php
+                        if(isset($_GET['status'])) {
+                            if($_GET['status'] == 1) {
+                                $postUrl = "list/active";
+                            } else if($_GET['status'] == 2) {
+                                $postUrl = "list/inactive";
+                            } else {
+                                $postUrl = "list/all";
+                            }
+                        } else {
+                            $postUrl = "list/all";
+                        }
+                    ?>
+                    var postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/category/" . $postUrl; ?>';
                     
-                    var appListAction = { action: 'ReloadProjects' };
                     $.ajax({
                         dataType: 'json',
                         type: 'POST', 
@@ -54,7 +79,7 @@
                             "wpid": "<?php echo get_current_user_id(); ?>",
                             "snky": "<?php echo wp_get_session_token(); ?>"
                         },
-                        url: '<?php echo site_url() . "/wp-json/tindapress/v1/category/list/all"; ?>', //TODO: RESTAPI FOR STORE LIST
+                        url: postUrl,
                         success : function( data )
                         {
                             if(data.status == "success") {
