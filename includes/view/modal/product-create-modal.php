@@ -27,7 +27,7 @@
                     <form id="create-app-form">
                         <div class="form-group">
                             <label for="new_title">Name:</label>
-                            <input required type="text" class="form-control" id="new_title" name="new_title" placeholder="Public name of this Products.">
+                            <input required type="text" class="form-control" id="new_title" name="new_title" placeholder="Name of this Products.">
                         </div>
                         <div class="form-group">
                             <label for="new_info">Description:</label>
@@ -42,15 +42,13 @@
                         <div class="form-group">
                             <label for="new_store">STORE:</label><br>
                             <select class="form-control" id="new_store" name="new_store">
-                                <option selected="selected">Jollibee</option>
-                                <option>McDonalds</option>
+                                <option selected="selected" value="<?php echo $_GET['id']; ?>"><?php echo $_GET['name']; ?></option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="new_category">CATEGORY:</label><br>
                             <select class="form-control" id="new_category" name="new_category">
-                                <option selected="selected">Restaurant</option>
-                                <option>Fast Foods</option>
+                                <option selected="selected" value="<?php echo $_GET['catid']; ?>"><?php echo $_GET['catname']; ?></option>
                             </select>
                         </div>
                         <div class="form-group">

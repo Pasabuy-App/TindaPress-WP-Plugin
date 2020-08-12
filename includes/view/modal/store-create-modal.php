@@ -27,7 +27,7 @@
                     <form id="create-app-form">
                         <div class="form-group">
                             <label for="new_title">Name:</label>
-                            <input required type="text" class="form-control" id="new_title" name="new_title" placeholder="Public name of this Store.">
+                            <input required type="text" class="form-control" id="new_title" name="new_title" placeholder="Name of this Store.">
                         </div>
                         <div class="form-group">
                             <label for="new_info">Description:</label>
