@@ -67,12 +67,11 @@
 
 
             $category_id = $_POST['catid'];
-            
-            $get_category = $wpdb->get_results("SELECT
+             $get_category = $wpdb->get_row("SELECT
                     cat.ID, 
                     ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.title ) AS title,
                     ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.info ) AS info,
-                    (SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.status) as status
+                    ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.status) as `status`
                 FROM
                     $table_product p
                 INNER JOIN
@@ -101,8 +100,10 @@
             // query
             $result = $wpdb->get_results("SELECT
                 tp_prod.ID,
-                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.title ) AS `category_name`,
+                tp_prod.ctid as catid,
+                (select child_val from $table_revs where id = (select title from tp_categories where id = tp_prod.ctid)) AS cat_name,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE tp_rev.ID = tp_prod.title ) AS product_name,
+                IF (( select child_val from $table_revs where id = tp_prod.`status` ) = 1, 'Active' , 'Inactive' ) AS `status`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.short_info ) AS `short_info`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.long_info ) AS `long_info`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.sku ) AS `sku`,
