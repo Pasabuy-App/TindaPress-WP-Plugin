@@ -20,8 +20,6 @@
         public static function listen_open (){
             global $wpdb;
 
-            
-
             // declaring table names to variable
             $table_store = TP_STORES_TABLE;
             $table_revisions = TP_REVISIONS_TABLE;
@@ -33,9 +31,46 @@
             $table_dv_revisions = DV_REVS_TABLE;
             $table_add = DV_ADDRESS_TABLE;
 
+            // Step1 : Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                );
+            }
+
+            // Step2 : Check if wpid and snky is valid
+            if (DV_Verification::is_verified() == false) {
+                return array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. Verification issues!",
+                );
+            }
+
+            if (!isset($_POST["stid"]) || !isset($_POST["addr"])  ) {
+                return array(
+					"status" => "unknown",
+					"message" => "Please contact your administrator. Request unknown!",
+                );
+            }
+
+            if (empty($_POST["stid"]) || empty($_POST["addr"])  ) {
+                return array(
+                    "status" => "failed",
+                    "message" => "Required fileds cannot be empty.",
+                );
+            }
+
+            if (!is_numeric($_POST["stid"]) || !is_numeric($_POST["addr"])  ) {
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ID is not in valid format!",
+                );
+            }
+
             $user = TP_Store_Select_Address::catch_post();
 
-            
             $check_addres_id = $wpdb->get_row("SELECT `child_val`as`status` FROM dv_revisions WHERE ID = (SELECT `status` FROM dv_address WHERE ID = '{$user["address_id"]}')");
             if ($check_addres_id->status != 1) {
                 return array(
@@ -58,7 +93,7 @@
             FROM
                 dv_address `add`
             WHERE
-            `add`.id = $address_id AND `add`.stid = $store_id ");
+            `add`.id = '{$user["address_id"]}' AND `add`.stid = '{$user["store_id"]}' ");
 
             if (!$result) {
                 return array(
