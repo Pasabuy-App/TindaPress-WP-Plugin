@@ -171,7 +171,10 @@
                 tptables = $('#stores-datatables').DataTable({
                     destroy: true,
                     searching: true,
-                    buttons: ['copy', 'excel', 'print'],
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'copy', 'csv', 'excel', 'pdf', 'print'
+                    ],
                     responsive: true,
                     "aaData": data,
                     "aoColumns": columns,
