@@ -52,7 +52,7 @@
             $result = $wpdb->get_results("SELECT
                 tp_str.ID,
                 tp_str.ctid as catid,
-                (select child_val from $table_revs where id = (select title from tp_categories where id = tp_str.ctid)) AS cat_name,
+                (select child_val from $table_revs where id = (select title from tp_categories where id = tp_str.ctid)) AS catname,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.title ) AS `title`,
                 IF (( select child_val from $table_revs where id = tp_str.`status` ) = 1, 'Active' , 'Inactive' ) AS `status`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.ctid ) AS `catid`,

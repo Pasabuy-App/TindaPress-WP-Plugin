@@ -70,7 +70,8 @@
             // Step6 : Query
             $result = $wpdb->get_results("SELECT
                 tp_str.ID,
-                tp_str.ctid,
+                tp_str.ctid AS `catid`,
+                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = tp_str.ctid ) AS `catname`,
                 ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.ID = tp_str.title ) AS `title`,
                 ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.ID = tp_str.short_info ) AS `short_info`,
                 ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.ID = tp_str.long_info ) AS `long_info`,

@@ -92,7 +92,6 @@
             //DISPLAY DATA INTO THE TARGET DATATABLES.
             function displayingLoadedApps( data )
             {
-                console.log(data);
                 //Set table column header.
                 var columns = [
                     //{ "sTitle": "IDENTITY",   "mData": "ID" },
@@ -101,7 +100,7 @@
                     <?php
                         if(!isset($_GET['id'])) {
                     ?>
-                            { "sTitle": "CATEGORY",   "mData": "catid" },
+                            { "sTitle": "CATEGORY",   "mData": "catname" },
                     <?php
                         }
                     ?>
@@ -194,10 +193,22 @@
                             var e = document.getElementById("new_category");
                             var storeCategory = e.options[e.selectedIndex].value;
                             
-                            if(storeCategory == 0) {
+                            var e = document.getElementById("new_country");
+                            var countryValue = e.options[e.selectedIndex].value;
+
+                            var e = document.getElementById("new_province");
+                            var provinceValue = e.options[e.selectedIndex].value;
+
+                            var e = document.getElementById("new_city");
+                            var cityValue = e.options[e.selectedIndex].value;
+
+                            var e = document.getElementById("new_brgy");
+                            var brgyValue = e.options[e.selectedIndex].value;
+                            
+                            if(storeCategory == 0 || countryValue == 0 || provinceValue == 0 || cityValue == 0 || brgyValue == 0 ) {
                                 $('#CNAMessage').addClass('alert-failed');
                                 $('#CNAMessage').removeClass('tp-display-hide');
-                                alert( "Please select category!" );
+                                alert( "Please select an item to all dropdown!" );
 
                                 $('#create-app-btn').removeClass('disabled');
                                 activeTimeout = setTimeout( function() {
@@ -265,12 +276,17 @@
                     url:  '<?php echo site_url() . "/wp-json/tindapress/v1/stores/insert"; ?>',
                     success : function( data )
                     {
-                        console.log(data);
-
                         if( data.status == 'success' ) {
                             $('#new_title').val('');
                             $('#new_info').val('');
+                            $('#new_phone').val('');
+                            $('#new_email').val('');
                             $('#new_category').prop('selectedIndex',0);
+                            $('#new_country').prop('selectedIndex',0);
+                            $('#new_province').prop('selectedIndex',0);
+                            $('#new_city').prop('selectedIndex',0);
+                            $('#new_brgy').prop('selectedIndex',0);
+                            $('#new_street').val('');
                         }
 
                         $('#CNAMessage').addClass('alert-'+data.status);
@@ -305,9 +321,16 @@
             $('#CreateNewApp').on('show.bs.modal', function(e) {
                 var data = e.relatedTarget.dataset;
                 $('#create-app-btn').removeClass('disabled');
-                // $('#appsta_create').val( 'Active' ); //TODO: Before appear modal, set input to empty.
-                // $('#appmtcap_create').val(); //TODO: Before appear modal, set input to empty.
-                // $('#appcap_create').val(); //TODO: Before appear modal, set input to empty.
+                $('#new_title').val('');
+                $('#new_info').val('');
+                $('#new_phone').val('');
+                $('#new_email').val('');
+                $('#new_category').prop('selectedIndex',0);
+                $('#new_country').prop('selectedIndex',0);
+                $('#new_province').prop('selectedIndex',0);
+                $('#new_city').prop('selectedIndex',0);
+                $('#new_brgy').prop('selectedIndex',0);
+                $('#new_street').val('');
             });
 
             // MAKE SURE THAT TIMEOUT IS CANCELLED.
@@ -394,9 +417,16 @@
                     success : function( data )
                     {
                         if( clickedBtnId == 'delete-app-btn' ) {
-                            // $('#appname_edit').val(''); //TODO: Set item input to empty.
-                            // $('#appdesc_edit').val(''); //TODO: Set item input to empty.
-                            // $('#appurl_edit').val(''); //TODO: Set item input to empty.
+                            $('#new_title').val('');
+                            $('#new_info').val('');
+                            $('#new_phone').val('');
+                            $('#new_email').val('');
+                            $('#new_category').prop('selectedIndex',0);
+                            $('#new_country').prop('selectedIndex',0);
+                            $('#new_province').prop('selectedIndex',0);
+                            $('#new_city').prop('selectedIndex',0);
+                            $('#new_brgy').prop('selectedIndex',0);
+                            $('#new_street').val('');
                         } else {
                             $('#delete-app-btn').removeClass('disabled');
                             $('#update-app-btn').removeClass('disabled');
