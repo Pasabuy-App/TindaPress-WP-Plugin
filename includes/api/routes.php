@@ -67,6 +67,8 @@
          require plugin_dir_path(__FILE__) . '/v1/category/class-update.php';
          require plugin_dir_path(__FILE__) . '/v1/category/class-activate.php';
 
+        
+
         //Operations Classes
         require plugin_dir_path(__FILE__) . '/v1/operations/class-list-open.php';
         require plugin_dir_path(__FILE__) . '/v1/operations/class-list-month.php';
@@ -383,12 +385,7 @@
                 'callback' => array('TP_Category_Select_Store','listen'),
             ));
 
-            register_rest_route( 'tindapress/v1/category/store', 'insert', array(
-                'methods' => 'POST',
-                'callback' => array('TP_Category_Store_Insert','listen'),
-            ));
-            
-
+        
         /*
          * SETTINGS RESTAPI
         */

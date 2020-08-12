@@ -43,19 +43,20 @@
             
             // Step 3: Start a query
             $categories = $wpdb->get_results("SELECT
-                cat.ID, 
-                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.title ) AS title,
-                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.info ) AS info
+                cat.ID as catid,
+                cat.ID as stid,
+                cat.types,
+                ( SELECT child_val FROM $table_revs WHERE ID = cat.title ) AS `title`,
+                ( SELECT child_val FROM $table_revs WHERE ID = cat.info ) AS `info`,
+            IF
+                ( ( SELECT child_val FROM $table_revs WHERE ID = cat.`status` ) = 1, 'Active', 'Inactive' ) AS `status` 
             FROM
-                $table_categories cat
-            INNER JOIN
-                $table_revs rev ON rev.parent_id = cat.id
+                $table_categories cat 
             WHERE
-                (SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.status) = 1
-            AND 
-                cat.types = 'store' 
-            GROUP BY
-                cat.id");
+                ( SELECT child_val FROM $table_revs WHERE ID = cat.`status` ) = 1
+            AND cat.types = 'store'
+                GROUP BY
+                    cat.id");
             
             // Step 4: Check results if empty
             if (!$categories) {
