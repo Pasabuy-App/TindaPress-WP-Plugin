@@ -46,7 +46,7 @@
                 cat.ID, cat.types,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.title ) AS title,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.info ) AS info,
-                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.status) as status
+                IF (( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.status ) = 1, 'Active' , 'Inactive' ) AS `status`
             FROM
                 $table_categories cat
             INNER JOIN

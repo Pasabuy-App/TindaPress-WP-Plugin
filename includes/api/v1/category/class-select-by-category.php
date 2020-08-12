@@ -65,7 +65,7 @@
                 cat.ID, cat.types,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.title ) AS title,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.info ) AS info,
-                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.status) as status
+                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.status ) AS status_id
             FROM
                 $table_categories cat
             INNER JOIN 
@@ -81,7 +81,7 @@
                 );
             }
 
-            if ($category->status == 0) {
+            if ($category->status_id == 0) {
                 return array(
                     "status" => "failed",
                     "message" => "This category is currently inactive.",
