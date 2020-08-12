@@ -239,7 +239,7 @@
                 );
             }
 
-            // // Remove all illegal characters from a url
+            // // // Remove all illegal characters from a url
             // $banner_url = filter_var($_POST["banner"], FILTER_SANITIZE_URL);
             // $logo_url = filter_var($_POST["logo"], FILTER_SANITIZE_URL);
             
@@ -273,7 +273,7 @@
                 );
             }
             
-            $later = TP_Globals::date_stamp();
+            $date_created = TP_Globals::date_stamp();
             $user = TP_Insert_Store::catch_post();
 
             // Step7 : Query
@@ -282,26 +282,26 @@
                 //get country id
                 $get_country = $wpdb->get_row("SELECT ID FROM dv_geo_countries WHERE `country_code` = '$country_code'");
 
-                $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'title', '{$user["title"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'title', '{$user["title"]}', '{$user["created_by"]}', '$date_created')");
                 $title = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'short_info', '{$user["short_info"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'short_info', '{$user["short_info"]}', '{$user["created_by"]}', '$date_created')");
                 $short_info = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'long_info', '{$user["long_info"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'long_info', '{$user["long_info"]}', '{$user["created_by"]}', '$date_created')");
                 $long_info = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'logo', '{$user["logo"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'logo', '{$user["logo"]}', '{$user["created_by"]}', '$date_created')");
                 $logo = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'banner', '{$user["banner"]}', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'banner', '{$user["banner"]}', '{$user["created_by"]}', '$date_created')");
                 $banner = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'status', '1', '{$user["created_by"]}', '$later')");
+                $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'status', '1', '{$user["created_by"]}', '$date_created')");
                 $status = $wpdb->insert_id;
 
                 // Insert query for store                                          
-                $wpdb->query("INSERT INTO $table_store $table_store_fields VALUES ('{$user["catid"]}', $title, $short_info, $long_info, $logo, $banner, $status, '0', '{$user["created_by"]}', '$later' )");
+                $wpdb->query("INSERT INTO $table_store $table_store_fields VALUES ('{$user["catid"]}', $title, $short_info, $long_info, $logo, $banner, $status, '0', '{$user["created_by"]}', '$date_created' )");
                 $store_id = $wpdb->insert_id;
                 // End query for store
 
@@ -311,22 +311,22 @@
                 // Query of store contact.
                 // Phone
                 $wpdb->query("INSERT INTO `$table_dv_revs` (revs_type, parent_id, child_key, child_val, created_by, date_created) 
-                                                VALUES ( 'contacts', 0, 'phone', '{$user["phone"]}', '{$user["created_by"]}', '$later'  )");
+                                                VALUES ( 'contacts', 0, 'phone', '{$user["phone"]}', '{$user["created_by"]}', '$date_created'  )");
                 $phone_last_id = $wpdb->insert_id;
 
                 $wpdb->query("INSERT INTO `$table_contact` (`status`, `types`, `revs`, `stid`, `created_by`, `date_created`) 
-                                                    VALUES ('1', 'phone', '$phone_last_id', $store_id, '{$user["created_by"]}', '$later');");
+                                                    VALUES ('1', 'phone', '$phone_last_id', $store_id, '{$user["created_by"]}', '$date_created');");
                 $contact_phone_id = $wpdb->insert_id;
                 
                 $update_contact_phone = $wpdb->query("UPDATE `$table_dv_revs` SET `parent_id` = $contact_phone_id WHERE ID = $phone_last_id ");
 
                 // Email
                 $wpdb->query("INSERT INTO `$table_dv_revs` (revs_type, parent_id, child_key, child_val, created_by, date_created) 
-                                                VALUES ( 'contacts', 0, 'email', '{$user["phone"]}', '{$user["created_by"]}', '$later'  )");
+                                                VALUES ( 'contacts', 0, 'email', '{$user["phone"]}', '{$user["created_by"]}', '$date_created'  )");
                 $email_last_id = $wpdb->insert_id;
 
                 $wpdb->query("INSERT INTO `$table_contact` (`status`, `types`, `revs`, `stid`, `created_by`, `date_created`) 
-                                                    VALUES ('1', 'email', '$email_last_id', $store_id, '{$user["created_by"]}', '$later');");
+                                                    VALUES ('1', 'email', '$email_last_id', $store_id, '{$user["created_by"]}', '$date_created');");
                 $contact_email_id = $wpdb->insert_id;
                 
                  $update_contact_email = $wpdb->query("UPDATE `$table_dv_revs` SET `parent_id` = $contact_email_id WHERE ID = $email_last_id ");
@@ -334,27 +334,27 @@
                 // End of store contact query
 
                 // Query of store address.
-                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'status', '1', '{$user["created_by"]}', '$later');");
+                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'status', '1', '{$user["created_by"]}', '$date_created');");
                 $status = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'street', '{$user["street"]}', '{$user["created_by"]}', '$later');");
+                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'street', '{$user["street"]}', '{$user["created_by"]}', '$date_created');");
                 $street = $wpdb->insert_id;
     
-                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'brgy', '{$user["barangy"]}', '{$user["created_by"]}', '$later');");
+                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'brgy', '{$user["barangy"]}', '{$user["created_by"]}', '$date_created');");
                 $brgy = $wpdb->insert_id;
     
-                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'city', '{$user["city"]}', '{$user["created_by"]}', '$later');");
+                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'city', '{$user["city"]}', '{$user["created_by"]}', '$date_created');");
                 $city = $wpdb->insert_id;
                     
-                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'province', '{$user["province"]}', '{$user["created_by"]}', '$later');");
+                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'province', '{$user["province"]}', '{$user["created_by"]}', '$date_created');");
                 $province = $wpdb->insert_id;
                 
-                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'country', '$get_country->ID', '{$user["created_by"]}', '$later');");
+                $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'country', '$get_country->ID', '{$user["created_by"]}', '$date_created');");
                 $country = $wpdb->insert_id;
 
                 //Save the address in the parent table
                 $wpdb->query("INSERT INTO $table_address (`status`, `types`, `stid`, `street`, `brgy`, `city`, `province`, `country`, `date_created`) 
-                    VALUES ('$status', 'business', '$store_id', $street, $brgy, $city, $province, $country, '$later')");
+                    VALUES ('$status', 'business', '$store_id', $street, $brgy, $city, $province, $country, '$date_created')");
                 $address_id = $wpdb->insert_id;
 
                 //Update revision table for saving the parent_id(address_id)
