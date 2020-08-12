@@ -50,6 +50,22 @@
                 );
                 
             }
+
+            if (!isset($_POST["catid"])) {
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Request unknwon!"
+                );
+            }
+
+            if (empty($_POST["catid"])) {
+                return array(
+                    "status" => "failed",
+                    "message" => "Required fields cannot be empty."
+                );
+            }
+
+            $ctid = $_POST["catid"];
             
             // Step 3: Start a query
             $categories = $wpdb->get_results("SELECT
@@ -76,7 +92,7 @@
                 $table_address dv_add ON tp_str.address = dv_add.ID
                 WHERE 
                 ( SELECT child_val FROM $table_revisions WHERE ID = (select `status` from tp_categories where id = tp_str.ctid) ) = 1 AND ( select child_val from $table_revisions where id = tp_str.`status` ) = 1
-                
+                AND  tp_str.ctid = '$ctid'
             
             ");
             
