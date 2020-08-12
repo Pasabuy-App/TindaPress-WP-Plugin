@@ -100,8 +100,10 @@
             // query
             $result = $wpdb->get_results("SELECT
                 tp_prod.ID,
+                tp_prod.stid,
                 tp_prod.ctid as catid,
                 (select child_val from $table_revs where id = (select title from tp_categories where id = tp_prod.ctid)) AS cat_name,
+                ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = (SELECT `title` FROM tp_stores WHERE ID  = tp_prod.stid ) ) AS `store_name`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE tp_rev.ID = tp_prod.title ) AS product_name,
                 IF (( select child_val from $table_revs where id = tp_prod.`status` ) = 1, 'Active' , 'Inactive' ) AS `status`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.short_info ) AS `short_info`,
