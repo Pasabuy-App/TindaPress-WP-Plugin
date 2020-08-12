@@ -259,6 +259,11 @@
                 'methods' => 'POST',
                 'callback' => array('TP_Store_Delete_Address','listen'),
             ));
+
+            register_rest_route( 'tindapress/v1/stores/address', 'select', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Store_Select_Address','listen'),
+            ));
             
             
             // End of Address folder

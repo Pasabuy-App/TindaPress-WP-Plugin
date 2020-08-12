@@ -229,6 +229,15 @@
                 );
             }
 
+
+            if ($user["type"] !== 'business' && $user["type"] !== 'office' ) {
+                return array(
+                    "status" => "failed",
+                    "message" => "Invalid type of address..",
+                );
+            }
+
+
             $wpdb->query("START TRANSACTION");
 
              //get country id
@@ -253,13 +262,16 @@
              $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'country', '$get_country->ID', '{$user["created_by"]}', '$date_created');");
              $country = $wpdb->insert_id;
 
-             //Save the address in the parent table
-             $wpdb->query("INSERT INTO $table_address (`status`, `types`, `stid`, `street`, `brgy`, `city`, `province`, `country`, `date_created`) 
-                 VALUES ('$status', 'business', '{$user["store_id"]}', $street, $brgy, $city, $province, $country, '$date_created')");
-             $address_id = $wpdb->insert_id;
+            //Save the address in the parent table
+            $wpdb->query("INSERT INTO $table_address (`status`, `types`, `stid`, `street`, `brgy`, `city`, `province`, `country`, `date_created`) 
+                 VALUES ('$status', '{$user["type"]}', '{$user["store_id"]}', $street, $brgy, $city, $province, $country, '$date_created')");
+            $address_id = $wpdb->insert_id;
 
+            $update_table_rev = $wpdb->query("UPDATE $dv_rev_table SET `parent_id` = $address_id WHERE ID IN ($status, $street, $brgy, $city, $province, $country)  ");
 
-            if ($status < 1 || $street < 1 || $brgy < 1 || $city < 1 || $province < 1 || $country < 1 ) {
+            $update_store = $wpdb->query("UPDATE tp_stores SET `address` = $address_id WHERE ID = '{$user["store_id"]}' ");
+
+            if ($status < 1 || $street < 1 || $brgy < 1 || $city < 1 || $province < 1 || $country < 1 || $update_table_rev < 1) {
                 
                 $wpdb->query("ROLLBACK");
                 return array(
@@ -291,6 +303,7 @@
                 $cur_user['province']   = $_POST["pv"];
                 $cur_user['city']       = $_POST["ct"];
                 $cur_user['barangy']    = $_POST["bg"];
+                $cur_user['type']    = $_POST["type"];
 
 
               return  $cur_user;
