@@ -20,6 +20,7 @@
             );
         }
         
+        //QA done 2020-08-12 10:18 pm
         public static function list_open(){
 
             global $wpdb;
@@ -27,7 +28,6 @@
             $user = TP_Delete_Store::catch_post();
 
             // declaring table names to variable
-                  // declaring table names to variable
             $table_store = TP_STORES_TABLE;
             $table_revisions = TP_REVISIONS_TABLE;
 
@@ -36,7 +36,7 @@
             $date_created = TP_Globals::date_stamp();
 
 
-            // Step1 : Check if prerequisites plugin are missing
+            // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
@@ -45,7 +45,7 @@
                 );
             }
             
-            // Step2 : Check if wpid and snky is valid
+            // Step 2: Validate user
             if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
@@ -53,7 +53,7 @@
                 );
             }
 
-            // Step3 : Sanitize request
+            // Step 3: Check if required parameters are passed
             if (!isset($_POST["stid"])) {
                 return array(
                     "status" => "unknown",
@@ -61,7 +61,7 @@
                 );
             }
             
-            // Step4 : Sanitize variable is empty
+            // Step 4: Check if parameters passed are empty
             if (empty($_POST["stid"])) {
                 return array(
                     "status" => "failed",
@@ -69,17 +69,18 @@
                 );
             }
             
-            // Step5 :  Query
+            // Step 5: Check if store exists in database.
             $store_data = $wpdb->get_row("SELECT child_val as stats FROM tp_revisions WHERE ID = (SELECT `status` FROM tp_stores WHERE ID = '{$user["store_id"]}')");
                
-            // Step6 :  Check if failed
+            // Check if no rows found
             if (!$store_data) {
                 return array(
                     "status" => "failed",
-                    "message" => "This store does not exists..",
+                    "message" => "This store does not exists.",
                 );
             }
-
+            
+            //Fails if status is already 0, or deactivated
             if ($store_data->stats == 0) {
                 return array(
                     "status" => "failed",
@@ -87,8 +88,10 @@
                 );
             }
 
+            // Step 6: Start mysql transaction
             $wpdb->query("START TRANSACTION");
 
+                //Get current value of this store
                 $get_last_value = $wpdb->get_row("SELECT
                     tp_rev.child_val AS title,
                     (select child_val from $table_revisions where id = tp_str.short_info) AS short_info,
@@ -104,6 +107,7 @@
                     tp_str.ID = '{$user["store_id"]}'
                 ");
 
+                 //Inserting new data using the current value
                 $wpdb->query("INSERT INTO $table_revisions $table_revision_field VALUES ( 'stores', '{$user["store_id"]}', 'title', '$get_last_value->title', '{$user["created_by"]}', '$date_created'  ) ");
                 $title = $wpdb->insert_id;
 
@@ -124,17 +128,17 @@
 
                 $update_store = $wpdb->query("UPDATE tp_stores SET `title` = '$title', `short_info` = '$short_info', `long_info` = '$long_info', `logo` = '$logo', `banner` = '$banner', `status` = '$status' WHERE ID = '{$user["store_id"]}' ");
 
-            // Step8 :  Check if failed
+            // Step 7: Check if any queries above failed
             if ($title < 1 || $short_info < 1 || $long_info < 1 || $logo < 1 || $banner < 1 || $status < 1 || $update_store < 1 ) {
+                //Do a rollback if any of the above queries failed
                 $wpdb->query("ROLLBACK");
-
                 return array(
                     "status" => "failed",
                     "message" => "An error occured while submmiting data to database.",
                 );
             } else{
+                //Commit if no errors found
                 $wpdb->query("COMMIT");
-
                 return array(
                     "status" => "success",
                     "message" => "Data has been deleted successfully.",
