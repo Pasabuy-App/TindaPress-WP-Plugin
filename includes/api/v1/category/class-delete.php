@@ -54,7 +54,7 @@
             if ( !isset($_POST["catid"])  ) {
 				return array(
 						"status" => "unknown",
-						"message" => "Please contact your administrator. Request Unknown!!!!!!",
+						"message" => "Please contact your administrator. Request Unknown!",
                 );
             }
 
@@ -96,7 +96,7 @@
                 );
             }
 
-            if ( $category->status == 0 ) {
+            if ( $category->status == 0) {
 				return array(
 						"status" => "failed",
 						"message" => "This category is already deactivated.",
