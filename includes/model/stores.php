@@ -54,25 +54,31 @@
                     <?php
 
                         if(isset($_GET['id'])) {
-                            $postUrl = "category/select";
+                            if($_GET['status'] == 1) {
+                                $postUrl = "category/list/store/active";
+                            } else if($_GET['status'] == 2) {
+                                $postUrl = "category/list/store/inactive";
+                            } else {
+                                $postUrl = "category/select";
+                            }
                             ?>
                             postParam.catid = '<?= $_GET['id']; ?>';
                             <?php
                         } else {
                             if(isset($_GET['status'])) {
                                 if($_GET['status'] == 1) {
-                                    $postUrl = "list/active";
+                                    $postUrl = "stores/list/active";
                                 } else if($_GET['status'] == 2) {
-                                    $postUrl = "list/inactive";
+                                    $postUrl = "stores/list/inactive";
                                 } else {
-                                    $postUrl = "list/all";
+                                    $postUrl = "stores/list/all";
                                 }
                             } else {
-                                $postUrl = "list/all";
+                                $postUrl = "stores/list/all";
                             }
                         }
                     ?>
-                    var postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/stores/" . $postUrl; ?>';                    
+                    var postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/" . $postUrl; ?>';                    
                     
                     $.ajax({
                         dataType: 'json',
