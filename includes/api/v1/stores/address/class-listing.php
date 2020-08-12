@@ -70,17 +70,18 @@
             }
 
             $user = TP_Store_Listing_Address::catch_post();
-           return $check_store = $wpdb->get_row("SELECT ID FROM tp_stores  WHERE ID = '{$user["store_id"]}'  AND  (SELECT child_val FROM tp_revisions WHERE ID = tp_stores.`status`  ) = 1)");
-            if ($check_store->status != 1) {
+            $check_store = $wpdb->get_row("SELECT ID FROM tp_stores  WHERE ID = '{$user["store_id"]}'  AND  (SELECT `child_val` FROM tp_revisions WHERE ID = tp_stores.`status`  ) = 1");
+            if (!$check_store) {
                 return array(
                     "status" => "failed",
-                    "message" => "This address is deactivated.."
+                    "message" => "This store does not exists."
                 );
             }
 
-            $result = $wpdb->get_row("SELECT
+            $result = $wpdb->get_results("SELECT
                 `add`.ID,
-                `add`.types,
+                `add`.stid,
+                IF(`add`.types = 'business', 'Business', 'Office' )as `type`,
                 ( SELECT `child_val` FROM $table_revisions WHERE ID = ( SELECT `title` FROM tp_stores WHERE ID = `add`.stid ) ) as store_name,
                 ( SELECT child_val FROM $table_dv_revisions WHERE id = `add`.street ) AS street,
                 ( SELECT brgy_name FROM $table_brgy WHERE ID = ( SELECT child_val FROM $table_dv_revisions WHERE id = `add`.brgy ) ) AS brgy,
@@ -97,7 +98,7 @@
             if (!$result) {
                 return array(
                     "status" => "unknown",
-                    "message" => "An erro occured while fetching data to database!"
+                    "message" => "An erro occured whileadwawdwad fetching data to database!"
                 );
 
             }else{
