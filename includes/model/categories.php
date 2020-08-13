@@ -52,8 +52,12 @@
                             "wpid": "<?php echo get_current_user_id(); ?>",
                             "snky": "<?php echo wp_get_session_token(); ?>"
                         };
-                        postParam.type = $('#set_type').val();
                         postParam.status = $('#set_status').val();
+                        postParam.type = $('#set_type').val();
+                        postParam.stid = 0;
+                        <?php if( isset($_GET['stid']) ) { ?>
+                            postParam.stid = <?= (int)$_GET['stid'] ?>;
+                        <?php } ?>
                     var postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/category/listing"; ?>';
                     
                     $.ajax({
