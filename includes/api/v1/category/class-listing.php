@@ -48,85 +48,56 @@
                 );
             }
 
+            $stores_count = "IF((  SELECT COUNT(ID) FROM tp_stores  WHERE ctid = cat.ID GROUP BY ctid) IS NULL, '0', (  SELECT COUNT(ID) FROM tp_stores  WHERE ctid = cat.ID GROUP BY ctid)  ) AS total, ";
+            $products_count = "IF((  SELECT COUNT(ID) FROM tp_products  WHERE ctid = cat.ID GROUP BY ctid) IS NULL, '0', (  SELECT COUNT(ID) FROM tp_products  WHERE ctid = cat.ID GROUP BY ctid)  ) AS total, ";
+
+            $counting = (isset($_POST['stid']) && (int)$_POST['stid'] > 0) == true ? $products_count : $stores_count;
+
             $sql = "SELECT   
                 cat.ID,
-                cat.types,
-                cat.stid,
-               
-                IF((  SELECT COUNT(ID) FROM tp_stores  WHERE ctid = cat.ID GROUP BY ctid) IS NULL, '0', (  SELECT COUNT(ID) FROM tp_stores  WHERE ctid = cat.ID GROUP BY ctid)  ) AS total,
+                cat.types, ".$counting."
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.title ) AS title,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.info ) AS info,
             IF( ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.`status` ) = 1, 'Active','Inactive' ) AS `status` 
             FROM
                 $table_categories cat ";
-                $stid = $_POST['stid'];
+                
+            $stid = $_POST['stid'];
+            $status = $_POST["status"];
 
-            $val = $_POST["status"];
-
-            if (isset($_POST['stid']) && $_POST['stid'] > 0  ) {
-
+            if ( isset($_POST['stid']) && (int)$_POST['stid'] > 0  ) {
                 $sql .= "WHERE cat.`stid` = '$stid' AND cat.types = 'product' ";
-
             }else{
-
-                if ( isset($_POST['type']) ) {
-
-                    $type_all = $_POST['type'] == '0'? true:false; 
-
-                    $type = $_POST['type'] == '2'? '0':'1';
-
-                    if ($type_all == false) {
-
-                        $type = $_POST['type'] == '1'? 'store':'product'; 
-                    
-                        $sql .= "WHERE cat.types = '$type' ";
-                    }
-                    
-                }else{
-                    $sql .= "WHERE ";
+                if ( isset($_POST['type']) && (int)$_POST['type'] > 0) {
+                    $type = $_POST['type'] == '1'? 'store':'product'; 
+                    $sql .= "WHERE cat.types = '$type' ";
                 }
-
             }
 
             if (isset($_POST['status']) && $_POST['status'] > 0 ) {
 
-                $all = $_POST['status'] == '0'? true:false; 
-
-                $status = $_POST['status'] == '2'? '0':'1';
-
-                if ($all == false  ) {
-                    $var = $_POST['type'] == '0'? true:false;
-                    if ($var == true) {
-                        $sql .= "WHERE ";
-
-                    }else{
-                        $sql .= "AND ";
-
-                    }
-                    $sql .= "( SELECT rev.child_val FROM tp_revisions rev WHERE ID = cat.`status` ) = $status  ";
-                    
+                if(((isset($_POST['stid']) && $_POST['stid'] > 0) || (isset($_POST['type']) && $_POST['type'] > 0)) ) {
+                    $sql .= "AND ";
+                } else {
+                    $sql .= "WHERE ";
                 }
+
+                $status = (int)$_POST['status'] >= 2 ? 0 : 1;
+                $sql .= "( SELECT rev.child_val FROM tp_revisions rev WHERE ID = cat.`status` ) = $status  ";
             }
             
             $results =  $wpdb->get_results($sql);
             if (!$results) {
                 return array(
                     "status" => "failed",
-                    "message" => "No resuls found",
+                    "message" => "No results found",
                 );
-
-            }else{
+            } else {
                 return array(
                     "status" => "success",
                     "data" => $results,
                 );
-
             }
-
-           
-
-
-          
         
         }
 

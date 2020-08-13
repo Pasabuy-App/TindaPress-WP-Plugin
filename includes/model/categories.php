@@ -39,6 +39,8 @@
         
             //LOAD APPLIST WITH AJAX.
             var tptables = 'undefined';
+
+            var activeItem = 'undefined';
             function loadingAppList( categoryTables )
             {
                 if( categoryTables.length != 0 )
@@ -55,6 +57,7 @@
                         postParam.status = $('#set_status').val();
                         postParam.type = $('#set_type').val();
                         postParam.stid = 0;
+                        postParam.type = 0;
                         <?php if( isset($_GET['stid']) ) { ?>
                             postParam.stid = <?= (int)$_GET['stid'] ?>;
                         <?php } ?>
@@ -92,10 +95,15 @@
             {
                 //Set table column header.
                 var columns = [
-                    // { "sTitle": "IDENTITY",   "mData": "ID" },
+                    { "sTitle": "ID",   "mData": "ID" },
                     { "sTitle": "NAME",   "mData": "title" },
                     { "sTitle": "DESCRIPTION",   "mData": "info" },
-                    { "sTitle": "TYPES",   "mData": "types" },
+                    <?php if( !isset($_GET['stid']) ) { ?>
+                        { "sTitle": "TYPES",   "mData": "types" },
+                        { "sTitle": "STORES",   "mData": "total" },
+                    <?php } else { ?> 
+                        { "sTitle": "PRODUCTS",   "mData": "total" },
+                    <?php } ?> 
                     { "sTitle": "STATUS",   "mData": "status" },
                     {"sTitle": "Action", "mRender": function(data, type, item)
                         {
@@ -103,26 +111,19 @@
 
                                 '<div class="btn-group" role="group" aria-label="Basic example">' +
 
-                                    '<button type="button" class="btn btn-primary btn-sm"' +
-                                        ' data-toggle="modal" data-target="#EditAppOption"' +
-                                        ' title="Click this to modified or delete this project."' +
-                                        ' data-id="' + item.ID + '"' +  
-                                        ' data-title="' + item.title + '"' +  
-                                        ' data-info="' + item.info + '"' + 
-                                        ' >Options</button>' +
+                                    <?php if( isset($_GET['stid']) && isset($_GET['stname']) ) { ?>
+                                        '<button type="button" class="btn btn-success btn-sm"' +
+                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT."&id="; ?>' + '<?= $_GET['stid'] ?>' + 
+                                        '&name=' +'<?= $_GET['stname'] ?>'+ '&catid=' +item.ID+ '&catname=' +item.title+ '`;" ' +
+                                        ' title="Click this to navigate to variant list of this project."' + 
+                                        ' >PRODUCTS</button>' +
 
-                                    '<button type="button" class="btn btn-secondary btn-sm appkey-' + item.ID + '"' +
-                                        ' data-clipboard-text="' + item.ID + '"' +
-                                        ' onclick="copyFromId(\'CategoryID-' + item.ID + '\')" ' +
-                                        ' title="Click this to copy the ID to your clipboard."' +
-                                        '>Copy ID</button>' +  
-
-                                    '<button type="button" class="btn btn-success btn-sm"' +
+                                    <?php } else { ?>
+                                        '<button type="button" class="btn btn-success btn-sm"' +
                                         ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_STORE."&id="; ?>' + item.ID + '&name=' +item.title+ '`;" ' +
                                         ' title="Click this to navigate to variant list of this project."' + 
                                         ' >Stores</button>' +
-
-                                             
+                                    <?php } ?>                                    
                                         
                                 '</div>'; 
                         }
@@ -131,6 +132,11 @@
 
                 //Displaying data on datatables.
                 tptables = $('#categories-datatables').DataTable({
+                    select: {
+                        style: 'os',
+                        blurable: true,
+                        style: 'single'
+                    },
                     destroy: true,
                     searching: true,
                     dom: 'Bfrtip',
@@ -139,6 +145,16 @@
                             text: 'Create',
                             action: function ( e, dt, node, config ) {
                                 $('#CreateNewApp').modal('show');
+                            }
+                        },
+                        {
+                            text: 'Edit',
+                            state: false,
+                            init: function ( dt, node, config ) {
+                                this.disable();
+                            },
+                            action: function ( e, dt, node, config ) {
+                                $('#EditAppOption').modal('show');
                             }
                         },
                         {
@@ -155,8 +171,24 @@
                     "columnDefs": [
                         {"className": "dt-center", "targets": "_all"}
                     ],
+                    "columnDefs": [
+                        {
+                            "targets": [ 0 ],
+                            "visible": false,
+                            "searchable": true
+                        }
+                    ],
                 });
-            }
+                tptables.on( 'select', function ( e, dt, type, indexes ) {
+                        var rowData = tptables.rows( indexes ).data().toArray()[0];
+                        activeItem = rowData; //console.log("Selected: " + JSON.stringify( rowData.ID ));
+                        tptables.button( 1 ).enable();
+                    });
+                tptables.on( 'deselect', function ( e, dt, type, indexes ) {
+                        activeItem = 'undefined';
+                        tptables.button( 1 ).disable();
+                    } );
+            }            
 
             //IMPLEMENT DATATABLES RESPONSIVENESS.
             if(typeof tptables !== 'undefined' && typeof tptables.on === 'function')
@@ -213,7 +245,10 @@
                     postParam.snky = "<?php echo wp_get_session_token(); ?>";
                     postParam.title = $('#new_title').val();
                     postParam.info = $('#new_info').val();
-                    postParam.types = $('#new_types').val();
+                    <?php if( isset($_GET['stid']) ) { ?>
+                        postParam.stid = '<?= $_GET['stid'] ?>';
+                        postParam.types = 'product';
+                    <?php } ?>
 
                 // This will be handled by create-app.php.
                 $.ajax({
@@ -280,6 +315,7 @@
             $('#edit-app-form').submit( function(event) {
                 event.preventDefault();
                 var clickedBtnId = $(this).find("button[type=submit]:focus").attr('id');
+                console.log($(this).find("button[type=submit]:focus").is('[disabled=disabled]'));
                 $( "#dialog-confirm-edit" ).dialog({
                     title: 'Confirmation',
                     resizable: false,
@@ -379,12 +415,14 @@
 
             // LISTEN FOR MODAL SHOW AND ATTACHED ID.
             $('#EditAppOption').on('show.bs.modal', function(e) {
-                var data = e.relatedTarget.dataset;
-                $('#edit_id').val( data.id ); 
-                $('#edit_title').val( data.title ); 
-                $('#edit_info').val( data.info ); 
+                $('#edit_id').val( activeItem.id ); 
+                $('#edit_title').val( activeItem.title ); 
+                $('#edit_info').val( activeItem.info ); 
 
-                $('#delete-app-btn').removeClass('disabled');
+                if(activeItem.status == 'Inactive') {
+                    $('#delete-app-btn').addClass('disabled');
+                }   
+
                 $('#update-app-btn').removeClass('disabled');
             });
 

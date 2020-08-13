@@ -43,12 +43,13 @@
 								data: {
 									wpid: "<?php echo get_current_user_id(); ?>",
 									snky: "<?php echo wp_get_session_token(); ?>",
-									status: 1, //all status.
-									type: 2, //product.
+									status: "1", //active.
+									type: "2", //product.
 									stid: "<?= (int)$_GET['id'] ?>"
 								},
-								url: '<?php echo site_url() . "/wp-json/tindapress/v1/category/listing"; ?>',
+								url: '<?php echo site_url() . "/wp-json/tindapress/v1/category/list"; ?>',
 								success: function(data) {
+									console.log(data);
 									var country = $('#set_cat');
 										country.empty();
 										var	selectDefault = data.data.length > 0 ? 'All Category' : 'No Category Found'; 

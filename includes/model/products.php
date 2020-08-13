@@ -73,7 +73,7 @@
                         <?php if( isset($_GET['status']) ) { ?>
                             postParam.status = "<?= (int)$_GET['status'] ?>";
                         <?php } ?>
-                    var postUrl = "<?= site_url() . '/wp-json/tindapress/v1/products/listing' ?>";
+                    var postUrl = "<?= site_url() . '/wp-json/tindapress/v1/products/list' ?>";
                     
                     $.ajax({
                         dataType: 'json',

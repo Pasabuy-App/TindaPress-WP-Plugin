@@ -25,7 +25,7 @@
 		<div class="tp-panel-first">
 			<?php if( isset($_GET['stid']) && isset($_GET['stname']) ) { ?>
 				<div class="alert alert-primary header-info">
-					<strong>Product Category: <?= $_GET['stname']; ?> </strong>
+					<strong>Product Category for <?= $_GET['stname']; ?> </strong>
 				</div>
 			<?php } else { ?>
 				<div class="alert alert-primary header-info">
