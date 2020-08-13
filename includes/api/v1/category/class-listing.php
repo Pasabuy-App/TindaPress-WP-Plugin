@@ -41,7 +41,7 @@
                 
             }
             
-            if (!isset($_POST['stid']) || !isset($_POST['type']) || !isset($_POST['stid'])  ) {
+            if (!isset($_POST['stid']) || !isset($_POST['type']) || !isset($_POST['status'])  ) {
                 return array(
                     "status" => "unknown",
                     "message" => "Please contact your admininstrator. Missing paramiters!"
