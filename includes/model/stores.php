@@ -20,11 +20,10 @@
                 $("#set_status").val('<?php echo $_GET['status']; ?>');
             <?php } ?>
         }
-        
-        <?php global $wp; ?>
-        $("#set_status").live('change', function() {
-            window.location.href = '<?php echo site_url().$_SERVER['REQUEST_URI']."&status="; ?>' + $(this).val();
-        });  
+
+        $("#filter").click(() => {
+            window.location.href = '<?php echo site_url().$_SERVER['REQUEST_URI']."&status="; ?>' + $('#set_status').val();
+        });
 
         //THIS ARE ALL THE PUBLIC VARIABLES.
         var activeTimeout = 'undefined';
@@ -33,18 +32,8 @@
             //GET THE REFERENCE OF THE CURRENT PAGE DATTABLES.
             var storeTables = $('#stores-datatables');
 
-            //SHOW NOTIFICATION THAT WE ARE CURRENTLY LOADING APPS.
-
             //SET INTERVAL DRAW UPDATE.
             loadingAppList( storeTables );
-            // setInterval( function()
-            // { 
-            //     loadingAppList( storeTables );
-            // }, 10000);
-
-            $('#RefreshAppList').click(function() {
-                loadingAppList( storeTables );
-            });
         
             //LOAD APPLIST WITH AJAX.
             var tptables = 'undefined';
@@ -65,25 +54,36 @@
                     <?php
 
                         if(isset($_GET['id'])) {
-                            $postUrl = "category/select";
+                            if( isset($_GET['status']) ) {
+                                if($_GET['status'] == 1) {
+                                    $postUrl = "category/list/store/active";
+                                } else if($_GET['status'] == 2) {
+                                    $postUrl = "category/list/store/inactive";
+                                } else {
+                                    $postUrl = "stores/category/select";
+                                }
+                            } else {
+                                $postUrl = "stores/category/select";
+                            }
+                            
                             ?>
                             postParam.catid = '<?= $_GET['id']; ?>';
                             <?php
                         } else {
                             if(isset($_GET['status'])) {
                                 if($_GET['status'] == 1) {
-                                    $postUrl = "list/active";
+                                    $postUrl = "stores/list/active";
                                 } else if($_GET['status'] == 2) {
-                                    $postUrl = "list/inactive";
+                                    $postUrl = "stores/list/inactive";
                                 } else {
-                                    $postUrl = "list/all";
+                                    $postUrl = "stores/list/all";
                                 }
                             } else {
-                                $postUrl = "list/all";
+                                $postUrl = "stores/list/all";
                             }
                         }
                     ?>
-                    var postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/stores/" . $postUrl; ?>';                    
+                    var postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/" . $postUrl; ?>';                    
                     
                     $.ajax({
                         dataType: 'json',
@@ -105,7 +105,6 @@
                         },
                         error : function(jqXHR, textStatus, errorThrown) 
                         {
-                            //$('#apps-notification').text = "";
                             console.log("" + JSON.stringify(jqXHR) + " :: " + textStatus + " :: " + errorThrown);
                         }
                     });
@@ -157,7 +156,7 @@
                                         '>Copy ID</button>' +  
 
                                     '<button type="button" class="btn btn-success btn-sm"' +
-                                        ' onclick="window.location.href = `<?php echo get_home_url()."/wp-admin/admin.php?page="."tp-product_browser"."&id="; ?>' + item.ID + '&name=' +item.title+ '`;" ' +
+                                        ' onclick="window.location.href = `<?php echo get_home_url()."/wp-admin/admin.php?page="."tp-product_browser"."&id="; ?>' + item.ID + '&name=' +item.title+ '&catid=' +item.catid+ '&catname=' +item.catname+ '`;" ' +
                                         ' title="Click this to navigate to variant list of this project."' + 
                                         ' >Products</button>' +
 
@@ -171,7 +170,23 @@
                 tptables = $('#stores-datatables').DataTable({
                     destroy: true,
                     searching: true,
-                    buttons: ['copy', 'excel', 'print'],
+                    dom: 'Bfrtip',
+                    buttons: [
+                        {
+                            text: 'Create',
+                            action: function ( e, dt, node, config ) {
+                                //loadingAppList( storeTables );
+                                $('#CreateNewApp').modal('show');
+                            }
+                        },
+                        {
+                            text: 'Refresh',
+                            action: function ( e, dt, node, config ) {
+                                loadingAppList( storeTables );
+                            }
+                        }, //'copy', 'csv', 'excel', 'pdf', 
+                        'print',
+                    ],
                     responsive: true,
                     "aaData": data,
                     "aoColumns": columns,
@@ -342,7 +357,6 @@
 
             // LISTEN FOR MODAL SHOW AND ATTACHED ID.
             $('#CreateNewApp').on('show.bs.modal', function(e) {
-                var data = e.relatedTarget.dataset;
                 $('#create-app-btn').removeClass('disabled');
                 $('#new_title').val('');
                 $('#new_info').val('');

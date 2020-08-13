@@ -21,10 +21,7 @@
             
             //Inital QA done 2020-08-11 10:55 AM
             global $wpdb;
-            $category_id = $_POST["catid"];
-            $table_revs = TP_REVISIONS_TABLE;
-            $table_categories = TP_CATEGORIES_TABLE;
-
+            
             // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
@@ -42,35 +39,44 @@
                 );
                 
             }
+
+            //Check if user has roles_access of can_delete_category or either contributor or editor
+            $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_delete_category' );
+            
+            if ($permission == true) {
+                return array(
+                    "status" => "failed",
+                    "message" => "Current user has no access in deleting category.",
+                );
+            }
             
             // Step 3: Check if parameters are passed
-            if (!isset($_POST["catid"])  ) {
+            if ( !isset($_POST["catid"])  ) {
 				return array(
 						"status" => "unknown",
-						"message" => "Please contact your administrator. Request unknown!",
+						"message" => "Please contact your administrator. Request Unknown!",
                 );
             }
 
             // Step 4: Check if parameters passed are not null
-            if (empty($_POST["catid"])  ) {
+            if ( empty($_POST["catid"])  ) {
 				return array(
 						"status" => "failed",
 						"message" => "Required fields cannot be empty.",
                 );
             }
 
-            //Check if user has roles_access of can_activate_store or either contributor or editor
-            $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_activate_store' );
-            
-            if ($permission == true) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Current user has no access in activating category.",
-                );
-            }
+            $category_id = $_POST["catid"];
+            $wpid = $_POST["wpid"];
+            $table_revs = TP_REVISIONS_TABLE;
+            $table_categories = TP_CATEGORIES_TABLE;
+            $table_revs_fields = TP_REVISION_FIELDS;
+
+            $date_created = TP_Globals::date_stamp();
+        
             
             // Step 5: Get status of this category
-            $category = $wpdb->get_row("SELECT cat.ID, cat.types, cat.status as status_id,
+             $category = $wpdb->get_row("SELECT cat.ID, cat.types, cat.status as status_id,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.status) as status
                 FROM
                     $table_categories cat
@@ -90,31 +96,59 @@
                 );
             }
 
-            if ( $category->status == 1) {
+            if ( $category->status == 1 ) {
 				return array(
 						"status" => "failed",
 						"message" => "This category is already activated.",
                 );
             }
-            
-            $status_id = $category->status_id;
 
-            // Step 7: Activate this category by setting its status to 1
-            $result = $wpdb->query("UPDATE $table_revs SET `child_val` = 1 WHERE `ID` = $status_id");
-            
+
+
+            $wpdb->query("START TRANSACTION");
+
+                 $get_category_last_value = $wpdb->get_row("SELECT
+                    cat.ID as catid,
+                    cat.ID as stid,
+                    cat.types,
+                    ( SELECT child_val FROM $table_revs WHERE ID = cat.title ) AS `title`,
+                    ( SELECT child_val FROM $table_revs WHERE ID = cat.info ) AS `info`,
+                    ( SELECT child_val FROM $table_revs WHERE ID = cat.`status` ) AS `status`
+                FROM
+                    $table_categories cat 
+                WHERE
+                   cat.ID = $category_id");
+                
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_category_last_value->types', '$category_id', 'title', '$get_category_last_value->title', $wpid, '$date_created')");
+                $title_id = $wpdb->insert_id;
+
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_category_last_value->types', '$category_id', 'info', '$get_category_last_value->info', $wpid, '$date_created')");
+                $info_id = $wpdb->insert_id;
+
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_category_last_value->types', '$category_id', 'status', 1, $wpid, '$date_created')");
+                $status_id = $wpdb->insert_id;
+
+                $update_category = $wpdb->query("UPDATE $table_categories SET `title` = $title_id, `info` = $info_id, `status` = $status_id WHERE ID = $category_id ");
+
             // Step 8: Check if there's problem in query
-            if ($result < 1) {
+            if (empty($get_category_last_value)  || $title_id < 1 || $info_id < 1 || $status_id < 1 ||  $update_category < 1) {
+                $wpdb->query("ROLLBACK");
                 return array(
                     "status" => "error",
                     "message" => "An error occured while submitting data to the server.",
                 );
+
+            }else{
+                $wpdb->query("COMMIT");
+                // Step 9: Return a success status and message 
+                return array(
+                    "status" => "success",
+                    "message" => "Data has been activated successfully.",
+                );
+
             }
 
-            // Step 9: Return a success status and message 
-            return array(
-                "status" => "success",
-                "message" => "Data has been activated successfully.",
-            );
+          
 
         
         }

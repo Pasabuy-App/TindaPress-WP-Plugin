@@ -20,11 +20,10 @@
                 $("#set_status").val('<?php echo $_GET['status']; ?>');
             <?php } ?>
         }
-        
-        <?php global $wp; ?>
-        $("#set_status").live('change', function() {
-            window.location.href = '<?php echo site_url().$_SERVER['REQUEST_URI']."&status="; ?>' + $(this).val();
-        });   
+
+        $("#filter").click(() => {
+            window.location.href = '<?php echo site_url().$_SERVER['REQUEST_URI']."&status="; ?>' + $('#set_status').val();
+        }); 
         
         //THIS ARE ALL THE PUBLIC VARIABLES.
         var activeTimeout = 'undefined';
@@ -33,18 +32,8 @@
             //GET THE REFERENCE OF THE CURRENT PAGE DATTABLES.
             var categoryTables = $('#categories-datatables');
 
-            //SHOW NOTIFICATION THAT WE ARE CURRENTLY LOADING APPS.
-
             //SET INTERVAL DRAW UPDATE.
             loadingAppList( categoryTables );
-            // setInterval( function()
-            // { 
-            //     loadingAppList( categoryTables );
-            // }, 10000);
-
-            $('#RefreshAppList').click(function() {
-                loadingAppList( categoryTables );
-            });
         
             //LOAD APPLIST WITH AJAX.
             var tptables = 'undefined';
@@ -148,7 +137,22 @@
                 tptables = $('#categories-datatables').DataTable({
                     destroy: true,
                     searching: true,
-                    buttons: ['copy', 'excel', 'print'],
+                    dom: 'Bfrtip',
+                    buttons: [
+                        {
+                            text: 'Create',
+                            action: function ( e, dt, node, config ) {
+                                $('#CreateNewApp').modal('show');
+                            }
+                        },
+                        {
+                            text: 'Refresh',
+                            action: function ( e, dt, node, config ) {
+                                loadingAppList( categoryTables );
+                            }
+                        }, //'copy', 'csv', 'excel', 'pdf', 
+                        'print',
+                    ],
                     responsive: true,
                     "aaData": data,
                     "aoColumns": columns,
@@ -259,11 +263,8 @@
 
             // LISTEN FOR MODAL SHOW AND ATTACHED ID.
             $('#CreateNewApp').on('show.bs.modal', function(e) {
-                var data = e.relatedTarget.dataset;
                 $('#create-app-btn').removeClass('disabled');
                 // $('#appsta_create').val( 'Active' ); //TODO: Before appear modal, set input to empty.
-                // $('#appmtcap_create').val(); //TODO: Before appear modal, set input to empty.
-                // $('#appcap_create').val(); //TODO: Before appear modal, set input to empty.
             });
 
             // MAKE SURE THAT TIMEOUT IS CANCELLED.

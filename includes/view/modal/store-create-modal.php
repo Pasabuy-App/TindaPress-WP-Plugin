@@ -27,7 +27,7 @@
                     <form id="create-app-form">
                         <div class="form-group">
                             <label for="new_title">Name:</label>
-                            <input required type="text" class="form-control" id="new_title" name="new_title" placeholder="Public name of this Store.">
+                            <input required type="text" class="form-control" id="new_title" name="new_title" placeholder="Name of this Store.">
                         </div>
                         <div class="form-group">
                             <label for="new_info">Description:</label>
@@ -45,6 +45,7 @@
                         <div class="form-group">
                             <label for="new_category">CATEGORY:</label><br>
                             <select class="form-control" id="new_category" name="new_category" required>
+                                <?php if(!isset($_GET['id'])) { ?>
                                 <script type="text/javascript">
                                     jQuery(document).ready( function ( $ ) 
                                     {   
@@ -77,9 +78,10 @@
                                                 }
                                         });
                                     });
-                                </script>
-                                <!-- <option selected="selected">Restaurant</option> -->
-                                
+                                </script>  
+                                <?php } else { ?>
+                                    <option selected="selected" value="<?php echo $_GET['id']; ?>"><?php echo $_GET['name']; ?></option>
+                                <?php } ?>                              
                             </select>
                         </div>
                         <div class="form-group">

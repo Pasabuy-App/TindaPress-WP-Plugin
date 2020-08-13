@@ -184,3 +184,8 @@ button[disabled] {
 .flex-column {
     margin: 12px 25px;
 }
+
+.space-left {
+    padding: 3px 15px;
+    margin-left: 17px;
+}
