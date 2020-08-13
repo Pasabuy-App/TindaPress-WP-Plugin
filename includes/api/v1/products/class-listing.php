@@ -68,51 +68,48 @@
                 INNER JOIN tp_revisions tp_rev ON tp_rev.ID = tp_prod.title
                 INNER JOIN tp_categories c ON c.ID = tp_prod.ctid  ";
 
-            if (isset($_POST['stid']) && $_POST['stid'] > 0  ) {
+            isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL  ;
+            isset($_POST['stid'])   ? $std = $_POST['stid']   : $std = NULL  ;
+            isset($_POST['catid'])  ? $ctd = $_POST['catid']  : $ctd = NULL  ;
 
-                $stid = $_POST['stid'];
+            (int)$status = $sts == '0'? NULL:($sts == '2'? '0':'1')  ;
+            (int)$catid = $ctd == '0'? '0': $catid = $ctd;
+            (int)$stid = $std == '0'? '0': $stid = $std;
 
-                $sql .= "WHERE tp_prod.`stid` = '$stid'  ";
 
-                $type_all = $_POST['status'] == '0'? true:false; 
+            if($status != NULL){
 
+                $sql .= " WHERE  ( SELECT tp_rev.child_val FROM tp_revisions tp_rev WHERE ID = tp_prod.STATUS ) = $status";
+                
             }
 
-            if (isset($_POST['catid']) && $_POST['catid'] > 0  ) {
-                
-                $cat_stats = $_POST['catid'] == '0' ? false:true;
+            if ($catid != NULL && $catid != '0') {
 
-                if($cat_stats == true){
-                    $ctid = $_POST['catid'];
-                    $sql .="AND tp_prod.ctid = $ctid ";
+                if ($status !== NULL ) {
+
+                    $sql .= " AND tp_prod.ctid = $catid ";
+                }else{
+                    $sql .= " WHERE tp_prod.ctid = $catid ";
+
                 }
 
             }
 
-            if (isset($_POST['status']) && $_POST['status'] > 0 ) {
-                
-                $all = $_POST['status'] == '0'? true:false; 
+            if ($stid != NULL && $stid != '0' ) {
+                if ($status !== NULL ) {
 
-                $status = $_POST['status'] == '2'? '0':'1';
+                    $sql .= " AND tp_prod.stid = $stid ";
+                }else{
+                    $sql .= " WHERE tp_prod.stid = $stid ";
 
-                if ($all == false  ) {
-                    if (isset($type_all) && $type_all == true) {
-                        $sql .= "WHERE ";
-
-                    }else{
-                        $sql .= "AND ";
-
-                    }
-                    $sql .= " ( SELECT tp_rev.child_val FROM tp_revisions tp_rev WHERE ID = tp_prod.STATUS ) = $status  ";
-                    
                 }
-
             }
 
+            // return $sql;
             $results =  $wpdb->get_results($sql);
             if (!$results) {
                 return array(
-                    "status" => "failed",
+                    "status" => "success",
                     "message" => "No resuls found",
                 );
 
