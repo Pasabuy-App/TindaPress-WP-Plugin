@@ -24,13 +24,51 @@
 	<div class="tp-panel-body">
 		<div class="tp-panel-first">
 			<?php if(isset($_GET['id']) && isset($_GET['name'])) { ?>
-			<div class="alert alert-primary header-info">
-				<strong>Store: </strong><strong id="<?= $_GET['id']; ?>"><?php echo $_GET['name']; ?></strong>
-			</div>
+				<div class="alert alert-primary header-info">
+					<strong>Store: </strong><strong id="<?= $_GET['id']; ?>"><?php echo $_GET['name']; ?></strong>
+				</div>
 			<?php } else { ?>
 				<div class="alert alert-primary header-info">
 					<strong>All Products</strong>
 				</div>
+			<?php } ?>
+			<?php if(isset($_GET['id']) && isset($_GET['name'])) { ?>
+			<select class="space-left" id="set_cat" name="set_cat" required>
+				<script type="text/javascript">
+					jQuery(document).ready( function ( $ ) 
+					{   
+						$.ajax({
+								dataType: 'json',
+								type: 'POST', 
+								data: {
+									wpid: "<?php echo get_current_user_id(); ?>",
+									snky: "<?php echo wp_get_session_token(); ?>",
+									status: 1, //all status.
+									type: 2, //product.
+									stid: "<?= (int)$_GET['id'] ?>"
+								},
+								url: '<?php echo site_url() . "/wp-json/tindapress/v1/category/listing"; ?>',
+								success: function(data) {
+									var country = $('#set_cat');
+										country.empty();
+										var	selectDefault = data.data.length > 0 ? 'All Category' : 'No Category Found'; 
+										country.append("<option value='0' selected='selected'>"+selectDefault+"</option>");
+
+									if(data.status == "success") {
+										for(var i=0; i<data.data.length; i++ ) {
+											country.append('<option value=' + data.data[i].ID + '>' + data.data[i].title + '</option>');
+										}
+									} else {
+										console.log("TindaPress: " + data);
+									}
+								},
+								error : function(){
+									console.log("TindaPress: Product Browser at Line 61.");
+								}
+						});
+					});
+				</script>                            
+			</select>
 			<?php } ?>
 			<select class="space-left" id="set_status" name="set_status">
 				<option value="0" selected="selected">All Status</option>

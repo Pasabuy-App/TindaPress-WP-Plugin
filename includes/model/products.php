@@ -32,7 +32,8 @@
                 $cat_group = "&catid=".$_GET['catid']."&catname=".$_GET['catname'];
             }
             ?>
-            window.location.href = '<?php echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT.$store_group.$cat_group."&status="; ?>' + $('#set_status').val();
+            var catid = isNaN($('#set_cat').val()) || $('#set_cat').val() == null ? 0 : $('#set_cat').val();
+            window.location.href = '<?php echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT.$store_group.$cat_group."&status="; ?>' + $('#set_status').val() + "&catid=" + catid;
         }); 
 
         //THIS ARE ALL THE PUBLIC VARIABLES.
@@ -59,45 +60,26 @@
                     var postParam = {};
                         postParam.wpid = "<?php echo get_current_user_id(); ?>";
                         postParam.snky = "<?php echo wp_get_session_token(); ?>";
-                        
+                        postParam.stid = 0;
+                        postParam.catid = 0;
+                        postParam.status = 0;
 
-                    <?php 
-                        $postUrl = site_url() . "/wp-json/tindapress/v1/products/";
-                        if(isset($_GET['id'])) {
-                            if(isset($_GET['status'])) {
-                                if($_GET['status'] == 1) {
-                                    $postUrl .= "store/active";
-                                } else if($_GET['status'] == 2) {
-                                    $postUrl .= "store/inactive";
-                                } else {
-                                    $postUrl .= "store/select";
-                                }
-                            } else {
-                                $postUrl .= "store/select";
-                            }
-                            ?>
+                        <?php if( isset($_GET['id']) ) { ?>
                             postParam.stid = "<?= $_GET['id'] ?>";
-                            <?php
-                        } else {
-                            if(isset($_GET['status'])) {
-                                if($_GET['status'] == 1) {
-                                    $postUrl .= "list/active";
-                                } else if($_GET['status'] == 2) {
-                                    $postUrl .= "list/inactive";
-                                } else {
-                                    $postUrl .= "list/all";
-                                }
-                            } else {
-                                $postUrl .= "list/all";
-                            }
-                        }
-                    ?>
+                        <?php } ?>
+                        <?php if( isset($_GET['catid']) ) { ?>
+                            postParam.catid = "<?= (int)$_GET['catid'] ?>";
+                        <?php } ?>
+                        <?php if( isset($_GET['status']) ) { ?>
+                            postParam.status = "<?= (int)$_GET['status'] ?>";
+                        <?php } ?>
+                    var postUrl = "<?= site_url() . '/wp-json/tindapress/v1/products/listing' ?>";
                     
                     $.ajax({
                         dataType: 'json',
                         type: 'POST', 
                         data: postParam,
-                        url: '<?php echo $postUrl; ?>', //TODO: RESTAPI FOR STORE LIST
+                        url: postUrl,
                         success : function( data )
                         {
                             if(data.status == "success") {
