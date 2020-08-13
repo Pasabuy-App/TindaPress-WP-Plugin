@@ -23,6 +23,11 @@
 
 	<div class="tp-panel-body">
 		<div class="tp-panel-first">
+			<?php if(isset($_GET['id']) && isset($_GET['name'])) { ?>
+			<div class="alert alert-primary header-info">
+				<strong>Store: </strong><strong id="<?= $_GET['id']; ?>"><?php echo $_GET['name']; ?></strong>
+			</div>
+			<?php } ?>
 			<select class="space-left" id="set_status" name="set_status">
 				<option value="0" selected="selected">All Status</option>
 				<option value="1">Active</option>
