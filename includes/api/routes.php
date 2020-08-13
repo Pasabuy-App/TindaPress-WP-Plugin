@@ -168,6 +168,11 @@
                 'methods' => 'POST',
                 'callback' => array('TP_Product_Store_Inactive','listen'),
             ));
+
+            register_rest_route( 'tindapress/v1/products', 'list', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Product_Listing','listen'),
+            ));
         /*
          * DOCUMENTS RESTAPI
         */
