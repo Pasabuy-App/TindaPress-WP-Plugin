@@ -15,14 +15,16 @@
 <script type="text/javascript">
     jQuery(document).ready( function ( $ ) 
     {
-        if($("#set_status").val() !== 0) {
-            <?php if(isset($_GET['status'])) { ?>
-                $("#set_status").val('<?php echo $_GET['status']; ?>');
-            <?php } ?>
-        }
+        <?php if(isset($_GET['status'])) { ?>
+            $("#set_status").val('<?php echo (int)$_GET['status'] > 2 ? 0 : $_GET['status']; ?>');
+        <?php } ?>
+
+        <?php if(isset($_GET['type'])) { ?>
+            $("#set_type").val('<?php echo (int)$_GET['type'] > 2 ? 0 : $_GET['type']; ?>');
+        <?php } ?>
 
         $("#filter").click(() => {
-            window.location.href = '<?php echo TP_Globals::wp_admin_url().TP_MENU_CATEGORY."&status="; ?>' + $('#set_status').val();
+            window.location.href = '<?php echo TP_Globals::wp_admin_url().TP_MENU_CATEGORY."&type="; ?>' + $('#set_type').val() + '&status=' + $('#set_status').val();
         }); 
         
         //THIS ARE ALL THE PUBLIC VARIABLES.
@@ -46,28 +48,22 @@
                         $('#stores-notification').removeClass('tp-display-hide');
                     }
 
-                    <?php
-                        if(isset($_GET['status'])) {
-                            if($_GET['status'] == 1) {
-                                $postUrl = "list/active";
-                            } else if($_GET['status'] == 2) {
-                                $postUrl = "list/inactive";
-                            } else {
-                                $postUrl = "list/all";
-                            }
-                        } else {
-                            $postUrl = "list/all";
-                        }
-                    ?>
-                    var postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/category/" . $postUrl; ?>';
+                    var postParam = {
+                            "wpid": "<?php echo get_current_user_id(); ?>",
+                            "snky": "<?php echo wp_get_session_token(); ?>"
+                        };
+                        postParam.status = $('#set_status').val();
+                        postParam.type = $('#set_type').val();
+                        postParam.stid = 0;
+                        <?php if( isset($_GET['stid']) ) { ?>
+                            postParam.stid = <?= (int)$_GET['stid'] ?>;
+                        <?php } ?>
+                    var postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/category/listing"; ?>';
                     
                     $.ajax({
                         dataType: 'json',
                         type: 'POST', 
-                        data: {
-                            "wpid": "<?php echo get_current_user_id(); ?>",
-                            "snky": "<?php echo wp_get_session_token(); ?>"
-                        },
+                        data: postParam,
                         url: postUrl,
                         success : function( data )
                         {

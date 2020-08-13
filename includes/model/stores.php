@@ -161,8 +161,13 @@
                                         ' title="Click this to copy the ID to your clipboard."' +
                                         '>Copy ID</button>' +  
 
+                                    '<button type="button" class="btn btn-info btn-sm"' +
+                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_CATEGORY."&stid="; ?>' + item.ID + '&stname=' +item.title + '`;" ' +
+                                        ' title="Click this to navigate to variant list of this project."' + 
+                                        ' >Categories</button>' +
+
                                     '<button type="button" class="btn btn-success btn-sm"' +
-                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT."&id="; ?>' + item.ID + '&name=' +item.title+ '&catid=' +item.catid+ '&catname=' +item.catname+ '`;" ' +
+                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT."&id="; ?>' + item.ID + '&name=' +item.title + '&catid=' +item.catid+ '&catname=' +item.catname+ '`;" ' +
                                         ' title="Click this to navigate to variant list of this project."' + 
                                         ' >Products</button>' +
 

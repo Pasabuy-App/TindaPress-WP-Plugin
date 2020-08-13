@@ -35,13 +35,6 @@
                                 placeholder="Short description of your Category." ></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="new_types">TYPES:</label><br>
-                            <select class="form-control" id="new_types" name="new_types">
-                                <option selected="selected">store</option>
-                                <option>product</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
                             <div class="alert alert-dark tp-center-item" role="alert">
                                 <strong>NOTE:</strong> Before we submit your request a dialog confirmation will appear 
                                 to ask for your permission to complete the task.
@@ -55,7 +48,6 @@
                         </div>
                     </form>
                 </div>
-
                 <div class="modal-footer">
                     <div id="CNAMessage" class="alert tp-fullwidth tp-center-item tp-display-hide" role="alert">
                         <p id="CNAMcontent">A simple success alert—check it out!</p>

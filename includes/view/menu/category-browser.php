@@ -23,6 +23,20 @@
 
 	<div class="tp-panel-body">
 		<div class="tp-panel-first">
+			<?php if( isset($_GET['stid']) && isset($_GET['stname']) ) { ?>
+				<div class="alert alert-primary header-info">
+					<strong>Product Category: <?= $_GET['stname']; ?> </strong>
+				</div>
+			<?php } else { ?>
+				<div class="alert alert-primary header-info">
+					<strong>All Categories</strong>
+				</div>
+				<select class="space-left" id="set_type" name="set_type">
+					<option value="0" selected="selected">All Types</option>
+					<option value="1">Store</option>
+					<option value="2">Product</option>
+				</select>
+			<?php } ?>
 			<select class="space-left" id="set_status" name="set_status">
 				<option value="0" selected="selected">All Status</option>
 				<option value="1">Active</option>
