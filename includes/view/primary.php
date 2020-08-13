@@ -31,7 +31,7 @@
                 'manage_options', TP_MENU_PRODUCT, 'tindapress_product_browser_page_callback' );
 
              add_submenu_page(TP_MENU_STARTED, 'TP Settings', 'Settings',
-                'manage_options', 'tp-settings', 'tindapress_setting_page_callback' );
+                'manage_options', TP_MENU_SETTING, 'tindapress_setting_page_callback' );
         }
         add_action('admin_menu', 'tindapress_init_admin_menu');
 

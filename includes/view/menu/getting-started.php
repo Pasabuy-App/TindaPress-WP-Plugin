@@ -13,11 +13,10 @@
 ?>
 
 	<?php /* Header Section */ ?>
-		<div>
-			<h1>Getting Started</h1>
+		<div class="tp-welcome-header">
+			<h1>GETTING STARTED</h1>
 			<p>
-                Here you will have the overview of the tindapress<br>
-                Only selected user can see this.
-            </p>
+                Know more about this amazing plugin for WordPress.
+			</p>
 		</div>
 	<?php /* Header Section */ ?>

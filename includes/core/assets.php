@@ -11,7 +11,6 @@
 	*/
 
 	//Initializing table fields to be called
-	$checkUSNget = isset($_GET['page']);
     $checkUSNarr = array(
         TP_MENU_STARTED,
         TP_MENU_CATEGORY,
@@ -19,9 +18,8 @@
         TP_MENU_PRODUCT,
         TP_MENU_SETTING,
     );
-    
 
-	if( $checkUSNget && in_array($_GET['page'], $checkUSNarr) )
+	if( isset($_GET['page']) && in_array($_GET['page'], $checkUSNarr) )
     {
         function tindapress_plugin_admin_enqueue()
         {    
