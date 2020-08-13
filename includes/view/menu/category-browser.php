@@ -23,6 +23,26 @@
 
 	<div class="tp-panel-body">
 		<div class="tp-panel-first">
+			<?php if(isset($_GET['type']) ) { ?>
+				<?php if( $_GET['type'] == 'product' ) { ?>
+					<div class="alert alert-primary header-info">
+						<strong>Product Category</strong>
+					</div>
+				<?php } else { ?>
+					<div class="alert alert-primary header-info">
+						<strong>Store Category</strong>
+					</div>
+				<?php } ?>
+			<?php } else { ?>
+				<div class="alert alert-primary header-info">
+					<strong>All Categories</strong>
+				</div>
+			<?php } ?>
+			<select class="space-left" id="set_type" name="set_type">
+				<option value="0" selected="selected">All Types</option>
+				<option value="1">Store</option>
+				<option value="2">Product</option>
+			</select>
 			<select class="space-left" id="set_status" name="set_status">
 				<option value="0" selected="selected">All Status</option>
 				<option value="1">Active</option>
