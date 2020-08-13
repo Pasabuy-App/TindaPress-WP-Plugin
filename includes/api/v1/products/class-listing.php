@@ -85,7 +85,7 @@
 
             if ($catid != NULL && $catid != '0') {
 
-                if ($status !== NULL ) {
+                if ($status !== NULL  ) {
 
                     $sql .= " AND tp_prod.ctid = $catid ";
                 }else{
@@ -96,10 +96,11 @@
             }
 
             if ($stid != NULL && $stid != '0' ) {
-                if ($status !== NULL ) {
-
+                if ($status !== NULL || $catid != '0') {
+                   
                     $sql .= " AND tp_prod.stid = $stid ";
                 }else{
+                    
                     $sql .= " WHERE tp_prod.stid = $stid ";
 
                 }
