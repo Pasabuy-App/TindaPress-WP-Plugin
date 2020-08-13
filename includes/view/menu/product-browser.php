@@ -27,6 +27,10 @@
 			<div class="alert alert-primary header-info">
 				<strong>Store: </strong><strong id="<?= $_GET['id']; ?>"><?php echo $_GET['name']; ?></strong>
 			</div>
+			<?php } else { ?>
+				<div class="alert alert-primary header-info">
+					<strong>All Products</strong>
+				</div>
 			<?php } ?>
 			<select class="space-left" id="set_status" name="set_status">
 				<option value="0" selected="selected">All Status</option>

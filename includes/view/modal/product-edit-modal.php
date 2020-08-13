@@ -27,7 +27,7 @@
                     <form id="edit-app-form">
                         <div class="form-group">
                             <label for="edit_title">Name:</label>
-                            <input required type="text" class="form-control" id="edit_title" name="edit_title" placeholder="Public name of this Products.">
+                            <input required type="text" class="form-control" id="edit_title" name="edit_title" placeholder="Name of this Products.">
                         </div>
                         <div class="form-group">
                             <label for="edit_info">Description:</label>
@@ -37,20 +37,18 @@
                         <div class="form-group">
                             <label for="edit_price">PRICE:</label>
                             <input required oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                                type="number" maxlength="7" class="form-control" id="edit_price" name="edit_price" placeholder="1,000,000">
+                                type="number" maxlength="7" class="form-control" id="edit_price" name="edit_price" placeholder="1,000.00">
                         </div>
                         <div class="form-group">
                             <label for="edit_store">STORE:</label><br>
                             <select class="form-control" id="edit_store" name="edit_store">
-                                <option selected="selected">Jollibee</option>
-                                <option>McDonalds</option>
+                                <option selected="selected" value="<?php echo $_GET['id']; ?>"><?php echo $_GET['name']; ?></option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="edit_category">CATEGORY:</label><br>
                             <select class="form-control" id="edit_category" name="edit_category">
-                                <option selected="selected">Restaurant</option>
-                                <option>Fast Foods</option>
+                                <option selected="selected" value="<?php echo $_GET['catid']; ?>"><?php echo $_GET['catname']; ?></option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -60,9 +58,9 @@
                             </div>
                         </div>
                         <div class="tp-center-item">
-                            <input id="appid_edit" type="hidden" value="">
+                            <input id="edit_id" type="hidden" value="">
                             <button id="delete-app-btn" type="submit" class="btn btn-danger"> - DELETE - </button>
-                            <button id="update-app-btn" type="submit" class="btn btn-success"> - UPDATE - </button>
+                            <!-- <button id="update-app-btn" type="submit" class="btn btn-success"> - UPDATE - </button> -->
                         </div>
                         <div id="dialog-confirm-edit" title="Confirmation">
                             <p id="confirm-content-edit"></p>
