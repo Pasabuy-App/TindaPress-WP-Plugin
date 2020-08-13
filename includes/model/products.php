@@ -66,9 +66,9 @@
                         if(isset($_GET['id'])) {
                             if(isset($_GET['status'])) {
                                 if($_GET['status'] == 1) {
-                                    $postUrl .= "list/active";
+                                    $postUrl .= "store/active";
                                 } else if($_GET['status'] == 2) {
-                                    $postUrl .= "list/inactive";
+                                    $postUrl .= "store/inactive";
                                 } else {
                                     $postUrl .= "store/select";
                                 }
@@ -82,9 +82,6 @@
                             if(isset($_GET['status'])) {
                                 if($_GET['status'] == 1) {
                                     $postUrl .= "list/active";
-                                    ?>
-                                    postParam.stid = "<?= $_GET['id'] ?>";
-                                    <?php
                                 } else if($_GET['status'] == 2) {
                                     $postUrl .= "list/inactive";
                                 } else {
