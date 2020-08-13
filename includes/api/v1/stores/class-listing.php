@@ -50,9 +50,9 @@
                         "message" => "Please contact your administrator. Verification Issues!",
                 );
             }
-     
+
             // Step3 : Query
-            $result = $wpdb->get_results("SELECT
+            $sql ="SELECT
                 tp_str.ID,
                 tp_str.ctid AS `catid`,
                 (select child_val from $table_revs where id = (select title from tp_categories where id = tp_str.ctid)) AS catname,
@@ -73,12 +73,36 @@
                 $table_store tp_str
             INNER JOIN 
                 $table_address dv_add ON tp_str.address = dv_add.ID	
-            ");
+            ";
+            isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL  ;
+            isset($_POST['catid']) ? $ctd = $_POST['catid'] : $ctd = NULL  ;
+            
+            (int)$status = $sts == '0'? NULL:($sts == '2'? '0':'1')  ;
+            (int)$catid = $ctd == '0'? '0': $catid = $ctd;
+            
+            if($status != NULL){
 
+                $sql .= " WHERE  ( select child_val from $table_revs where id = tp_str.`status` ) = $status";
+                
+            }
+
+            if ($catid != NULL && $catid != '0') {
+
+                if ($status !== NULL ) {
+
+                    $sql .= " AND tp_str.ctid = $catid ";
+                }else{
+                    $sql .= " WHERE tp_str.ctid = $catid ";
+
+                }
+
+            }
+
+            $result = $wpdb->get_results($sql);
             // Step4 : Check if no result
             if (!$result ) {
                 return array(
-                        "status" => "failed",
+                        "status" => "success",
                         "message" => "No results found.",
                 );
 
