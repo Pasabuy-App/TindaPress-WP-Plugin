@@ -95,10 +95,12 @@
                 );
             }
 
+
+
             // Step 7: Start mysql transaction
             $wpdb->query("START TRANSACTION ");
 
-                return$get_product_last_value = $wpdb->get_row("SELECT
+                  $get_product_last_value = $wpdb->get_row("SELECT
                     tp_rev.revs_type as `type`,
                     ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE tp_rev.ID = tp_prod.title ) AS title,
                     ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.short_info ) AS `short_info`,
@@ -117,44 +119,51 @@
                     $table_categories c ON c.ID = tp_prod.ctid
                 WHERE tp_prod.ID = $parentid ");
 
+                //Check if product is already activated
+                if ($get_status->status != 0   ) {
+                        
+                    $wpdb->query("ROLLBACK");
+                    return array(
+                        "status" => "failed",
+                        "message" => "This product is already activated.",
+                    );
+                }
                 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'title', '$get_product_last_value->title', '{$user["created_by"]}', '$date_stamp')");
+                // Sanitize product title with apostrophe
+                foreach ($get_product_last_value as $key => $value) {
+                    $get_product_last_value->$key = str_replace("'","''", $value);
+                }
+
+                return$wpdb->query("INSERT INTO $table_revs $table_revs_fields VALUES ('$get_product_last_value->type', '$parentid', 'title', '$get_product_last_value->title', '$wpid', '$date_stamp')");
                 $title = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'preview', '$get_product_last_value->', '{$user["created_by"]}', '$date_stamp')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'preview', '$get_product_last_value->preview', '$wpid', '$date_stamp')");
                 $preview = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'short_info', '{$user["short_info"]}', '{$user["created_by"]}', '$date_stamp')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'short_info', '$get_product_last_value->short_info', '$wpid', '$date_stamp')");
                 $short_info = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'long_info', '{$user["long_info"]}', '{$user["created_by"]}', '$date_stamp')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'long_info', '$get_product_last_value->long_info', '$wpid', '$date_stamp')");
                 $long_info = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'status', '1', '{$user["created_by"]}', '$date_stamp')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'status', '1', '$wpid', '$date_stamp')");
                 $status = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'sku', '{$user["sku"]}', '{$user["created_by"]}', '$date_stamp')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'sku', '$get_product_last_value->sku', '$wpid', '$date_stamp')");
                 $sku = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'price', '{$user["price"]}', '{$user["created_by"]}', '$date_stamp')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'price', '$', '$wpid', '$date_stamp')");
                 $price = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'weight', '{$user["weight"]}', '{$user["created_by"]}', '$date_stamp')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'weight', '$get_product_last_value->weight', '$wpid', '$date_stamp')");
                 $weight = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'dimension', '{$user["dimension"]}', '{$user["created_by"]}', '$date_stamp')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'dimension', '$get_product_last_value->dimension', '$wpid', '$date_stamp')");
                 $dimension = $wpdb->insert_id;
 
-            //Check if product is already activated
-            if ($get_status->status != 0   ) {
-                    
-                $wpdb->query("ROLLBACK");
-                return array(
-                    "status" => "failed",
-                    "message" => "This product is already activated.",
-                );
-            }
+                $update_product = $wpdb->query("UPDATE tp_products SET `title` = $title, `preview` = $preview, `short_info` = $short_info, `long_info` = $long_info, `status` = $status, `sku` = $sku, `price` = $price, `weight` = $weight, `dimension` = $dimension WHERE ID = $parentid ");
 
+            
 
             // Step 8: Check for query results. Do a rollback if errors found
             if ( $result < 1 ) {

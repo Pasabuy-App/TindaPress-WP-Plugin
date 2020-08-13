@@ -68,6 +68,8 @@
          require plugin_dir_path(__FILE__) . '/v1/category/class-store-insert.php';
          require plugin_dir_path(__FILE__) . '/v1/category/class-update.php';
          require plugin_dir_path(__FILE__) . '/v1/category/class-activate.php';
+        //  new
+         require plugin_dir_path(__FILE__) . '/v1/category/class-listing.php';
 
         
 
@@ -395,6 +397,12 @@
                 'methods' => 'POST',
                 'callback' => array('TP_Category_Select_Store','listen'),
             ));
+
+            register_rest_route( 'tindapress/v1/category', 'list', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Category_Listing','listen'),
+            ));
+
 
         
         /*
