@@ -215,7 +215,7 @@
                 'callback' => array('TP_Store_Select','listen'),
             ));
 
-            register_rest_route( 'tindapress/v1/stores/list', 'all', array(
+            register_rest_route( 'tindapress/v1/stores', 'list', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Store_Listing','listen'),
             ));
