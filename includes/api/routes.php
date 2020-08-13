@@ -24,6 +24,8 @@
         require plugin_dir_path(__FILE__) . '/v1/products/class-select-by-id.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-select-by-store.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-update.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-list-store-active.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-list-store-inactive.php';
 
         //Stores Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/class-insert.php';
@@ -154,6 +156,15 @@
                 'callback' => array('TP_Product_Update','listen'),
             ));
 
+            register_rest_route( 'tindapress/v1/products/store', 'active', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Product_Store_Active','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/products/store', 'inactive', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Product_Store_Inactive','listen'),
+            ));
         /*
          * DOCUMENTS RESTAPI
         */
