@@ -25,7 +25,8 @@
 		$tbl_roles = TP_ROLES_TABLE;
 		$tbl_roles_meta = TP_ROLES_META_TABLE;
 		$tbl_stores = TP_STORES_TABLE;
-
+		$tbl_options = TP_OPTIONS_TABLE;
+		$tbl_options_meta = TP_OPTIONS_META_TABLE;
 		
 		//Database table creation for stores
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_stores'" ) != $tbl_stores) {
@@ -177,6 +178,34 @@
 				$sql .= "`row_id` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Row which this group belongs to', ";
 				$sql .= "`created_by` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User created this category with revision id.', ";
 				$sql .= "`date_created` datetime(0) NULL DEFAULT NULL COMMENT 'The date this category is created.', ";
+				$sql .= "PRIMARY KEY (`ID`) ";
+				$sql .= ") ENGINE = InnoDB; ";
+			$result = $wpdb->get_results($sql);
+		}
+
+		//Database table creation for options
+		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_options'" ) != $tbl_options) {
+			$sql = "CREATE TABLE `".$tbl_options."` (";
+				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= "`pdid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Product from revision id.', ";
+				$sql .= "`otid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Option from revision id.', ";
+				$sql .= "`status` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Status from revision id.', ";
+				$sql .= "`created_by` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User ID created this Revision.', ";
+				$sql .= "`date_created` datetime(0) NULL DEFAULT NULL COMMENT 'The date this option is created.', ";
+				$sql .= "PRIMARY KEY (`ID`) ";
+				$sql .= ") ENGINE = InnoDB; ";
+			$result = $wpdb->get_results($sql);
+		}
+
+		//Database table creation for option_meta
+		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_options_meta'" ) != $tbl_options_meta) {
+			$sql = "CREATE TABLE `".$tbl_options_meta."` (";
+				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= "`title` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Product from revision id.', ";
+				$sql .= "`info` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Option from revision id.', ";
+				$sql .= "`option_value` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Option value from revision id.', ";
+				$sql .= "`created_by` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User ID.', ";
+				$sql .= "`date_created` datetime(0) NULL DEFAULT NULL COMMENT 'The date this option is created.', ";
 				$sql .= "PRIMARY KEY (`ID`) ";
 				$sql .= ") ENGINE = InnoDB; ";
 			$result = $wpdb->get_results($sql);

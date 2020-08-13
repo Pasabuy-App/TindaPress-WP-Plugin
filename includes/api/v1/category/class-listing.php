@@ -51,6 +51,7 @@
             $sql = "SELECT   
                 cat.ID,
                 cat.types,
+                cat.stid,
                
                 IF((  SELECT COUNT(ID) FROM tp_stores  WHERE ctid = cat.ID GROUP BY ctid) IS NULL, '0', (  SELECT COUNT(ID) FROM tp_stores  WHERE ctid = cat.ID GROUP BY ctid)  ) AS total,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.title ) AS title,
@@ -94,7 +95,8 @@
                 $status = $_POST['status'] == '2'? '0':'1';
 
                 if ($all == false  ) {
-                    if ($type_all == true) {
+                    $var = $_POST['type'] == '0'? true:false;
+                    if ($var == true) {
                         $sql .= "WHERE ";
 
                     }else{
