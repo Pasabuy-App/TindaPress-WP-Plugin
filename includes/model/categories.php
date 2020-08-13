@@ -58,7 +58,7 @@
                         <?php if( isset($_GET['stid']) ) { ?>
                             postParam.stid = <?= (int)$_GET['stid'] ?>;
                         <?php } ?>
-                    var postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/category/listing"; ?>';
+                    var postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/category/list"; ?>';
                     
                     $.ajax({
                         dataType: 'json',
