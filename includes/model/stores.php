@@ -22,7 +22,13 @@
         }
 
         $("#filter").click(() => {
-            window.location.href = '<?php echo site_url().$_SERVER['REQUEST_URI']."&status="; ?>' + $('#set_status').val();
+            <?php
+            $store_group ="";
+            if(isset($_GET['id']) && isset($_GET['name'])) {
+                $store_group = "&id=".$_GET['id']."&name=".$_GET['name'];
+            }
+            ?>
+            window.location.href = '<?php echo TP_Globals::wp_admin_url().TP_MENU_STORE.$store_group."&status="; ?>' + $('#set_status').val();
         });
 
         //THIS ARE ALL THE PUBLIC VARIABLES.
@@ -156,7 +162,7 @@
                                         '>Copy ID</button>' +  
 
                                     '<button type="button" class="btn btn-success btn-sm"' +
-                                        ' onclick="window.location.href = `<?php echo get_home_url()."/wp-admin/admin.php?page="."tp-product_browser"."&id="; ?>' + item.ID + '&name=' +item.title+ '&catid=' +item.catid+ '&catname=' +item.catname+ '`;" ' +
+                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT."&id="; ?>' + item.ID + '&name=' +item.title+ '&catid=' +item.catid+ '&catname=' +item.catname+ '`;" ' +
                                         ' title="Click this to navigate to variant list of this project."' + 
                                         ' >Products</button>' +
 

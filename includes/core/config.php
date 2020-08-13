@@ -54,3 +54,10 @@
 	//Stores config
 	define('TP_STORES_TABLE', TP_PREFIX.'stores');
 	define('TP_STORES_FIELDS','(ctid, title, short_info, long_info, logo, banner, status, address, created_by, date_created )');
+
+	//Store WP Menu
+	define('TP_MENU_STARTED', TP_PREFIX.'started');
+	define('TP_MENU_CATEGORY', TP_PREFIX.'categories');
+	define('TP_MENU_STORE', TP_PREFIX.'stores');
+	define('TP_MENU_PRODUCT', TP_PREFIX.'products');
+	define('TP_MENU_SETTING', TP_PREFIX.'settings');

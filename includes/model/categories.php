@@ -22,7 +22,7 @@
         }
 
         $("#filter").click(() => {
-            window.location.href = '<?php echo site_url().$_SERVER['REQUEST_URI']."&status="; ?>' + $('#set_status').val();
+            window.location.href = '<?php echo TP_Globals::wp_admin_url().TP_MENU_CATEGORY."&status="; ?>' + $('#set_status').val();
         }); 
         
         //THIS ARE ALL THE PUBLIC VARIABLES.
@@ -122,7 +122,7 @@
                                         '>Copy ID</button>' +  
 
                                     '<button type="button" class="btn btn-success btn-sm"' +
-                                        ' onclick="window.location.href = `<?php echo get_home_url()."/wp-admin/admin.php?page="."tp-store_browser"."&id="; ?>' + item.ID + '&name=' +item.title+ '`;" ' +
+                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_STORE."&id="; ?>' + item.ID + '&name=' +item.title+ '`;" ' +
                                         ' title="Click this to navigate to variant list of this project."' + 
                                         ' >Stores</button>' +
 

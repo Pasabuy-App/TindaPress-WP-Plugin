@@ -161,5 +161,7 @@
             return date('Y-m-d H:i:s', strtotime($date));
         }
         
-        
+        public static function wp_admin_url() {
+            return site_url() . "/wp-admin/admin.php?page=";
+        }
     }

@@ -22,7 +22,17 @@
         }
 
         $("#filter").click(() => {
-            window.location.href = '<?php echo site_url().$_SERVER['REQUEST_URI']."&status="; ?>' + $('#set_status').val();
+            <?php
+            $store_group ="";
+            $cat_group ="";
+            if(isset($_GET['id']) && isset($_GET['name'])) {
+                $store_group = "&id=".$_GET['id']."&name=".$_GET['name'];
+            }
+            if(isset($_GET['catid']) && isset($_GET['catname'])) {
+                $cat_group = "&catid=".$_GET['catid']."&catname=".$_GET['catname'];
+            }
+            ?>
+            window.location.href = '<?php echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT.$store_group.$cat_group."&status="; ?>' + $('#set_status').val();
         }); 
 
         //THIS ARE ALL THE PUBLIC VARIABLES.
@@ -54,12 +64,35 @@
                     <?php 
                         $postUrl = site_url() . "/wp-json/tindapress/v1/products/";
                         if(isset($_GET['id'])) {
-                            $postUrl .= "store/select";
+                            if(isset($_GET['status'])) {
+                                if($_GET['status'] == 1) {
+                                    $postUrl .= "list/active";
+                                } else if($_GET['status'] == 2) {
+                                    $postUrl .= "list/inactive";
+                                } else {
+                                    $postUrl .= "store/select";
+                                }
+                            } else {
+                                $postUrl .= "store/select";
+                            }
                             ?>
                             postParam.stid = "<?= $_GET['id'] ?>";
                             <?php
                         } else {
-                            $postUrl .= "list/all";
+                            if(isset($_GET['status'])) {
+                                if($_GET['status'] == 1) {
+                                    $postUrl .= "list/active";
+                                    ?>
+                                    postParam.stid = "<?= $_GET['id'] ?>";
+                                    <?php
+                                } else if($_GET['status'] == 2) {
+                                    $postUrl .= "list/inactive";
+                                } else {
+                                    $postUrl .= "list/all";
+                                }
+                            } else {
+                                $postUrl .= "list/all";
+                            }
                         }
                     ?>
                     
@@ -140,9 +173,14 @@
                     buttons: [
                         <?php if( isset($_GET['id']) ) { ?>
                         {
+                            text: 'Go Back',
+                            action: function ( e, dt, node, config ) {
+                                window.location.href = '<?php echo TP_Globals::wp_admin_url().TP_MENU_STORE; ?>' + '<?= "&id=".$_GET['catid'] ?>' + '<?= "&name=".$_GET['catname'] ?>';
+                            }
+                        },
+                        {
                             text: 'Create',
                             action: function ( e, dt, node, config ) {
-                                //loadingAppList( storeTables );
                                 $('#CreateNewApp').modal('show');
                             }
                         },
