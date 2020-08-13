@@ -51,6 +51,8 @@
             $sql = "SELECT   
                 cat.ID,
                 cat.types,
+               
+                IF((  SELECT COUNT(ID) FROM tp_stores  WHERE ctid = cat.ID GROUP BY ctid) IS NULL, '0', (  SELECT COUNT(ID) FROM tp_stores  WHERE ctid = cat.ID GROUP BY ctid)  ) AS total,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.title ) AS title,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.info ) AS info,
             IF( ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.`status` ) = 1, 'Active','Inactive' ) AS `status` 

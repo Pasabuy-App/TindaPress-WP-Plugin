@@ -26,6 +26,7 @@
         require plugin_dir_path(__FILE__) . '/v1/products/class-update.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-list-store-active.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-list-store-inactive.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-listing.php';
 
         //Stores Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/class-insert.php';
