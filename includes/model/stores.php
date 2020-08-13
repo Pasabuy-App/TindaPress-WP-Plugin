@@ -56,40 +56,11 @@
                             "wpid": "<?php echo get_current_user_id(); ?>",
                             "snky": "<?php echo wp_get_session_token(); ?>"
                         };
-
-                    <?php
-
-                        if(isset($_GET['id'])) {
-                            if( isset($_GET['status']) ) {
-                                if($_GET['status'] == 1) {
-                                    $postUrl = "category/list/store/active";
-                                } else if($_GET['status'] == 2) {
-                                    $postUrl = "category/list/store/inactive";
-                                } else {
-                                    $postUrl = "stores/category/select";
-                                }
-                            } else {
-                                $postUrl = "stores/category/select";
-                            }
-                            
-                            ?>
-                            postParam.catid = '<?= $_GET['id']; ?>';
-                            <?php
-                        } else {
-                            if(isset($_GET['status'])) {
-                                if($_GET['status'] == 1) {
-                                    $postUrl = "stores/list/active";
-                                } else if($_GET['status'] == 2) {
-                                    $postUrl = "stores/list/inactive";
-                                } else {
-                                    $postUrl = "stores/list/all";
-                                }
-                            } else {
-                                $postUrl = "stores/list/all";
-                            }
-                        }
-                    ?>
-                    var postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/" . $postUrl; ?>';                    
+                        postParam.status = 0;
+                        <?php if( isset($_GET['status']) ) { ?>
+                            postParam.status = '<?= $_GET['status'] ?>';
+                        <?php } ?>
+                    var postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/stores/list"; ?>';                    
                     
                     $.ajax({
                         dataType: 'json',
@@ -162,12 +133,12 @@
                                         '>Copy ID</button>' +  
 
                                     '<button type="button" class="btn btn-info btn-sm"' +
-                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_CATEGORY."&stid="; ?>' + item.ID + '&stname=' +item.title + '`;" ' +
+                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_CATEGORY."&stid="; ?>' + item.ID + '&stname=' +item.title + '&type=' + '2' + '`;" ' +
                                         ' title="Click this to navigate to variant list of this project."' + 
                                         ' >Categories</button>' +
 
                                     '<button type="button" class="btn btn-success btn-sm"' +
-                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT."&id="; ?>' + item.ID + '&name=' +item.title + '&catid=' +item.catid+ '&catname=' +item.catname+ '`;" ' +
+                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT."&id="; ?>' + item.ID + '&name=' +item.title + '`;" ' +
                                         ' title="Click this to navigate to variant list of this project."' + 
                                         ' >Products</button>' +
 

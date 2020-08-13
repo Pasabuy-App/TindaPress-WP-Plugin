@@ -106,7 +106,7 @@
                 }
             }
 
-            // return $sql;
+            //return $sql;
             $results =  $wpdb->get_results($sql);
             if (!$results) {
                 return array(

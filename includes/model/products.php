@@ -160,7 +160,7 @@
                         {
                             text: 'Go Back',
                             action: function ( e, dt, node, config ) {
-                                window.location.href = '<?php echo TP_Globals::wp_admin_url().TP_MENU_STORE; ?>' + '<?= "&id=".$_GET['catid'] ?>' + '<?= "&name=".$_GET['catname'] ?>';
+                                
                             }
                         },
                         {

@@ -61,6 +61,9 @@
                         <?php if( isset($_GET['stid']) ) { ?>
                             postParam.stid = <?= (int)$_GET['stid'] ?>;
                         <?php } ?>
+                        <?php if( isset($_GET['type']) ) { ?>
+                            postParam.type = <?= (int)$_GET['type'] ?>;
+                        <?php } ?>
                     var postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/category/list"; ?>';
                     
                     $.ajax({
@@ -98,11 +101,13 @@
                     { "sTitle": "ID",   "mData": "ID" },
                     { "sTitle": "NAME",   "mData": "title" },
                     { "sTitle": "DESCRIPTION",   "mData": "info" },
-                    <?php if( !isset($_GET['stid']) ) { ?>
-                        { "sTitle": "TYPES",   "mData": "types" },
-                        { "sTitle": "STORES",   "mData": "total" },
-                    <?php } else { ?> 
-                        { "sTitle": "PRODUCTS",   "mData": "total" },
+                    { "sTitle": "TYPES",   "mData": "types" },
+                    <?php if( isset($_GET['type']) && (int)$_GET['type'] > 0 ) { ?>
+                        <?php if( (int)$_GET['type'] == 1 ) { ?>
+                            { "sTitle": "STORES",   "mData": "total" },
+                        <?php } else if( (int)$_GET['type'] == 2 ) { ?>
+                            { "sTitle": "PRODUCTS",   "mData": "total" },
+                        <?php } ?> 
                     <?php } ?> 
                     { "sTitle": "STATUS",   "mData": "status" },
                     {"sTitle": "Action", "mRender": function(data, type, item)
@@ -248,6 +253,8 @@
                     <?php if( isset($_GET['stid']) ) { ?>
                         postParam.stid = '<?= $_GET['stid'] ?>';
                         postParam.types = 'product';
+                    <?php } else { ?>
+                        postParam.types = 'store';
                     <?php } ?>
 
                 // This will be handled by create-app.php.

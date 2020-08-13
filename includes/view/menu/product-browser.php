@@ -52,7 +52,7 @@
 									console.log(data);
 									var country = $('#set_cat');
 										country.empty();
-										var	selectDefault = data.data.length > 0 ? 'All Category' : 'No Category Found'; 
+										var	selectDefault = 'All Category'; 
 										country.append("<option value='0' selected='selected'>"+selectDefault+"</option>");
 
 									if(data.status == "success") {
