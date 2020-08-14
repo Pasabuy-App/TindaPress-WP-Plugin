@@ -75,6 +75,8 @@
 
         // Variants Classes
         require plugin_dir_path(__FILE__) . '/v1/variants/class-insert-variants.php';
+        require plugin_dir_path(__FILE__) . '/v1/variants/class-select-by-product.php';
+
 
 
         //Global Classes
@@ -439,6 +441,11 @@
             register_rest_route( 'tindapress/v1/variants', 'insert', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Insert_Variants','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/variants/product', 'select', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Select_Variants','listen'),
             ));
                 
     
