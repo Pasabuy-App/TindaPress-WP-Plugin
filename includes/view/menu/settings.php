@@ -13,12 +13,11 @@
 ?>
 
 	<?php /* Header Section */ ?>
-		<div>
-			<h1>Settings</h1>
+		<div class="tp-welcome-header">
+			<h1>SETTINGS</h1>
 			<p>
-                Here you can modify how will all your server instance act.<br>
-                More and more public configuration will be put here.
-            </p>
+                Fully customizable WordPress plugin based on your needs.
+			</p>
 		</div>
 	<?php /* Header Section */ ?>
 	

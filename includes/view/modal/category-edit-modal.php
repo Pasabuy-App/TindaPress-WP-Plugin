@@ -42,7 +42,7 @@
                         </div>
                         <div class="tp-center-item">
                             <input id="edit_id" type="hidden" value="">
-                            <button id="delete-app-btn" type="submit" class="btn btn-danger"> - DELETE - </button>
+                            <button id="delete-app-btn" type="submit" class="btn btn-danger"> - DEACTIVATE - </button>
                             <button id="update-app-btn" type="submit" class="btn btn-success"> - UPDATE - </button>
                         </div>
                         <div id="dialog-confirm-edit" title="Confirmation">

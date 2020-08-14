@@ -23,16 +23,34 @@
 
 	<div class="tp-panel-body">
 		<div class="tp-panel-first">
-			<button id="RefreshAppList" type="button" class="btn btn-dark">Refresh List</button>
-			<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#CreateNewApp">Create Category</button>
+			<?php if( isset($_GET['stid']) && isset($_GET['stname']) ) { ?>
+				<div class="alert alert-primary header-info">
+					<strong>Product Category for <?= $_GET['stname']; ?> </strong>
+				</div>
+			<?php } else { ?>
+				<div class="alert alert-primary header-info">
+					<strong>All Categories</strong>
+				</div>
+				<select class="space-left" id="set_type" name="set_type">
+					<option value="0" selected="selected">All Types</option>
+					<option value="1">Store</option>
+					<option value="2">Product</option>
+				</select>
+			<?php } ?>
+			<select class="space-left" id="set_status" name="set_status">
+				<option value="0" selected="selected">All Status</option>
+				<option value="1">Active</option>
+				<option value="2">Inactive</option>
+			</select>
+			<button type="button" id="filter" name="filter" class="btn btn-primary space-left">Filter</button>
 		</div>
 		<table id="categories-datatables" class="stripe" style="width: 100%;"></table>
 		<div id="stores-notification" class="alert alert-info tp-center-item " role="alert" style="margin-top: 20px;">
 			Currently fetching updates for all available products. Please wait...
 		</div>
 	</div>
+	
 	<?php include_once( TP_PLUGIN_PATH . "/includes/model/categories.php" ); ?>
-
 	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/category-create-modal.php" ); ?>
 	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/category-edit-modal.php" ); ?>
 	<div id="jquery-overlay" class="modal-backdrop fade show tp-display-hide" style="z-index: 9999;"></div>

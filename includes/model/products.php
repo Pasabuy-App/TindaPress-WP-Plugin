@@ -15,6 +15,27 @@
 <script type="text/javascript">
     jQuery(document).ready( function ( $ ) 
     {
+        if($("#set_status").val() !== 0) {
+            <?php if(isset($_GET['status'])) { ?>
+                $("#set_status").val('<?php echo $_GET['status']; ?>');
+            <?php } ?>
+        }
+
+        $("#filter").click(() => {
+            <?php
+            $store_group ="";
+            $cat_group ="";
+            if(isset($_GET['id']) && isset($_GET['name'])) {
+                $store_group = "&id=".$_GET['id']."&name=".$_GET['name'];
+            }
+            if(isset($_GET['catid']) && isset($_GET['catname'])) {
+                $cat_group = "&catid=".$_GET['catid']."&catname=".$_GET['catname'];
+            }
+            ?>
+            var catid = isNaN($('#set_cat').val()) || $('#set_cat').val() == null ? 0 : $('#set_cat').val();
+            window.location.href = '<?php echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT.$store_group.$cat_group."&status="; ?>' + $('#set_status').val() + "&catid=" + catid;
+        }); 
+
         //THIS ARE ALL THE PUBLIC VARIABLES.
         var activeTimeout = 'undefined';
 
@@ -22,18 +43,8 @@
             //GET THE REFERENCE OF THE CURRENT PAGE DATTABLES.
             var productTables = $('#products-datatables');
 
-            //SHOW NOTIFICATION THAT WE ARE CURRENTLY LOADING APPS.
-
             //SET INTERVAL DRAW UPDATE.
             loadingAppList( productTables );
-            // setInterval( function()
-            // { 
-            //     loadingAppList( productTables );
-            // }, 10000);
-
-            $('#RefreshAppList').click(function() {
-                loadingAppList( productTables );
-            });
         
             //LOAD APPLIST WITH AJAX.
             var tptables = 'undefined';
@@ -46,23 +57,29 @@
                         $('#stores-notification').removeClass('tp-display-hide');
                     }
 
-                    <?php 
-                        $root_url = site_url() . "/wp-json/tindapress/v1/products/";
-                        if(isset($_GET['id'])) {
-                            $root_url .= "store/select";
-                        } else {
-                            $root_url .= "list/all";
-                        }
-                    ?>
+                    var postParam = {};
+                        postParam.wpid = "<?php echo get_current_user_id(); ?>";
+                        postParam.snky = "<?php echo wp_get_session_token(); ?>";
+                        postParam.stid = 0;
+                        postParam.catid = 0;
+                        postParam.status = 0;
+
+                        <?php if( isset($_GET['id']) ) { ?>
+                            postParam.stid = "<?= $_GET['id'] ?>";
+                        <?php } ?>
+                        <?php if( isset($_GET['catid']) ) { ?>
+                            postParam.catid = "<?= (int)$_GET['catid'] ?>";
+                        <?php } ?>
+                        <?php if( isset($_GET['status']) ) { ?>
+                            postParam.status = "<?= (int)$_GET['status'] ?>";
+                        <?php } ?>
+                    var postUrl = "<?= site_url() . '/wp-json/tindapress/v1/products/list' ?>";
                     
                     $.ajax({
                         dataType: 'json',
                         type: 'POST', 
-                        data: {
-                            "wpid": "<?php echo get_current_user_id(); ?>",
-                            "snky": "<?php echo wp_get_session_token(); ?>"
-                        },
-                        url: '<?php echo $root_url; ?>', //TODO: RESTAPI FOR STORE LIST
+                        data: postParam,
+                        url: postUrl,
                         success : function( data )
                         {
                             if(data.status == "success") {
@@ -91,23 +108,31 @@
                 //Set table column header.
                 var columns = [
                     // { "sTitle": "IDENTITY",   "mData": "ID" },
+                    { "sTitle": "STORE",   "mData": "store_name" },
+                    { "sTitle": "CATEGORY",   "mData": "cat_name" },
                     { "sTitle": "NAME",   "mData": "product_name" },
                     { "sTitle": "DESCRIPTION",   "mData": "short_info" },
                     { "sTitle": "PRICE",   "mData": "price" },
-                    { "sTitle": "STATUS",   "mData": "category_name" },
+                    { "sTitle": "STATUS",   "mData": "status" },
                     {"sTitle": "Action", "mRender": function(data, type, item)
                         {
                             return '' + 
 
                                 '<div class="btn-group" role="group" aria-label="Basic example">' +
-
+                                    <?php if( isset($_GET['id']) && isset($_GET['name']) && isset($_GET['catid']) && isset($_GET['catname'])) { ?>
                                     '<button type="button" class="btn btn-primary btn-sm"' +
                                         ' data-toggle="modal" data-target="#EditAppOption"' +
                                         ' title="Click this to modified or delete this project."' +
                                         ' data-id="' + item.ID + '"' +  
                                         ' data-title="' + item.title + '"' +  
                                         ' data-sinfo="' + item.short_info + '"' + 
+                                        ' data-price="' + item.price + '"' +  
+                                        ' data-stid="' + <?= $_GET['id'] ?> + '"' + 
+                                        ' data-stname="' + '<?= $_GET['name'] ?>' + '"' + 
+                                        ' data-catid="' + <?= $_GET['catid'] ?> + '"' + 
+                                        ' data-catname="' + '<?= $_GET['catname'] ?>' + '"' + 
                                         ' >Options</button>' +
+                                    <?php } ?>
 
                                     '<button type="button" class="btn btn-secondary btn-sm appkey-' + item.ID + '"' +
                                         ' data-clipboard-text="' + item.ID + '"' +
@@ -129,7 +154,30 @@
                 tptables = $('#products-datatables').DataTable({
                     destroy: true,
                     searching: true,
-                    buttons: ['copy', 'excel', 'print'],
+                    dom: 'Bfrtip',
+                    buttons: [
+                        <?php if( isset($_GET['id']) ) { ?>
+                        {
+                            text: 'Go Back',
+                            action: function ( e, dt, node, config ) {
+                                
+                            }
+                        },
+                        {
+                            text: 'Create',
+                            action: function ( e, dt, node, config ) {
+                                $('#CreateNewApp').modal('show');
+                            }
+                        },
+                    <?php } ?>
+                        {
+                            text: 'Refresh',
+                            action: function ( e, dt, node, config ) {
+                                loadingAppList( productTables );
+                            }
+                        }, //'copy', 'csv', 'excel', 'pdf', 
+                        'print',
+                    ],
                     responsive: true,
                     "aaData": data,
                     "aoColumns": columns,
@@ -188,30 +236,36 @@
             {
                 $('#create-app-btn').addClass('disabled');
 
-                //From native form object to json object.
-                var unindexed_array = $('#create-app-form').serializeArray();
-                var indexed_array = {};
-
-                $.map(unindexed_array, function(n, i){
-                    indexed_array[n['name']] = n['value'];
-                });
-                indexed_array.action = 'CreateNewApp';
+                var postParam = {};
+                    postParam.wpid = "<?php echo get_current_user_id(); ?>";
+                    postParam.snky = "<?php echo wp_get_session_token(); ?>";
+                    postParam.catid = $('#new_category').val();
+                    postParam.stid = $('#new_store').val();
+                    postParam.title = $('#new_title').val();
+                    postParam.short_info = $('#new_info').val();
+                    postParam.long_info = "None";
+                    postParam.price = $('#new_price').val();
+                    postParam.sku = "None";
+                    postParam.weight = "None";
+                    postParam.dimension = "None";
+                    postParam.preview = "None";
 
                 // This will be handled by create-app.php.
                 $.ajax({
                     dataType: 'json',
                     type: 'POST', 
-                    data: indexed_array,
-                    url: 'admin-ajax.php',
+                    data: postParam,
+                    url: '<?php echo site_url() . "/wp-json/tindapress/v1/products/insert"; ?>',
                     success : function( data )
                     {
                         if( data.status == 'success' ) {
-                            // $('#appname_create').val(''); // TODO: Set the item to empty.
-                            // $('#appdesc_create').val(''); // TODO: Set the item to empty.
-                            // $('#appurl_create').val(''); // TODO: Set the item to empty.
-                            // $('#appmtcap_create').val(''); // TODO: Set the item to empty.
-                            // $('#appcap_create').val(''); // TODO: Set the item to empty.
+                            $('#new_category').val('');
+                            $('#new_store').val('');
+                            $('#new_title').val('');
+                            $('#new_info').val('');
+                            $('#new_price').val('');
                         }
+
                         $('#CNAMessage').addClass('alert-'+data.status);
                         $('#CNAMessage').removeClass('tp-display-hide');
                         $('#CNAMcontent').text( data.message );
@@ -242,11 +296,12 @@
 
             // LISTEN FOR MODAL SHOW AND ATTACHED ID.
             $('#CreateNewApp').on('show.bs.modal', function(e) {
-                var data = e.relatedTarget.dataset;
                 $('#create-app-btn').removeClass('disabled');
-                // $('#appsta_create').val( 'Active' ); //TODO: Before appear modal, set input to empty.
-                // $('#appmtcap_create').val(); //TODO: Before appear modal, set input to empty.
-                // $('#appcap_create').val(); //TODO: Before appear modal, set input to empty.
+                $('#new_category').val();
+                $('#new_store').val();
+                $('#new_title').val();
+                $('#new_info').val();
+                $('#new_price').val();
             });
 
             // MAKE SURE THAT TIMEOUT IS CANCELLED.
@@ -301,27 +356,33 @@
                 $('#delete-app-btn').addClass('disabled');
                 $('#update-app-btn').addClass('disabled');
 
+                var postUrl = '';
+
                 //From native form object to json object.
                 var postParam = {};
+                    postParam.wpid = "<?php echo get_current_user_id(); ?>";
+                    postParam.snky = "<?php echo wp_get_session_token(); ?>";
 
                 if( clickedBtnId == 'delete-app-btn' )
                 {
-                    // TODO: Contact Delete RestAPI
-                    // postParam.action = 'DeleteThisApp';
-                    // postParam.appid_edit = $('#appid_edit').val();
+                    postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/products/delete"; ?>';
+                    postParam.pid = $('#edit_id').val();
                 }
 
                 else
                 {
-                    // TODO: Contact Update RestAPI
-                    // postParam.action = 'UpdateThisApp';
-                    // postParam.appid_edit = $('#appid_edit').val();
-                    // postParam.appsta_edit = $('#appsta_edit').val();
-                    // postParam.appname_edit = $('#appname_edit').val();
-                    // postParam.appdesc_edit = $('#appdesc_edit').val();
-                    // postParam.appurl_edit = $('#appurl_edit').val();
-                    // postParam.appmtcap_edit = $('#appmtcap_edit').val();
-                    // postParam.appcap_edit = $('#appcap_edit').val();
+                    postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/products/update"; ?>';
+                    postParam.catid = $('#new_category').val();
+                    postParam.stid = $('#new_store').val();
+                    postParam.pdid = $('#new_store').val();
+                    postParam.title = $('#new_title').val();
+                    postParam.short_info = $('#new_info').val();
+                    postParam.long_info = "None";
+                    postParam.price = $('#new_price').val();
+                    postParam.sku = "None";
+                    postParam.weight = "None";
+                    postParam.dimension = "None";
+                    postParam.preview = "None";
                 }
 
                 // This will be handled by create-app.php.
@@ -329,13 +390,15 @@
                     dataType: 'json',
                     type: 'POST', 
                     data: postParam,
-                    url: 'admin-ajax.php',
+                    url: postUrl,
                     success : function( data )
                     {
                         if( clickedBtnId == 'delete-app-btn' ) {
-                            // $('#appname_edit').val(''); //TODO: Set item input to empty.
-                            // $('#appdesc_edit').val(''); //TODO: Set item input to empty.
-                            // $('#appurl_edit').val(''); //TODO: Set item input to empty.
+                            $('#new_category').val('');
+                            $('#new_store').val('');
+                            $('#new_title').val('');
+                            $('#new_info').val('');
+                            $('#new_price').val('');
                         } else {
                             $('#delete-app-btn').removeClass('disabled');
                             $('#update-app-btn').removeClass('disabled');
@@ -375,13 +438,12 @@
             // LISTEN FOR MODAL SHOW AND ATTACHED ID.
             $('#EditAppOption').on('show.bs.modal', function(e) {
                 var data = e.relatedTarget.dataset;
-                // $('#appid_edit').val( data.aid ); //TODO: Set item display from data.
-                // $('#appname_edit').val( data.aname ); //TODO: Set item display from data.
-                // $('#appdesc_edit').val( data.ainfo ); //TODO: Set item display from data.
-                // $('#appurl_edit').val( data.aurl ); //TODO: Set item display from data.
-                // $('#appsta_edit').val( data.asta ); //TODO: Set item display from data.
-                // $('#appmtcap_edit').val( data.mcap ); //TODO: Set item display from data.
-                // $('#appcap_edit').val( data.acap ); //TODO: Set item display from data.
+                $('#edit_id').val( data.aid );
+                $('#edit_title').val( data.aid );
+                $('#edit_info').val( data.aid );
+                $('#edit_price').val( data.aid );
+                $('#edit_store').val( data.aid );
+                $('#edit_category').val( data.aid );
 
                 $('#delete-app-btn').removeClass('disabled');
                 $('#update-app-btn').removeClass('disabled');

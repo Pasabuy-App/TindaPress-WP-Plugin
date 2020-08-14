@@ -21,35 +21,29 @@
 		</div>
 	<?php /* Header Section */ ?>
 
-	<?php if( !isset($_GET['id']) && !isset($_GET['name']) ) { ?>
-
-		<div class="tp-panel-body">
-			<div class="tp-panel-first">
-				<button id="RefreshAppList" type="button" class="btn btn-dark">Refresh List</button>
-				<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#CreateNewApp">Create Store</button>
-			</div>
-			<table id="stores-datatables" class="stripe" style="width: 100%;"></table>
-			<div id="stores-notification" class="alert alert-info tp-center-item " role="alert" style="margin-top: 20px;">
-				Currently fetching updates for all available stores. Please wait...
-			</div>
-		</div>
-
-	<?php } else { ?>
-
-		<div class="tp-panel-body">
-			<div class="tp-panel-first">
-				<div class="alert alert-secondary header-info">
-					<strong>Category: </strong><strong id="parent-name"><?php echo $_GET['name']; ?></strong>
+	<div class="tp-panel-body">
+		<div class="tp-panel-first">
+			<?php if(isset($_GET['id']) && isset($_GET['name'])) { ?>
+				<div class="alert alert-primary header-info">
+					<strong>Category: </strong><strong id="<?= $_GET['id']; ?>"><?php echo $_GET['name']; ?></strong>
 				</div>
-				<button id="RefreshAppList" type="button" class="btn btn-dark">Refresh List</button>
-				<!-- <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#CreateNewApp">Create Store</button> -->
-			</div>
-			<table id="stores-datatables" class="stripe" style="width: 100%;"></table>
-			<div id="stores-notification" class="alert alert-info tp-center-item " role="alert" style="margin-top: 20px;">
-				Currently fetching updates for all available stores. Please wait...
-			</div>
+			<?php } else { ?>
+				<div class="alert alert-primary header-info">
+					<strong>All Stores</strong>
+				</div>
+			<?php } ?>
+			<select class="space-left" id="set_status" name="set_status">
+				<option value="0" selected="selected">All Status</option>
+				<option value="1">Active</option>
+				<option value="2">Inactive</option>
+			</select>
+			<button type="button" id="filter" name="filter" class="btn btn-primary space-left">Filter</button>
 		</div>
-	<?php } ?>
+		<table id="stores-datatables" class="stripe" style="width: 100%;"></table>
+		<div id="stores-notification" class="alert alert-info tp-center-item " role="alert" style="margin-top: 20px;">
+			Currently fetching updates for all available stores. Please wait...
+		</div>
+	</div>
 
 	<?php include_once( TP_PLUGIN_PATH . "/includes/model/stores.php" ); ?>
 	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/store-create-modal.php" ); ?>

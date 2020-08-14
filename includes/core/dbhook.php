@@ -25,7 +25,8 @@
 		$tbl_roles = TP_ROLES_TABLE;
 		$tbl_roles_meta = TP_ROLES_META_TABLE;
 		$tbl_stores = TP_STORES_TABLE;
-
+		$tbl_variants = TP_VARIANTS_TABLE;
+		
 		
 		//Database table creation for stores
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_stores'" ) != $tbl_stores) {
@@ -160,6 +161,7 @@
 				$sql .= "`name` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Global = 1 , local = 0', ";
 				$sql .= "`parent` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Parent if value is more than 0', ";
 				$sql .= "`types` enum('none','product','store', 'tags') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'none' COMMENT 'Type of category with revision id.', ";
+				$sql .= "`stid` bigint(20) NOT NULL COMMENT 'Store ID',";
 				$sql .= "`created_by` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User created this category with revision id.', ";
 				$sql .= "`date_created` datetime(0) NULL DEFAULT NULL COMMENT 'The date this category is created.', ";
 				$sql .= "PRIMARY KEY (`ID`) ";
@@ -180,6 +182,23 @@
 				$sql .= ") ENGINE = InnoDB; ";
 			$result = $wpdb->get_results($sql);
 		}
+
+		//Database table creation for variants
+		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_variants'" ) != $tbl_variants) {
+			$sql = "CREATE TABLE `".$tbl_variants."` (";
+				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= "`status` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Status from revision id.', ";
+				$sql .= "`parent_id` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Parent id from revision.', ";
+				// $sql .= "`orders ` tinyint(2)  NOT NULL DEFAULT 0 COMMENT 'Arrangement of variants.', ";
+				$sql .= "`pdid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Product id from revision.', ";
+				$sql .= "`created_by` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User who created this variant.', ";
+				$sql .= "`date_created` datetime(0) NULL DEFAULT NULL COMMENT 'The date this variant is created.', ";
+				$sql .= "PRIMARY KEY (`ID`) ";
+				$sql .= ") ENGINE = InnoDB; ";
+			$result = $wpdb->get_results($sql);
+		}
+
+
 	
     } 
     add_action( 'activated_plugin', 'tp_dbhook_activate' );

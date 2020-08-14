@@ -10,6 +10,7 @@
         * @version 0.1.0
 	*/
 
+    //Qa done 2020-08-12 9:55 pm
     class TP_Store_Update_address {
         
         //REST API Call
@@ -37,7 +38,7 @@
 
             $table_address = DV_ADDRESS_TABLE;
             
-            // Step1 : Check if prerequisites plugin are missing
+            // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
@@ -46,7 +47,7 @@
                 );
             }
 
-            // Step2 : Check if wpid and snky is valid
+            // Step 2: Validate user
             if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
@@ -54,7 +55,7 @@
                 );
             }
 
-            // Step3 : Sanitize all request
+            // Step 3: Check if required parameters are passed
             if ( !isset($_POST["stid"]) || !isset($_POST["st"]) 
                 || !isset($_POST["co"]) 
                 || !isset($_POST["pv"]) 
@@ -68,7 +69,7 @@
                 ); 
             }
             
-            // Step4 : Sanitize all variable is empty
+            // Step 4: Check if parameters passed are empty
             if ( empty($_POST["stid"]) 
                 || empty($_POST["st"]) 
                 || empty($_POST["co"]) 
@@ -82,166 +83,138 @@
                         "message" => "Required fields cannot be empty!",
                 );
             }
+      
+            // Step 5: Check if address fields if exists in database. 
+            
+            //Country
+            $country_code = $_POST['co'];
+            $co_status = DV_Globals:: check_availability(DV_COUNTRY_TABLE, "WHERE `country_code` = '$country_code'");
+            
+            if ( $co_status == false ) {
+                return rest_ensure_response( 
+                    array(
+                            "status" => "failed",
+                            "message" => "Invalid value for country.",
+                    )
+                );
+            }
+            
+            if ( $co_status === "unavail" ) {
+                return rest_ensure_response( 
+                    array(
+                            "status" => "failed",
+                            "message" => "Not available yet in selected country",
+                    )
+                );
+            }
+            
+            //Province
+            $pv_status = DV_Globals:: check_availability(DV_PROVINCE_TABLE, 'WHERE `prov_code` = '.$_POST['pv']);
+            
+            if ( $pv_status == false ) {
+                return rest_ensure_response( 
+                    array(
+                            "status" => "failed",
+                            "message" => "Invalid value for province.",
+                    )
+                );
+            }
+            
 
-            //Country input validation
-                    // Step 2 : Check if country passed is in integer format.
-                    // TODO : char length == 2 and trim and convert to ucase
-                    // if ( !is_numeric($_POST['co']) ) {
-                    //     return rest_ensure_response( 
-                    //         array(
-                    //                 "status" => "failed",
-                    //                 "message" => "Invalid value for country.",
-                    //         )
-                    //     );
-                    // }
-                    
-                // Step 2 : Check if country_id is in database. 
-                $country_code = $_POST['co'];
-                $co_status = DV_Globals:: check_availability(DV_COUNTRY_TABLE, "WHERE `country_code` = '$country_code'");
-                
-                if ( $co_status == false ) {
-                    return rest_ensure_response( 
-                        array(
-                                "status" => "failed",
-                                "message" => "Invalid value for country.",
-                        )
-                    );
-                }
-                
-                if ( $co_status === "unavail" ) {
-                    return rest_ensure_response( 
-                        array(
-                                "status" => "failed",
-                                "message" => "Not available yet in selected country",
-                        )
-                    );
-                }
-            //end of country validation
+            if ( $pv_status === "unavail" ) {
+                return rest_ensure_response( 
+                    array(
+                            "status" => "failed",
+                            "message" => "Not available yet in selected province",
+                    )
+                );
+            }
+    
 
-            //Province input validation
-                // Step 2 : Check if province passed is in integer format.
-                if ( !is_numeric($_POST['pv']) ) {
-                    return rest_ensure_response( 
-                        array(
-                                "status" => "failed",
-                                "message" => "Invalid value for province.",
-                        )
-                    );
-                }
+            //City
+            $ct_status = DV_Globals:: check_availability(DV_CITY_TABLE, 'WHERE `city_code` = '.$_POST['ct']);
+            
+            if ( $ct_status == false ) {
+                return rest_ensure_response( 
+                    array(
+                            "status" => "failed",
+                            "message" => "Invalid value for city.",
+                    )
+                );
+            }
+            
+            if ( $ct_status === "unavail" ) {
+                return rest_ensure_response( 
+                    array(
+                            "status" => "failed",
+                            "message" => "Not available yet in selected city",
+                    )
+                );
+            }
 
-                // Step 2 : Check if province is in database. 
-                $pv_status = DV_Globals:: check_availability(DV_PROVINCE_TABLE, 'WHERE `prov_code` = '.$_POST['pv']);
-                
-                if ( $pv_status == false ) {
-                    return rest_ensure_response( 
-                        array(
-                                "status" => "failed",
-                                "message" => "Invalid value for province.",
-                        )
-                    );
-                }
-                
-                if ( $pv_status === "unavail" ) {
-                    return rest_ensure_response( 
-                        array(
-                                "status" => "failed",
-                                "message" => "Not available yet in selected province",
-                        )
-                    );
-                }
-            // end of province validation
 
-            //City input validation
-                // Step 2 : Check if city passed is in integer format.
-                if ( !is_numeric($_POST['ct']) ) {
-                    return rest_ensure_response( 
-                        array(
-                                "status" => "failed",
-                                "message" => "Invalid value for city.",
-                        )
-                    );
-                }
-
-                // Step 2 : Check if city is in database. 
-                $ct_status = DV_Globals:: check_availability(DV_CITY_TABLE, 'WHERE `city_code` = '.$_POST['ct']);
-                
-                if ( $ct_status == false ) {
-                    return rest_ensure_response( 
-                        array(
-                                "status" => "failed",
-                                "message" => "Invalid value for city.",
-                        )
-                    );
-                }
-                
-                if ( $ct_status === "unavail" ) {
-                    return rest_ensure_response( 
-                        array(
-                                "status" => "failed",
-                                "message" => "Not available yet in selected city",
-                        )
-                    );
-                }
-            // end of city validation
-
-            //Barangay input validation
-                // Step 2 : Check if barangay passed is in integer format.
-                if ( !is_numeric($_POST['bg']) ) {
-                    return rest_ensure_response( 
-                        array(
-                                "status" => "failed",
-                                "message" => "Invalid value for barangay.",
-                        )
-                    );
-                }
-
-                // Step 2 : Check if barangay is in database. 
-                $bg_status = DV_Globals:: check_availability(DV_BRGY_TABLE, 'WHERE `id` = '.$_POST['bg']);
-                
-                if ( $bg_status == false ) {
-                    return rest_ensure_response( 
-                        array(
-                                "status" => "failed",
-                                "message" => "Invalid value for barangay.",
-                        )
-                    );
-                }
-                
-                if ( $bg_status === "unavail" ) {
-                    return rest_ensure_response( 
-                        array(
-                                "status" => "failed",
-                                "message" => "Not available yet in selected barangay",
-                        )
-                    );
-                }
-            // end of barangay validation
+            //Barangay
+            $bg_status = DV_Globals:: check_availability(DV_BRGY_TABLE, 'WHERE `id` = '.$_POST['bg']);
+            
+            if ( $bg_status == false ) {
+                return rest_ensure_response( 
+                    array(
+                            "status" => "failed",
+                            "message" => "Invalid value for barangay.",
+                    )
+                );
+            }
+            
+            if ( $bg_status === "unavail" ) {
+                return rest_ensure_response( 
+                    array(
+                            "status" => "failed",
+                            "message" => "Not available yet in selected barangay",
+                    )
+                );
+            }
+  
           
             $user = TP_Store_Update_address::catch_post();
 
             $date_created = TP_Globals::date_stamp();
             
-            $check_store = $wpdb->get_row("SELECT s.ID FROM $table_store s WHERE s.ID = '{$user["store_id"]}' AND  (SELECT child_val FROM $table_tp_revs WHERE ID = s.`status`  ) = 1
+            // Step 6 : Check if this store id exists
+            $check_store = $wpdb->get_row("SELECT ID ,
+                    (SELECT child_val FROM tp_revisions WHERE ID = tp_stores.`status`  ) as status
+                FROM 
+                    tp_stores  
+                WHERE 
+                    ID = '{$user["store_id"]}'
             ");
-                
-            // Step5 : Check if this store id exists
+            
+            //Check if no rows found
             if ( !$check_store ) {
                 return array(
                         "status" => "failed",
-                        "message" => "This store does not exists..",
+                        "message" => "This store does not exists.",
+                );
+            }
+
+            //Fails if store currently inactive
+            if ( $check_store->status == 0 ) {
+                return array(
+                        "status" => "failed",
+                        "message" => "This store is currently inactive.",
                 );
             }
 
             $check_address = $wpdb->get_row("SELECT ID FROM $table_address  WHERE ID = '{$user["address_id"]}' AND (SELECT child_val FROM $table_dv_revs WHERE ID = $table_address.`status`  ) = 1 AND stid = '{$user["store_id"]}' ");
             
-            // Step5 : Check if this store id exists
+            //Check if no rows found
             if ( !$check_address ) {
                 return array(
                         "status" => "failed",
-                        "message" => "This address does not exits..",
+                        "message" => "This address does not exits.",
                 );
             }
 
+            // Step 7: Start mysql transaction
             $wpdb->query("START TRANSACTION");
             
             $get_address = $wpdb->get_row("SELECT * FROM dv_address WHERE ID  = '{$user["address_id"]}' ");
@@ -273,9 +246,9 @@
              //Save the address in the parent table
             $update_address =  $wpdb->query("UPDATE $table_address SET `status` = $status, `street` = $street, `brgy` = $brgy, `city` = $city, `province` = $province, `country` = $country  WHERE ID =  $get_address->ID  ");
 
-
+            // Step 8: Check if any queries above failed
             if ($status < 1 || $street < 1 || $brgy < 1 || $city < 1 || $province < 1 || $country < 1 || $update_address < 1 ) {
-                
+                //Do a rollback if any of the above queries failed
                 $wpdb->query("ROLLBACK");
                 return array(
                     "status" => "failed",
@@ -283,7 +256,7 @@
                 );
 
             }else{
-
+                //Commit if no errors found
                 $wpdb->query("COMMIT");
                 return array(
                     "status" => "success",

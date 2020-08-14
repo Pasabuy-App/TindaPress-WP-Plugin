@@ -105,7 +105,12 @@
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'status', 1, $wpid, '$date')");
                 $status_id = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_categories $categories_fields VALUES ('$title_id', '$info_id', '$status_id','$types', $wpid, '$date')");
+                $store_id = 0;
+                if( isset($_POST["stid"]) ) {
+                    $store_id = (int)$_POST["stid"];
+                }
+
+                $wpdb->query("INSERT INTO $table_categories $categories_fields VALUES ('$store_id', '$title_id', '$info_id', '$status_id','$types', $wpid, '$date')");
                 $parent_id = $wpdb->insert_id;
 
                 $result = $wpdb->query("UPDATE $table_revs SET `parent_id` = $parent_id WHERE ID IN ($title_id, $info_id, $status_id) ");

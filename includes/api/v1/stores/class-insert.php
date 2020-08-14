@@ -60,8 +60,6 @@
                 || !isset($_POST["long_info"]) 
                 || !isset($_POST["logo"]) 
                 || !isset($_POST["banner"]) 
-                || !isset($_POST["phone"]) 
-                || !isset($_POST["email"]) 
                 || !isset($_POST["st"]) 
                 || !isset($_POST["co"]) 
                 || !isset($_POST["pv"]) 
@@ -81,8 +79,6 @@
                 || empty($_POST["catid"]) 
                 || empty($_POST["logo"]) 
                 || empty($_POST["banner"]) 
-                || empty($_POST["phone"]) 
-                || empty($_POST["email"]) 
                 || empty($_POST["st"]) 
                 || empty($_POST["co"]) 
                 || empty($_POST["pv"]) 
@@ -231,12 +227,6 @@
             // end of barangay validation
             
 
-            if (!is_email($_POST['email'])) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Email not in valid format."
-                );
-            }
 
             // // // Remove all illegal characters from a url
             // $banner_url = filter_var($_POST["banner"], FILTER_SANITIZE_URL);
@@ -306,31 +296,39 @@
 
                 // update table revision
                  $result_update_tp_rev_store = $wpdb->query("UPDATE $table_tp_revs SET `parent_id` = $store_id WHERE ID IN ($title, $short_info, $long_info, $logo, $banner, $status) ");
+            
+            !isset($_POST['phone']) || empty($_POST['phone']) ? $phone =   NULL : $phone = $_POST['phone']; 
+            !isset($_POST['email']) || empty($_POST['email']) ? $email =  NULL : $email = $_POST['email'] ; 
 
-                // Query of store contact.
-                // Phone
-                $wpdb->query("INSERT INTO `$table_dv_revs` (revs_type, parent_id, child_key, child_val, created_by, date_created) 
-                                                VALUES ( 'contacts', 0, 'phone', '{$user["phone"]}', '{$user["created_by"]}', '$date_created'  )");
-                $phone_last_id = $wpdb->insert_id;
+            if( $phone && $email ){
+                    filter_var($email, FILTER_VALIDATE_EMAIL);
 
-                $wpdb->query("INSERT INTO `$table_contact` (`status`, `types`, `revs`, `stid`, `created_by`, `date_created`) 
-                                                    VALUES ('1', 'phone', '$phone_last_id', $store_id, '{$user["created_by"]}', '$date_created');");
-                $contact_phone_id = $wpdb->insert_id;
+                    // Query of store contact.
+                    // Phone
+                    $wpdb->query("INSERT INTO `$table_dv_revs` (revs_type, parent_id, child_key, child_val, created_by, date_created) 
+                                                    VALUES ( 'contacts', 0, 'phone', '$phone', '{$user["created_by"]}', '$date_created'  )");
+                    $phone_last_id = $wpdb->insert_id;
+
+                    $wpdb->query("INSERT INTO `$table_contact` (`status`, `types`, `revs`, `stid`, `created_by`, `date_created`) 
+                                                        VALUES ('1', 'phone', '$phone_last_id', $store_id, '{$user["created_by"]}', '$date_created');");
+                    $contact_phone_id = $wpdb->insert_id;
+                    
+                    $update_contact_phone = $wpdb->query("UPDATE `$table_dv_revs` SET `parent_id` = $contact_phone_id WHERE ID = $phone_last_id ");
+
+                    // Email
+                    $wpdb->query("INSERT INTO `$table_dv_revs` (revs_type, parent_id, child_key, child_val, created_by, date_created) 
+                                                    VALUES ( 'contacts', 0, 'email', '$email', '{$user["created_by"]}', '$date_created'  )");
+                    $email_last_id = $wpdb->insert_id;
+
+                    $wpdb->query("INSERT INTO `$table_contact` (`status`, `types`, `revs`, `stid`, `created_by`, `date_created`) 
+                                                        VALUES ('1', 'email', '$email_last_id', $store_id, '{$user["created_by"]}', '$date_created');");
+                    $contact_email_id = $wpdb->insert_id;
+                    
+                    $update_contact_email = $wpdb->query("UPDATE `$table_dv_revs` SET `parent_id` = $contact_email_id WHERE ID = $email_last_id ");
+
+                    // End of store contact query
                 
-                $update_contact_phone = $wpdb->query("UPDATE `$table_dv_revs` SET `parent_id` = $contact_phone_id WHERE ID = $phone_last_id ");
-
-                // Email
-                $wpdb->query("INSERT INTO `$table_dv_revs` (revs_type, parent_id, child_key, child_val, created_by, date_created) 
-                                                VALUES ( 'contacts', 0, 'email', '{$user["email"]}', '{$user["created_by"]}', '$date_created'  )");
-                $email_last_id = $wpdb->insert_id;
-
-                $wpdb->query("INSERT INTO `$table_contact` (`status`, `types`, `revs`, `stid`, `created_by`, `date_created`) 
-                                                    VALUES ('1', 'email', '$email_last_id', $store_id, '{$user["created_by"]}', '$date_created');");
-                $contact_email_id = $wpdb->insert_id;
-                
-                 $update_contact_email = $wpdb->query("UPDATE `$table_dv_revs` SET `parent_id` = $contact_email_id WHERE ID = $email_last_id ");
-
-                // End of store contact query
+            }
 
                 // Query of store address.
                 $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'status', '1', '{$user["created_by"]}', '$date_created');");
@@ -368,8 +366,8 @@
 
             // Step8 : Check if failed
             if ( $title < 1 || $short_info < 1 || $long_info < 1 || $logo < 1 || $banner < 1 || $status < 1 || $store_id < 1 || $result_update_tp_rev_store < 1 || 
-                $phone_last_id < 1 || $contact_phone_id < 1 || $result_update_tp_rev_store < 1 || $update_contact_phone < 1 || $email_last_id < 1 || $contact_email_id < 1 || 
-                $update_contact_email < 1 || $status < 1 || $street < 1 || $brgy < 1 || $city < 1 || $province < 1 || $country < 1 || $address_id < 1 || 
+                 $result_update_tp_rev_store < 1 || 
+                $status < 1 || $street < 1 || $brgy < 1 || $city < 1 || $province < 1 || $country < 1 || $address_id < 1 || 
                 $result_update_dv_rev_address < 1 || $result < 1
                ) {
                 $wpdb->query("ROLLBACK");
@@ -407,10 +405,7 @@
                 $cur_user['city']       = $_POST["ct"];
                 $cur_user['barangy']    = $_POST["bg"];
                 
-                // Contact Listen
-                $cur_user['phone']     = $_POST["phone"];
-                $cur_user['email']     = $_POST["email"];
-
+               
               return  $cur_user;
         }
     }

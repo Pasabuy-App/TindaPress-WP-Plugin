@@ -21,36 +21,68 @@
 		</div>
 	<?php /* Header Section */ ?>
 
-	<?php if( !isset($_GET['id']) && !isset($_GET['name']) ) { ?>
-
-		<div class="tp-panel-body">
-			<div class="tp-panel-first">
-				<button id="RefreshAppList" type="button" class="btn btn-dark">Refresh List</button>
-				<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#CreateNewApp">Create Product</button>
-			</div>
-			<table id="products-datatables" class="stripe" style="width: 100%;"></table>
-			<div id="stores-notification" class="alert alert-info tp-center-item " role="alert" style="margin-top: 20px;">
-				Currently fetching updates for all available products. Please wait...
-			</div>
-		</div>
-
-	<?php } else { ?>
-
-		<div class="tp-panel-body">
-			<div class="tp-panel-first">
-				<div class="alert alert-secondary header-info">
-					<strong>Project: </strong><strong id="parent-name"><?php echo $_GET['name']; ?></strong>
+	<div class="tp-panel-body">
+		<div class="tp-panel-first">
+			<?php if(isset($_GET['id']) && isset($_GET['name'])) { ?>
+				<div class="alert alert-primary header-info">
+					<strong>Store: </strong><strong id="<?= $_GET['id']; ?>"><?php echo $_GET['name']; ?></strong>
 				</div>
-				<button id="RefreshAppList" type="button" class="btn btn-dark">Refresh List</button>
-				<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#CreateNewApp">Create Variant</button>
-			</div>
-			<table id="products-datatables" class="stripe" style="width: 100%;"></table>
-			<div id="stores-notification" class="alert alert-info tp-center-item " role="alert" style="margin-top: 20px;">
-				Currently fetching updates for all available products. Please wait...
-			</div>
+			<?php } else { ?>
+				<div class="alert alert-primary header-info">
+					<strong>All Products</strong>
+				</div>
+			<?php } ?>
+			<?php if(isset($_GET['id']) && isset($_GET['name'])) { ?>
+			<select class="space-left" id="set_cat" name="set_cat" required>
+				<script type="text/javascript">
+					jQuery(document).ready( function ( $ ) 
+					{   
+						$.ajax({
+								dataType: 'json',
+								type: 'POST', 
+								data: {
+									wpid: "<?php echo get_current_user_id(); ?>",
+									snky: "<?php echo wp_get_session_token(); ?>",
+									status: "1", //active.
+									type: "2", //product.
+									stid: "<?= (int)$_GET['id'] ?>"
+								},
+								url: '<?php echo site_url() . "/wp-json/tindapress/v1/category/list"; ?>',
+								success: function(data) {
+									console.log(data);
+									var country = $('#set_cat');
+										country.empty();
+										var	selectDefault = 'All Category'; 
+										country.append("<option value='0' selected='selected'>"+selectDefault+"</option>");
+
+									if(data.status == "success") {
+										for(var i=0; i<data.data.length; i++ ) {
+											country.append('<option value=' + data.data[i].ID + '>' + data.data[i].title + '</option>');
+										}
+									} else {
+										console.log("TindaPress: " + data);
+									}
+								},
+								error : function(){
+									console.log("TindaPress: Product Browser at Line 61.");
+								}
+						});
+					});
+				</script>                            
+			</select>
+			<?php } ?>
+			<select class="space-left" id="set_status" name="set_status">
+				<option value="0" selected="selected">All Status</option>
+				<option value="1">Active</option>
+				<option value="2">Inactive</option>
+			</select>
+			<button type="button" id="filter" name="filter" class="btn btn-primary space-left">Filter</button>
 		</div>
-		<?php //include_once( plugin_dir_path( __FILE__ ) . "/project-browser/variants.php" ); ?>
-	<?php } ?>
+		<table id="products-datatables" class="stripe" style="width: 100%;"></table>
+		<div id="stores-notification" class="alert alert-info tp-center-item " role="alert" style="margin-top: 20px;">
+			Currently fetching updates for all available products. Please wait...
+		</div>
+	</div>
 
 	<?php include_once( TP_PLUGIN_PATH . "/includes/model/products.php" ); ?>
 	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/product-create-modal.php" ); ?>

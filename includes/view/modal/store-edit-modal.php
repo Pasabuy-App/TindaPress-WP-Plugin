@@ -27,12 +27,14 @@
                     <form id="edit-app-form">
                         <div class="form-group">
                             <label for="edit_title">Name:</label>
-                            <input required type="text" class="form-control" id="edit_title" name="edit_title" placeholder="Public name of this Store.">
+                            <input readonly type="text" class="form-control" id="edit_title" name="edit_title" placeholder="Public name of this Store.">
                         </div>
                         <div class="form-group">
-                            <label for="edit_info">Description:</label>
-                            <textarea required type="text" class="form-control" id="edit_info" name="edit_info" rows="3"
-                                placeholder="Short description of your Store." ></textarea>
+                            <label for="edit_status">CATEGORY:</label><br>
+                            <select class="form-control" id="edit_status" name="edit_status" required>
+                                <option value="1">Active</option>
+                                <option selected="selected" value="0">Inactive</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <div class="alert alert-dark tp-center-item" role="alert">
@@ -42,8 +44,7 @@
                         </div>
                         <div class="tp-center-item">
                             <input id="edit_id" type="hidden" value="">
-                            <button id="delete-app-btn" type="submit" class="btn btn-danger"> - DELETE - </button>
-                            <button id="activate-app-btn" type="submit" class="btn btn-success"> - ACTIVATE - </button>
+                            <button id="delete-app-btn" type="submit" class="btn btn-primary"> - UPDATE - </button>
                             <!-- <button id="update-app-btn" type="submit" class="btn btn-primary"> - UPDATE - </button> -->
                         </div>
                         <div id="dialog-confirm-edit" title="Confirmation">

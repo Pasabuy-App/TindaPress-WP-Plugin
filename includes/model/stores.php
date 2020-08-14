@@ -15,6 +15,22 @@
 <script type="text/javascript">
     jQuery(document).ready( function ( $ ) 
     {
+        if($("#set_status").val() !== 0) {
+            <?php if(isset($_GET['status'])) { ?>
+                $("#set_status").val('<?php echo $_GET['status']; ?>');
+            <?php } ?>
+        }
+
+        $("#filter").click(() => {
+            <?php
+            $store_group ="";
+            if(isset($_GET['id']) && isset($_GET['name'])) {
+                $store_group = "&id=".$_GET['id']."&name=".$_GET['name'];
+            }
+            ?>
+            window.location.href = '<?php echo TP_Globals::wp_admin_url().TP_MENU_STORE.$store_group."&status="; ?>' + $('#set_status').val();
+        });
+
         //THIS ARE ALL THE PUBLIC VARIABLES.
         var activeTimeout = 'undefined';
 
@@ -22,18 +38,8 @@
             //GET THE REFERENCE OF THE CURRENT PAGE DATTABLES.
             var storeTables = $('#stores-datatables');
 
-            //SHOW NOTIFICATION THAT WE ARE CURRENTLY LOADING APPS.
-
             //SET INTERVAL DRAW UPDATE.
             loadingAppList( storeTables );
-            // setInterval( function()
-            // { 
-            //     loadingAppList( storeTables );
-            // }, 10000);
-
-            $('#RefreshAppList').click(function() {
-                loadingAppList( storeTables );
-            });
         
             //LOAD APPLIST WITH AJAX.
             var tptables = 'undefined';
@@ -50,23 +56,17 @@
                             "wpid": "<?php echo get_current_user_id(); ?>",
                             "snky": "<?php echo wp_get_session_token(); ?>"
                         };
-                    <?php 
-                        $root_url = site_url() . "/wp-json/tindapress/v1/stores/";
-                        if(isset($_GET['id'])) {
-                            $root_url .= "category/select";
-                            ?>
-                            postParam.catid = '<?php echo $_GET['id']; ?>';
-                            <?php
-                        } else {
-                            $root_url .= "list/all";
-                        }
-                    ?>
+                        postParam.status = 0;
+                        <?php if( isset($_GET['status']) ) { ?>
+                            postParam.status = '<?= $_GET['status'] ?>';
+                        <?php } ?>
+                    var postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/stores/list"; ?>';                    
                     
                     $.ajax({
                         dataType: 'json',
                         type: 'POST', 
                         data: postParam,
-                        url: '<?php echo $root_url; ?>', //TODO: RESTAPI FOR STORE LIST
+                        url: postUrl,
                         success : function( data )
                         {
                             if(data.status == "success") {
@@ -82,7 +82,6 @@
                         },
                         error : function(jqXHR, textStatus, errorThrown) 
                         {
-                            //$('#apps-notification').text = "";
                             console.log("" + JSON.stringify(jqXHR) + " :: " + textStatus + " :: " + errorThrown);
                         }
                     });
@@ -95,8 +94,6 @@
                 //Set table column header.
                 var columns = [
                     //{ "sTitle": "IDENTITY",   "mData": "ID" },
-                    { "sTitle": "NAME",   "mData": "title" },
-                    { "sTitle": "STATUS",   "mData": "status" },
                     <?php
                         if(!isset($_GET['id'])) {
                     ?>
@@ -104,13 +101,15 @@
                     <?php
                         }
                     ?>
+                    { "sTitle": "NAME",   "mData": "title" },
+                    { "sTitle": "SHORT",   "mData": "short_info" },
+                    { "sTitle": "STATUS",   "mData": "status" },
                     { "sTitle": "PHONE",   "mData": "phone" },
                     { "sTitle": "EMAIL",   "mData": "email" },
-                    { "sTitle": "SHORT",   "mData": "short_info" },
                     { "sTitle": "Street",   "mData": "street" },
                     { "sTitle": "Barangay",   "mData": "brgy" },
                     { "sTitle": "City",   "mData": "city" },
-                    { "sTitle": "province",   "mData": "province" },
+                    { "sTitle": "Province",   "mData": "province" },
                     { "sTitle": "Country",   "mData": "country" },
                     {"sTitle": "Action", "mRender": function(data, type, item)
                         {
@@ -118,23 +117,28 @@
 
                                 '<div class="btn-group" role="group" aria-label="Basic example">' +
 
-                                    // '<button type="button" class="btn btn-primary btn-sm"' +
-                                    //     ' data-toggle="modal" data-target="#EditAppOption"' +
-                                    //     ' title="Click this to modified or delete this project."' +
-                                    //     ' data-id="' + item.ID + '"' +  
-                                    //     ' data-status="' + item.ID + '"' +  
-                                    //     ' data-title="' + item.title + '"' +  
-                                    //     ' data-sinfo="' + item.short_info + '"' + 
-                                    //     ' >Options</button>' +
+                                    '<button type="button" class="btn btn-primary btn-sm"' +
+                                        ' data-toggle="modal" data-target="#EditAppOption"' +
+                                        ' title="Click this to modified or delete this project."' +
+                                        ' data-id="' + item.ID + '"' +  
+                                        ' data-status="' + item.status + '"' +  
+                                        ' data-title="' + item.title + '"' +  
+                                        ' data-sinfo="' + item.short_info + '"' + 
+                                        ' >Options</button>' +
 
-                                    // '<button type="button" class="btn btn-secondary btn-sm appkey-' + item.ID + '"' +
-                                    //     ' data-clipboard-text="' + item.ID + '"' +
-                                    //     ' onclick="copyFromId(\'CategoryID-' + item.ID + '\')" ' +
-                                    //     ' title="Click this to copy the ID to your clipboard."' +
-                                    //     '>Copy ID</button>' +  
+                                    '<button type="button" class="btn btn-secondary btn-sm appkey-' + item.ID + '"' +
+                                        ' data-clipboard-text="' + item.ID + '"' +
+                                        ' onclick="copyFromId(\'CategoryID-' + item.ID + '\')" ' +
+                                        ' title="Click this to copy the ID to your clipboard."' +
+                                        '>Copy ID</button>' +  
+
+                                    '<button type="button" class="btn btn-info btn-sm"' +
+                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_CATEGORY."&stid="; ?>' + item.ID + '&stname=' +item.title + '&type=' + '2' + '`;" ' +
+                                        ' title="Click this to navigate to variant list of this project."' + 
+                                        ' >Categories</button>' +
 
                                     '<button type="button" class="btn btn-success btn-sm"' +
-                                        ' onclick="window.location.href = `<?php echo get_home_url()."/wp-admin/admin.php?page="."tp-product_browser"."&id="; ?>' + item.ID + '&name=' +item.title+ '`;" ' +
+                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT."&id="; ?>' + item.ID + '&name=' +item.title + '`;" ' +
                                         ' title="Click this to navigate to variant list of this project."' + 
                                         ' >Products</button>' +
 
@@ -148,7 +152,23 @@
                 tptables = $('#stores-datatables').DataTable({
                     destroy: true,
                     searching: true,
-                    buttons: ['copy', 'excel', 'print'],
+                    dom: 'Bfrtip',
+                    buttons: [
+                        {
+                            text: 'Create',
+                            action: function ( e, dt, node, config ) {
+                                //loadingAppList( storeTables );
+                                $('#CreateNewApp').modal('show');
+                            }
+                        },
+                        {
+                            text: 'Refresh',
+                            action: function ( e, dt, node, config ) {
+                                loadingAppList( storeTables );
+                            }
+                        }, //'copy', 'csv', 'excel', 'pdf', 
+                        'print',
+                    ],
                     responsive: true,
                     "aaData": data,
                     "aoColumns": columns,
@@ -319,7 +339,6 @@
 
             // LISTEN FOR MODAL SHOW AND ATTACHED ID.
             $('#CreateNewApp').on('show.bs.modal', function(e) {
-                var data = e.relatedTarget.dataset;
                 $('#create-app-btn').removeClass('disabled');
                 $('#new_title').val('');
                 $('#new_info').val('');
@@ -390,33 +409,19 @@
                     postParam.wpid = "<?php echo get_current_user_id(); ?>";
                     postParam.snky = "<?php echo wp_get_session_token(); ?>";
                     postParam.stid = $('#edit_id').val();
-
-                if( clickedBtnId == 'delete-app-btn' ) {
-                    <?php $postUrl = site_url() . "/wp-json/tindapress/v1/store/delete"; ?>
+                
+                var postUrl = "";
+                
+                if( clickedBtnId == "delete-app-btn" ) {
+                    if( $('#edit_status').val() == 0 ) {
+                        postUrl = '<?= site_url() . "/wp-json/tindapress/v1/stores/delete"; ?>';
+                    } else {
+                        postUrl = '<?= site_url() . "/wp-json/tindapress/v1/stores/activate"; ?>';
+                    }
                 } else {
-                    <?php $postUrl = site_url() . "/wp-json/tindapress/v1/category/update"; ?>
+                    postUrl = '<?= site_url() . "/wp-json/tindapress/v1/stores/update"; ?>';
                     postParam.title = $('#edit_title').val();
                     postParam.info = $('#edit_info').val();
-                }
-
-                if( clickedBtnId == 'delete-app-btn' )
-                {
-                    // TODO: Contact Delete RestAPI
-                    // postParam.action = 'DeleteThisApp';
-                    // postParam.appid_edit = $('#appid_edit').val();
-                }
-
-                else
-                {
-                    // TODO: Contact Update RestAPI
-                    // postParam.action = 'UpdateThisApp';
-                    // postParam.appid_edit = $('#appid_edit').val();
-                    // postParam.appsta_edit = $('#appsta_edit').val();
-                    // postParam.appname_edit = $('#appname_edit').val();
-                    // postParam.appdesc_edit = $('#appdesc_edit').val();
-                    // postParam.appurl_edit = $('#appurl_edit').val();
-                    // postParam.appmtcap_edit = $('#appmtcap_edit').val();
-                    // postParam.appcap_edit = $('#appcap_edit').val();
                 }
 
                 // This will be handled by create-app.php.
@@ -424,7 +429,7 @@
                     dataType: 'json',
                     type: 'POST', 
                     data: postParam,
-                    url: '<?php echo $postUrl; ?>',
+                    url: postUrl,
                     success : function( data )
                     {
                         if( clickedBtnId == 'delete-app-btn' ) {
@@ -480,6 +485,7 @@
                 $('#edit_id').val( data.id );
                 $('#edit_title').val( data.title );
                 $('#edit_info').val( data.sinfo );
+                $('#edit_status').val( data.status == 'Active' ? 1 : 0 );
 
                 $('#delete-app-btn').removeClass('disabled');
                 $('#update-app-btn').removeClass('disabled');

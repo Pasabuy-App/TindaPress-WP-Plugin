@@ -17,30 +17,21 @@
         require plugin_dir_path(__FILE__) . '/v1/products/class-activate.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-delete.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-insert.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-list-active.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-list-all.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-list-inactive.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-select-by-category.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-select-by-id.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-select-by-store.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-update.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-listing.php';
 
         //Stores Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/class-insert.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-update.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-delete.php';
-        require plugin_dir_path(__FILE__) . '/v1/stores/class-select.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-listing.php';
-        require plugin_dir_path(__FILE__) . '/v1/stores/class-listing-active.php';
-        require plugin_dir_path(__FILE__) . '/v1/stores/class-listing-inactive.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-search.php';
-        require plugin_dir_path(__FILE__) . '/v1/stores/class-stores.php';
+     
         require plugin_dir_path(__FILE__) . '/v1/stores/class-newest.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-popular.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-best-seller.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-activate.php';
-        require plugin_dir_path(__FILE__) . '/v1/stores/class-select-by-category.php';
-        
+
         // Document Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-delete.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-insert.php';
@@ -53,19 +44,11 @@
         //Category Classes
          require plugin_dir_path(__FILE__) . '/v1/category/class-delete.php';
          require plugin_dir_path(__FILE__) . '/v1/category/class-insert.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-list-all.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-list-active.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-list-inactive.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-list-store-active.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-list-store-inactive.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-list-product-active.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-list-product-inactive.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-select-by-category.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-select-type.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-select-by-store.php';
          require plugin_dir_path(__FILE__) . '/v1/category/class-store-insert.php';
          require plugin_dir_path(__FILE__) . '/v1/category/class-update.php';
          require plugin_dir_path(__FILE__) . '/v1/category/class-activate.php';
+        //  new
+         require plugin_dir_path(__FILE__) . '/v1/category/class-listing.php';
 
         //Operations Classes
         require plugin_dir_path(__FILE__) . '/v1/operations/class-list-open.php';
@@ -79,13 +62,20 @@
         require plugin_dir_path(__FILE__) . '/v1/order/class-listing-stages.php';
         require plugin_dir_path(__FILE__) . '/v1/order/class-listing-date.php';
 
-        // Address Insert
+        // Address Folder
         require plugin_dir_path(__FILE__) . '/v1/stores/address/class-insert.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/address/class-update.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/address/class-delete.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/address/class-select.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/address/class-listing.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/address/class-activate.php';
+
+        // Contact Folder
+        require plugin_dir_path(__FILE__) . '/v1/stores/contacts/class-insert.php';
+
+        // Variants Classes
+        require plugin_dir_path(__FILE__) . '/v1/variants/class-insert-variants.php';
+
 
         //Global Classes
         require plugin_dir_path(__FILE__) . '/v1/class-globals.php';
@@ -148,6 +138,20 @@
                 'callback' => array('TP_Product_Update','listen'),
             ));
 
+            register_rest_route( 'tindapress/v1/products/store', 'active', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Product_Store_Active','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/products/store', 'inactive', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Product_Store_Inactive','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/products', 'list', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Product_Listing','listen'),
+            ));
         /*
          * DOCUMENTS RESTAPI
         */
@@ -190,7 +194,7 @@
                 'callback' => array('TP_Store_Select','listen'),
             ));
 
-            register_rest_route( 'tindapress/v1/stores/list', 'all', array(
+            register_rest_route( 'tindapress/v1/stores', 'list', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Store_Listing','listen'),
             ));
@@ -265,11 +269,18 @@
                 'callback' => array('TP_Store_Select_Address','listen'),
             ));
 
-            register_rest_route( 'tindapress/v1/stores/address', 'list/all', array(
+            register_rest_route( 'tindapress/v1/stores/address/list', 'all', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Store_Listing_Address','listen'),
             ));
-            
+
+            // Contact Folder
+
+            register_rest_route( 'tindapress/v1/stores/contacts', 'insert', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Store_Insert_Contacts','listen'),
+            ));
+
             
             
             // End of Address folder
@@ -279,12 +290,12 @@
          * ORDER RESTAPI
         */
             
-            register_rest_route( 'tindapress/v1/order', 'total/sales', array(
+            register_rest_route( 'tindapress/v1/order/total', 'sales', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Total_sales','listen'),
             ));
 
-            register_rest_route( 'tindapress/v1/order', 'total/monthly', array(
+            register_rest_route( 'tindapress/v1/order/total', 'monthly', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Total_sales_date','listen'),
             ));
@@ -357,7 +368,7 @@
                 'callback' => array('TP_Category_Update','listen'),
             ));
 
-            register_rest_route( 'tindapress/v1/category', 'list/type', array(
+            register_rest_route( 'tindapress/v1/category/list', 'type', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Category_List','listen'),
             ));
@@ -367,17 +378,18 @@
                 'callback' => array('TP_Category_Select','listen'),
             ));
 
-            register_rest_route( 'tindapress/v1/category', 'select/store', array(
+            register_rest_route( 'tindapress/v1/category/select', 'store', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Category_Select_Store','listen'),
             ));
 
-            register_rest_route( 'tindapress/v1/category', 'store/insert', array(
+            register_rest_route( 'tindapress/v1/category', 'list', array(
                 'methods' => 'POST',
-                'callback' => array('TP_Category_Store_Insert','listen'),
+                'callback' => array('TP_Category_Listing','listen'),
             ));
-            
 
+
+        
         /*
          * SETTINGS RESTAPI
         */
@@ -395,26 +407,35 @@
          * OPERATIONS RESTAPI
         */
 
-            register_rest_route( 'tindapress/v1/operations', 'list/open', array(
+            register_rest_route( 'tindapress/v1/operations/list', 'open', array(
                 'methods' => 'POST',
                 'callback' => array('TP_List_Open','listen'),
             ));
 
-            register_rest_route( 'tindapress/v1/operations', 'list/orders', array(
+            register_rest_route( 'tindapress/v1/operations/list', 'orders', array(
                 'methods' => 'POST',
                 'callback' => array('TP_List_Orders','listen'),
             ));
 
-            register_rest_route( 'tindapress/v1/operations', 'list/month', array(
+            register_rest_route( 'tindapress/v1/operations/list', 'month', array(
                 'methods' => 'POST',
                 'callback' => array('TP_List_Month','listen'),
             ));
 
-            register_rest_route( 'tindapress/v1/operations', 'list/date', array(
+            register_rest_route( 'tindapress/v1/operations/list', 'date', array(
                 'methods' => 'POST',
                 'callback' => array('TP_List_Date','listen'),
             ));
 
+        /*
+         * VARIANTS RESTAPI
+        */
 
+            register_rest_route( 'tindapress/v1/variants', 'insert', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Insert_Variants','listen'),
+            ));
+                
+    
     }
     add_action( 'rest_api_init', 'tindapress_route' );
