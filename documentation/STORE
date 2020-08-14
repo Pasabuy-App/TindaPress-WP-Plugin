@@ -4,6 +4,54 @@ The TindaPress for WordPress is an e-commerce plugin lorem ipsum
 
 ### REST API Implementation
 
+####  STORE NEARME  => tindapress/v1/stores/nearme
+
+REQUEST:
+- Method: POST
+- Header: key=Content-Type, value=application/x-www-form-urlencoded
+- Params: key=snky (value=session key), key=wpid (value=user id), key=lat (value= Latitude), key = Long  (Value = Longitude )
+
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator.  Verification issues!' data: null
+- code: 'unknown' message: 'Please contact your administrator.  Request unknown missing parameters!' data: null
+- code: 'unknown' message: 'Required fields cannot be empty' data: null
+- code: 'success' message: 'No results found.' data: null
+
+IF SUCCESS:
+```
+    {
+    "status": "success",
+    "data": [
+        {
+            "ID": "1",
+            "type": "Office",
+            "store_name": null,
+            "street": "street sample",
+            "brgy": "Poblacion",
+            "city": "City of Muntinlupa",
+            "province": "Eastern Samar",
+            "country": "Philippines",
+            "status": "Active",
+            "distance in kilomiters": null
+        },
+        {
+            "ID": "2",
+            "type": "Office",
+            "store_name": null,
+            "street": "Molave",
+            "brgy": "San Antonio (Pob.)",
+            "city": "City Of Biñan",
+            "province": "Laguna",
+            "country": "Philippines",
+            "status": "Active",
+            "distance in kilomiters": "0.301"
+        }
+    ]
+}
+```
+
+
 ####  INSERT STORE
 
 REQUEST:

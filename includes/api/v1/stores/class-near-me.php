@@ -45,7 +45,14 @@
             if (!isset($_POST['lat']) || !isset($_POST['long']) ) {
                 return array(
                     "status" => "unknown",
-                    "message" => "Please contact your administrator. Missing paramiters!",
+                    "message" => "Please contact your administrator. Request unknown missing paramiters!",
+                );
+            }
+
+            if (empty($_POST['lat']) || empty($_POST['long']) ) {
+                return array(
+                    "status" => "failed",
+                    "message" => "Required fileds cannot be empty.",
                 );
             }
 
