@@ -1,6 +1,62 @@
 ### REST API Implementation
 
 
+### PRODUCTS NEARME  => tindapress/v1/products/nearme
+
+REQUEST:
+- Method: POST
+- Header: key=Content-Type, value=application/x-www-form-urlencoded
+- Params: key=snky (value=session key), key=wpid (value=wordpress id), key=lat (value= Latittude), key=long (value= Longitude) 
+
+RESPONSE:
+- code: 'unknown' message: 'Please contact your administrator. Plugin Missing!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Verification issues!' data: null
+- code: 'unknown' message: 'Please contact your administrator. Request Unknown!' data: null
+- code: 'failed' message: 'Required fields cannot be empty!' data: null
+- code: 'success' message: 'No results found.' data: nulls
+
+IF SUCCESS:
+```
+    {
+    "status": "success",
+    "data": [
+        {
+            "ID": "5",
+            "stid": "2",
+            "catid": "3",
+            "store_name": "Loren's Patis",
+            "cat_name": "Miggsy Store",
+            "product_name": "Miggsy's toasted bread",
+            "short_info": "A delicious baked bread with margarine on top.",
+            "long_info": "Number one products in the whole world.",
+            "sku": "stock keeping unit",
+            "price": "100",
+            "weight": "1kg",
+            "dimension": "toasted bread dimension",
+            "status": "Inactive",
+            "distance": "0.301"
+        },
+        {
+            "ID": "6",
+            "stid": "2",
+            "catid": "3",
+            "store_name": "Loren's Patis",
+            "cat_name": "Miggsy Store",
+            "product_name": "Miggsy's toasted bread",
+            "short_info": "A delicious baked bread with margarine on top.",
+            "long_info": "Number one products in the whole world.",
+            "sku": "stock keeping unit",
+            "price": "100",
+            "weight": "1kg",
+            "dimension": "toasted bread dimension",
+            "status": "Inactive",
+            "distance": "0.301"
+        }
+    ]
+}
+```
+
+
 ### DELETE PRODUCT => tindapress/v1/products/delete
 
 REQUEST:
