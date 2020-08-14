@@ -17,33 +17,21 @@
         require plugin_dir_path(__FILE__) . '/v1/products/class-activate.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-delete.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-insert.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-list-active.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-list-all.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-list-inactive.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-select-by-category.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-select-by-id.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-select-by-store.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-update.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-list-store-active.php';
-        require plugin_dir_path(__FILE__) . '/v1/products/class-list-store-inactive.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-listing.php';
 
         //Stores Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/class-insert.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-update.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-delete.php';
-        require plugin_dir_path(__FILE__) . '/v1/stores/class-select.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-listing.php';
-        require plugin_dir_path(__FILE__) . '/v1/stores/class-listing-active.php';
-        require plugin_dir_path(__FILE__) . '/v1/stores/class-listing-inactive.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-search.php';
-        require plugin_dir_path(__FILE__) . '/v1/stores/class-stores.php';
+     
         require plugin_dir_path(__FILE__) . '/v1/stores/class-newest.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-popular.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-best-seller.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-activate.php';
-        require plugin_dir_path(__FILE__) . '/v1/stores/class-select-by-category.php';
-        
+
         // Document Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-delete.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-insert.php';
@@ -56,16 +44,6 @@
         //Category Classes
          require plugin_dir_path(__FILE__) . '/v1/category/class-delete.php';
          require plugin_dir_path(__FILE__) . '/v1/category/class-insert.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-list-all.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-list-active.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-list-inactive.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-list-store-active.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-list-store-inactive.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-list-product-active.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-list-product-inactive.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-select-by-category.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-select-type.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-select-by-store.php';
          require plugin_dir_path(__FILE__) . '/v1/category/class-store-insert.php';
          require plugin_dir_path(__FILE__) . '/v1/category/class-update.php';
          require plugin_dir_path(__FILE__) . '/v1/category/class-activate.php';

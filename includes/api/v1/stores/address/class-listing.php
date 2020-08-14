@@ -92,6 +92,8 @@
             WHERE
              `add`.stid = '{$user["store_id"]}' ");
 
+            isset($_POST['type']) ? $type = $_POST['type']: $type = NULL; 
+
             // Step 7: Check if no rows found
             if (!$result) {
                 return array(
