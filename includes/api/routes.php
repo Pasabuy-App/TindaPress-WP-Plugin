@@ -72,8 +72,6 @@
         //  new
          require plugin_dir_path(__FILE__) . '/v1/category/class-listing.php';
 
-        
-
         //Operations Classes
         require plugin_dir_path(__FILE__) . '/v1/operations/class-list-open.php';
         require plugin_dir_path(__FILE__) . '/v1/operations/class-list-month.php';
@@ -96,6 +94,9 @@
 
         // Contact Folder
         require plugin_dir_path(__FILE__) . '/v1/stores/contacts/class-insert.php';
+
+        // Variants Classes
+        require plugin_dir_path(__FILE__) . '/v1/variants/class-insert-variants.php';
 
 
         //Global Classes
@@ -448,6 +449,15 @@
                 'callback' => array('TP_List_Date','listen'),
             ));
 
+        /*
+         * VARIANTS RESTAPI
+        */
 
+            register_rest_route( 'tindapress/v1/variants', 'insert', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Insert_Variants','listen'),
+            ));
+                
+    
     }
     add_action( 'rest_api_init', 'tindapress_route' );

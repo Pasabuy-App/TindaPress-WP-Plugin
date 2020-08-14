@@ -55,9 +55,9 @@
 	define('TP_STORES_TABLE', TP_PREFIX.'stores');
 	define('TP_STORES_FIELDS','(ctid, title, short_info, long_info, logo, banner, status, address, created_by, date_created )');
 
-	//Options Config
-	define('TP_OPTIONS_TABLE', TP_PREFIX.'options');
-	define('TP_OPTIONS_META_TABLE', TP_PREFIX.'option_meta');
+	//Variants Config
+	define('TP_VARIANTS_TABLE', TP_PREFIX.'variants');
+
 
 
 	//Store WP Menu
