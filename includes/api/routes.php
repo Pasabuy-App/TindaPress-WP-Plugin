@@ -72,6 +72,7 @@
 
         // Contact Folder
         require plugin_dir_path(__FILE__) . '/v1/stores/contacts/class-insert.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/contacts/class-listing.php';
 
         // Variants Classes
         require plugin_dir_path(__FILE__) . '/v1/variants/class-insert-variants.php';
@@ -269,7 +270,7 @@
                 'callback' => array('TP_Store_Select_Address','listen'),
             ));
 
-            register_rest_route( 'tindapress/v1/stores/address/list', 'all', array(
+            register_rest_route( 'tindapress/v1/stores/address', 'list', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Store_Listing_Address','listen'),
             ));
@@ -279,6 +280,11 @@
             register_rest_route( 'tindapress/v1/stores/contacts', 'insert', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Store_Insert_Contacts','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/stores/contacts', 'list', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Store_Listing_Contacts','listen'),
             ));
 
             
