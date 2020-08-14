@@ -66,7 +66,6 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/address/class-insert.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/address/class-update.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/address/class-delete.php';
-        require plugin_dir_path(__FILE__) . '/v1/stores/address/class-select.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/address/class-listing.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/address/class-activate.php';
 

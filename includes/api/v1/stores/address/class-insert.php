@@ -237,9 +237,15 @@
              $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'country', '$get_country->ID', '{$user["created_by"]}', '$date_created');");
              $country = $wpdb->insert_id;
 
+             $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'latitude', '{$user["latitude"]}', '{$user["created_by"]}', '$date_created');");
+             $latitude = $wpdb->insert_id;
+
+             $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'longtitude', '{$user["longtitude"]}', '{$user["created_by"]}', '$date_created');");
+             $longtitude = $wpdb->insert_id;
+
             //Save the address in the parent table
-            $wpdb->query("INSERT INTO $table_address (`status`, `types`, `stid`, `street`, `brgy`, `city`, `province`, `country`, `date_created`) 
-                 VALUES ('$status', '{$user["type"]}', '{$user["store_id"]}', $street, $brgy, $city, $province, $country, '$date_created')");
+            $wpdb->query("INSERT INTO $table_address (`status`, `types`, `stid`, `street`, `brgy`, `city`, `province`, `country`, `date_created`, `latitude`, `longitude`) 
+                 VALUES ('$status', '{$user["type"]}', '{$user["store_id"]}', $street, $brgy, $city, $province, $country, '$date_created', '$latitude', '$longtitude')");
             $address_id = $wpdb->insert_id;
 
             //Update dv_revisions table
@@ -249,7 +255,7 @@
             $update_store = $wpdb->query("UPDATE $table_store SET `address` = $address_id WHERE ID = '{$user["store_id"]}' ");
 
             // Step 9: Check if any queries above failed
-            if ($status < 1 || $street < 1 || $brgy < 1 || $city < 1 || $province < 1 || $country < 1 || $update_table_rev < 1 || $update_store < 1) {
+            if ($status < 1 || $street < 1 || $brgy < 1 || $city < 1 || $province < 1 || $country < 1 || $update_table_rev < 1 || $update_store < 1 || $longtitude < 1 || $latitude < 1) {
                 //Do a rollback if any of the above queries failed
                 $wpdb->query("ROLLBACK");
                 return array(
@@ -281,7 +287,9 @@
                 $cur_user['province']   = $_POST["pv"];
                 $cur_user['city']       = $_POST["ct"];
                 $cur_user['barangy']    = $_POST["bg"];
-                $cur_user['type']    = $_POST["type"];
+                $cur_user['type']       = $_POST["type"];
+                $cur_user['latitude']       = $_POST["lat"];
+                $cur_user['longtitude']       = $_POST["long"];
 
 
               return  $cur_user;
