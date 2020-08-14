@@ -89,8 +89,8 @@
             $results =  $wpdb->get_results($sql);
             if (!$results) {
                 return array(
-                    "status" => "failed",
-                    "message" => "No results found",
+                    "status" => "success",
+                    "message" => "No results found.",
                 );
             } else {
                 return array(

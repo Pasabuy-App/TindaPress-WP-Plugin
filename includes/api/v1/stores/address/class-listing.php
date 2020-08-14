@@ -20,6 +20,8 @@
         public static function listen_open (){
             global $wpdb;
 
+            // NOTE : POST 'type' is not required even if its not listen in client it will not show error
+
             // declaring table names to variable
             $table_store = TP_STORES_TABLE;
             $table_revisions = TP_REVISIONS_TABLE;
@@ -48,34 +50,8 @@
                 );
             }
 
-            // Step 3: Check if required parameters are passed
-            if (!isset($_POST["stid"])) {
-                return array(
-					"status" => "unknown",
-					"message" => "Please contact your administrator. Request unknown!",
-                );
-            }
-
-            // Step 4: Check if parameters passed are empty
-            if (empty($_POST["stid"])) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Required fileds cannot be empty.",
-                );
-            }
-
-            $user = TP_Store_Listing_Address::catch_post();
-            // Step 5: Check if this store exists in database.
-            $check_store = $wpdb->get_row("SELECT ID FROM tp_stores  WHERE ID = '{$user["store_id"]}'  AND  (SELECT `child_val` FROM tp_revisions WHERE ID = tp_stores.`status`  ) = 1");
-            if (!$check_store) {
-                return array(
-                    "status" => "failed",
-                    "message" => "This store does not exists."
-                );
-            }
-
             // Step 6: Start mysql query
-            $result = $wpdb->get_results("SELECT
+            $sql = "SELECT
                 `add`.ID,
                 `add`.stid,
                 IF(`add`.types = 'business', 'Business', 'Office' )as `type`,
@@ -89,16 +65,107 @@
                 `add`.date_created
             FROM
                 $table_add `add`
-            WHERE
-             `add`.stid = '{$user["store_id"]}' ");
-
+            ";
+            
+            // Filter Address type (OPTIONAL)
             isset($_POST['type']) ? $type = $_POST['type']: $type = NULL; 
+            isset($_POST['addr']) ? $address_id = $_POST['addr']: $address_id = NULL; 
+            isset($_POST['stid']) ? $store_id = $_POST['stid']: $store_id = NULL; 
+            isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL  ;
+            (int)$status = $sts == '0'? NULL:($sts == '2'? '0':'1')  ;
+
+            if (isset($_POST['addr'])) {
+                if($address_id != NULL && $address_id != '0'){
+                    if ( !is_numeric($address_id) ) {
+                        return array(
+                            "status" => "failed",
+                            "message" => "ID is not in valid format."
+                        );
+                    }
+
+                    $sql .=" WHERE `add`.ID = '$address_id'";
+                }
+            }
+            
+            if (isset($_POST['type'])) {
+
+                if ($type != NULL) {
+            
+                    if ($type != 'business' && $type != 'office' ) {
+                        return array(
+                            "status" => "failed",
+                            "message" => "Invalid type of address."
+                        );
+
+                    }else{
+
+                        if ($address_id !== NULL && $address_id != '0' ) {
+                            $sql .= " AND `add`.types = '$type' ";
+                            
+                        }else{
+                            $sql .= " WHERE `add`.types = '$type' ";
+                            
+                        }
+
+                    }
+                }
+            }
+
+            if (isset($_POST['stid'])) {
+                
+                if ($store_id !== NULL) {
+                    
+                    if ( $store_id != '0' && $type != '0' && isset($type) || $address_id !== NULL && $address_id !='0'  ) {
+                        
+                        
+                        if ( $address_id !== NULL || $address_id != '0' ) {
+                            // validate stid
+                            if($store_id != '0' && $type !== NULL && $address_id !== NULL ){
+                                // Check if Store id is existed
+                                $check_store = $wpdb->get_row("SELECT ID FROM tp_stores  WHERE ID = '$store_id'  AND  (SELECT `child_val` FROM tp_revisions WHERE ID = tp_stores.`status`  ) = 1");
+                                if (!$check_store) {
+                                    return array(
+                                        "status" => "failed",
+                                        "message" => "This store does not exists."
+                                    );
+                                }
+
+                                $sql .= " AND `add`.stid = '$store_id' ";
+
+                            }
+                            $sql .= " AND `add`.stid = '$store_id' ";
+
+                        }
+                        
+                    }else{
+
+                        if ($store_id != '0' ) {
+
+                            $sql .= " WHERE `add`.stid = '$store_id' ";
+
+                        }
+
+                    }
+                }
+            }
+
+            if (isset($_POST['status']) && $_POST['status'] != '0' ) {
+                if ($status != NULL && $store_id != NULL && $store_id != '0' || $type != NULL || $address_id != NULL && $address_id != '0' ) {
+                    $sql .= " AND ( select child_val from $table_dv_revisions where id = `add`.`status` ) = '$status'";
+                    
+                }else{
+                    $sql .= " WHERE ( select child_val from $table_dv_revisions where id = `add`.`status` ) = '$status'";
+                }
+            }
+
+            // return $sql;
+            $result = $wpdb->get_results($sql);
 
             // Step 7: Check if no rows found
             if (!$result) {
                 return array(
-                    "status" => "unknown",
-                    "message" => "An error occured while fetching data to database!"
+                    "status" => "success",
+                    "message" => "No results found."
                 );
 
             }else{
@@ -111,12 +178,4 @@
             
         }
 
-        public static function catch_post(){
-            
-            $cur_user = array();
-
-            $cur_user["store_id"] = $_POST["stid"];
-
-            return  $cur_user;
-        }
     }
