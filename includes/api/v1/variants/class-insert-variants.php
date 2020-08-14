@@ -20,8 +20,12 @@
         public static function insert_variants(){
             
             global $wpdb;
+            $table_variants = TP_VARIANTS_TABLE;
+            $table_revs = TP_REVISIONS_TABLE;
+            $rev_fields = TP_REVISION_FIELDS;
+            $variants_fields = TP_VARIANTS_FIELDS;
+            
 
-        
             //Step1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
@@ -55,7 +59,81 @@
                 );
             }
 
-            return $_POST['data'];
+            $data = $_POST['data'];
+            
+            if (! is_array($data)) {
+                return array(
+                    "status" => "failed",
+                    "message" => "Data is insufficient.",
+                );
+            }
+           
+            //Separate array into different variables
+            $product_id = $data['pdid'];
+            $name = $data['name'];
+            $values = $data['values'];
+            
+            $wpid = $_POST['wpid'];
+            $date = TP_Globals:: date_stamp();
+           
+            $wpdb->query("START TRANSACTION");
+
+            $wpdb->query("INSERT INTO `$table_variants` $variants_fields VALUES ($product_id, $wpid, '$date')");
+            $parent_id = $wpdb->insert_id;
+
+            $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $parent_id, 'name', '$name', $wpid, '$date')");
+            $rev_parent = $wpdb->insert_id;
+
+            if ($rev_parent < 1) {
+                $wpdb->query("ROLLBACK");
+                return array(
+                        "status" => "error",
+                        "message" => "An error occured while submitting data to the server.",
+                );
+            }
+            foreach ($data['values'] as $key => $value) {
+                $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $rev_parent, '$name', '$key', $wpid, '$date')");
+                $child = $wpdb->insert_id;
+                if ($child < 1) {
+                    $wpdb->query("ROLLBACK");
+                    return array(
+                            "status" => "error",
+                            "message" => "An error occured while submitting data to the server.",
+                    );
+                }
+                foreach ($value as $child_key => $child_value) {
+                    $grand_child = $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $child, '$child_key', '$child_value', $wpid, '$date')");
+                    if ($grand_child < 1) {
+                        $wpdb->query("ROLLBACK");
+                        return array(
+                                "status" => "error",
+                                "message" => "An error occured while submitting data to the server.",
+                        );
+                    }
+                }
+            }
+
+            $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $parent_id, 'status', 1, $wpid, '$date')");
+            $status_id = $wpdb->insert_id;
+
+            $update_parent = $wpdb->query("UPDATE $table_variants SET `status` = $status_id WHERE ID = $parent_id");
+
+            if ($status_id < 1 || $update_parent < 1) {
+                $wpdb->query("ROLLBACK");
+                return array(
+                        "status" => "error",
+                        "message" => "An error occured while submitting data to the server.",
+                );
+            }
+            $wpdb->query("COMMIT");
+            
+            return array(
+                        "status" => "success",
+                        "message" => "Data has been added successfully.",
+            );
+
+
+            
 
         }   
 
