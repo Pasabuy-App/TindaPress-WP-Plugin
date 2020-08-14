@@ -31,6 +31,7 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/class-popular.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-best-seller.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-activate.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-near-me.php';
 
         // Document Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-delete.php';
@@ -286,6 +287,11 @@
             register_rest_route( 'tindapress/v1/stores/contacts', 'list', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Store_Listing_Contacts','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/stores', 'nearme', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Store_Near_ME','listen'),
             ));
 
             
