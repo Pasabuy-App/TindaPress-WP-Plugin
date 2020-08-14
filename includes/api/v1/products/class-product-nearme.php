@@ -77,7 +77,7 @@
                 ( SELECT tp_rev.child_val FROM $table_revision tp_rev WHERE ID = tp_prod.weight ) AS `weight`,
                 ( SELECT tp_rev.child_val FROM $table_revision tp_rev WHERE ID = tp_prod.dimension ) AS `dimension`,
             IF  ( ( SELECT tp_rev.child_val FROM $table_revision tp_rev WHERE ID = tp_prod.STATUS ) = 1, 'Active', 'Inactive' ) AS `status`,
-                ROUND(  (SELECT `distance`( 
+                ROUND(  (SELECT `distance_kilometer`( 
                         (SELECT child_val FROM $table_dv_revision WHERE ID = 	( SELECT `latitude` FROM $table_address WHERE ID = ( SELECT `address` FROM $table_store WHERE ID = tp_prod.stid ) AND types = 'business' ) AND revs_type ='address' ), 
                         (SELECT child_val FROM $table_dv_revision WHERE ID = 	( SELECT `longitude` FROM $table_address WHERE ID = ( SELECT `address` FROM $table_store WHERE ID = tp_prod.stid ) AND types = 'business' ) AND revs_type ='address' ), 
                         '$lat2', 

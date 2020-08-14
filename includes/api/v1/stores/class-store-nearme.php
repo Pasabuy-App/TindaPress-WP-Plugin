@@ -83,7 +83,7 @@
                 ( SELECT city_name FROM $table_city WHERE city_code = ( SELECT child_val FROM $table_dv_revision WHERE ID = dv_add.city ) ) AS city,
                 ( SELECT prov_name FROM $table_province WHERE prov_code = ( SELECT child_val FROM $table_dv_revision WHERE ID = dv_add.province ) ) AS province,
                 ( SELECT country_name FROM $table_country WHERE ID = ( SELECT child_val FROM $table_dv_revision WHERE ID = dv_add.country ) ) AS country ,
-                ROUND((SELECT `distance`(( SELECT child_val FROM $table_dv_revision WHERE ID = dv_add.latitude ), ( SELECT child_val FROM $table_dv_revision WHERE ID = dv_add.longitude ) ,'$lat2', '$long2' ) ), 3)AS `distance`
+                ROUND((SELECT `distance_kilometer`(( SELECT child_val FROM $table_dv_revision WHERE ID = dv_add.latitude ), ( SELECT child_val FROM $table_dv_revision WHERE ID = dv_add.longitude ) ,'$lat2', '$long2' ) ), 3)AS `distance`
             FROM
                 $table_store tp_str
                 INNER JOIN $table_revision tp_rev ON tp_rev.ID = tp_str.`status` 
