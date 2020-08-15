@@ -22,22 +22,24 @@
             global $wpdb;
 
             // variable for time stamp
-            $later = TP_Globals::date_stamp();
+            $date_stamp = TP_Globals::date_stamp();
 
             // variable for newest date
-            $date = date_create($later);
-            date_sub( $date, date_interval_create_from_date_string("7 days"));
-            $date_expected =  date_format($date,"Y-m-d");
+            $date = date_create($date_stamp);
+             date_sub( $date, date_interval_create_from_date_string("7 days"));
+        
+            $date_expected =  date_format($date,"Y-m-d H:i:s");
             
             // declaring table names to variable
             $table_store = TP_STORES_TABLE;
             $table_category = TP_CATEGORIES_TABLE;
-            $table_revs = TP_REVISIONS_TABLE;
+            $table_revisions = TP_REVISIONS_TABLE;
+            
             $table_address = DV_ADDRESS_TABLE;
-            $table_dv_revs =  DV_REVS_TABLE;
+            $table_dv_revisions =  DV_REVS_TABLE;
             $table_brgy = DV_BRGY_TABLE;
-            $table_city = DV_CTY_TABLE;
-            $table_province = DV_PRV_TABLE;
+            $table_city = DV_CITY_TABLE;
+            $table_province = DV_PROVINCE_TABLE;
             $table_country = DV_COUNTRY_TABLE;
             
             //Check if prerequisites plugin are missing
@@ -76,41 +78,34 @@
 
             // step5 : Query
             $result = $wpdb->get_results("SELECT
-                st.id,
-                cat.types,
-                ( SELECT child_val FROM $table_revs WHERE ID = cat.title ) AS cat_title,
-                ( SELECT child_val FROM $table_revs WHERE ID = cat.info ) AS cat_inf,
-                max( IF ( st_r.child_key = 'title', st_r.child_val, '' ) ) AS title,
-                max( IF ( st_r.child_key = 'short_info', st_r.child_val, '' ) ) AS short_info,
-                max( IF ( st_r.child_key = 'long_info', st_r.child_val, '' ) ) AS long_info,
-                max( IF ( st_r.child_key = 'logo', st_r.child_val, '' ) ) AS avatar,
-                max( IF ( st_r.child_key = 'banner', st_r.child_val, '' ) ) AS banner,
-                addr.types AS add_types,
-                ( SELECT child_val FROM $table_dv_revs WHERE ID = addr.STATUS ) AS STATUS,
-                ( SELECT child_val FROM $table_address WHERE ID = addr.street ) AS street,
-                ( SELECT brgy_name FROM $table_brgy WHERE ID = ( SELECT child_val FROM $table_dv_revs WHERE ID = addr.brgy ) ) AS brgy,
-                ( SELECT citymun_name FROM $table_city WHERE ID = ( SELECT child_val FROM $table_dv_revs WHERE ID = addr.city ) ) AS city,
-                ( SELECT prov_name FROM $table_province WHERE ID = ( SELECT child_val FROM $table_dv_revs WHERE ID = addr.province ) ) AS province,
-                ( SELECT country_name FROM $table_country WHERE ID = ( SELECT child_val FROM $table_dv_revs WHERE ID = addr.country ) ) AS country 
+                tp_str.ID,
+                tp_str.ctid AS `catid`,
+                ( SELECT child_val FROM $table_revisions WHERE id = ( SELECT title FROM $table_category WHERE id = tp_str.ctid ) ) AS catname,
+                ( SELECT child_val FROM $table_revisions  WHERE id = tp_str.title ) AS title,
+                ( SELECT child_val FROM $table_revisions  WHERE id = tp_str.short_info ) AS short_info,
+                ( SELECT child_val FROM $table_revisions  WHERE id = tp_str.long_info ) AS long_info,
+                ( SELECT child_val FROM $table_revisions  WHERE id = tp_str.logo ) AS avatar,
+                ( SELECT child_val FROM $table_revisions  WHERE id = tp_str.banner ) AS banner,
+                IF  ( ( SELECT child_val FROM $table_revisions  WHERE id = tp_str.`status` ) = 1, 'Active', 'Inactive' ) AS `status`,
+                ( SELECT child_val FROM $table_dv_revisions WHERE id = dv_add.street ) AS street,
+                ( SELECT brgy_name FROM $table_brgy WHERE ID = ( SELECT child_val FROM $table_dv_revisions WHERE id = dv_add.brgy ) ) AS brgy,
+                ( SELECT city_name FROM $table_city WHERE city_code = ( SELECT child_val FROM $table_dv_revisions WHERE id = dv_add.city ) ) AS city,
+                ( SELECT prov_name FROM $table_province WHERE prov_code = ( SELECT child_val FROM $table_dv_revisions WHERE id = dv_add.province ) ) AS province,
+                ( SELECT country_name FROM $table_country WHERE id = ( SELECT child_val FROM $table_dv_revisions WHERE id = dv_add.country ) ) AS country,
+                ( SELECT child_val FROM $table_dv_revisions WHERE ID = ( SELECT revs FROM dv_contacts WHERE types = 'phone' AND stid = tp_str.ID ) ) AS phone,
+                ( SELECT child_val FROM $table_dv_revisions WHERE ID = ( SELECT revs FROM dv_contacts WHERE types = 'email' AND stid = tp_str.ID ) ) AS email ,
+                tp_str.date_created
             FROM
-                $table_store st
-            INNER JOIN
-                $table_revs st_r ON st.title = st_r.ID 
-                OR st.short_info = st_r.ID 
-                OR st.long_info = st_r.ID 
-                OR st.logo = st_r.ID 
-                OR st.banner = st_r.ID
-            INNER JOIN 
-                $table_category cat ON st.ctid = cat.ID
-            INNER JOIN 
-                $table_address addr ON st.address = addr.ID 
-            WHERE  
-                SUBSTRING(st.date_created, 1, 10) BETWEEN '$date_expected' AND '$later'
+                $table_store tp_str
+                INNER JOIN $table_address dv_add ON tp_str.address = dv_add.ID 
+            WHERE
+                MONTH(tp_str.date_created)  BETWEEN MONTH('$date_expected') 
+                AND MONTH('$date_stamp')
             GROUP BY
-                st.id 
+                tp_str.id 
             ORDER BY
                 RAND( ) 
-            LIMIT 10
+                LIMIT 10
             ");
     
             // step6 : return result

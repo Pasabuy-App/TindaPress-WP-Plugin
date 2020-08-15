@@ -78,7 +78,7 @@
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_revisions'" ) != $tbl_revisions) {
 			$sql = "CREATE TABLE `".$tbl_revisions."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
-				$sql .= "`revs_type` enum('none','configs','categories','stores','products','personnels','roles') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Target table', ";
+				$sql .= "`revs_type` enum('none','configs','categories','stores','products','personnels','roles','variants') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Target table', ";
 				$sql .= "`parent_id` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Parent ID of this Revision', ";
 				$sql .= "`child_key` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Column name on the table', ";
 				$sql .= "`child_val` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Text Value of the row Key.', ";
@@ -188,7 +188,7 @@
 			$sql = "CREATE TABLE `".$tbl_variants."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
 				$sql .= "`status` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Status from revision id.', ";
-				$sql .= "`parent_id` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Parent id from revision.', ";
+				// $sql .= "`parent_id` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Parent id from revision.', ";
 				// $sql .= "`orders ` tinyint(2)  NOT NULL DEFAULT 0 COMMENT 'Arrangement of variants.', ";
 				$sql .= "`pdid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Product id from revision.', ";
 				$sql .= "`created_by` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User who created this variant.', ";

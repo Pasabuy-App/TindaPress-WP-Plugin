@@ -57,6 +57,7 @@
 
 	//Variants Config
 	define('TP_VARIANTS_TABLE', TP_PREFIX.'variants');
+	define('TP_VARIANTS_FIELDS','(pdid, created_by, date_created )');
 
 
 
