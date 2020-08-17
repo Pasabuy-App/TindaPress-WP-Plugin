@@ -44,7 +44,7 @@
             }
 
             // Step 3: Sanitize request
-			if (!isset($_POST['data']) || !isset($_POST['vid'])) {
+			if ( !isset($_POST['pdid']) || !isset($_POST['vid']) || !isset($_POST['key']) || !isset($_POST['ckey']) || !isset($_POST['val']) ) {
 				return array(
 						"status" => "unknown",
 						"message" => "Please contact your administrator. Request unknown!",
@@ -52,94 +52,66 @@
             }
             
             // Step 4: Sanitize if variable is empty
-            if (empty($_POST["data"]) || empty($_POST['vid'])) {
+            if ( empty($_POST['pdid']) || empty($_POST['vid']) || empty($_POST['key']) || empty($_POST['ckey']) || empty($_POST['val'])  ) {
 				return array(
 						"status" => "failed",
 						"message" => "Required fields cannot be empty.",
                 );
             }
 
-            $data = $_POST['data'];
-
-            if (! is_array($data)) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Data is insufficient.",
-                );
-            }
-            
-            //Separate array into different variables
-            $name = $data['name'];
-            $variants = $data['variants'];
-            
+            $product_id = $_POST['pdid'];
             $variants_id = $_POST['vid'];
+            $variant_key = $_POST['key'];
+            $variant_childkey = $_POST['ckey'];
+            $new_value = $_POST['val'];
             $wpid = $_POST['wpid'];
             $date = TP_Globals:: date_stamp();
 
             //Check if this exists
-            $prev_variant = TP_Select_Variants_Id:: select_variants_id();
+            $get_parent = $wpdb->get_row("SELECT `ID`,
+            (SELECT `child_val` FROM $table_revs WHERE `ID` = $table_variants.status) as status,
+            (SELECT `child_val` FROM $table_revs WHERE `parent_id` = $variants_id AND `child_key` = 'name') as name,
+            (SELECT `ID` FROM $table_revs WHERE `parent_id` = $variants_id AND `child_key` = 'name') as name_id
+            FROM $table_variants 
+            WHERE `ID` = $variants_id
+            AND `pdid` = $product_id");
 
-            return $old_variant = $prev_variant['data'][$variants_id];
-            //PENDING
-            //PENDING
-            // $wpdb->query("START TRANSACTION");
+            if (!$get_parent) {
+                return array(
+                    "status" => "failed",
+                    "message" => "This variant does not exists." 
+                );
+            }
 
-            // $wpdb->query("INSERT INTO `$table_variants` $variants_fields VALUES ($product_id, $wpid, '$date')");
-            // $parent_id = $wpdb->insert_id;
+            if ($get_parent->status == 0) {
+                return array(
+                    "status" => "failed",
+                    "message" => "This variant is currently inactive." 
+                );
+            }
+      
+            $get_key = $wpdb->get_row("SELECT `ID` FROM $table_revs WHERE `parent_id` = $get_parent->name_id AND `child_key` = '$get_parent->name' AND `child_val` LIKE '%$variant_key%'");
+            
+            $wpdb->query("START TRANSACTION");
 
-            // $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $parent_id, 'name', '$name', $wpid, '$date')");
+            $rev_insert = $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', '$get_key->ID', '$variant_childkey', '$new_value', $wpid, '$date')");
             // $rev_parent = $wpdb->insert_id;
 
-            // if ($rev_parent < 1) {
-            //     $wpdb->query("ROLLBACK");
-            //     return array(
-            //             "status" => "error",
-            //             "message" => "An error occured while submitting data to the server.",
-            //     );
-            // }
-            // foreach ($data['values'] as $key => $value) {
-            //     $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $rev_parent, '$name', '$key', $wpid, '$date')");
-            //     $child = $wpdb->insert_id;
-            //     if ($child < 1) {
-            //         $wpdb->query("ROLLBACK");
-            //         return array(
-            //                 "status" => "error",
-            //                 "message" => "An error occured while submitting data to the server.",
-            //         );
-            //     }
-            //     foreach ($value as $child_key => $child_value) {
-            //         $grand_child = $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $child, '$child_key', '$child_value', $wpid, '$date')");
-            //         if ($grand_child < 1) {
-            //             $wpdb->query("ROLLBACK");
-            //             return array(
-            //                     "status" => "error",
-            //                     "message" => "An error occured while submitting data to the server.",
-            //             );
-            //         }
-            //     }
-            // }
+            if ($rev_insert < 1) {
+                $wpdb->query("ROLLBACK");
+                return array(
+                        "status" => "error",
+                        "message" => "An error occured while submitting data to the server.",
+                );
+            }
 
-            // $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $parent_id, 'status', 1, $wpid, '$date')");
-            // $status_id = $wpdb->insert_id;
-
-            // $update_parent = $wpdb->query("UPDATE $table_variants SET `status` = $status_id WHERE ID = $parent_id");
-
-            // if ($status_id < 1 || $update_parent < 1) {
-            //     $wpdb->query("ROLLBACK");
-            //     return array(
-            //             "status" => "error",
-            //             "message" => "An error occured while submitting data to the server.",
-            //     );
-            // }
-            // $wpdb->query("COMMIT");
+            $wpdb->query("COMMIT");
             
-            // return array(
-            //             "status" => "success",
-            //             "message" => "Data has been added successfully.",
-            // );
+            return array(
+                        "status" => "success",
+                        "message" => "Data has been updated successfully.",
+            );
 
-
-            
 
         }   
 
