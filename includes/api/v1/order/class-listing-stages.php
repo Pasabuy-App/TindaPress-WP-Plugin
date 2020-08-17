@@ -59,7 +59,12 @@
 
 
             //Ensures that `stage` is correct
-            if ( !($_POST['stage'] === 'pending') && !($_POST['stage'] === 'received') && !($_POST['stage'] === 'delivered') && !($_POST['stage'] === 'shipping') && !($_POST['stage'] === 'cancelled') ) {
+            if ( !($_POST['stage'] === 'pending') 
+                && !($_POST['stage'] === 'received') 
+                && !($_POST['stage'] === 'completed') 
+                && !($_POST['stage'] === 'shipping') 
+                && !($_POST['stage'] === 'cancelled')
+                && !($_POST['stage'] === 'rejected') ) {
                 return array(
                     "status" => "failed",
                     "message" => "Invalid stage.",
@@ -72,12 +77,13 @@
             $table_revs = TP_REVISIONS_TABLE;
             $table_orders = 'mp_orders';
             $table_order_items = 'mp_order_items';
+            $table_mprevs = 'mp_revisions';
             $stage = $_POST['stage'];
         
             // Step5 : Query
             $result = $wpdb->get_results("SELECT
                     mp_ordtem.ID,
-                    mp_ord.`status` as status,
+                    (SELECT child_val FROM $table_mprevs WHERE ID = mp_ord.`status`) AS status,
                     (select child_val from $table_revs where id = (select title from $table_store where id = mp_ord.stid)) AS store,
                     (select child_val from $table_revs where id = (select title from $table_products where id = mp_ordtem.pdid)) AS orders,
                     mp_ordtem.quantity as qty,
@@ -87,7 +93,7 @@
                 INNER JOIN 
                     $table_orders as mp_ord ON mp_ord.ID = mp_ordtem.odid
                 WHERE 
-                    mp_ord.`status` = '$stage'
+                (SELECT child_val FROM $table_mprevs WHERE ID = mp_ord.`status`) = '$stage'
             ");
             
             // Step6 : Check if no result
