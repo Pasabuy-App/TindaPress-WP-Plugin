@@ -56,9 +56,9 @@
             $sql = "SELECT   
                 cat.ID,
                 cat.types, ".$counting."
-                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.title ) AS title,
-                ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.info ) AS info,
-            IF( ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.`status` ) = 1, 'Active','Inactive' ) AS `status` 
+                ( SELECT rev.child_val FROM $table_revs rev WHERE `revs_type` = 'categories' AND ID = cat.title ) AS title,
+                ( SELECT rev.child_val FROM $table_revs rev WHERE `revs_type` = 'categories' AND ID = cat.info ) AS info,
+            IF( ( SELECT rev.child_val FROM $table_revs rev WHERE `revs_type` = 'categories' AND ID = cat.`status` ) = 1, 'Active','Inactive' ) AS `status` 
             FROM
                 $table_categories cat ";
                 
@@ -83,7 +83,7 @@
                 }
 
                 $status = (int)$_POST['status'] >= 2 ? 0 : 1;
-                $sql .= "( SELECT rev.child_val FROM tp_revisions rev WHERE ID = cat.`status` ) = $status  ";
+                $sql .= "( SELECT rev.child_val FROM tp_revisions rev WHERE `revs_type` = 'categories' AND ID = cat.`status` ) = $status  ";
             }
             
             $results =  $wpdb->get_results($sql);
