@@ -24,7 +24,7 @@
             $table_revs = TP_REVISIONS_TABLE;
             $rev_fields = TP_REVISION_FIELDS;
             $variants_fields = TP_VARIANTS_FIELDS;
-            
+            $table_product = TP_PRODUCT_TABLE;
 
             //Step1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -76,7 +76,37 @@
             
             $wpid = $_POST['wpid'];
             $date = TP_Globals:: date_stamp();
-           
+
+            $get_product = $wpdb->get_row("SELECT
+                    tp_prod.ID, tp_prod.ctid, tp_prod.status as status_id,
+                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE tp_rev.ID = tp_prod.title ) AS product_name,
+                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.status ) AS `status`
+                FROM
+                    $table_product tp_prod
+                INNER JOIN 
+                    $table_revs tp_rev ON tp_rev.ID = tp_prod.title
+                WHERE
+                    tp_prod.ID = $product_id
+                GROUP BY
+                    tp_prod.ID
+            ");
+            
+            //Check if no rows found
+            if (!$get_product) {
+                return array(
+                    "status" => "failed",
+                    "message" => "This product does not exists",
+                );
+            }
+
+            //Fails if product is currently inactive
+            if ($get_product->status == 0) {
+                return array(
+                    "status" => "failed",
+                    "message" => "This product is currently inactive.",
+                );
+            }
+                
             $wpdb->query("START TRANSACTION");
 
             $wpdb->query("INSERT INTO `$table_variants` $variants_fields VALUES ($product_id, $wpid, '$date')");
