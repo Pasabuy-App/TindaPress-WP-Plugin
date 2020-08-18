@@ -85,7 +85,7 @@
             $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $parent_id, 'name', '$name', $wpid, '$date')");
             $rev_parent = $wpdb->insert_id;
 
-            $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $rev_parent, 'baseprice', '$base_price', $wpid, '$date')");
+            $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $parent_id, 'baseprice', '$base_price', $wpid, '$date')");
 
             if ($rev_parent < 1) {
                 $wpdb->query("ROLLBACK");

@@ -84,7 +84,8 @@
                 );
             }
 
-            $variants[] = $wpdb->get_row("SELECT `id`, `child_val` as name
+            $variants[] = $wpdb->get_row("SELECT `id`, `child_val` as name,
+                    (SELECT `child_val` FROM $table_revs WHERE `revs_type` = 'variants' AND `parent_id` = $variants_id AND `child_key` = 'baseprice') as base_price
                     FROM $table_revs
                     WHERE `revs_type` = 'variants'
                     AND `parent_id` = $variants_id
@@ -109,7 +110,7 @@
                     
                     }   
 
-                    $result[$variants_id] = array('name' => $child->name, 'variants' => $result_variants);
+                    $result[$variants_id] = array('name' => $child->name, 'base_price' => $child->base_price, 'variants' => $result_variants);
                 
                 }
             
