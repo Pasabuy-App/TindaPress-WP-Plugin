@@ -119,13 +119,13 @@
                 WHERE
                    cat.ID = $category_id");
                 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_category_last_value->types', '$category_id', 'title', '$get_category_last_value->title', $wpid, '$date_created')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('categories', '$category_id', 'title', '$get_category_last_value->title', $wpid, '$date_created')");
                 $title_id = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_category_last_value->types', '$category_id', 'info', '$get_category_last_value->info', $wpid, '$date_created')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('categories', '$category_id', 'info', '$get_category_last_value->info', $wpid, '$date_created')");
                 $info_id = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_category_last_value->types', '$category_id', 'status', 0, $wpid, '$date_created')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('categories', '$category_id', 'status', 0, $wpid, '$date_created')");
                 $status_id = $wpdb->insert_id;
 
                 $update_category = $wpdb->query("UPDATE $table_categories SET `title` = $title_id, `info` = $info_id, `status` = $status_id WHERE ID = $category_id ");
