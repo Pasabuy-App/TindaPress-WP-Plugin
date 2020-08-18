@@ -78,9 +78,7 @@
             $date = TP_Globals:: date_stamp();
 
             $get_product = $wpdb->get_row("SELECT
-                    tp_prod.ID, tp_prod.ctid, tp_prod.status as status_id,
-                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE tp_rev.ID = tp_prod.title ) AS product_name,
-                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.status ) AS `status`
+                    tp_prod.ID, tp_prod.ctid, tp_prod.status as status_id
                 FROM
                     $table_product tp_prod
                 INNER JOIN 
@@ -92,20 +90,20 @@
             ");
             
             //Check if no rows found
-            if (!$get_product) {
-                return array(
-                    "status" => "failed",
-                    "message" => "This product does not exists",
-                );
-            }
+            // if (!$get_product) {
+            //     return array(
+            //         "status" => "failed",
+            //         "message" => "This product does not exists",
+            //     );
+            // }
 
-            //Fails if product is currently inactive
-            if ($get_product->status == 0) {
-                return array(
-                    "status" => "failed",
-                    "message" => "This product is currently inactive.",
-                );
-            }
+            // //Fails if product is currently inactive
+            // if ($get_product->status == 0) {
+            //     return array(
+            //         "status" => "failed",
+            //         "message" => "This product is currently inactive.",
+            //     );
+            // }
                 
             $wpdb->query("START TRANSACTION");
 

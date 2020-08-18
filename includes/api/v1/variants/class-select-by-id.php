@@ -110,12 +110,13 @@
                     
                     }   
 
-                    $result[$variants_id] = array('name' => $child->name, 'base_price' => $child->base_price, 'variants' => $result_variants);
+                    $result['list'] = array('name' => $child->name, 'base_price' => $child->base_price, 'variants' => $result_variants);
+                    
                 
                 }
             
             }
-
+           
             return array(
                 "status" => "success",
                 "data" => $result

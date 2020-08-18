@@ -67,20 +67,23 @@
             $child_variants = array();
             $parent_variants = array();
             
-            $result = array();
+            
             foreach ($get_parent as $row) {
-                
-                $variants[] = $wpdb->get_row("SELECT `id`, `child_val` as name
+                $result = array();
+               
+                $variants[] = $wpdb->get_row("SELECT `id`, `child_val` as name,
+                    (SELECT `child_val` FROM $table_revs WHERE `revs_type` = 'variants' AND `parent_id` = $row->ID AND `child_key` = 'baseprice') as base_price,
+                    (SELECT `parent_id` FROM $table_revs WHERE `revs_type` = 'variants' AND `parent_id` = $row->ID AND `child_key` = 'name') as var_id
                     FROM $table_revs
                     WHERE `revs_type` = 'variants'
                     AND `parent_id` = $row->ID
                     AND `child_key` = 'name'
                  ");
                  
-                 foreach ($variants as $child) {
-
+                foreach ($variants as $child) {
+                    
                     $result_variants = array();
-
+                    
                     $child_variants[$child->name] = $wpdb->get_results("SELECT `id`, `child_key` as name, `child_val` as value FROM $table_revs WHERE `parent_id` = $child->id");
                     
                     foreach ($child_variants[$child->name] as $parent) {
@@ -92,17 +95,15 @@
                             $result_variants[$parent->value][$key->child_key] = $key->child_val;
                            
                         }
-    
-                        // $result[$row->ID] = $result_variants;
-                        $result[$row->ID] = array('name' => $child->name, 'variants' => $result_variants);
                         
                     }
                     
-                 }
-
-                
+                    $result['list'][] = array('name' => $child->name, 'id' => $child->var_id, 'base_price' => $child->base_price, 'variants' => $result_variants);
+                    
+                }
+                 
             }
-            
+         
             return array(
                 "status" => "success",
                 "data" => $result
