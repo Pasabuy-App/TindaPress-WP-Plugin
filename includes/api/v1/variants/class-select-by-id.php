@@ -94,8 +94,10 @@
             foreach ($variants as $child) {
 
                 $result_variants = array();
-
-                $child_variants[$child->name] = $wpdb->get_results("SELECT `id`, `child_key` as name, `child_val` as value FROM $table_revs WHERE `parent_id` = $child->id");
+                
+                $child_variants[$child->name] = $wpdb->get_results("SELECT `id`, `child_key` as name, `child_val` as value FROM $table_revs WHERE `parent_id` = $child->id
+                    AND date_created = (SELECT MAX(date_created) FROM $table_revs WHERE `parent_id` = $child->id )
+                ");
             
                 foreach ($child_variants[$child->name] as $parent) {
                 
