@@ -81,6 +81,7 @@
         require plugin_dir_path(__FILE__) . '/v1/variants/class-update-variants.php';
         require plugin_dir_path(__FILE__) . '/v1/variants/class-delete-variants.php';
         require plugin_dir_path(__FILE__) . '/v1/variants/class-activate-variants.php';
+        require plugin_dir_path(__FILE__) . '/v1/variants/class-listing.php';
 
 
 
@@ -342,6 +343,11 @@
             register_rest_route( 'tindapress/v1/variants/product', 'select', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Select_Variants','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/variants', 'list', array(
+                'methods' => 'POST',
+                'callback' => array('TP_List_Variants','listen'),
             ));
 
             register_rest_route( 'tindapress/v1/variants', 'select', array(
