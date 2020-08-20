@@ -56,7 +56,7 @@
                                                     wpid: "<?php echo get_current_user_id(); ?>",
                                                     snky: "<?php echo wp_get_session_token(); ?>"
                                                 },
-                                                url: '<?php echo site_url() . "/wp-json/tindapress/v1/category/list/active"; ?>',
+                                                url: '<?php echo site_url() . "/wp-json/tindapress/v1/category/list"; ?>',
                                                 success: function(data) {
                                                     
                                                     if(data.status == "success") {
