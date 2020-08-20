@@ -47,6 +47,7 @@
 
             if ($product_id == NULL) {
                 $where = '';
+                
             } else {
                 $where = "WHERE `pdid` = $product_id";
             }
@@ -56,14 +57,15 @@
             $variants = array();
             $child_variants = array();
             $parent_variants = array();
-            
+            $result = array();
             
             foreach ($get_parent as $row) {
                 $result = array();
                
                 $variants[] = $wpdb->get_row("SELECT `id`, `child_val` as name,
-                    (SELECT `child_val` FROM $table_revs WHERE `revs_type` = 'variants' AND `parent_id` = $row->ID AND `child_key` = 'baseprice') as base_price,
-                    (SELECT `parent_id` FROM $table_revs WHERE `revs_type` = 'variants' AND `parent_id` = $row->ID AND `child_key` = 'name') as var_id
+                    (SELECT `child_val` FROM $table_revs WHERE `revs_type` = 'variants' AND `parent_id` = $row->ID AND `child_key` = 'baseprice' AND id = (SELECT max(ID) FROM $table_revs WHERE `parent_id` = $row->ID AND `child_key` = 'baseprice')) as base_price,
+                    (SELECT `parent_id` FROM $table_revs WHERE `revs_type` = 'variants' AND `parent_id` = $row->ID AND `child_key` = 'name' AND id = (SELECT max(ID) FROM $table_revs WHERE `parent_id` = $row->ID AND `child_key` = 'name')) as var_id,
+                    (SELECT `child_val` FROM $table_revs WHERE `revs_type` = 'variants' AND `parent_id` = $row->ID AND `child_key` = 'status' AND id = (SELECT max(ID) FROM $table_revs WHERE `parent_id` = $row->ID AND `child_key` = 'status')) as status
                     FROM $table_revs
                     WHERE `revs_type` = 'variants'
                     AND `parent_id` = $row->ID
@@ -88,12 +90,12 @@
                         
                     }
                     
-                    $result[] = array('name' => $child->name, 'id' => $child->var_id, 'base_price' => $child->base_price, 'variants' => $result_variants);
+                    $result[] = array('name' => $child->name, 'id' => $child->var_id, 'base_price' => $child->base_price, 'status' => $child->status, 'variants' => $result_variants);
                     
                 }
                  
             }
-         
+            
             return array(
                 "status" => "success",
                 "data" => $result

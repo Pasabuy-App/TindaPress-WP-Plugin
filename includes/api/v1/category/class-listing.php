@@ -44,19 +44,30 @@
             if (!isset($_POST['stid']) || !isset($_POST['type']) || !isset($_POST['status'])  ) {
                 return array(
                     "status" => "unknown",
-                    "message" => "Please contact your admininstrator. Missing paramiters!"
+                    "message" => "Please contact your admininstrator. Missing parameters!"
                 );
             }
 
-            $stores_count = "IF((  SELECT COUNT(ID) FROM tp_stores  WHERE ctid = cat.ID GROUP BY ctid) IS NULL, '0', (  SELECT COUNT(ID) FROM tp_stores  WHERE ctid = cat.ID GROUP BY ctid)  ) AS total, ";
-            $products_count = "IF((  SELECT COUNT(ID) FROM tp_products  WHERE ctid = cat.ID GROUP BY ctid) IS NULL, '0', (  SELECT COUNT(ID) FROM tp_products  WHERE ctid = cat.ID GROUP BY ctid)  ) AS total, ";
+            if ( !($_POST['type'] == 'store') && !($_POST['type'] == 'product') ) {
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your admininstrator. Invalid value for category type!"
+                );
+            }
 
-            $counting = (isset($_POST['stid']) && (int)$_POST['stid'] > 0) == true ? $products_count : $stores_count;
+            $stores_count = ", IF((  SELECT COUNT(ID) FROM tp_stores  WHERE ctid = cat.ID GROUP BY ctid) IS NULL, '0', (  SELECT COUNT(ID) FROM tp_stores  WHERE ctid = cat.ID GROUP BY ctid)  ) AS total, ";
+            $products_count = ", IF((  SELECT COUNT(ID) FROM tp_products tp_prod  WHERE tp_prod.ctid = cat.ID GROUP BY tp_prod.ctid) IS NULL, '0', (  SELECT COUNT(ID) FROM tp_products tp_prod  WHERE tp_prod.ctid = cat.ID GROUP BY tp_prod.ctid)  ) AS total, ";
+
+            // $counting = (isset($_POST['stid']) && (int)$_POST['stid'] > 0) == true ? $products_count : $stores_count;
+            
+            if (isset($_POST['type'])   ) {
+                isset($_POST['type']) == 'store' ? $counting = $stores_count : $counting = $products_count;    
+            }
 
             $sql = "SELECT   
                 cat.ID,
-                cat.types, ".$counting."
-                ( SELECT rev.child_val FROM $table_revs rev WHERE `revs_type` = 'categories' AND ID = cat.title ) AS title,
+                cat.types".$counting."
+                ( SELECT rev.child_val FROM $table_revs rev WHERES `revs_type` = 'categories' AND ID = cat.title ) AS title,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE `revs_type` = 'categories' AND ID = cat.info ) AS info,
             IF( ( SELECT rev.child_val FROM $table_revs rev WHERE `revs_type` = 'categories' AND ID = cat.`status` ) = 1, 'Active','Inactive' ) AS `status` 
             FROM
@@ -76,7 +87,7 @@
 
             if (isset($_POST['status']) && $_POST['status'] > 0 ) {
 
-                if(((isset($_POST['stid']) && $_POST['stid'] > 0) || (isset($_POST['type']) && $_POST['type'] > 0)) ) {
+                if( ( (isset($_POST['stid']) && $_POST['stid'] > 0) || (isset($_POST['type']) && $_POST['type'] > 0) ) ) {
                     $sql .= "AND ";
                 } else {
                     $sql .= "WHERE ";
