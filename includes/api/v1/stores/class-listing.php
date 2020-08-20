@@ -74,27 +74,28 @@
             tp_stores str
             INNER JOIN dv_address `add` ON str.address = `add`.ID
             INNER JOIN tp_categories cat ON cat.ID = str.ctid 
-        
             ";
-            isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL  ;
+             isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL  ;
             isset($_POST['catid']) ? $ctd = $_POST['catid'] : $ctd = NULL  ;
             
-            (int)$status = $sts == '0'? NULL:($sts == '2'? '0':'1')  ;
+            (int)$status         = $sts     == '0' || $sts == NULL ? NULL : ($sts == '2'&& $sts !== '0'? '0':'1');
             (int)$catid = $ctd == '0'? '0': $catid = $ctd;
             
-            if($status != NULL){
+            if(isset($_POST['status'])){
+                if($status != NULL){
 
-                $sql .= " WHERE  ( select child_val from $table_revs where id = tp_str.`status` ) = $status";
-                
+                    $sql .= " WHERE ( SELECT rev.child_val FROM tp_revisions rev WHERE rev.id = str.`status` AND date_created = (SELECT MAX(tp_rev.date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND tp_rev.child_key = 'status')   ) = $status";
+                    
+                }
             }
 
             if ($catid != NULL && $catid != '0') {
 
                 if ($status !== NULL ) {
 
-                    $sql .= " AND tp_str.ctid = $catid ";
+                    $sql .= " AND `str`.ctid = $catid ";
                 }else{
-                    $sql .= " WHERE tp_str.ctid = $catid ";
+                    $sql .= " WHERE `str`.ctid = $catid ";
 
                 }
 
