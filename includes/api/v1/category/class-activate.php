@@ -122,7 +122,7 @@
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('categories', '$category_id', 'title', '$get_category_last_value->title', $wpid, '$date_created')");
                 $title_id = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('categories, '$category_id', 'info', '$get_category_last_value->info', $wpid, '$date_created')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('categories', '$category_id', 'info', '$get_category_last_value->info', $wpid, '$date_created')");
                 $info_id = $wpdb->insert_id;
 
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('categories', '$category_id', 'status', 1, $wpid, '$date_created')");
