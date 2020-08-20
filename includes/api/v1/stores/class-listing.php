@@ -97,7 +97,7 @@
                 }
 
             }
-
+            return $sql;
             $result = $wpdb->get_results($sql);
             // Step4 : Check if no result
             if (!$result ) {

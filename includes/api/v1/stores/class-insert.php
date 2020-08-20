@@ -255,13 +255,6 @@
                 );
             }
 
-            // Step6 : Check user role 
-            if (TP_Globals::verify_role( $_POST['wpid'], '0', 'can_add_store' )) {
-                return array( 
-                    TP_Globals::verify_role($_POST['wpid'], '0', 'can_add_store' ),
-                );
-            }
-            
             $date_created = TP_Globals::date_stamp();
             $user = TP_Insert_Store::catch_post();
 

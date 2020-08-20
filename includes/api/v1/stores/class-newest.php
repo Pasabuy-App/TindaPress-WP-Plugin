@@ -59,23 +59,6 @@
                 );
             }
 
-            // Step3 : Sanitize request
-			if (!isset($_POST["wpid"]) || !isset($_POST["snky"]) ) {
-				return array(
-						"status" => "unknown",
-						"message" => "Please contact your administrator. Request unknown!",
-                );
-            }
-
-             // Step4 : Check if variable is not empty
-            if (empty($_POST["wpid"]) 
-                || empty($_POST["snky"]) ) {
-				return array(
-						"status" => "failed",
-						"message" => "Required fields cannot be empty.",
-                ); 
-            }
-
             // step5 : Query
             $result = $wpdb->get_results("SELECT
                 tp_str.ID,
