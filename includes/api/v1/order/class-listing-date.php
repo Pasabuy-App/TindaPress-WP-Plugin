@@ -113,8 +113,7 @@
             // Step9 : Return Result 
             return array(
                     "status" => "success",
-                    "data" => array($result,
-                )
+                    "data" => $result
             );
             
         }

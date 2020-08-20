@@ -110,7 +110,7 @@
                     
                     }   
 
-                    $result['list'] = array('name' => $child->name, 'base_price' => $child->base_price, 'variants' => $result_variants);
+                    $result = array('name' => $child->name, 'base_price' => $child->base_price, 'variants' => $result_variants);
                     
                 
                 }
