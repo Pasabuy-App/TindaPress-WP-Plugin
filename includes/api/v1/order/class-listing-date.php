@@ -29,7 +29,9 @@
             $table_revs = TP_REVISIONS_TABLE;
             $table_orders = 'mp_orders';
             $table_order_items = 'mp_order_items';
-            $dt = TP_Globals::convert_date($_POST["wpid"],$_POST["date"]);
+
+            return TP_Globals::get_timezone(1);
+            return $dt = TP_Globals::convert_date($_POST["wpid"],$_POST["date"]);
 
             //Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -118,7 +120,7 @@
             
         }
         
-        //Function for checking if date is valid and in valid format(2020-01-01).
+        //Function for checking if date is valid and invalid format(2020-01-01).
         //Invalid dates such us 2020-02-31 will return false
         public static function validateDate($date, $format = 'Y-m-d H:i:s')
         {
