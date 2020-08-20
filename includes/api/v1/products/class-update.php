@@ -53,7 +53,7 @@
 
             // Step 3: Check if params are passed
             if (!isset($_POST['pdid']) 
-                || !isset($_POST["stid"]) 
+                || !isset($_POST["stid"])
                 || !isset($_POST["title"]) 
                 || !isset($_POST["short_info"]) 
                 || !isset($_POST["long_info"]) 
@@ -138,7 +138,34 @@
             $status_id = $get_product->status_id;
 
             $user = TP_Product_Update::catch_post();
-            
+            $ctid = "";
+            if(isset($_POST['catid'])){
+                $cat_id = $_POST['catid'];
+                $check_cat = $wpdb->get_row("SELECT
+                    cat.ID,
+                    child_val as `status`
+                FROM
+                    tp_categories cat
+                LEFT JOIN tp_revisions rev ON `rev`.ID = cat.`status` 
+                WHERE
+                    cat.ID = '$cat_id'");
+                
+                if (!$check_cat) {
+                    return array(
+                        "status" => "failed",
+                        "message" => "This category does not exists.",
+                    );
+                
+                }elseif ($check_cat->status != '1') {
+                    return array(
+                        "status" => "failed",
+                        "message" => "This category is currently inactive.",
+                    );
+                }else{
+                     $ctid = "`ctid` = '$cat_id', ";
+                }
+            }
+
             // Step 7: Start mysql transaction
             $wpdb->query("START TRANSACTION");
 
@@ -170,9 +197,9 @@
 
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '{$user["pdid"]}', 'dimension', '{$user["dimension"]}', '{$user["created_by"]}', '$later')");
                 $dimension = $wpdb->insert_id;
-
+                
                 //  (stid, ctid, title, preview, short_info, long_info, status, sku, price,  weight,  dimension , created_by, date_created)
-                 $result = $wpdb->query("UPDATE $table_product SET `title` = $title, `preview` = $preview, `short_info` = $short_info, `long_info` = $long_info, `status` = $status, `sku` = $sku, `price` = $price,  `weight` = $weight,  `dimension` = $dimension  WHERE ID = {$user["pdid"]} ");
+                 $result = $wpdb->query("UPDATE $table_product SET $ctid `title` = $title, `preview` = $preview, `short_info` = $short_info, `long_info` = $long_info, `status` = $status, `sku` = $sku, `price` = $price,  `weight` = $weight,  `dimension` = $dimension  WHERE ID = {$user["pdid"]} ");
 
             // Step 8: Check if any of the queries above failed
             if ($result < 1 || $title < 1 || $short_info < 1 || $long_info < 1 || $sku < 1 || $price < 1 || $weight < 1 || $dimension < 1 || $preview < 1 ) {
