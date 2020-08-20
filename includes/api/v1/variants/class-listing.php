@@ -47,6 +47,7 @@
 
             if ($product_id == NULL) {
                 $where = '';
+                
             } else {
                 $where = "WHERE `pdid` = $product_id";
             }
@@ -56,7 +57,7 @@
             $variants = array();
             $child_variants = array();
             $parent_variants = array();
-            
+            $result = array();
             
             foreach ($get_parent as $row) {
                 $result = array();
@@ -93,7 +94,7 @@
                 }
                  
             }
-         
+            
             return array(
                 "status" => "success",
                 "data" => $result
