@@ -25,7 +25,6 @@
             $rev_fields = TP_REVISION_FIELDS;
             $variants_fields = TP_VARIANTS_FIELDS;
             
-
             //Step1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
@@ -49,53 +48,42 @@
                 $where = '';
                 
             } else {
-                $where = "WHERE `pdid` = $product_id";
+                $where = "AND `pdid` = $product_id";
             }
             
-            $get_parent = $wpdb->get_results("SELECT `ID` FROM $table_variants $where");
-
-            $variants = array();
-            $child_variants = array();
-            $parent_variants = array();
-            $result = array();
+            $get_parent = $wpdb->get_results("SELECT `ID` FROM $table_variants WHERE `parent_id` = 0 $where");
             
-            foreach ($get_parent as $row) {
-                $result = array();
-               
-                $variants[] = $wpdb->get_row("SELECT `id`, `child_val` as name,
-                    (SELECT `child_val` FROM $table_revs WHERE `revs_type` = 'variants' AND `parent_id` = $row->ID AND `child_key` = 'baseprice' AND id = (SELECT max(ID) FROM $table_revs WHERE `parent_id` = $row->ID AND `child_key` = 'baseprice' AND `revs_type` = 'variants')) as base_price,
-                    (SELECT `parent_id` FROM $table_revs WHERE `revs_type` = 'variants' AND `parent_id` = $row->ID AND `child_key` = 'name' AND id = (SELECT max(ID) FROM $table_revs WHERE `parent_id` = $row->ID AND `child_key` = 'name' AND `revs_type` = 'variants')) as var_id,
-                    (SELECT `child_val` FROM $table_revs WHERE `revs_type` = 'variants' AND `parent_id` = $row->ID AND `child_key` = 'status' AND id IN (SELECT max(ID) FROM $table_revs WHERE `parent_id` = $row->ID AND `child_key` = 'status' AND `revs_type` = 'variants')) as status
+
+
+            foreach ($get_parent as $parent_row => $value) {
+                $variance_id = $value->ID;
+                
+                $parents[] = $wpdb->get_row("SELECT `child_val` as name,
+                    (SELECT `child_val` FROM $table_revs WHERE `revs_type` = 'variants' AND `parent_id` = $variance_id AND `child_key` = 'baseprice' AND id = (SELECT max(ID) FROM $table_revs WHERE `parent_id` = $variance_id AND `child_key` = 'baseprice' AND `revs_type` = 'variants')) as base_price,
+                    (SELECT `parent_id` FROM $table_revs WHERE `revs_type` = 'variants' AND `parent_id` = $variance_id AND `child_key` = 'name' AND id = (SELECT max(ID) FROM $table_revs WHERE `parent_id` = $variance_id AND `child_key` = 'name' AND `revs_type` = 'variants')) as var_id,
+                    (SELECT `child_val` FROM $table_revs WHERE `revs_type` = 'variants' AND `parent_id` = $variance_id AND `child_key` = 'status' AND id IN (SELECT max(ID) FROM $table_revs WHERE `parent_id` = $variance_id AND `child_key` = 'status' AND `revs_type` = 'variants')) as status,
+                    null as options
                     FROM $table_revs
                     WHERE `revs_type` = 'variants'
-                    AND `parent_id` = $row->ID
-                    AND `child_key` = 'name'
-                 ");
-                 
-                foreach ($variants as $child) {
-                    
-                    $result_variants = array();
-                    
-                    $child_variants[$child->name] = $wpdb->get_results("SELECT `id`, `child_key` as name, `child_val` as value FROM $table_revs WHERE `parent_id` = $child->id");
-                    
-                    foreach ($child_variants[$child->name] as $parent) {
-                        
-                        $parent_variants[$child->name][$parent->value] = $wpdb->get_results("SELECT `child_key`, `child_val` FROM $table_revs WHERE `parent_id` = $parent->id");
-                        
-                        foreach ($parent_variants[$child->name][$parent->value] as $key) {
-                            
-                            $result_variants[$parent->value][$key->child_key] = $key->child_val;
-                           
-                        }
-                        
-                    }
-                    
-                    $result[] = array('name' => $child->name, 'id' => $child->var_id, 'base_price' => $child->base_price, 'status' => $child->status, 'variants' => $result_variants);
-                    
+                    AND `parent_id` = $variance_id
+                ");
+
+     
+                $child[] = $wpdb->get_row("SELECT `ID` FROM $table_variants WHERE `parent_id` = $variance_id");
+                foreach ($child as $key => $value) {
+                    $child_id = $value->ID;
+                    return $child_id;
                 }
-                 
             }
+
+            foreach ($parents as $key => $value) {
+                $value->options = $child;
+            }
+
             
+
+            return $child;
+
             return array(
                 "status" => "success",
                 "data" => $result
