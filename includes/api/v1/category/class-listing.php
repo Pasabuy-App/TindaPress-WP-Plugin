@@ -64,7 +64,9 @@
                 
             $store_id    = $std  == '0' ? NULL: $store_id    = $std;
             $category_id = $cat  == '0' ? NULL: $category_id = $cat;
-            $type        = $typ  == '0' ? NULL: $type        = $typ;
+
+            $type        = $typ  == '0' ? NULL: ($typ == '1'? $type = 'store': ($typ == '2'? $type = 'product' : $type = 'tags' ) );
+
             $status      = $sts  == '0' || $sts == NULL ? NULL : ($sts == '2' && $sts !== '0'? '0':'1');
 
             if (isset($_POST['stid'])) {
