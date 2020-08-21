@@ -42,73 +42,65 @@
                 );
             }
 
-            isset($_POST['pdid']) ? $product_id = $_POST['pdid'] : $product_id = NULL;
-            isset($_POST['pid']) ? $parent_id = $_POST['pid'] : $parent_id = NULL;
-            isset($_POST['status']) ? $stats = $_POST['status'] : $status = NULL;
+            isset($_POST['pdid']) ? $pdid = $_POST['pdid'] : $pdid = NULL;
+            isset($_POST['pid']) ? $pid = $_POST['pid'] : $pid = NULL;
+            isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL;
 
-           return $status = $stats == '0'? NULL: ($stats == '1':'1':'0');
-
-            if ($product_id == NULL || $product_id == 0) {
-                $where = '';
-                
-            } else {
-                $where = "AND `pdid` = $product_id";
-            }
+            $status = $sts  == '0' || $sts == NULL ? NULL : ($sts == '2' && $sts !== '0'? '0':'1');
+            $product_id = $pdid  == '0'  || $pdid == NULL ? NULL: $product_id = $pdid;
+            $parent_id = $pid  == '0' || $pid == NULL ? NULL: $parent_id = $pid;
             
-            $parid = ( isset($_POST['pid']) && !empty($_POST['pid']) ) ? " WHERE parent_id = {$_POST['pid']}" : "";
-
-            $get_parent = $wpdb->get_results("SELECT var.`ID`,
-            (SELECT `child_val` FROM $table_revs WHERE `revs_type` = 'variants' AND `child_key` = 'name' AND parent_id = var.ID ) as name 
-            FROM 
-                $table_variants var");
-
-            return $get_parent;
+            $test[] = array('name' => 'small', 'price' => 130 );
             
+            $sql = "SELECT
+            var.ID,
+            ( SELECT child_val FROM tp_revisions WHERE ID = ( SELECT title FROM tp_products WHERE ID  = var.pdid ) AND revs_type = 'products' )as `product_name`,
+            ( SELECT child_val FROM tp_revisions rev WHERE  rev.parent_id = var.ID AND rev.child_key = 'name' AND rev.revs_type = 'variants' ) as `name`,
+            ( SELECT child_val FROM tp_revisions rev WHERE  rev.parent_id = var.ID AND rev.child_key = 'info' AND rev.revs_type = 'variants' ) as `info`,
+                IF( rev.child_val = 1 , 'Active','Inactive') AS `status`,
+                null as options
+            FROM
+                tp_variants var
+                INNER JOIN tp_revisions rev ON rev.parent_id = var.ID 
+            WHERE
+                rev.revs_type = 'variants' 
+                AND child_key = 'status' 
+                AND rev.date_created = ( SELECT MAX( date_created ) FROM tp_revisions WHERE ID = rev.ID AND child_key = rev.child_key )
+            ";
 
-
-
-
-
-
-            foreach ($get_parent as $parent_row => $value) {
-                $variance_id = $value->ID;
-                
-                $parents[] = $wpdb->get_row("SELECT `child_val` as name,
-                    (SELECT `child_val` FROM $table_revs WHERE `revs_type` = 'variants' AND `parent_id` = $variance_id AND `child_key` = 'baseprice' AND id = (SELECT max(ID) FROM $table_revs WHERE `parent_id` = $variance_id AND `child_key` = 'baseprice' AND `revs_type` = 'variants')) as base_price,
-                    (SELECT `parent_id` FROM $table_revs WHERE `revs_type` = 'variants' AND `parent_id` = $variance_id AND `child_key` = 'name' AND id = (SELECT max(ID) FROM $table_revs WHERE `parent_id` = $variance_id AND `child_key` = 'name' AND `revs_type` = 'variants')) as var_id,
-                    (SELECT `child_val` FROM $table_revs WHERE `revs_type` = 'variants' AND `parent_id` = $variance_id AND `child_key` = 'status' AND id IN (SELECT max(ID) FROM $table_revs WHERE `parent_id` = $variance_id AND `child_key` = 'status' AND `revs_type` = 'variants')) as status,
-                    null as options
-                    FROM $table_revs
-                    WHERE `revs_type` = 'variants'
-                    AND `parent_id` = $variance_id
-                ");
-
-                $child[] = $wpdb->get_row("SELECT `ID` FROM $table_variants WHERE `parent_id` = $variance_id");
-                foreach ($child as $key => $value) {
-                    $child_id = $value->ID;
-                    return $child_id;
+            if (isset($_POST['pdid'])) {
+                if ($product_id != NULL) {
+                    $sql .= " AND var.pdid = $product_id ";
                 }
             }
 
-            foreach ($parents as $key => $value) {
-                $value->options = $child;
+            if (isset($_POST['status'])) {
+                if ($status != NULL) {
+                    $sql .= " AND rev.child_val = '$status' ";
+                }
             }
 
-            
+            $result = $wpdb->get_results($sql);
 
-            return $parents;
+            foreach ($result as $key => $value) {
+                $parent = $value->ID;
+
+                $option = $wpdb->get_results("SELECT
+                child_val as 'name',
+                (SELECT child_val FROM tp_revisions rev WHERE parent_id = var.ID AND child_key = 'price' AND revs_type ='variants'  AND date_created = ( SELECT MAX(date_created) FROM tp_revisions WHERE ID = rev.ID  ) ) as `price`
+            FROM
+                tp_revisions rev
+                INNER JOIN tp_variants var ON var.parent_id = '$parent' 
+            WHERE   rev.revs_type = 'variants' AND child_key = 'name' AND rev.parent_id = var.ID
+                ");
+
+                $value->options = $option;
+            }
 
             return array(
                 "status" => "success",
                 "data" => $result
             );
 
-
-            
-
         }   
-
-        
-
-        
     }
