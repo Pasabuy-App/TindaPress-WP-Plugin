@@ -44,7 +44,7 @@
             }
 
             // Step3 : Sanitize request
-			if (!isset($_POST['data']) ) {
+			if ( !isset($_POST['name']) || !isset($_POST['pdid']) || !isset($_POST['pid']) ) {
 				return array(
 						"status" => "unknown",
 						"message" => "Please contact your administrator. Request unknown!",
@@ -52,31 +52,25 @@
             }
             
             // Step4 : Sanitize if variable is empty
-            if (empty($_POST["data"])) {
+            if ( empty($_POST["name"]) || empty($_POST["pdid"]) || ( empty($_POST['base']) && empty($_POST['price']) ) ) {
 				return array(
 						"status" => "failed",
 						"message" => "Required fields cannot be empty.",
                 );
             }
 
-            $data = $_POST['data'];
-            
-            if (! is_array($data)) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Data is insufficient.",
-                );
-            }
-           
-            //Separate array into different variables
-            $base_price = $data['bp'];
-            $product_id = $data['pdid'];
-            $name = $data['name'];
-            $values = $data['values'];
-            
-            $wpid = $_POST['wpid'];
-            $date = TP_Globals:: date_stamp();
+            isset($_POST['price']) ? $price = $_POST['price'] : $price = NULL;
+            isset($_POST['base']) ? $base_price = $_POST['base'] : $base_price = NULL;
+            isset($_POST['info']) ? $info = $_POST['info'] : $info = NULL;
 
+            //Separate into different variables
+            $product_id = $_POST['pdid'];
+            $parent_id = $_POST['pid'];
+            $name = $_POST['name'];
+            $wpid = $_POST['wpid'];
+
+            $date = TP_Globals:: date_stamp();
+            
             $get_product = $wpdb->get_row("SELECT
                     tp_prod.ID, tp_prod.ctid, tp_prod.status as status_id
                 FROM
@@ -88,74 +82,54 @@
                 GROUP BY
                     tp_prod.ID
             ");
-            
+
             //Check if no rows found
-            // if (!$get_product) {
-            //     return array(
-            //         "status" => "failed",
-            //         "message" => "This product does not exists",
-            //     );
-            // }
+            if (!$get_product) {
+                return array(
+                    "status" => "failed",
+                    "message" => "This product does not exists",
+                );
+            }
 
             // //Fails if product is currently inactive
-            // if ($get_product->status == 0) {
-            //     return array(
-            //         "status" => "failed",
-            //         "message" => "This product is currently inactive.",
-            //     );
-            // }
+            if ($get_product->status == 0) {
+                return array(
+                    "status" => "failed",
+                    "message" => "This product is currently inactive.",
+                );
+            }
                 
             $wpdb->query("START TRANSACTION");
+            
+            if ($parent_id == 0) {
+                $wpdb->query("INSERT INTO `$table_variants` $variants_fields VALUES (0, $product_id, $wpid, '$date')");
+                $last_id = $wpdb->insert_id;
+                $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $last_id, 'baseprice', '$base_price', $wpid, '$date')");
+                $rev_bp = $wpdb->insert_id;
+                $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $last_id, 'status', 1, $wpid, '$date')");
+                $rev_status = $wpdb->insert_id;
+            } else {
+                $wpdb->query("INSERT INTO `$table_variants` $variants_fields VALUES ($parent_id, $product_id, $wpid, '$date')");
+                $last_id = $wpdb->insert_id;
+                $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $last_id, 'price', '$price', $wpid, '$date')");
 
-            $wpdb->query("INSERT INTO `$table_variants` $variants_fields VALUES ($product_id, $wpid, '$date')");
-            $parent_id = $wpdb->insert_id;
+            }
 
-            $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $parent_id, 'name', '$name', $wpid, '$date')");
-            $rev_parent = $wpdb->insert_id;
+            if ($info) {
+                $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $last_id, 'info', '$info', $wpid, '$date')");
+            }
+            
+            $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $last_id, 'name', '$name', $wpid, '$date')");
+            $rev_name = $wpdb->insert_id;
 
-            $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $parent_id, 'baseprice', '$base_price', $wpid, '$date')");
-
-            if ($rev_parent < 1) {
+            if ( $last_id < 1 ) {
                 $wpdb->query("ROLLBACK");
                 return array(
                         "status" => "error",
                         "message" => "An error occured while submitting data to the server.",
                 );
             }
-            foreach ($data['values'] as $key => $value) {
-                $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $rev_parent, '$name', '$key', $wpid, '$date')");
-                $child = $wpdb->insert_id;
-                if ($child < 1) {
-                    $wpdb->query("ROLLBACK");
-                    return array(
-                            "status" => "error",
-                            "message" => "An error occured while submitting data to the server.",
-                    );
-                }
-                foreach ($value as $child_key => $child_value) {
-                    $grand_child = $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $child, '$child_key', '$child_value', $wpid, '$date')");
-                    if ($grand_child < 1) {
-                        $wpdb->query("ROLLBACK");
-                        return array(
-                                "status" => "error",
-                                "message" => "An error occured while submitting data to the server.",
-                        );
-                    }
-                }
-            }
 
-            $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $parent_id, 'status', 1, $wpid, '$date')");
-            $status_id = $wpdb->insert_id;
-
-            $update_parent = $wpdb->query("UPDATE $table_variants SET `status` = $status_id WHERE ID = $parent_id");
-
-            if ($status_id < 1 || $update_parent < 1) {
-                $wpdb->query("ROLLBACK");
-                return array(
-                        "status" => "error",
-                        "message" => "An error occured while submitting data to the server.",
-                );
-            }
             $wpdb->query("COMMIT");
             
             return array(

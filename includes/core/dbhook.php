@@ -187,8 +187,8 @@
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_variants'" ) != $tbl_variants) {
 			$sql = "CREATE TABLE `".$tbl_variants."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
-				$sql .= "`status` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Status from revision id.', ";
-				// $sql .= "`parent_id` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Parent id from revision.', ";
+				// $sql .= "`status` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Status from revision id.', ";
+				$sql .= "`parent_id` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Parent id from this table 0 if this row is parent.', ";
 				// $sql .= "`orders ` tinyint(2)  NOT NULL DEFAULT 0 COMMENT 'Arrangement of variants.', ";
 				$sql .= "`pdid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Product id from revision.', ";
 				$sql .= "`created_by` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User who created this variant.', ";
