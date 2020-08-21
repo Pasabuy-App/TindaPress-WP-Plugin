@@ -43,6 +43,10 @@
             }
 
             isset($_POST['pdid']) ? $product_id = $_POST['pdid'] : $product_id = NULL;
+            isset($_POST['pid']) ? $parent_id = $_POST['pid'] : $parent_id = NULL;
+            isset($_POST['status']) ? $stats = $_POST['status'] : $status = NULL;
+
+           return $status = $stats == '0'? NULL: ($stats == '1':'1':'0');
 
             if ($product_id == NULL || $product_id == 0) {
                 $where = '';
@@ -51,8 +55,19 @@
                 $where = "AND `pdid` = $product_id";
             }
             
-            $get_parent = $wpdb->get_results("SELECT `ID` FROM $table_variants WHERE `parent_id` = 0 $where");
+            $parid = ( isset($_POST['pid']) && !empty($_POST['pid']) ) ? " WHERE parent_id = {$_POST['pid']}" : "";
+
+            $get_parent = $wpdb->get_results("SELECT var.`ID`,
+            (SELECT `child_val` FROM $table_revs WHERE `revs_type` = 'variants' AND `child_key` = 'name' AND parent_id = var.ID ) as name 
+            FROM 
+                $table_variants var");
+
+            return $get_parent;
             
+
+
+
+
 
 
             foreach ($get_parent as $parent_row => $value) {
@@ -68,7 +83,6 @@
                     AND `parent_id` = $variance_id
                 ");
 
-     
                 $child[] = $wpdb->get_row("SELECT `ID` FROM $table_variants WHERE `parent_id` = $variance_id");
                 foreach ($child as $key => $value) {
                     $child_id = $value->ID;
@@ -82,7 +96,7 @@
 
             
 
-            return $child;
+            return $parents;
 
             return array(
                 "status" => "success",

@@ -84,20 +84,20 @@
             ");
 
             //Check if no rows found
-            if (!$get_product) {
-                return array(
-                    "status" => "failed",
-                    "message" => "This product does not exists",
-                );
-            }
+            // if (!$get_product) {
+            //     return array(
+            //         "status" => "failed",
+            //         "message" => "This product does not exists",
+            //     );
+            // }
 
-            // //Fails if product is currently inactive
-            if ($get_product->status == 0) {
-                return array(
-                    "status" => "failed",
-                    "message" => "This product is currently inactive.",
-                );
-            }
+            // // //Fails if product is currently inactive
+            // if ($get_product->status == 0) {
+            //     return array(
+            //         "status" => "failed",
+            //         "message" => "This product is currently inactive.",
+            //     );
+            // }
                 
             $wpdb->query("START TRANSACTION");
             
