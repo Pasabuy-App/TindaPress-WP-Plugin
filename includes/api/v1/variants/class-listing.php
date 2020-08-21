@@ -45,7 +45,7 @@
 
             isset($_POST['pdid']) ? $product_id = $_POST['pdid'] : $product_id = NULL;
 
-            if ($product_id == NULL) {
+            if ($product_id == NULL || $product_id == 0) {
                 $where = '';
                 
             } else {
@@ -63,9 +63,9 @@
                 $result = array();
                
                 $variants[] = $wpdb->get_row("SELECT `id`, `child_val` as name,
-                    (SELECT `child_val` FROM $table_revs WHERE `revs_type` = 'variants' AND `parent_id` = $row->ID AND `child_key` = 'baseprice' AND id = (SELECT max(ID) FROM $table_revs WHERE `parent_id` = $row->ID AND `child_key` = 'baseprice')) as base_price,
-                    (SELECT `parent_id` FROM $table_revs WHERE `revs_type` = 'variants' AND `parent_id` = $row->ID AND `child_key` = 'name' AND id = (SELECT max(ID) FROM $table_revs WHERE `parent_id` = $row->ID AND `child_key` = 'name')) as var_id,
-                    (SELECT `child_val` FROM $table_revs WHERE `revs_type` = 'variants' AND `parent_id` = $row->ID AND `child_key` = 'status' AND id = (SELECT max(ID) FROM $table_revs WHERE `parent_id` = $row->ID AND `child_key` = 'status')) as status
+                    (SELECT `child_val` FROM $table_revs WHERE `revs_type` = 'variants' AND `parent_id` = $row->ID AND `child_key` = 'baseprice' AND id = (SELECT max(ID) FROM $table_revs WHERE `parent_id` = $row->ID AND `child_key` = 'baseprice' AND `revs_type` = 'variants')) as base_price,
+                    (SELECT `parent_id` FROM $table_revs WHERE `revs_type` = 'variants' AND `parent_id` = $row->ID AND `child_key` = 'name' AND id = (SELECT max(ID) FROM $table_revs WHERE `parent_id` = $row->ID AND `child_key` = 'name' AND `revs_type` = 'variants')) as var_id,
+                    (SELECT `child_val` FROM $table_revs WHERE `revs_type` = 'variants' AND `parent_id` = $row->ID AND `child_key` = 'status' AND id IN (SELECT max(ID) FROM $table_revs WHERE `parent_id` = $row->ID AND `child_key` = 'status' AND `revs_type` = 'variants')) as status
                     FROM $table_revs
                     WHERE `revs_type` = 'variants'
                     AND `parent_id` = $row->ID
