@@ -89,15 +89,19 @@
             }
 
             if (isset($_POST['status'])) {
-                if ($status != NULL && $store_id != NULL && $category_id != NULL ) {
-                    $sql .= " AND rev.child_val = '$status'  ";
-             
-                }else{
-                    if ($status != NULL) {
-                        $sql .= " WHERE rev.child_val = '$status'  ";
-                    }
 
+                if ($status != NULL) {
+                    if ($store_id != NULL || $category_id != NULL ) {
+                        $sql .= " AND rev.child_val = '$status'  ";
+                 
+                    }else{
+                        if ($status != NULL) {
+                            $sql .= " WHERE rev.child_val = '$status'  ";
+                        }
+    
+                    }
                 }
+                
             }
 
             if (isset($_POST['type'])) {
