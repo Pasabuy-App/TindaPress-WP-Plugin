@@ -77,9 +77,11 @@
             ";
              isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL  ;
             isset($_POST['catid']) ? $ctd = $_POST['catid'] : $ctd = NULL  ;
+              isset($_POST['stid']) ? $std = $_POST['stid'] : $std = NULL  ;
             
-            (int)$status         = $sts     == '0' || $sts == NULL ? NULL : ($sts == '2'&& $sts !== '0'? '0':'1');
-            (int)$catid = $ctd == '0'? '0': $catid = $ctd;
+             $status = $sts == '0' || $sts == NULL ? NULL : ($sts == '2'&& $sts !== '0'? '0':'1');
+             $catid = $ctd == '0'? NULL: $catid = $ctd;
+              $stid = $std == "0" ? NULL: $stid = $std;
             
             if(isset($_POST['status'])){
                 if($status != NULL){
@@ -88,18 +90,34 @@
                     
                 }
             }
+            
+            if (isset($_POST['catid'])) {
+                if ($catid != NULL && $catid != '0') {
 
-            if ($catid != NULL && $catid != '0') {
-
-                if ($status !== NULL ) {
-
-                    $sql .= " AND `str`.ctid = $catid ";
-                }else{
-                    $sql .= " WHERE `str`.ctid = $catid ";
-
-                }
-
+                    if ($status !== NULL ) {
+    
+                        $sql .= " AND `str`.ctid = $catid ";
+                    }else{
+                        $sql .= " WHERE `str`.ctid = $catid ";
+    
+                    }
+                }    
             }
+
+            if (isset($_POST['stid'])) {
+                if ($stid != 0 ) {
+                   
+                    if ( $status == NULL && empty($status) && $catid == NULL && empty($catid) ) {
+                        $sql .= " WHERE `str`.ID = '$stid' ";
+
+                    } else {
+                        $sql .= " AND `str`.ID = '$stid' ";
+
+                    }
+                    
+                }
+            }
+            
             // return $sql;
             $result = $wpdb->get_results($sql);
             // Step4 : Check if no result

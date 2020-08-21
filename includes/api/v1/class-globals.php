@@ -130,7 +130,7 @@
             global $wpdb;
 
             $result = $wpdb->get_row("SELECT
-                (SELECT tzone_name FROM dv_geo_timezone WHERE country_code =   (SELECT country_code FROM dv_geo_countries WHERE ID = dv_address.country)) as time_zone
+                (SELECT tzone_name FROM dv_geo_timezone WHERE country_code =   (SELECT country_code FROM dv_geo_countries WHERE ID =  (SELECT child_val FROM dv_revisions WHERE child_key = 'country' AND ID = dv_address.country  ))) as time_zone
             FROM
                 dv_address 
             WHERE
