@@ -14,34 +14,25 @@
 
 	<?php /* Header Section */ ?>
 		<div class="tp-welcome-header">
-			<h1>PRODUCT BROWSER</h1>
+			<h1>VARIANT BROWSER</h1>
 			<p>
-                Add, Edit, Delete Products.
+                Add, Edit, Delete Variants.
 			</p>
 		</div>
 	<?php /* Header Section */ ?>
 
 	<div class="tp-panel-body">
 		<div class="tp-panel-first">
-			<?php if(isset($_GET['stid']) && isset($_GET['stname'])) { ?>
+			<?php if( isset($_GET['stid']) && isset($_GET['stname']) && isset($_GET['pdid']) && isset($_GET['pdname'])) { ?>
 				<div class="alert alert-primary header-info">
-					Product Category: 
-					<?php if(isset($_GET['catname'])) {
-						echo " <strong>" . $_GET['catname'] . "</strong> for ";
-					} ?>
-					<strong id="<?= $_GET['stid']; ?>"><?php echo $_GET['stname']; ?></strong> Store
-				</div>
-			<?php } else if(isset($_GET['catid']) && isset($_GET['catname'])) { ?>
-				<div class="alert alert-primary header-info">
-					Product Category: 
-					<?php echo " <strong>" . $_GET['catname'] . "</strong> "; ?>
+					Variants: <strong id="<?= $_GET['pdid']; ?>"><?php echo $_GET['pdname']; ?></strong> from <strong id="<?= $_GET['stid']; ?>"><?php echo $_GET['stname']; ?></strong> Store
 				</div>
 			<?php } else { ?>
 				<div class="alert alert-primary header-info">
-					<strong>All Products</strong>
+					<strong>All Variants</strong>
 				</div>
 			<?php } ?>
-			<?php if(isset($_GET['stid']) && isset($_GET['stname'])) { ?>
+			<?php if(isset($_GET['id']) && isset($_GET['name'])) { ?>
 			<select class="space-left" id="set_cat" name="set_cat" required>
 				<script type="text/javascript">
 					jQuery(document).ready( function ( $ ) 
@@ -54,10 +45,11 @@
 									snky: "<?php echo wp_get_session_token(); ?>",
 									status: "1", //active.
 									type: "2", //product.
-									stid: "<?= (int)$_GET['stid'] ?>"
+									stid: "<?= (int)$_GET['id'] ?>"
 								},
 								url: '<?php echo site_url() . "/wp-json/tindapress/v1/category/list"; ?>',
 								success: function(data) {
+									console.log(data);
 									var country = $('#set_cat');
 										country.empty();
 										var	selectDefault = 'All Category'; 
@@ -88,11 +80,11 @@
 		</div>
 		<table id="products-datatables" class="stripe" style="width: 100%;"></table>
 		<div id="stores-notification" class="alert alert-info tp-center-item " role="alert" style="margin-top: 20px;">
-			Currently fetching updates for all available products. Please wait...
+			Currently fetching updates for all available variants. Please wait...
 		</div>
 	</div>
 
-	<?php include_once( TP_PLUGIN_PATH . "/includes/model/products.php" ); ?>
+	<?php include_once( TP_PLUGIN_PATH . "/includes/model/variants.php" ); ?>
 	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/product-create-modal.php" ); ?>
 	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/product-edit-modal.php" ); ?>
 	<div id="jquery-overlay" class="modal-backdrop fade show tp-display-hide" style="z-index: 9999;"></div>

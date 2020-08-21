@@ -25,7 +25,7 @@
 		<div class="tp-panel-first">
 			<?php if( isset($_GET['stid']) && isset($_GET['stname']) ) { ?>
 				<div class="alert alert-primary header-info">
-					<strong>Product Category for <?= $_GET['stname']; ?> </strong>
+					Product Category for <strong><?= $_GET['stname']; ?></strong>
 				</div>
 			<?php } else { ?>
 				<div class="alert alert-primary header-info">
@@ -38,8 +38,8 @@
 				</select>
 			<?php } ?>
 			<select class="space-left" id="set_status" name="set_status">
-				<option value="0" selected="selected">All Status</option>
-				<option value="1">Active</option>
+				<option value="0">All Status</option>
+				<option value="1" selected="selected">Active</option>
 				<option value="2">Inactive</option>
 			</select>
 			<button type="button" id="filter" name="filter" class="btn btn-primary space-left">Filter</button>

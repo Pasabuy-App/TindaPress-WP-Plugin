@@ -110,12 +110,12 @@
             }
 
             //Check if category is active or inactive
-            if ($get_status->status == 0) {
-                return array(
-                    "status" => "failed",
-                    "message" => "This category is currently inactive.",
-                );
-            }
+            // if ($get_status->status == 0) {
+            //     return array(
+            //         "status" => "failed",
+            //         "message" => "This category is currently inactive.",
+            //     );
+            // }
 
             $status_id = $get_status->status_id;
 

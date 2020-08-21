@@ -25,7 +25,7 @@
 		<div class="tp-panel-first">
 			<?php if(isset($_GET['id']) && isset($_GET['name'])) { ?>
 				<div class="alert alert-primary header-info">
-					<strong>Category: </strong><strong id="<?= $_GET['id']; ?>"><?php echo $_GET['name']; ?></strong>
+					Category: <strong id="<?= $_GET['id']; ?>"><?php echo $_GET['name']; ?></strong>
 				</div>
 			<?php } else { ?>
 				<div class="alert alert-primary header-info">

@@ -25,8 +25,8 @@
             <?php
             $store_group ="";
             $cat_group ="";
-            if(isset($_GET['id']) && isset($_GET['name'])) {
-                $store_group = "&id=".$_GET['id']."&name=".$_GET['name'];
+            if(isset($_GET['stid']) && isset($_GET['stname'])) {
+                $store_group = "&id=".$_GET['stid']."&name=".$_GET['stname'];
             }
             if(isset($_GET['catid']) && isset($_GET['catname'])) {
                 $cat_group = "&catid=".$_GET['catid']."&catname=".$_GET['catname'];
@@ -64,8 +64,8 @@
                         postParam.catid = 0;
                         postParam.status = 0;
 
-                        <?php if( isset($_GET['id']) ) { ?>
-                            postParam.stid = "<?= $_GET['id'] ?>";
+                        <?php if( isset($_GET['stid']) ) { ?>
+                            postParam.stid = "<?= $_GET['stid'] ?>";
                         <?php } ?>
                         <?php if( isset($_GET['catid']) ) { ?>
                             postParam.catid = "<?= (int)$_GET['catid'] ?>";
@@ -108,18 +108,21 @@
                 //Set table column header.
                 var columns = [
                     // { "sTitle": "IDENTITY",   "mData": "ID" },
-                    { "sTitle": "STORE",   "mData": "store_name" },
-                    { "sTitle": "CATEGORY",   "mData": "cat_name" },
                     { "sTitle": "NAME",   "mData": "product_name" },
                     { "sTitle": "DESCRIPTION",   "mData": "short_info" },
                     { "sTitle": "PRICE",   "mData": "price" },
+                    { "sTitle": "VARIANTS",   "mData": "total" },
                     { "sTitle": "STATUS",   "mData": "status" },
+                    <?php if(!isset($_GET['catid']) && !isset($_GET['catname'])) { ?>
+                    { "sTitle": "CATEGORY",   "mData": "cat_name" },
+                    { "sTitle": "STORE",   "mData": "store_name" },
+                    <?php } else { ?>
                     {"sTitle": "Action", "mRender": function(data, type, item)
                         {
                             return '' + 
 
                                 '<div class="btn-group" role="group" aria-label="Basic example">' +
-                                    <?php if( isset($_GET['id']) && isset($_GET['name']) && isset($_GET['catid']) && isset($_GET['catname'])) { ?>
+                                    <?php if( isset($_GET['stid']) && isset($_GET['stname']) && isset($_GET['catid']) && isset($_GET['catname'])) { ?>
                                     '<button type="button" class="btn btn-primary btn-sm"' +
                                         ' data-toggle="modal" data-target="#EditAppOption"' +
                                         ' title="Click this to modified or delete this project."' +
@@ -127,27 +130,33 @@
                                         ' data-title="' + item.title + '"' +  
                                         ' data-sinfo="' + item.short_info + '"' + 
                                         ' data-price="' + item.price + '"' +  
-                                        ' data-stid="' + <?= $_GET['id'] ?> + '"' + 
-                                        ' data-stname="' + '<?= $_GET['name'] ?>' + '"' + 
+                                        ' data-stid="' + <?= $_GET['stid'] ?> + '"' + 
+                                        ' data-stname="' + '<?= $_GET['stname'] ?>' + '"' + 
                                         ' data-catid="' + <?= $_GET['catid'] ?> + '"' + 
                                         ' data-catname="' + '<?= $_GET['catname'] ?>' + '"' + 
+                                        ' data-pdid="' + item.ID + '"' + 
+                                        ' data-pdname="' + item.product_name + '"' + 
                                         ' >Options</button>' +
-                                    <?php } ?>
 
-                                    '<button type="button" class="btn btn-secondary btn-sm appkey-' + item.ID + '"' +
+                                        '<button type="button" class="btn btn-secondary btn-sm appkey-' + item.ID + '"' +
                                         ' data-clipboard-text="' + item.ID + '"' +
                                         ' onclick="copyFromId(\'CategoryID-' + item.ID + '\')" ' +
                                         ' title="Click this to copy the ID to your clipboard."' +
                                         '>Copy ID</button>' +  
 
-                                    '<button type="button" class="btn btn-success btn-sm"' +
-                                        ' onclick="window.location.href = `<?php echo get_home_url()."/logo.jpg"; ?>`;" ' +
-                                        ' title="Click this to navigate to variant list of this project."' + 
-                                        ' >Preview</button>' +
+                                        '<button type="button" class="btn btn-success btn-sm"' +
+                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_VARIANT; ?>' + 
+                                        '&stid=' + '<?= $_GET['stid'] ?>' + '&stname=' + '<?= $_GET['stname'] ?>' + 
+                                        '&catid=' + '<?= $_GET['catid'] ?>' + '&catname=' + '<?= $_GET['catname'] ?>' + 
+                                        '&pdid=' + item.ID + '&pdname=' + item.product_name + 
+                                        '`;" ' + ' title="Click this to navigate to variant list of this project."' + 
+                                        ' >Variants</button>' +
+                                    <?php } ?>
               
                                 '</div>'; 
                         }
                     }
+                    <?php } ?>
                 ];
 
                 //Displaying data on datatables.
@@ -156,11 +165,17 @@
                     searching: true,
                     dom: 'Bfrtip',
                     buttons: [
-                        <?php if( isset($_GET['id']) ) { ?>
+                        <?php if( isset($_GET['stid']) ) { ?>
                         {
                             text: 'Go Back',
                             action: function ( e, dt, node, config ) {
-                                
+                                <?php
+                                $store_group ="";
+                                if(isset($_GET['stid']) && isset($_GET['stname'])) {
+                                    $store_group = "&stid=".$_GET['stid']."&stname=".$_GET['stname']."&type=2";
+                                }
+                                ?>
+                                window.location.href = '<?php echo TP_Globals::wp_admin_url().TP_MENU_CATEGORY.$store_group; ?>';
                             }
                         },
                         {
@@ -320,7 +335,7 @@
             //DELETE OR UPDATE FOCUSED APP ON MODAL.
             $('#edit-app-form').submit( function(event) {
                 event.preventDefault();
-                var clickedBtnId = $(this).find("button[type=submit]:focus").attr('id');
+                var clickedBtnId = $(this).find("button[type=submit]:focus").attr('stid');
                 $( "#dialog-confirm-edit" ).dialog({
                     title: 'Confirmation',
                     resizable: false,

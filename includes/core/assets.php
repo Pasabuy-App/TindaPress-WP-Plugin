@@ -16,6 +16,7 @@
         TP_MENU_CATEGORY,
         TP_MENU_STORE,
         TP_MENU_PRODUCT,
+        TP_MENU_VARIANT,
         TP_MENU_SETTING,
     );
 

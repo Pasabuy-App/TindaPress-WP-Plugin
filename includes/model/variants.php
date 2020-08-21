@@ -24,46 +24,54 @@
         $("#filter").click(() => {
             <?php
             $store_group ="";
-            if(isset($_GET['id']) && isset($_GET['name'])) {
-                $store_group = "&id=".$_GET['id']."&name=".$_GET['name'];
+            $cat_group ="";
+            $prod_group ="";
+            if(isset($_GET['stid']) && isset($_GET['stname'])) {
+                $store_group = "&id=".$_GET['stid']."&name=".$_GET['stname'];
+            }
+            if(isset($_GET['catid']) && isset($_GET['catname'])) {
+                $cat_group = "&catid=".$_GET['catid']."&catname=".$_GET['catname'];
+            }
+            if(isset($_GET['pdid']) && isset($_GET['pdname'])) {
+                $prod_group = "&pdid=".$_GET['pdid']."&pdname=".$_GET['pdname'];
             }
             ?>
-            window.location.href = '<?php echo TP_Globals::wp_admin_url().TP_MENU_STORE.$store_group."&status="; ?>' + $('#set_status').val();
-        });
+            var catid = isNaN($('#set_cat').val()) || $('#set_cat').val() == null ? 0 : $('#set_cat').val();
+            window.location.href = '<?php echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT.$store_group.$cat_group.$prod_group ."&status="; ?>' + $('#set_status').val() + "&catid=" + catid;
+        }); 
 
         //THIS ARE ALL THE PUBLIC VARIABLES.
         var activeTimeout = 'undefined';
 
         //#region Page = APPLICATION LIST 
             //GET THE REFERENCE OF THE CURRENT PAGE DATTABLES.
-            var storeTables = $('#stores-datatables');
+            var productTables = $('#products-datatables');
 
             //SET INTERVAL DRAW UPDATE.
-            loadingAppList( storeTables );
+            loadingAppList( productTables );
         
             //LOAD APPLIST WITH AJAX.
             var tptables = 'undefined';
-            function loadingAppList( storeTables )
+            function loadingAppList( productTables )
             {
-                if( storeTables.length != 0 )
+                if( productTables.length != 0 )
                 {
                     if( $('#stores-notification').hasClass('tp-display-hide') )
                     {
                         $('#stores-notification').removeClass('tp-display-hide');
                     }
 
-                    var postParam = {
-                            "wpid": "<?php echo get_current_user_id(); ?>",
-                            "snky": "<?php echo wp_get_session_token(); ?>"
-                        };
-                        postParam.status = 0;
-                        <?php if( isset($_GET['catid']) ) { ?>
-                            postParam.status = '<?= $_GET['catid'] ?>';
+                    var postParam = {};
+                        postParam.wpid = "<?php echo get_current_user_id(); ?>";
+                        postParam.snky = "<?php echo wp_get_session_token(); ?>";
+
+                        <?php if( isset($_GET['pdid']) ) { ?>
+                            postParam.pdid = "<?= $_GET['pdid'] ?>";
                         <?php } ?>
                         <?php if( isset($_GET['status']) ) { ?>
-                            postParam.status = '<?= $_GET['status'] ?>';
+                            postParam.status = "<?= (int)$_GET['status'] ?>";
                         <?php } ?>
-                    var postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/stores/list"; ?>';                    
+                    var postUrl = "<?= site_url() . '/wp-json/tindapress/v1/variants/list' ?>";
                     
                     $.ajax({
                         dataType: 'json',
@@ -77,7 +85,7 @@
                             } else {
                                 displayingLoadedApps( [] );
                             }
-                            
+
                             if( !$('#stores-notification').hasClass('tp-display-hide') )
                             {
                                 $('#stores-notification').addClass('tp-display-hide');
@@ -85,6 +93,7 @@
                         },
                         error : function(jqXHR, textStatus, errorThrown) 
                         {
+                            //$('#apps-notification').text = "";
                             console.log("" + JSON.stringify(jqXHR) + " :: " + textStatus + " :: " + errorThrown);
                         }
                     });
@@ -96,80 +105,106 @@
             {
                 //Set table column header.
                 var columns = [
-                    //{ "sTitle": "IDENTITY",   "mData": "ID" },
-                    <?php
-                        //if(!isset($_GET['id'])) {
-                    ?>
-                            //{ "sTitle": "CATEGORY",   "mData": "catname" },
-                    <?php
-                        //}
-                    ?>
-                    { "sTitle": "NAME",   "mData": "title" },
-                    { "sTitle": "SHORT",   "mData": "short_info" },
-                    { "sTitle": "STATUS",   "mData": "status" },
-                    { "sTitle": "PHONE",   "mData": "phone" },
-                    { "sTitle": "EMAIL",   "mData": "email" },
-                    { "sTitle": "Street",   "mData": "street" },
-                    { "sTitle": "Barangay",   "mData": "brgy" },
-                    { "sTitle": "City",   "mData": "city" },
-                    { "sTitle": "Province",   "mData": "province" },
-                    { "sTitle": "Country",   "mData": "country" },
+                    // { "sTitle": "IDENTITY",   "mData": "ID" },
+                    { "sTitle": "NAME",   "mData": "name" },
+                    <?php if(isset($_GET['vrid']) && isset($_GET['vrname'])) { ?>
+                        //For options child. 
+                    <?php } else { ?>
+                        { "sTitle": "BASE PRICE",   "mData": "base_price" },
+                    <?php } ?>
+                    
                     {"sTitle": "Action", "mRender": function(data, type, item)
                         {
                             return '' + 
 
                                 '<div class="btn-group" role="group" aria-label="Basic example">' +
-
+                                    <?php if( isset($_GET['stid']) && isset($_GET['stname']) && isset($_GET['catid']) && isset($_GET['catname'])) { ?>
                                     '<button type="button" class="btn btn-primary btn-sm"' +
                                         ' data-toggle="modal" data-target="#EditAppOption"' +
                                         ' title="Click this to modified or delete this project."' +
                                         ' data-id="' + item.ID + '"' +  
-                                        ' data-status="' + item.status + '"' +  
                                         ' data-title="' + item.title + '"' +  
                                         ' data-sinfo="' + item.short_info + '"' + 
-                                        ' >Options</button>' +
+                                        ' data-price="' + item.price + '"' +  
+                                        <?php if(isset($_GET['pdid']) && isset($_GET['pdname'])) { ?>
+                                        ' data-pdid="' + '<?= $_GET['pdid'] ?>' + '"' + 
+                                        ' data-pdname="' + '<?= $_GET['pdname'] ?>' + '"' + 
+                                        <?php } ?>
+                                        <?php if(isset($_GET['vrid']) && isset($_GET['pdname'])) { ?>
+                                        ' data-vrid="' + '<?= $_GET['vrid'] ?>' + '"' + 
+                                        ' data-vrname="' + '<?= $_GET['vrname'] ?>' + '"' + 
+                                        <?php } ?>
+                                        ' >Edit</button>' +
+                                    <?php } ?>
 
                                     '<button type="button" class="btn btn-secondary btn-sm appkey-' + item.ID + '"' +
                                         ' data-clipboard-text="' + item.ID + '"' +
                                         ' onclick="copyFromId(\'CategoryID-' + item.ID + '\')" ' +
                                         ' title="Click this to copy the ID to your clipboard."' +
                                         '>Copy ID</button>' +  
-
-                                    '<button type="button" class="btn btn-info btn-sm"' +
-                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_CATEGORY; ?>' + 
-                                        '&stid=' + item.ID + '&stname=' + item.title + 
-                                        '&type=' + '2' + '`;" ' +
-                                        ' title="Click this to navigate to variant list of this project."' + 
-                                        ' >Categories</button>' +
-
-                                    // '<button type="button" class="btn btn-success btn-sm"' +
-                                    //     ' onclick="window.location.href = `<?php //echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT."&id="; ?>' + item.ID + '&name=' +item.title + '`;" ' +
-                                    //     ' title="Click this to navigate to variant list of this project."' + 
-                                    //     ' >Products</button>' +
-
-                                             
+                                        
+                                    <?php if(!isset($_GET['vrid']) && !isset($_GET['vrname'])) { ?>
+                                    '<button type="button" class="btn btn-success btn-sm"' +
+                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_VARIANT; ?>' + 
+                                        <?php if(isset($_GET['stid']) && isset($_GET['stname'])) { ?>
+                                        '&stid=' + '<?= $_GET['stid'] ?>' + '&stname=' + '<?= $_GET['stname'] ?>' + 
+                                        <?php } ?>
+                                        <?php if(isset($_GET['catid']) && isset($_GET['catname'])) { ?>
+                                        '&catid=' + '<?= $_GET['catid'] ?>' + '&catname=' + '<?= $_GET['catname'] ?>' + 
+                                        <?php } ?>
+                                        <?php if(isset($_GET['pdid']) && isset($_GET['pdname'])) { ?>
+                                        '&pdid=' + '<?= $_GET['pdid'] ?>' + '&pdname=' + '<?= $_GET['pdname'] ?>' + 
+                                        <?php } ?>
+                                        <?php if(!isset($_GET['vrid']) && !isset($_GET['vrname'])) { ?>
+                                        '&vrid=' + item.id + '&vrname=' + item.name + 
+                                        <?php } ?>
+                                        '`;" ' + ' title="Click this to navigate to variant list of this project."' + 
+                                        ' >Options</button>' +
+                                        <?php } ?>
                                 '</div>'; 
                         }
                     }
                 ];
 
                 //Displaying data on datatables.
-                tptables = $('#stores-datatables').DataTable({
+                tptables = $('#products-datatables').DataTable({
                     destroy: true,
                     searching: true,
                     dom: 'Bfrtip',
                     buttons: [
+                        <?php if( isset($_GET['stid']) ) { ?>
                         {
-                            text: 'Create',
+                            text: 'Go Back',
                             action: function ( e, dt, node, config ) {
-                                //loadingAppList( storeTables );
-                                $('#CreateNewApp').modal('show');
+                                <?php
+                                    $store_group ="";
+                                    if(isset($_GET['stid']) && isset($_GET['stname'])) {
+                                        $store_group = "&stid=".$_GET['stid']."&stname=".$_GET['stname'];
+                                    }
+
+                                    $cat_group ="";
+                                    if(isset($_GET['catid']) && isset($_GET['catname'])) {
+                                        $cat_group = "&catid=".$_GET['catid']."&catname=".$_GET['catname'];
+                                    }
+                                ?>
+                                <?php if(isset($_GET['pdid']) && isset($_GET['pdname'])) { ?>
+                                    window.location.href = '<?php echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT.$store_group.$cat_group."&status=0"; ?>';
+                                <?php } else { ?>
+                                    window.location.href = '<?php echo TP_Globals::wp_admin_url().TP_MENU_VARIANT.$store_group.$cat_group."&status=0"; ?>';
+                                <?php } ?>
                             }
                         },
                         {
+                            text: 'Create',
+                            action: function ( e, dt, node, config ) {
+                                $('#CreateNewApp').modal('show');
+                            }
+                        },
+                    <?php } ?>
+                        {
                             text: 'Refresh',
                             action: function ( e, dt, node, config ) {
-                                loadingAppList( storeTables );
+                                loadingAppList( productTables );
                             }
                         }, //'copy', 'csv', 'excel', 'pdf', 
                         'print',
@@ -215,37 +250,9 @@
                     buttons: {
                         "Confirm": function() 
                         {
-                            var e = document.getElementById("new_category");
-                            var storeCategory = e.options[e.selectedIndex].value;
-                            
-                            var e = document.getElementById("new_country");
-                            var countryValue = e.options[e.selectedIndex].value;
-
-                            var e = document.getElementById("new_province");
-                            var provinceValue = e.options[e.selectedIndex].value;
-
-                            var e = document.getElementById("new_city");
-                            var cityValue = e.options[e.selectedIndex].value;
-
-                            var e = document.getElementById("new_brgy");
-                            var brgyValue = e.options[e.selectedIndex].value;
-                            
-                            if(storeCategory == 0 || countryValue == 0 || provinceValue == 0 || cityValue == 0 || brgyValue == 0 ) {
-                                $('#CNAMessage').addClass('alert-failed');
-                                $('#CNAMessage').removeClass('tp-display-hide');
-                                alert( "Please select an item to all dropdown!" );
-
-                                $('#create-app-btn').removeClass('disabled');
-                                activeTimeout = setTimeout( function() {
-                                    $('#CNAMessage').removeClass('alert-failed');
-                                    $('#CNAMessage').addClass('tp-display-hide');
-                                    activeTimeout = 'undefined';
-                                }, 4000);
-                            } else {
-                                confirmCreateProcess();
-                                $('#jquery-overlay').addClass('tp-display-hide');
-                                $( this ).dialog( "close" );
-                            }
+                            confirmCreateProcess();
+                            $('#jquery-overlay').addClass('tp-display-hide');
+                            $( this ).dialog( "close" );
                         },
                         Cancel: function() 
                         {
@@ -260,65 +267,41 @@
             {
                 $('#create-app-btn').addClass('disabled');
 
-                //From native form object to json object.
-                var e = document.getElementById("new_category");
-                var storeCategory = e.options[e.selectedIndex].value;
-
-                var e = document.getElementById("new_country");
-                var countryValue = e.options[e.selectedIndex].value;
-
-                var e = document.getElementById("new_province");
-                var provinceValue = e.options[e.selectedIndex].value;
-
-                var e = document.getElementById("new_city");
-                var cityValue = e.options[e.selectedIndex].value;
-
-                var e = document.getElementById("new_brgy");
-                var brgyValue = e.options[e.selectedIndex].value;
-
                 var postParam = {};
                     postParam.wpid = "<?php echo get_current_user_id(); ?>";
                     postParam.snky = "<?php echo wp_get_session_token(); ?>";
-                    postParam.catid = storeCategory;
+                    postParam.catid = $('#new_category').val();
+                    postParam.stid = $('#new_store').val();
                     postParam.title = $('#new_title').val();
                     postParam.short_info = $('#new_info').val();
                     postParam.long_info = "None";
-                    postParam.logo = "None";
-                    postParam.banner = "None";
-                    postParam.phone = $('#new_phone').val();
-                    postParam.email = $('#new_email').val();
-                    postParam.st = $('#new_street').val();
-                    postParam.bg = brgyValue;
-                    postParam.ct = cityValue;
-                    postParam.pv = provinceValue;
-                    postParam.co = countryValue;
+                    postParam.price = $('#new_price').val();
+                    postParam.sku = "None";
+                    postParam.weight = "None";
+                    postParam.dimension = "None";
+                    postParam.preview = "None";
 
                 // This will be handled by create-app.php.
                 $.ajax({
                     dataType: 'json',
                     type: 'POST', 
                     data: postParam,
-                    url:  '<?php echo site_url() . "/wp-json/tindapress/v1/stores/insert"; ?>',
+                    url: '<?php echo site_url() . "/wp-json/tindapress/v1/products/insert"; ?>',
                     success : function( data )
                     {
                         if( data.status == 'success' ) {
+                            $('#new_category').val('');
+                            $('#new_store').val('');
                             $('#new_title').val('');
                             $('#new_info').val('');
-                            $('#new_phone').val('');
-                            $('#new_email').val('');
-                            $('#new_category').prop('selectedIndex',0);
-                            $('#new_country').prop('selectedIndex',0);
-                            $('#new_province').prop('selectedIndex',0);
-                            $('#new_city').prop('selectedIndex',0);
-                            $('#new_brgy').prop('selectedIndex',0);
-                            $('#new_street').val('');
+                            $('#new_price').val('');
                         }
 
                         $('#CNAMessage').addClass('alert-'+data.status);
                         $('#CNAMessage').removeClass('tp-display-hide');
                         $('#CNAMcontent').text( data.message );
 
-                        loadingAppList( storeTables );
+                        loadingAppList( productTables );
                         $('#create-app-btn').removeClass('disabled');
                         activeTimeout = setTimeout( function() {
                             $('#CNAMessage').removeClass('alert-'+data.status);
@@ -345,16 +328,11 @@
             // LISTEN FOR MODAL SHOW AND ATTACHED ID.
             $('#CreateNewApp').on('show.bs.modal', function(e) {
                 $('#create-app-btn').removeClass('disabled');
-                $('#new_title').val('');
-                $('#new_info').val('');
-                $('#new_phone').val('');
-                $('#new_email').val('');
-                $('#new_category').prop('selectedIndex',0);
-                $('#new_country').prop('selectedIndex',0);
-                $('#new_province').prop('selectedIndex',0);
-                $('#new_city').prop('selectedIndex',0);
-                $('#new_brgy').prop('selectedIndex',0);
-                $('#new_street').val('');
+                $('#new_category').val();
+                $('#new_store').val();
+                $('#new_title').val();
+                $('#new_info').val();
+                $('#new_price').val();
             });
 
             // MAKE SURE THAT TIMEOUT IS CANCELLED.
@@ -373,7 +351,7 @@
             //DELETE OR UPDATE FOCUSED APP ON MODAL.
             $('#edit-app-form').submit( function(event) {
                 event.preventDefault();
-                var clickedBtnId = $(this).find("button[type=submit]:focus").attr('id');
+                var clickedBtnId = $(this).find("button[type=submit]:focus").attr('stid');
                 $( "#dialog-confirm-edit" ).dialog({
                     title: 'Confirmation',
                     resizable: false,
@@ -409,24 +387,33 @@
                 $('#delete-app-btn').addClass('disabled');
                 $('#update-app-btn').addClass('disabled');
 
+                var postUrl = '';
+
                 //From native form object to json object.
                 var postParam = {};
                     postParam.wpid = "<?php echo get_current_user_id(); ?>";
                     postParam.snky = "<?php echo wp_get_session_token(); ?>";
-                    postParam.stid = $('#edit_id').val();
-                
-                var postUrl = "";
-                
-                if( clickedBtnId == "delete-app-btn" ) {
-                    if( $('#edit_status').val() == 0 ) {
-                        postUrl = '<?= site_url() . "/wp-json/tindapress/v1/stores/delete"; ?>';
-                    } else {
-                        postUrl = '<?= site_url() . "/wp-json/tindapress/v1/stores/activate"; ?>';
-                    }
-                } else {
-                    postUrl = '<?= site_url() . "/wp-json/tindapress/v1/stores/update"; ?>';
-                    postParam.title = $('#edit_title').val();
-                    postParam.info = $('#edit_info').val();
+
+                if( clickedBtnId == 'delete-app-btn' )
+                {
+                    postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/products/delete"; ?>';
+                    postParam.pid = $('#edit_id').val();
+                }
+
+                else
+                {
+                    postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/products/update"; ?>';
+                    postParam.catid = $('#new_category').val();
+                    postParam.stid = $('#new_store').val();
+                    postParam.pdid = $('#new_store').val();
+                    postParam.title = $('#new_title').val();
+                    postParam.short_info = $('#new_info').val();
+                    postParam.long_info = "None";
+                    postParam.price = $('#new_price').val();
+                    postParam.sku = "None";
+                    postParam.weight = "None";
+                    postParam.dimension = "None";
+                    postParam.preview = "None";
                 }
 
                 // This will be handled by create-app.php.
@@ -438,16 +425,11 @@
                     success : function( data )
                     {
                         if( clickedBtnId == 'delete-app-btn' ) {
+                            $('#new_category').val('');
+                            $('#new_store').val('');
                             $('#new_title').val('');
                             $('#new_info').val('');
-                            $('#new_phone').val('');
-                            $('#new_email').val('');
-                            $('#new_category').prop('selectedIndex',0);
-                            $('#new_country').prop('selectedIndex',0);
-                            $('#new_province').prop('selectedIndex',0);
-                            $('#new_city').prop('selectedIndex',0);
-                            $('#new_brgy').prop('selectedIndex',0);
-                            $('#new_street').val('');
+                            $('#new_price').val('');
                         } else {
                             $('#delete-app-btn').removeClass('disabled');
                             $('#update-app-btn').removeClass('disabled');
@@ -457,7 +439,7 @@
                         $('#DFAMessage').removeClass('tp-display-hide');
                         $('#DFAMcontent').text( data.message );
 
-                        loadingAppList( storeTables );
+                        loadingAppList( productTables );
                         activeTimeout = setTimeout( function() {
                             $('#DFAMessage').removeClass('alert-'+data.status);
                             $('#DFAMessage').addClass('tp-display-hide');
@@ -487,10 +469,12 @@
             // LISTEN FOR MODAL SHOW AND ATTACHED ID.
             $('#EditAppOption').on('show.bs.modal', function(e) {
                 var data = e.relatedTarget.dataset;
-                $('#edit_id').val( data.id );
-                $('#edit_title').val( data.title );
-                $('#edit_info').val( data.sinfo );
-                $('#edit_status').val( data.status == 'Active' ? 1 : 0 );
+                $('#edit_id').val( data.aid );
+                $('#edit_title').val( data.aid );
+                $('#edit_info').val( data.aid );
+                $('#edit_price').val( data.aid );
+                $('#edit_store').val( data.aid );
+                $('#edit_category').val( data.aid );
 
                 $('#delete-app-btn').removeClass('disabled');
                 $('#update-app-btn').removeClass('disabled');
