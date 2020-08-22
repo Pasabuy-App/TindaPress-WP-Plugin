@@ -105,15 +105,16 @@
                 $wpdb->query("INSERT INTO `$table_variants` $variants_fields VALUES (0, $product_id, $wpid, '$date')");
                 $last_id = $wpdb->insert_id;
                 $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $last_id, 'baseprice', '$base_price', $wpid, '$date')");
-                $rev_bp = $wpdb->insert_gitd;
-                $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $last_id, 'status', 1, $wpid, '$date')");
-                $rev_status = $wpdb->insert_id;
+                $rev_bp = $wpdb->insert_id;
+                
             } else {
                 $wpdb->query("INSERT INTO `$table_variants` $variants_fields VALUES ($parent_id, $product_id, $wpid, '$date')");
                 $last_id = $wpdb->insert_id;
                 $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $last_id, 'price', '$price', $wpid, '$date')");
-
             }
+
+            $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $last_id, 'status', 1, $wpid, '$date')");
+            $rev_status = $wpdb->insert_id;
 
             if ($info) {
                 $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $last_id, 'info', '$info', $wpid, '$date')");
@@ -122,7 +123,7 @@
             $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $last_id, 'name', '$name', $wpid, '$date')");
             $rev_name = $wpdb->insert_id;
 
-            if ( $last_id < 1 ) {
+            if ( $last_id < 1 || $rev_status < 1) {
                 $wpdb->query("ROLLBACK");
                 return array(
                         "status" => "error",

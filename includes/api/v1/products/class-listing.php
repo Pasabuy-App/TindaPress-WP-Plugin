@@ -46,7 +46,7 @@
                 tp_prod.ID,
                 tp_prod.stid,
                 tp_prod.ctid AS catid,
-                ( SELECT COUNT(pdid) FROM tp_variants WHERE pdid = tp_prod.ID ) as `total`,
+                ( SELECT COUNT(pdid) FROM tp_variants WHERE pdid = tp_prod.ID AND parent_id = 0 ) as `total`,
                 ( SELECT tp_rev.child_val FROM tp_revisions tp_rev WHERE ID = ( SELECT `title` FROM tp_stores WHERE ID = tp_prod.stid ) ) AS `store_name`,
                 ( SELECT tp_rev.child_val FROM tp_revisions tp_rev WHERE ID = c.title ) AS `cat_name`,
                 ( SELECT tp_rev.child_val FROM tp_revisions tp_rev WHERE tp_rev.ID = tp_prod.title ) AS product_name,
