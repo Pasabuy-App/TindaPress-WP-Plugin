@@ -13,7 +13,7 @@
 
         public static function listen(){
             return rest_ensure_response( 
-                TP_Select_Store:: list_open()
+                TP_Popular_Store:: list_open()
             );
         }
         
@@ -30,7 +30,7 @@
             $table_city = DV_CITY_TABLE;
             $table_province = DV_PROVINCE_TABLE;
             $table_country = DV_COUNTRY_TABLE;
-            $table_orders = MP_ORDER_TABLE;
+            $table_orders = 'mp_orders';
                
             //Step1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -41,30 +41,12 @@
                 );
             }
 
-			//step 2: validate User
-			if (TP_Globals::validate_user() == false) {
+			//step 2: Validate User
+            if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
-                        "message" => "Please contact your administrator. Request Unknown!",
+                        "message" => "Please contact your administrator. Verification Issues!",
                 );
-            }
-
-            // Step3 : Sanitize request
-            if (!isset($_POST["wpid"]) 
-                || !isset($_POST["snky"]) ) {
-				return array(
-						"status" => "unknown",
-						"message" => "Please contact your administrator. Request unknown!",
-                );
-            }
-
-            // Step4 : Sanitize request if empty
-            if (empty($_POST["wpid"]) 
-                || empty($_POST["snky"])  ) {
-				return array(
-						"status" => "failed",
-						"message" => "Required fields cannot be empty.",
-                ); 
             }
 
             // Step5 : Query
