@@ -10,6 +10,7 @@
         * @version 0.1.0
 	*/
     class TP_Store_Update_Contacts {
+        
         public static function listen(){
             return rest_ensure_response( 
                 TP_Store_Update_Contacts:: listen_open()
@@ -110,7 +111,7 @@
             VALUES ( 'contacts', $cid, '$type', '$val', '$wpid', '$date_created'  )");
             $last_id = $wpdb->insert_id;
             
-            $update_contact = $wpdb->query("UPDATE $table_contact SET `revs` = $last_id WHERE ID = $cid ");
+            $update_contact = $wpdb->query("UPDATE $table_contact SET `revs` = $last_id WHERE ID = $cid AND stid = '$stid' ");
 
             // Step 11: Check result
             if ($last_id < 1 || $update_contact < 1) {
@@ -123,7 +124,7 @@
 
             return array(
                 "status" => "success",
-                "message" => "Data has been successfully added.",
+                "message" => "Data has been successfully updated.",
             );
 
         }

@@ -74,6 +74,7 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/contacts/class-insert.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/contacts/class-listing.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/contacts/class-update.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/contacts/class-delete.php';
 
         // Variants Classes
         require plugin_dir_path(__FILE__) . '/v1/variants/class-insert-variants.php';
@@ -242,6 +243,11 @@
             register_rest_route( 'tindapress/v1/stores/contacts', 'update', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Store_Update_Contacts','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/stores/contacts', 'delete', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Store_Delete_Contacts','listen'),
             ));
 
             register_rest_route( 'tindapress/v1/stores', 'nearme', array(
