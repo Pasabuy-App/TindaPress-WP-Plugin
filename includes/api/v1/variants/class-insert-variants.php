@@ -101,6 +101,34 @@
                 
             $wpdb->query("START TRANSACTION");
             
+            $validate_variant = $wpdb->get_results("SELECT
+            child_val as `baseprice`
+            FROM
+                tp_variants var
+            INNER JOIN tp_revisions rev ON rev.parent_id = var.ID
+            WHERE var.parent_id = 0 AND rev.child_key = 'baseprice' AND revs_type ='variants' AND var.pdid = '$product_id'
+            ");
+            if (isset($_POST['base'])) {
+                if ($base_price == 1) {
+                    if (in_array('1', $validate_variant )  ) {
+                        return array(
+                            "status" => "failed",
+                            "message" => "Please this product has already have a base price."
+                        );
+                    }
+                }
+    
+                for ($i=0; $i < count($validate_variant); $i++) { 
+                    if ($validate_variant[$i]->baseprice == 1) {
+                        return array(
+                            "status" => "failed",
+                            "message" => "Please deactivate the active base price first."
+                        );
+                    }
+                }
+            }
+          
+            
             if ($parent_id == 0) {
                 $wpdb->query("INSERT INTO `$table_variants` $variants_fields VALUES (0, $product_id, $wpid, '$date')");
                 $last_id = $wpdb->insert_id;
