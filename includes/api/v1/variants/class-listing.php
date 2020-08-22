@@ -46,7 +46,6 @@
             isset($_POST['pid']) ? $pid = $_POST['pid'] : $pid = NULL;
             isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL;
             isset($_POST['vrid']) ? $vrid = $_POST['vrid'] : $vrid = NULL;
-            isset($_POST['vrid']) ? $vrid = $_POST['vrid'] : $vrid = NULL;
 
 
             $status = $sts  == '0' || $sts == NULL ? NULL : ($sts == '2' && $sts !== '0'? '0':'1');
@@ -58,9 +57,10 @@
             
             $sql = "SELECT
             var.ID,
-            ( SELECT child_val FROM tp_revisions WHERE ID = ( SELECT title FROM tp_products WHERE ID  = var.pdid ) AND revs_type = 'products' )as `product_name`,
             ( SELECT child_val FROM tp_revisions rev WHERE  rev.parent_id = var.ID AND rev.child_key = 'name' AND rev.revs_type = 'variants' ) as `name`,
             ( SELECT child_val FROM tp_revisions rev WHERE  rev.parent_id = var.ID AND rev.child_key = 'info' AND rev.revs_type = 'variants' ) as `info`,
+            ( SELECT child_val FROM tp_revisions rev WHERE  rev.parent_id = var.ID AND rev.child_key = 'base' AND rev.revs_type = 'variants' ) as `base_price`,
+
                 IF( rev.child_val = 1 , 'Active','Inactive') AS `status`,
                 null as options
             FROM
@@ -105,7 +105,7 @@
             WHERE   rev.revs_type = 'variants' AND child_key = 'name' AND rev.parent_id = var.ID
                 ");
 
-                $value->options = $option;
+                $value->options = $option;  
 
                 if (isset($_POST['vrid'])  ) {
                     if ($variants_id !== NULL  ) {
