@@ -102,7 +102,7 @@
                 rev.child_val as 'name',
                 (SELECT child_val FROM tp_revisions rev WHERE parent_id = var.ID AND child_key = 'price' AND revs_type ='variants'  AND date_created = ( SELECT MAX(date_created) FROM tp_revisions WHERE ID = rev.ID  ) ) as `price`,
                 (SELECT child_val FROM tp_revisions rev WHERE parent_id = var.ID AND child_key = 'info' AND revs_type ='variants'  AND date_created = ( SELECT MAX(date_created) FROM tp_revisions WHERE ID = rev.ID  ) ) as `info`,
-                IF((SELECT child_val FROM tp_revisions rev WHERE parent_id = var.ID AND child_key = 'status' AND revs_type ='variants'  AND date_created = ( SELECT MAX(date_created) FROM tp_revisions WHERE ID = rev.ID  ) ) = 1, 'Active', IF((SELECT child_val FROM tp_revisions rev WHERE parent_id = var.ID AND child_key = 'status' AND revs_type ='variants'  AND date_created = ( SELECT MAX(date_created) FROM tp_revisions WHERE ID = rev.ID  ) ) is NULL , '0', 'Inactive' )) as `status`
+                IF((SELECT child_val FROM tp_revisions rev WHERE parent_id = var.ID AND child_key = 'status' AND revs_type ='variants'  AND date_created = ( SELECT MAX(date_created) FROM tp_revisions WHERE ID = rev.ID  ) ) = 1, 'Active', IF((SELECT child_val FROM tp_revisions rev WHERE parent_id = var.ID AND child_key = 'status' AND revs_type ='variants'  AND date_created = ( SELECT MAX(date_created) FROM tp_revisions WHERE ID = rev.ID  ) ) is NULL , 'Inactive', 'Inactive' )) as `status`
             FROM
                 tp_revisions rev
                 INNER JOIN tp_variants var ON var.parent_id = '$parent' 
