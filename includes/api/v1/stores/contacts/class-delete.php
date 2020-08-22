@@ -59,7 +59,6 @@
             $date_created = TP_Globals::date_stamp();
 
             $table_contact = DV_CONTACTS_TABLE;
-            //$table_dv_revsions = DV_REVS_TABLE;
 
             // Step 9: Check if contact is exists using contact id, store id and types
             $val_contact = $wpdb->get_row("SELECT ID, status FROM $table_contact  WHERE ID = '$cid' AND stid = '$stid' ");    
