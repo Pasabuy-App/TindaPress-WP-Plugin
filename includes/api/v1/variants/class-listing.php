@@ -109,28 +109,38 @@
             WHERE   rev.revs_type = 'variants' AND child_key = 'name' AND rev.parent_id = var.ID
                 ");
 
-                $value->options = $option;  
+                if (isset($_POST['pdid'])) {
+                    if ($product_id !== NULL && $product_id == '0') {
+                        $result = $value;
+                    }
+                }else{
+                    $value->options = $option;  
+
+                }
 
                 if (isset($_POST['vrid'])  ) {
                     if ($variants_id !== NULL  ) {
 
                         if (isset($_POST['pdid'])) {
                             if ($product_id !== NULL) {
-                               
-                                $value->options = $option;
+                                
+                                    $value->options = $option;
+
+                                
+
                             }else{
-                            $result = $option;
+
+                                $result = $option;
 
                             }
+
                         }else{
 
                             $result = $option;
                         }
                         
-
                     }
                 }
-
                 
             }
 
