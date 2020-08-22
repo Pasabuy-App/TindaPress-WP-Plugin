@@ -84,20 +84,20 @@
             ");
 
             //Check if no rows found
-            if (!$get_product) {
-                return array(
-                    "status" => "failed",
-                    "message" => "This product does not exists",
-                );
-            }
+            // if (!$get_product) {
+            //     return array(
+            //         "status" => "failed",
+            //         "message" => "This product does not exists",
+            //     );
+            // }
 
-            // //Fails if product is currently inactive
-            if ($get_product->status == 0) {
-                return array(
-                    "status" => "failed",
-                    "message" => "This product is currently inactive.",
-                );
-            }
+            // // //Fails if product is currently inactive
+            // if ($get_product->status == 0) {
+            //     return array(
+            //         "status" => "failed",
+            //         "message" => "This product is currently inactive.",
+            //     );
+            // }
                 
             $wpdb->query("START TRANSACTION");
             
@@ -105,7 +105,7 @@
                 $wpdb->query("INSERT INTO `$table_variants` $variants_fields VALUES (0, $product_id, $wpid, '$date')");
                 $last_id = $wpdb->insert_id;
                 $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $last_id, 'baseprice', '$base_price', $wpid, '$date')");
-                $rev_bp = $wpdb->insert_id;
+                $rev_bp = $wpdb->insert_gitd;
                 $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $last_id, 'status', 1, $wpid, '$date')");
                 $rev_status = $wpdb->insert_id;
             } else {
