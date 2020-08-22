@@ -59,7 +59,7 @@
             var.ID,
             ( SELECT child_val FROM tp_revisions rev WHERE  rev.parent_id = var.ID AND rev.child_key = 'name' AND rev.revs_type = 'variants' ) as `name`,
             ( SELECT child_val FROM tp_revisions rev WHERE  rev.parent_id = var.ID AND rev.child_key = 'info' AND rev.revs_type = 'variants' ) as `info`,
-            ( SELECT child_val FROM tp_revisions rev WHERE  rev.parent_id = var.ID AND rev.child_key = 'base' AND rev.revs_type = 'variants' ) as `base_price`,
+            IF( ( SELECT child_val FROM tp_revisions rev WHERE  rev.parent_id = var.ID AND rev.child_key = 'baseprice' AND rev.revs_type = 'variants' ) = 1, 'Active', 'Inactive') as `base`,
 
                 IF( rev.child_val = 1 , 'Active','Inactive') AS `status`,
                 null as options
