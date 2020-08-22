@@ -13,7 +13,7 @@
 
         public static function listen(){
             return rest_ensure_response( 
-                TP_Best_Seller_Store:: list_open()
+                TP_Store_Best_Seller:: list_open()
             );
         }
 
@@ -61,7 +61,7 @@
                 ( SELECT child_val FROM $table_revs WHERE id = tp_str.`status` ) AS status,
                 ( SELECT child_val FROM $table_dv_revs WHERE id = dv_add.street ) AS street,
                 ( SELECT brgy_name FROM $table_brgy WHERE ID = ( SELECT child_val FROM $table_dv_revs WHERE id = dv_add.brgy ) ) AS brgy,
-                ( SELECT citymun_name FROM $table_city WHERE city_code = ( SELECT child_val FROM $table_dv_revs WHERE id = dv_add.city ) ) AS city,
+                ( SELECT city_name FROM $table_city WHERE city_code = ( SELECT child_val FROM $table_dv_revs WHERE id = dv_add.city ) ) AS city,
                 ( SELECT prov_name FROM $table_province WHERE prov_code = ( SELECT child_val FROM $table_dv_revs WHERE id = dv_add.province ) ) AS province,
                 ( SELECT country_name FROM $table_country WHERE id = ( SELECT child_val FROM $table_dv_revs WHERE id = dv_add.country ) ) AS country 
             FROM
