@@ -46,14 +46,15 @@
             isset($_POST['pid']) ? $pid = $_POST['pid'] : $pid = NULL;
             isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL;
             isset($_POST['vrid']) ? $vrid = $_POST['vrid'] : $vrid = NULL;
+            isset($_POST['type']) ? $typ = $_POST['type'] : $typ = NULL;
 
 
             $status = $sts  == '0' || $sts == NULL ? NULL : ($sts == '2' && $sts !== '0'? '0':'1');
             $product_id = $pdid  == '0'  || $pdid == NULL ? NULL: $product_id = $pdid;
             $parent_id = $pid  == '0' || $pid == NULL ? NULL: $parent_id = $pid;
             $variants_id = $vrid  == '0' || $vrid == NULL ? NULL: $variants_id = $vrid;
+            $type = $typ  == '0' || $typ == NULL ? NULL: $type = $typ;
             
-            $test[] = array('name' => 'small', 'price' => 130 );
             
             $sql = "SELECT
             var.ID,
@@ -91,58 +92,77 @@
                 }
             }
 
-
             $result = $wpdb->get_results($sql);
-
+      
             foreach ($result as $key => $value) {
+
                 $parent = $value->ID;
 
                 $option = $wpdb->get_results("SELECT
-                rev.ID,
-                rev.child_val as 'name',
-                (SELECT child_val FROM tp_revisions rev WHERE parent_id = var.ID AND child_key = 'price' AND revs_type ='variants'  AND date_created = ( SELECT MAX(date_created) FROM tp_revisions WHERE ID = rev.ID  ) ) as `price`,
-                (SELECT child_val FROM tp_revisions rev WHERE parent_id = var.ID AND child_key = 'info' AND revs_type ='variants'  AND date_created = ( SELECT MAX(date_created) FROM tp_revisions WHERE ID = rev.ID  ) ) as `info`,
-                IF((SELECT child_val FROM tp_revisions rev WHERE parent_id = var.ID AND child_key = 'status' AND revs_type ='variants'  AND date_created = ( SELECT MAX(date_created) FROM tp_revisions WHERE ID = rev.ID  ) ) = 1, 'Active', IF((SELECT child_val FROM tp_revisions rev WHERE parent_id = var.ID AND child_key = 'status' AND revs_type ='variants'  AND date_created = ( SELECT MAX(date_created) FROM tp_revisions WHERE ID = rev.ID  ) ) is NULL , 'Inactive', 'Inactive' )) as `status`
-            FROM
-                tp_revisions rev
-                INNER JOIN tp_variants var ON var.parent_id = '$parent' 
-            WHERE   rev.revs_type = 'variants' AND child_key = 'name' AND rev.parent_id = var.ID
+                    rev.ID,
+                    rev.child_val as 'name',
+                    (SELECT child_val FROM tp_revisions rev WHERE parent_id = var.ID AND child_key = 'price' AND revs_type ='variants'  AND date_created = ( SELECT MAX(date_created) FROM tp_revisions WHERE ID = rev.ID  ) ) as `price`,
+                    (SELECT child_val FROM tp_revisions rev WHERE parent_id = var.ID AND child_key = 'info' AND revs_type ='variants'  AND date_created = ( SELECT MAX(date_created) FROM tp_revisions WHERE ID = rev.ID  ) ) as `info`,
+                    IF((SELECT child_val FROM tp_revisions rev WHERE parent_id = var.ID AND child_key = 'status' AND revs_type ='variants'  AND date_created = ( SELECT MAX(date_created) FROM tp_revisions WHERE ID = rev.ID  ) ) = 1, 'Active', IF((SELECT child_val FROM tp_revisions rev WHERE parent_id = var.ID AND child_key = 'status' AND revs_type ='variants'  AND date_created = ( SELECT MAX(date_created) FROM tp_revisions WHERE ID = rev.ID  ) ) is NULL , 'Inactive', 'Inactive' )) as `status`
+                FROM
+                    tp_revisions rev
+                    INNER JOIN tp_variants var ON var.parent_id = '$parent' 
+                WHERE   rev.revs_type = 'variants' AND child_key = 'name' AND rev.parent_id = var.ID
                 ");
 
-                if (isset($_POST['pdid'])) {
-                    if ($product_id !== NULL && $product_id == '0') {
-                        $result = $value;
+                if (isset( $_POST['vrid'] ) && isset($_POST['pdid'])) {
+                    if ($variants_id != NULL && $product_id != NULL) {
+                        return true;
+                        $result = $option;  
                     }
-                }else{
-                    $value->options = $option;  
-
                 }
 
-                if (isset($_POST['vrid'])  ) {
-                    if ($variants_id !== NULL  ) {
-
-                        if (isset($_POST['pdid'])) {
-                            if ($product_id !== NULL) {
-                                
-                                    $value->options = $option;
-
-                                
-
-                            }else{
-
-                                $result = $option;
-
-                            }
-
-                        }else{
-
-                            $result = $option;
-                        }
+                if (isset($_POST['type'])  ) {
+                    if ( $type !== NULL && $product_id !== NULL ) {
+                        $value->options = $option;
+                    }
+                }
+                           
                         
-                    }
-                }
-                
+                        /**
+                        if (isset($_POST['pdid'])) {
+                            if ($product_id !== NULL && $product_id == '0') {
+                                $result = $value;
+                            }
+                        }else{
+                            $value->options = $option;  
+
+                        }
+
+                        if (isset($_POST['vrid'])  ) {
+                            if ($variants_id !== NULL  ) {
+
+                                if (isset($_POST['pdid'])) {
+                                    if ($product_id !== NULL) {
+                                        
+                                            $value->options = $option;
+
+                                        
+
+                                    }else{
+
+                                        $result = $option;
+
+                                    }
+
+                                }else{
+
+                                    $result = $option;
+                                }
+                                
+                            }
+                        }
+                         */
+
             }
+                  
+
+
 
             return array(
                 "status" => "success",
