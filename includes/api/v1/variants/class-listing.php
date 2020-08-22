@@ -45,10 +45,14 @@
             isset($_POST['pdid']) ? $pdid = $_POST['pdid'] : $pdid = NULL;
             isset($_POST['pid']) ? $pid = $_POST['pid'] : $pid = NULL;
             isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL;
+            isset($_POST['vrid']) ? $vrid = $_POST['vrid'] : $vrid = NULL;
+            isset($_POST['vrid']) ? $vrid = $_POST['vrid'] : $vrid = NULL;
+
 
             $status = $sts  == '0' || $sts == NULL ? NULL : ($sts == '2' && $sts !== '0'? '0':'1');
             $product_id = $pdid  == '0'  || $pdid == NULL ? NULL: $product_id = $pdid;
             $parent_id = $pid  == '0' || $pid == NULL ? NULL: $parent_id = $pid;
+            $variants_id = $vrid  == '0' || $vrid == NULL ? NULL: $variants_id = $vrid;
             
             $test[] = array('name' => 'small', 'price' => 130 );
             
@@ -80,6 +84,13 @@
                 }
             }
 
+            if (isset($_POST['vrid'])) {
+                if ($variants_id != NULL) {
+                    $sql .= " AND var.ID = '$variants_id' ";
+                }
+            }
+
+
             $result = $wpdb->get_results($sql);
 
             foreach ($result as $key => $value) {
@@ -95,6 +106,30 @@
                 ");
 
                 $value->options = $option;
+
+                if (isset($_POST['vrid'])  ) {
+                    if ($variants_id !== NULL  ) {
+
+                        if (isset($_POST['pdid'])) {
+                            if ($product_id !== NULL) {
+                               
+                                $value->options = $option;
+                            }else{
+                            $result = $option;
+
+                            }
+                            
+
+                        }else{
+
+                            $result = $option;
+                        }
+                        
+
+                    }
+                }
+
+                
             }
 
             return array(
