@@ -70,9 +70,9 @@
             $doc_id = $_POST['doc_id'];
             $date_created = TP_Globals::date_stamp();
 
-            // Step5 : Check documen if exist using document id, store id and document type
-            $check_doc =  $wpdb->get_row("SELECT * FROM $tp_docs WHERE ID = $doc_id  AND stid = '$stid' AND doctype = '$doc_type' ");
-            if (!$check_doc) {
+            // Step5 : Check document if exist using document id, store id and document type
+            $check_doc =  $wpdb->get_row("SELECT ID, (SELECT child_val FROM $table_revs WHERE ID = $tp_docs.status) AS status FROM $tp_docs WHERE ID = $doc_id  AND stid = '$stid' AND doctype = '$doc_type' ");
+            if (!$check_doc || $check_doc->status === '0') {
                 return array(
                     "status" => "failed",
                     "message" => "This document does not exist."
