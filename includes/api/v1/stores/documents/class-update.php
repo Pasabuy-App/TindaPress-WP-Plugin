@@ -21,7 +21,7 @@
             
             global $wpdb;
 
-            // Step1 : Check if prerequisites plugin are missing
+            // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
@@ -30,7 +30,7 @@
                 );
             }
            
-            // Step2 : Validate user
+            // Step 2: Validate user
             if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
@@ -38,7 +38,7 @@
                 );
             }
 
-            // Step3 : Sanitize if all variables at POST
+            // Step 3: Sanitize if all variables at POST
             if ( !isset($_POST['doc_type']) 
                 || !isset($_POST['stid'])  
                 || !isset($_POST['doc_id']) ) {
@@ -49,7 +49,7 @@
                 
             }
 
-            // Step4 : Check if all variables is not empty 
+            // Step 4: Check if all variables is not empty 
             if ( empty($_POST['doc_type']) 
                 || empty($_POST['stid']) 
                 || empty($_POST['doc_id'])) {
@@ -70,7 +70,7 @@
             $doc_id = $_POST['doc_id'];
             $date_created = TP_Globals::date_stamp();
 
-            // Step5 : Check document if exist using document id, store id and document type
+            // Step 5: Check document if exist using document id, store id and document type
             $check_doc =  $wpdb->get_row("SELECT ID, (SELECT child_val FROM $table_revs WHERE ID = $tp_docs.status) AS status FROM $tp_docs WHERE ID = $doc_id  AND stid = '$stid' AND doctype = '$doc_type' ");
             if (!$check_doc || $check_doc->status === '0') {
                 return array(
@@ -79,7 +79,7 @@
                 );
             }
 
-            // Step6 : Start Query
+            // Step 6: Start Query
             $wpdb->query("START TRANSACTION");
 
             $result = DV_Globals::upload_image( $request); // upload image
@@ -90,16 +90,16 @@
 
             $update = $wpdb->query("UPDATE $tp_docs SET preview = $last_id_doc WHERE ID = $doc_id ");
 
-            // Step7 : Check if query has result
+            // Step 7: Check if query has result
             if ($result < 1 || $insert < 1 || $update < 1) {
                 $wpdb->query("ROLLBACK");
-                // Step8 : return result
+                // Step 8: return result
                 return array(
                     "status" => "failed",
                     "message" => "An error occurred while submitting data to server."
                 );
             }else {
-                //  Step9 : Return Success
+                //  Step 9: Return Success
                 $wpdb->query("COMMIT");
                 return array(
                     "status" => "success",

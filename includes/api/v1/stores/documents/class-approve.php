@@ -9,11 +9,11 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
     */
-    class TP_Delete_Documents {
+    class TP_Approve_Documents {
 
 		public static function listen(){
             return rest_ensure_response( 
-                TP_Delete_Documents::delete_document()
+                TP_Approve_Documents::delete_document()
             );
         }
 
@@ -77,10 +77,10 @@
 
             $wpdb->query("START TRANSACTION");
 
-            $insert = $wpdb->query("INSERT INTO $table_revs $revs_fields VALUES ('documents', $doc_id, 'status', '0', '$wpid', '$date_created' ) ");
+            $insert = $wpdb->query("INSERT INTO $table_revs $revs_fields VALUES ('documents', $doc_id, 'approved_by', '$wpid', '$wpid', '$date_created' ) ");
             $last_id_doc = $wpdb->insert_id;
 
-            $update = $wpdb->query("UPDATE $tp_docs SET status = $last_id_doc WHERE ID = $doc_id ");
+            $update = $wpdb->query("UPDATE $tp_docs SET approved_by = $last_id_doc WHERE ID = $doc_id ");
 
             //  Step 6: Return Success
             if ($insert < 1 || $update < 1 ) {
@@ -93,7 +93,7 @@
                 $wpdb->query("COMMIT");
                 return array(
 					"status" => "success",
-                    "message" => "Data has been deleted successfully."
+                    "message" => "Data has been approved successfully."
                 );
             }
 

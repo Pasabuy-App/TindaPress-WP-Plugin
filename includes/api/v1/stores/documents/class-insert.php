@@ -21,7 +21,7 @@
             
             global $wpdb;
             
-            // Step1 : Check if prerequisites plugin are missing
+            // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
@@ -30,7 +30,7 @@
                 );
             }
            
-            // Step2 : Validate user
+            // Step 2: Validate user
             if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
@@ -38,7 +38,7 @@
                 );
             }
 
-            // Step3 : Sanitize if all variables at POST
+            // Step 3: Sanitize if all variables at POST
             if ( !isset($_POST['doc_type']) 
                 || !isset($_POST['stid']) ) {
 				return array(
@@ -48,7 +48,7 @@
                 
             }
                 
-            // Step4 : Check if all variables is not empty 
+            // Step 4: Check if all variables is not empty 
             if ( empty($_POST['doc_type']) 
                 || empty($_POST['stid']) ) {
                 return array(
@@ -67,7 +67,7 @@
             $stid = $_POST['stid'];
             $date_created = TP_Globals::date_stamp();
 
-            // Step5 : Start Query
+            // Step 5: Start Query
             $wpdb->query("START TRANSACTION");
             
             $result = DV_Globals::upload_image( $request); // upload image
@@ -88,16 +88,16 @@
             
             $update = $wpdb->query("UPDATE $tp_docs SET preview = $id[0], status = '$id[1]', date_created = '$date_created' WHERE ID = $last_id_doc ");
            
-            // Step6 : Check if query has result
+            // Step 6: Check if query has result
             if ($insert2 < 1 || $insert1 < 1 || $update < 1 || !$result) {
                 $wpdb->query("ROLLBACK");
-                // Step7 : return result
+                // Step 7: return result
                 return array(
                     "status" => "failed",
                     "message" => "Please contact your administrator. Submitting document failed."
                 );
             }else {
-                //  Step8 : Return Success
+                //  Step 8: Return Success
                 $wpdb->query("COMMIT");
                 return array(
                     "status" => "success",
