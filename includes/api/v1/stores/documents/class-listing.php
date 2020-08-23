@@ -42,7 +42,7 @@
                 );
             }
 
-            // Step 6: Start mysql query
+            // Step 3: Start mysql query
             $sql = "SELECT
                 doc.ID,
                 (SELECT child_val FROM tp_revisions WHERE ID = str.title) AS store,
@@ -56,19 +56,19 @@
                 tp_stores str ON str.ID = doc.stid
             ";
             
-            // Filter Contact type (OPTIONAL)
+            // Step 4: Filter Contact type (OPTIONAL)
             isset($_POST['stid']) ? $stid = $_POST['stid']: $stid = NULL; 
             isset($_POST['doc_type']) ? $doc_type = $_POST['doc_type']: $doc_type = NULL; 
             isset($_POST['doc_id']) ? $doc_id = $_POST['doc_id']: $doc_id = NULL; 
             isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL  ;
             (int)$status = $sts == '0'? NULL:($sts == '2'? '0':'1')  ;
 
-            // Where clause if needs a filter contact id in contacts query 
+            // Step 5: Where clause if needs a filter store id in store query 
             if (isset($_POST['stid']) && $stid != NULL && $stid != '0') {
                 $sql .= "WHERE doc.stid = '$stid' ";                    
             }
             
-            // Where clause if needs a filter type in contacts query 
+            // Step 6: Where clause if needs a filter type in documents query 
             if (isset($_POST['doc_type'])  && $doc_type != NULL ) {
                 // Validate if Contact type is valid
                 if ($doc_type != 'dti_registration' 
@@ -92,7 +92,7 @@
                 }
             }
 
-            // Where clause if needs a filter status in contacts query 
+            // Step 7: Where clause if needs a filter status in contacts query 
             if (isset($_POST['status']) && $status != NULL ) {
                 if (  $status != NULL && $status != '0' && $type != NULL || $type != '0'  ) {
                     if (!isset($_POST['stid'])){
@@ -104,29 +104,26 @@
                 }
             }
 
-            // Where clause if needs a filter contact id in contacts query 
+            // Step 8: Where clause if needs a filter document id in documents query 
             if (isset($_POST['doc_id']) && $doc_id != NULL && $doc_id != '0'  ) {
                 if (!isset($_POST['stid'])){
                     $sql .= " WHERE doc.`ID` = '$doc_id' "; 
                 }
                 else{   
                     $sql .= " AND  doc.`ID` = '$doc_id' "; 
-                }                      
-                
+                }  
             }
             
-            // return query
+            // Step 9: return query
             $result = $wpdb->get_results($sql);
 
-            // Step 7: Check if no rows found
+            // Step 10: Check if no rows found
             if (!$result) {
                 return array(
                     "status" => "success",
                     "message" => "No results found."
                 );
-
             }else{
-
                 return array(
                     "status" => "success",
                     "data" => $result

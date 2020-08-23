@@ -81,6 +81,7 @@
                 );
             }
 
+            //  Step 6: Query
             $wpdb->query("START TRANSACTION");
 
             $insert = $wpdb->query("INSERT INTO $table_revs $revs_fields VALUES ('documents', $doc_id, 'approved_by', '$wpid', '$wpid', '$date_created' ) ");
@@ -88,7 +89,7 @@
 
             $update = $wpdb->query("UPDATE $tp_docs SET approved_by = $last_id_doc WHERE ID = $doc_id ");
 
-            //  Step 6: Return Success
+            //  Step 7: Return Success
             if ($insert < 1 || $update < 1 ) {
                 $wpdb->query("ROLLBACK");
                 return array(

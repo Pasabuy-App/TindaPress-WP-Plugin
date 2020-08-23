@@ -75,8 +75,8 @@
                     "message" => "This document has already exist."
                 );
             } 
-            return 0;
-            // Step 5: Start Query
+            
+            // Step 6: Start Query
             $wpdb->query("START TRANSACTION");
             
             $result = DV_Globals::upload_image( $request); // upload image
@@ -97,16 +97,14 @@
             
             $update = $wpdb->query("UPDATE $tp_docs SET preview = $id[0], status = '$id[1]', date_created = '$date_created' WHERE ID = $last_id_doc ");
            
-            // Step 6: Check if query has result
+            // Step 7: Check if query has result
             if ($insert2 < 1 || $insert1 < 1 || $update < 1 || !$result) {
                 $wpdb->query("ROLLBACK");
-                // Step 7: return result
                 return array(
                     "status" => "failed",
                     "message" => "Please contact your administrator. Submitting document failed."
                 );
             }else {
-                //  Step 8: Return Success
                 $wpdb->query("COMMIT");
                 return array(
                     "status" => "success",
