@@ -68,8 +68,8 @@
             $date_created = TP_Globals::date_stamp();
 
             // Step 5: Check document if exist using store id and document type
-            $check_doc =  $wpdb->get_row("SELECT doctype FROM $tp_docs WHERE stid = '$stid' AND doctype = '$doc_type'  ");
-            if ($check_doc->doctype === $doc_type) {
+            $check_doc =  $wpdb->get_row("SELECT doctype, (SELECT child_val FROM $table_revs WHERE ID = $tp_docs.status) AS status  FROM $tp_docs WHERE stid = '$stid' AND doctype = '$doc_type'  ");
+            if ($check_doc->doctype === $doc_type || $check_doc->status === '1' ) {
                 return array(
                     "status" => "failed",
                     "message" => "This document has already exist."
