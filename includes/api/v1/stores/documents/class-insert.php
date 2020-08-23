@@ -9,10 +9,7 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
-?>
-<?php
-
-	class TP_Insert_Documents {
+    class TP_Insert_Documents {
 
         public static function listen($request){
             return rest_ensure_response( 
@@ -68,7 +65,6 @@
             $wpid = $_POST['wpid'];
             $doc_type = $_POST['doc_type'];
             $stid = $_POST['stid'];
-            //$doc_prev = $_POST['doc_prev'];
             $date_created = TP_Globals::date_stamp();
 
             // Step5 : Start Query
@@ -105,7 +101,7 @@
                 $wpdb->query("COMMIT");
                 return array(
                     "status" => "success",
-                    "message" => "Document Successfully Submited."
+                    "message" => "Data has been added successfully."
                 );
             }
         }

@@ -146,6 +146,8 @@
 				$sql .= "`stid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Store ID of Merchant', ";
 				$sql .= "`preview` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Image url of document', ";
 				$sql .= "`doctype` enum('none','dti_registration','barangay_clearance','lease_contract','community_tax','occupancy_permit','sanitary_permit','fire_permit','mayors_permit') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Document type', ";
+				$sql .= "`status` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Revision ID of status', ";
+				$sql .= "`approved_by` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Pasabuy Staff User ID who approved this document', ";
 				$sql .= "`date_created` datetime(0) NULL DEFAULT NULL COMMENT 'Date document was created', ";
 				$sql .= "PRIMARY KEY (`ID`) ";
 				$sql .= ") ENGINE = InnoDB; ";
