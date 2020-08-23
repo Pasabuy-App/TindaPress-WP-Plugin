@@ -67,6 +67,8 @@
             $stid = $_POST['stid'];
             $date_created = TP_Globals::date_stamp();
 
+            // TODO : Validate if same doctype and status is active of store
+
             // Step 5: Start Query
             $wpdb->query("START TRANSACTION");
             
