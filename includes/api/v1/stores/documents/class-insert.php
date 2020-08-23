@@ -67,8 +67,15 @@
             $stid = $_POST['stid'];
             $date_created = TP_Globals::date_stamp();
 
-            // TODO : Validate if same doctype and status is active of store
-
+            // Step 5: Check document if exist using store id and document type
+            $check_doc =  $wpdb->get_row("SELECT doctype FROM $tp_docs WHERE stid = '$stid' AND doctype = '$doc_type'  ");
+            if ($check_doc->doctype === $doc_type) {
+                return array(
+                    "status" => "failed",
+                    "message" => "This document has already exist."
+                );
+            } 
+            return 0;
             // Step 5: Start Query
             $wpdb->query("START TRANSACTION");
             
