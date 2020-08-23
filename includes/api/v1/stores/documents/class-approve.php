@@ -67,13 +67,19 @@
             $revs_fields = TP_REVISION_FIELDS; 
 
             // Step 5: Check document if exist using document id, store id and document type
-            $check_doc =  $wpdb->get_row("SELECT ID, (SELECT child_val FROM $table_revs WHERE ID = $tp_docs.status) AS status FROM $tp_docs WHERE ID = $doc_id  AND stid = '$stid' ");
+            $check_doc =  $wpdb->get_row("SELECT ID, approved_by, (SELECT child_val FROM $table_revs WHERE ID = $tp_docs.status) AS status FROM $tp_docs WHERE ID = $doc_id  AND stid = '$stid' ");
             if (!$check_doc || $check_doc->status === '0') {
                 return array(
                     "status" => "failed",
                     "message" => "This document does not exist."
                 );
             } 
+            if ( !($check_doc->approved_by === '0') ) {
+                return array(
+                    "status" => "failed",
+                    "message" => "This document has been already approved."
+                );
+            }
 
             $wpdb->query("START TRANSACTION");
 
