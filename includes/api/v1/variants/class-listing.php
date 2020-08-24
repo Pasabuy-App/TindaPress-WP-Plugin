@@ -98,8 +98,6 @@
             foreach ($result as $key => $value) {
                 
                 $parent = $value->ID;
-                // IF((SELECT child_val FROM tp_revisions rev WHERE parent_id = var.ID AND child_key = 'status' AND revs_type ='variants'  AND ID = ( SELECT MAX(ID) FROM tp_revisions WHERE parent_id = rev.parent_id  ) ) = 1, 'Active', 
-                // IF((SELECT child_val FROM tp_revisions rev WHERE parent_id = var.ID AND child_key = 'status' AND revs_type ='variants'  AND ID = ( SELECT MAX(ID) FROM tp_revisions WHERE parent_id = rev.parent_id   ) ) is NULL , 'Inactive', 'Inactive' )) as `status`
                 $option = $wpdb->get_results("SELECT
                     rev.ID,
                     rev.child_val as 'name',
