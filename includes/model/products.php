@@ -136,7 +136,7 @@
                                         ' data-catname="' + '<?= $_GET['catname'] ?>' + '"' + 
                                         ' data-pdid="' + item.ID + '"' + 
                                         ' data-pdname="' + item.product_name + '"' + 
-                                        ' >Options</button>' +
+                                        ' >Modify</button>' +
 
                                         '<button type="button" class="btn btn-secondary btn-sm appkey-' + item.ID + '"' +
                                         ' data-clipboard-text="' + item.ID + '"' +

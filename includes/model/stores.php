@@ -127,7 +127,7 @@
                                         ' data-status="' + item.status + '"' +  
                                         ' data-title="' + item.title + '"' +  
                                         ' data-sinfo="' + item.short_info + '"' + 
-                                        ' >Options</button>' +
+                                        ' >Modify</button>' +
 
                                     '<button type="button" class="btn btn-secondary btn-sm appkey-' + item.ID + '"' +
                                         ' data-clipboard-text="' + item.ID + '"' +

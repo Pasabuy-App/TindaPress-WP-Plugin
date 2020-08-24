@@ -32,45 +32,6 @@
 					<strong>All Variants</strong>
 				</div>
 			<?php } ?>
-			<?php if(isset($_GET['id']) && isset($_GET['name'])) { ?>
-			<select class="space-left" id="set_cat" name="set_cat" required>
-				<script type="text/javascript">
-					jQuery(document).ready( function ( $ ) 
-					{   
-						$.ajax({
-								dataType: 'json',
-								type: 'POST', 
-								data: {
-									wpid: "<?php echo get_current_user_id(); ?>",
-									snky: "<?php echo wp_get_session_token(); ?>",
-									status: "1", //active.
-									type: "2", //product.
-									stid: "<?= (int)$_GET['id'] ?>"
-								},
-								url: '<?php echo site_url() . "/wp-json/tindapress/v1/category/list"; ?>',
-								success: function(data) {
-									console.log(data);
-									var country = $('#set_cat');
-										country.empty();
-										var	selectDefault = 'All Category'; 
-										country.append("<option value='0' selected='selected'>"+selectDefault+"</option>");
-
-									if(data.status == "success") {
-										for(var i=0; i<data.data.length; i++ ) {
-											country.append('<option value=' + data.data[i].ID + '>' + data.data[i].title + '</option>');
-										}
-									} else {
-										console.log("TindaPress: " + data);
-									}
-								},
-								error : function(){
-									console.log("TindaPress: Product Browser at Line 61.");
-								}
-						});
-					});
-				</script>                            
-			</select>
-			<?php } ?>
 			<select class="space-left" id="set_status" name="set_status">
 				<option value="0" selected="selected">All Status</option>
 				<option value="1">Active</option>
@@ -85,7 +46,7 @@
 	</div>
 
 	<?php include_once( TP_PLUGIN_PATH . "/includes/model/variants.php" ); ?>
-	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/product-create-modal.php" ); ?>
-	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/product-edit-modal.php" ); ?>
+	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/variant-create-modal.php" ); ?>
+	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/variant-edit-modal.php" ); ?>
 	<div id="jquery-overlay" class="modal-backdrop fade show tp-display-hide" style="z-index: 9999;"></div>
 	

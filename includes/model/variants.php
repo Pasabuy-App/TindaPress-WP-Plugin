@@ -35,6 +35,9 @@
             if(isset($_GET['pdid']) && isset($_GET['pdname'])) {
                 $prod_group = "&pdid=".$_GET['pdid']."&pdname=".$_GET['pdname'];
             }
+            if(isset($_GET['vrid']) && isset($_GET['vrname'])) {
+                $prod_group = "&vrid=".$_GET['vrid']."&vrname=".$_GET['vrname'];
+            }
             ?>
             var catid = isNaN($('#set_cat').val()) || $('#set_cat').val() == null ? 0 : $('#set_cat').val();
             window.location.href = '<?php echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT.$store_group.$cat_group.$prod_group ."&status="; ?>' + $('#set_status').val() + "&catid=" + catid;
@@ -65,12 +68,15 @@
                         postParam.wpid = "<?php echo get_current_user_id(); ?>";
                         postParam.snky = "<?php echo wp_get_session_token(); ?>";
 
-                        <?php if( isset($_GET['pdid']) ) { ?>
+                        <?php if( isset($_GET['pdid']) && !isset($_GET['vrid']) ) { ?>
                             postParam.pdid = "<?= $_GET['pdid'] ?>";
+                        <?php } else { ?>
+                            postParam.pid = '0';
                         <?php } ?>
-                        <?php if( isset($_GET['status']) ) { ?>
-                            postParam.status = "<?= (int)$_GET['status'] ?>";
+                        <?php if( isset($_GET['vrid']) ) { ?>
+                            postParam.vrid = "<?= $_GET['vrid'] ?>";
                         <?php } ?>
+                        postParam.status = $("#set_status").val();
                     var postUrl = "<?= site_url() . '/wp-json/tindapress/v1/variants/list' ?>";
                     
                     $.ajax({
@@ -108,34 +114,15 @@
                     // { "sTitle": "IDENTITY",   "mData": "ID" },
                     { "sTitle": "NAME",   "mData": "name" },
                     <?php if(isset($_GET['vrid']) && isset($_GET['vrname'])) { ?>
-                        //For options child. 
+                        { "sTitle": "PRICE",   "mData": "price" },
                     <?php } else { ?>
-                        { "sTitle": "BASE PRICE",   "mData": "base_price" },
+                        { "sTitle": "BASE",   "mData": "base" },
                     <?php } ?>
-                    
+                    //{ "sTitle": "INFO",   "mData": "info" },
+                    { "sTitle": "STATUS",   "mData": "status" },
                     {"sTitle": "Action", "mRender": function(data, type, item)
                         {
                             return '' + 
-
-                                '<div class="btn-group" role="group" aria-label="Basic example">' +
-                                    <?php if( isset($_GET['stid']) && isset($_GET['stname']) && isset($_GET['catid']) && isset($_GET['catname'])) { ?>
-                                    '<button type="button" class="btn btn-primary btn-sm"' +
-                                        ' data-toggle="modal" data-target="#EditAppOption"' +
-                                        ' title="Click this to modified or delete this project."' +
-                                        ' data-id="' + item.ID + '"' +  
-                                        ' data-title="' + item.title + '"' +  
-                                        ' data-sinfo="' + item.short_info + '"' + 
-                                        ' data-price="' + item.price + '"' +  
-                                        <?php if(isset($_GET['pdid']) && isset($_GET['pdname'])) { ?>
-                                        ' data-pdid="' + '<?= $_GET['pdid'] ?>' + '"' + 
-                                        ' data-pdname="' + '<?= $_GET['pdname'] ?>' + '"' + 
-                                        <?php } ?>
-                                        <?php if(isset($_GET['vrid']) && isset($_GET['pdname'])) { ?>
-                                        ' data-vrid="' + '<?= $_GET['vrid'] ?>' + '"' + 
-                                        ' data-vrname="' + '<?= $_GET['vrname'] ?>' + '"' + 
-                                        <?php } ?>
-                                        ' >Edit</button>' +
-                                    <?php } ?>
 
                                     '<button type="button" class="btn btn-secondary btn-sm appkey-' + item.ID + '"' +
                                         ' data-clipboard-text="' + item.ID + '"' +
@@ -155,9 +142,7 @@
                                         <?php if(isset($_GET['pdid']) && isset($_GET['pdname'])) { ?>
                                         '&pdid=' + '<?= $_GET['pdid'] ?>' + '&pdname=' + '<?= $_GET['pdname'] ?>' + 
                                         <?php } ?>
-                                        <?php if(!isset($_GET['vrid']) && !isset($_GET['vrname'])) { ?>
-                                        '&vrid=' + item.id + '&vrname=' + item.name + 
-                                        <?php } ?>
+                                        '&vrid=' + item.ID + '&vrname=' + item.name + 
                                         '`;" ' + ' title="Click this to navigate to variant list of this project."' + 
                                         ' >Options</button>' +
                                         <?php } ?>
@@ -270,31 +255,32 @@
                 var postParam = {};
                     postParam.wpid = "<?php echo get_current_user_id(); ?>";
                     postParam.snky = "<?php echo wp_get_session_token(); ?>";
-                    postParam.catid = $('#new_category').val();
-                    postParam.stid = $('#new_store').val();
-                    postParam.title = $('#new_title').val();
-                    postParam.short_info = $('#new_info').val();
-                    postParam.long_info = "None";
+                    postParam.name = $('#new_title').val();
+                    postParam.info = $('#new_info').val();
+                    postParam.pdid = $('#new_product').val();
+                    <?php if( isset($_GET['vrid']) ) { ?>
+                    postParam.vrid = '<?= $_GET['vrid'] ?>';
+                    <?php } ?>
+                    postParam.base = $('#new_base').val();
                     postParam.price = $('#new_price').val();
-                    postParam.sku = "None";
-                    postParam.weight = "None";
-                    postParam.dimension = "None";
-                    postParam.preview = "None";
 
                 // This will be handled by create-app.php.
                 $.ajax({
                     dataType: 'json',
                     type: 'POST', 
                     data: postParam,
-                    url: '<?php echo site_url() . "/wp-json/tindapress/v1/products/insert"; ?>',
+                    url: '<?php echo site_url() . "/wp-json/tindapress/v1/variants/insert"; ?>',
                     success : function( data )
                     {
                         if( data.status == 'success' ) {
-                            $('#new_category').val('');
-                            $('#new_store').val('');
                             $('#new_title').val('');
                             $('#new_info').val('');
+                            $('#new_product').val('');
+                            <?php if( isset($_GET['pdid']) && isset($_GET['pdname']) ) { ?>
+                            $('#new_base').val('');
+                            <?php } else { ?>
                             $('#new_price').val('');
+                            <?php } ?>
                         }
 
                         $('#CNAMessage').addClass('alert-'+data.status);
@@ -328,10 +314,10 @@
             // LISTEN FOR MODAL SHOW AND ATTACHED ID.
             $('#CreateNewApp').on('show.bs.modal', function(e) {
                 $('#create-app-btn').removeClass('disabled');
-                $('#new_category').val();
-                $('#new_store').val();
                 $('#new_title').val();
                 $('#new_info').val();
+                $('#new_product').prop('selectedIndex',0);
+                $('#new_base').prop('selectedIndex',0);
                 $('#new_price').val();
             });
 
