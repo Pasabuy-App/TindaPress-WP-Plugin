@@ -23,21 +23,23 @@
             global $wpdb;
             $table_revs = TP_REVISIONS_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
+            $table_store = TP_STORES_TABLE;
+            $table_product = TP_PRODUCT_TABLE;
 
            // Step 1: Check if prerequisites plugin are missing
            $plugin = TP_Globals::verify_prerequisites();
            if ($plugin !== true) {
                return array(
-                       "status" => "unknown",
-                       "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                );
            }
 			
 			// Step 2: Validate user
 			if (DV_Verification::is_verified() == false) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification Issues!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification Issues!",
                 );
                 
             }
@@ -45,16 +47,16 @@
             // Step 3: Check if parameters are passed
             if (!isset($_POST["ops_id"]) ) {
 				return array(
-						"status" => "unknown",
-						"message" => "Please contact your administrator. Request unknown!",
+					"status" => "unknown",
+					"message" => "Please contact your administrator. Request unknown!",
                 );
             }
 
             // Step 4: Check if parameters passed are not null
             if (empty($_POST["ops_id"]) ) {
 				return array(
-						"status" => "failed",
-						"message" => "Required fields cannot be empty.",
+					"status" => "failed",
+					"message" => "Required fields cannot be empty.",
                 );
             }
 
@@ -71,8 +73,8 @@
             //Return failed status if no rows found
             if (!$get_operation) {
                 return array(
-						"status" => "failed",
-						"message" => "This operation id does not exists.",
+					"status" => "failed",
+					"message" => "This operation id does not exists.",
                 );
             }
              
@@ -83,7 +85,7 @@
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = p.price ) AS `product_price`,
                 oi.quantity as quantity
                 FROM
-                    tp_stores st
+                    $table_store st
                 INNER JOIN 
                     $table_revs rev ON rev.ID = st.`status` 
                 INNER JOIN
@@ -93,7 +95,7 @@
                 INNER JOIN
                     mp_order_items oi ON oi.odid = o.id
                 INNER JOIN
-                    tp_products p ON p.id = oi.pdid
+                    $table_product p ON p.id = oi.pdid
                 WHERE 
                     rev.child_val = 1
                 AND
@@ -112,8 +114,5 @@
                 "status" => "success",
                 "data" => $orders
             );
-
-        
         }
-
     }

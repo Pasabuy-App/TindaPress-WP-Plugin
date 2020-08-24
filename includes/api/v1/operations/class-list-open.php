@@ -20,24 +20,27 @@
         public static function list_open(){
             
             //Initial QA done 2020-08-11 11:10 AM
+            // 2nd Initial QA 2020-08-24 5:53 PM - Miguel
+
             global $wpdb;
             $table_revs = TP_REVISIONS_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
+            $table_store = TP_STORES_TABLE;
 
             // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 			
 			// Step 2: Validate user
 			if (DV_Verification::is_verified() == false) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification Issues!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification Issues!",
                 );
                 
             }
@@ -58,7 +61,7 @@
                 ( SELECT prov_name FROM dv_geo_provinces WHERE prov_code = ( SELECT child_val FROM dv_revisions WHERE ID = dv_add.province ) ) AS province,
                 ( SELECT country_name FROM dv_geo_countries WHERE ID = ( SELECT child_val FROM dv_revisions WHERE ID = dv_add.country ) ) AS country 
                 FROM
-                    tp_stores st
+                    $table_store st
                 INNER JOIN 
                     $table_revs rev ON rev.ID = st.`status` 
                 INNER JOIN 
@@ -75,8 +78,5 @@
                 "status" => "success",
                 "data" => $open_stores
             );
-
-        
         }
-
     }
