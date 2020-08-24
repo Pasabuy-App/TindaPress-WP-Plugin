@@ -69,115 +69,48 @@
                 );
             }
 
-
-
-            // // Step 5: Check if user has roles_access of can_activate_store or either contributor or editor
-            // $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_activate_products' );
-            
-            // if ($permission == true) {
-            //     return array(
-            //         "status" => "failed",
-            //         "message" => "Current user has no access in activating products.",
-            //     );
-            // }
-
             // variables
             $parentid = $_POST['pdid'];
             $wpid = $_POST['wpid'];
             
             // Step 6: Check if products exists
-            $get_status_id = $wpdb->get_row("SELECT `status` FROM $table_product WHERE ID = $parentid  ");
+            $get_product_data = $wpdb->get_row("SELECT
+                prod.ID,
+                child_val AS `status` 
+            FROM
+                tp_products prod
+                INNER JOIN tp_revisions rev ON rev.`ID` = prod.`status` 
+            WHERE
+                revs_type = 'products' 
+                AND child_key = 'status' AND prod.ID = '$parentid'");
 
-            if ( empty($get_status_id)  ) {
+            if ( empty($get_product_data)  ) {
                 return array(
                     "status" => "failed",
                     "message" => "This product does not exists.",
                 );
             }
 
+            if ($get_product_data->status == '1') {
+                return array(
+                    "status" => "failed",
+                    "message" => "This product is already activated.",
+                );
+            }
 
 
             // Step 7: Start mysql transaction
             $wpdb->query("START TRANSACTION ");
-
-                  $get_product_last_value = $wpdb->get_row("SELECT
-                    tp_rev.revs_type as `type`,
-                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE tp_rev.ID = tp_prod.title ) AS title,
-                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.short_info ) AS `short_info`,
-                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.long_info ) AS `long_info`,
-                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.sku ) AS `sku`,
-                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.price ) AS `price`,
-                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.weight ) AS `weight`,
-                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.dimension ) AS `dimension`,
-                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.preview ) AS `preview`,
-                    ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_prod.`status` ) AS `status`
-                FROM
-                    $table_product tp_prod
-                INNER JOIN 
-                    $table_revs tp_rev ON tp_rev.ID = tp_prod.title
-                INNER JOIN
-                    $table_categories c ON c.ID = tp_prod.ctid
-                WHERE tp_prod.ID = $parentid ");
-
-                //Check if product is already activated
-                if ($get_status->status != 0   ) {
-                        
-                    $wpdb->query("ROLLBACK");
-                    return array(
-                        "status" => "failed",
-                        "message" => "This product is already activated.",
-                    );
-                }
                 
+                $insert_new_status = $wpdb->query("INSERT INTO tp_revisions $table_revs_fields VALUES ('products', '$get_product_data->ID', 'status', '1', '$wpid', '$date_stamp')");
+                $insert_new_status_ID = $wpdb->insert_id;
+
+                $update_product = $wpdb->query("UPDATE tp_products SET `status` = '$insert_new_status_ID' WHERE ID = $get_product_data->ID ");
                 // Sanitize product title with apostrophe
-                foreach ($get_product_last_value as $key => $value) {
-                    $get_product_last_value->$key = str_replace("'","''", $value);
-                }
-
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields VALUES ('$get_product_last_value->type', '$parentid', 'title', '$get_product_last_value->title', '$wpid', '$date_stamp')");
-                $title = $wpdb->insert_id;
-
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'preview', '$get_product_last_value->preview', '$wpid', '$date_stamp')");
-                $preview = $wpdb->insert_id;
-
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'short_info', '$get_product_last_value->short_info', '$wpid', '$date_stamp')");
-                $short_info = $wpdb->insert_id;
-
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'long_info', '$get_product_last_value->long_info', '$wpid', '$date_stamp')");
-                $long_info = $wpdb->insert_id;
-
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'status', '1', '$wpid', '$date_stamp')");
-                $status = $wpdb->insert_id;
-
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'sku', '$get_product_last_value->sku', '$wpid', '$date_stamp')");
-                $sku = $wpdb->insert_id;
-
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'price', '$', '$wpid', '$date_stamp')");
-                $price = $wpdb->insert_id;
-
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'weight', '$get_product_last_value->weight', '$wpid', '$date_stamp')");
-                $weight = $wpdb->insert_id;
-
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'dimension', '$get_product_last_value->dimension', '$wpid', '$date_stamp')");
-                $dimension = $wpdb->insert_id;
-
-                $update_product = $wpdb->query("UPDATE tp_products SET `title` = $title, `preview` = $preview, `short_info` = $short_info, `long_info` = $long_info, `status` = $status, `sku` = $sku, `price` = $price, `weight` = $weight, `dimension` = $dimension WHERE ID = $parentid ");
-
-            
-
+               
             // Step 8: Check for query results. Do a rollback if errors found
-            if ( $title < 1  
-                || $preview < 1 
-                || $short_info < 1 
-                || $long_info < 1 
-                || $sku < 1 
-                || $price < 1 
-                || $weight < 1 
-                || $dimension < 1 
-                || $update_product < 1 ) {
-            
+            if ( $insert_new_status_ID < 1  || $update_product < 1 ) {
                 $wpdb->query("ROLLBACK");
-            
                 return array(
 					"status" => "error",
 					"message" => "An error occured while submitting data to the server.",
