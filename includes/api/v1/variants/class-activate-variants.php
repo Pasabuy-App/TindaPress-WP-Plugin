@@ -19,44 +19,44 @@
 
         public static function activate_variants(){
             
+            // 2nd Initial QA 2020-08-24 11:06 PM - Miguel
             global $wpdb;
             $table_variants = TP_VARIANTS_TABLE;
             $table_revs = TP_REVISIONS_TABLE;
             $rev_fields = TP_REVISION_FIELDS;
             $variants_fields = TP_VARIANTS_FIELDS;
             $date = TP_Globals:: date_stamp();
-            
 
             //Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 
             // Step 2: Check if wpid and snky is valid
             if (DV_Verification::is_verified() == false) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification Issues!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification Issues!",
                 );
             }
 
             // Step 3: Check if params are passed
 			if (!isset($_POST['vid']) ) {
 				return array(
-						"status" => "unknown",
-						"message" => "Please contact your administrator. Request unknown!",
+					"status" => "unknown",
+					"message" => "Please contact your administrator. Request unknown!",
                 );
             }
             
             // Step 4: Check if params are not empty
             if (empty($_POST["vid"])) {
 				return array(
-						"status" => "failed",
-						"message" => "Required fields cannot be empty.",
+					"status" => "failed",
+					"message" => "Required fields cannot be empty.",
                 );
             }
 
@@ -68,13 +68,13 @@
             
             //Check if this exists
             $get_parent = $wpdb->get_row("SELECT var.ID,
-                (SELECT child_val FROM tp_revisions WHERE ID = MAX(rev.ID)) as status
-            FROM
-                tp_variants var
-            INNER JOIN tp_revisions rev ON rev.parent_id = var.ID 
-            WHERE var.ID = '$variants_id'  
-            AND rev.revs_type = 'variants' 
-            AND child_key = 'status' 
+                    (SELECT child_val FROM $table_revs WHERE ID = MAX(rev.ID)) as status
+                FROM
+                    $table_variants var
+                INNER JOIN $table_revs rev ON rev.parent_id = var.ID 
+                WHERE var.ID = '$variants_id'  
+                AND rev.revs_type = 'variants' 
+                AND child_key = 'status' 
             ");
 
             if ($get_parent->ID === null){
@@ -103,18 +103,14 @@
                     "status" => "error",
                     "message" => "An error occured while submitting data to the server." 
                 );
-            }
 
-            $wpdb->query("COMMIT");
+            }else{
+                $wpdb->query("COMMIT");
             
-            return array(
-                        "status" => "success",
-                        "message" => "Data has been activated successfully.",
-            );
-
+                return array(
+                    "status" => "success",
+                    "message" => "Data has been activated successfully.",
+                );
+            }
         }   
-
-        
-
-        
     }
