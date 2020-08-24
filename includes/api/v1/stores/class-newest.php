@@ -19,6 +19,7 @@
         
         public static function list_open(){
             
+            // 2nd Initial QA 2020-08-24 10:51 PM - Miguel
             global $wpdb;
 
             // variable for time stamp
@@ -26,15 +27,15 @@
 
             // variable for newest date
             $date = date_create($date_stamp);
-             date_sub( $date, date_interval_create_from_date_string("7 days"));
-        
+
+            // set date 7 days ago
+            date_sub( $date, date_interval_create_from_date_string("7 days"));
             $date_expected =  date_format($date,"Y-m-d H:i:s");
             
             // declaring table names to variable
             $table_store = TP_STORES_TABLE;
             $table_category = TP_CATEGORIES_TABLE;
             $table_revisions = TP_REVISIONS_TABLE;
-            
             $table_address = DV_ADDRESS_TABLE;
             $table_dv_revisions =  DV_REVS_TABLE;
             $table_brgy = DV_BRGY_TABLE;
