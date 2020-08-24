@@ -19,12 +19,13 @@
             );
         }
 
-        //QA done 2020-08-12 8:09 pm
         public static function listen_open(){
+
+            // 2nd Initial QA 2020-08-24 7:27 PM - Miguel
             global $wpdb;
 
             // Global constant to variable
-            
+
             //TindaPress
             $table_store = TP_STORES_TABLE;
             $table_store_fields = TP_STORES_FIELDS;
@@ -38,23 +39,22 @@
             $dv_rev_table = DV_REVS_TABLE;
             $table_address = DV_ADDRESS_TABLE;
             $dv_geo_countries = DV_COUNTRY_TABLE;
-           
             $revs_type = "stores";
             
             // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 
             // Step 2: Validate user
             if (DV_Verification::is_verified() == false) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification issues!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification issues!",
                 );
             }
 
@@ -67,8 +67,8 @@
                 || !isset($_POST["type"]) 
                 ) {
 				return array(
-						"status" => "unknown",
-						"message" => "Please contact your administrator. Request unknown!",
+					"status" => "unknown",
+					"message" => "Please contact your administrator. Request unknown!",
                 ); 
             }
             
@@ -82,8 +82,8 @@
                 || empty($_POST["type"])
                 ) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Required fields cannot be empty.",
+                    "status" => "unknown",
+                    "message" => "Required fields cannot be empty.",
                 );
             }
 
@@ -175,10 +175,10 @@
                     )
                 );
             }
-          
+            
+            // Declare catch_post function
             $user = TP_Store_Insert_address::catch_post();
             $date_created = TP_Globals::date_stamp();
-            
 
             $get_store = $wpdb->get_row("SELECT ID ,
                     (SELECT child_val FROM tp_revisions WHERE ID = tp_stores.`status`  ) as status
@@ -191,16 +191,16 @@
             // Step 6 : Check if this store id exists
             if ( !$get_store ) {
                 return array(
-                        "status" => "failed",
-                        "message" => "This store does not exists.",
+                    "status" => "failed",
+                    "message" => "This store does not exists.",
                 );
             }
 
             //Fails if store currently inactive
             if ( $get_store->status == 0 ) {
                 return array(
-                        "status" => "failed",
-                        "message" => "This store is currently inactive.",
+                    "status" => "failed",
+                    "message" => "This store is currently inactive.",
                 );
             }
 
@@ -271,27 +271,25 @@
                     "message" => "Data has been added successfully.",
                 );
             }
-            
         }
 
         public static function catch_post()
         {
-              $cur_user = array();
+            $cur_user = array();
                
-                $cur_user['created_by']  = $_POST["wpid"];
-                $cur_user['store_id']  = $_POST["stid"];
+            $cur_user['created_by']  = $_POST["wpid"];
+            $cur_user['store_id']  = $_POST["stid"];
  
-                // Address Listen
-                $cur_user['street']     = $_POST["st"];
-                $cur_user['country']    = $_POST["co"];
-                $cur_user['province']   = $_POST["pv"];
-                $cur_user['city']       = $_POST["ct"];
-                $cur_user['barangy']    = $_POST["bg"];
-                $cur_user['type']       = $_POST["type"];
-                $cur_user['latitude']       = $_POST["lat"];
-                $cur_user['longtitude']       = $_POST["long"];
+            // Address Listen
+            $cur_user['street']     = $_POST["st"];
+            $cur_user['country']    = $_POST["co"];
+            $cur_user['province']   = $_POST["pv"];
+            $cur_user['city']       = $_POST["ct"];
+            $cur_user['barangy']    = $_POST["bg"];
+            $cur_user['type']       = $_POST["type"];
+            $cur_user['latitude']       = $_POST["lat"];
+            $cur_user['longtitude']       = $_POST["long"];
 
-
-              return  $cur_user;
+            return  $cur_user;
         }
     }
