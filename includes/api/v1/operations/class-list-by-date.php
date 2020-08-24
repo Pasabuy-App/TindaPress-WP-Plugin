@@ -20,9 +20,13 @@
         public static function list_orders_date(){
             
             //Initial QA done 2020-08-11 11:18 AM
+            // 2nd Initial QA 2020-08-24 5:22 PM - Miguel
+
             global $wpdb;
             $table_revs = TP_REVISIONS_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
+            $table_product = TP_PRODUCT_TABLE;
+            $table_store = TP_STORES_TABLE;
             
             // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -39,7 +43,6 @@
                         "status" => "unknown",
                         "message" => "Please contact your administrator. Verification Issues!",
                 );
-                
             }
 
             // Step 3: Check if parameters are passed
@@ -62,7 +65,6 @@
             $start = TP_Globals::convert_date($_POST["wpid"],$_POST["start"]);
             $end = TP_Globals::convert_date($_POST["wpid"],$_POST["end"]);
 
-
             //Check if dates passed are in valid format
             //Invalid dates such as 2020-02-31 will return false
             if ( TP_List_Date::validateDate($start) == false || TP_List_Date::validateDate($end) == false ) {
@@ -83,13 +85,13 @@
                 INNER JOIN
                     mp_operations ops ON ops.id = o.opid
                 INNER JOIN
-                    tp_stores st ON st.id = ops.stid
+                    $table_store st ON st.id = ops.stid
                 INNER JOIN 
-                    tp_revisions rev ON rev.ID = st.`status` 
+                    $table_revs rev ON rev.ID = st.`status` 
                 INNER JOIN
                     mp_order_items oi ON oi.odid = o.id
                 INNER JOIN
-                    tp_products p ON p.id = oi.pdid
+                    $table_product p ON p.id = oi.pdid
                 WHERE 
                     rev.child_val = 1
                 AND
@@ -108,8 +110,6 @@
                 "status" => "success",
                 "data" => $list_date
             );
-
-        
         }
 
         public static function validateDate($date, $format = 'Y-m-d H:i:s'){
