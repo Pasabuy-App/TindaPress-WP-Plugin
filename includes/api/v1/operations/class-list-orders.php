@@ -20,6 +20,8 @@
         public static function list_orders(){
             
             //Initial QA done 2020-08-11 11:03 AM
+            // 2nd Initial QA 2020-08-24 5:55 PM - Miguel
+
             global $wpdb;
             $table_revs = TP_REVISIONS_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
@@ -100,14 +102,6 @@
                     rev.child_val = 1
                 AND
                     ops.id = $operations_id");
-
-            // Step 7: Check results if empty
-            if ( !$orders) {
-                return array(
-                    "status" => "failed",
-                    "message" => "No results found.",
-                );
-            }
 
             // Step 8: Return a success status and message 
             return array(
