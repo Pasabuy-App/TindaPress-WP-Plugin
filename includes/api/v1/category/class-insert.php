@@ -23,6 +23,7 @@
         public static function insert_category(){
             
             //Inital QA done 2020-08-10 08:14 PM
+            // 2nd Initial QA 2020-08-24 5:09 PM - Miguel
 
             global $wpdb;
             $table_revs = TP_REVISIONS_TABLE;
@@ -47,7 +48,6 @@
                         "status" => "unknown",
                         "message" => "Please contact your administrator. Verification issues!",
                 );
-                
             }
 
             //Check if user has roles_access of can_add_category or either contributor or editor
@@ -117,25 +117,24 @@
 
             // Step 7: Check if any of the queries above failed
             if ($title_id < 1 || $info_id < 1 || $status_id < 1 || $parent_id < 1 || $result < 1) {
+
                 // when insert failed rollback all inserted data
                 $wpdb->query("ROLLBACK");
                 return array(
-                        "status" => "error",
-                        "message" => "An error occured while submitting data to database.",
+                    "status" => "error",
+                    "message" => "An error occured while submitting data to database.",
                 );
-            
+
+            }else{
+
+                // commits all insert if true
+                $wpdb->query("COMMIT");
+
+                // Step 8: Return a success status and message 
+                return array(
+                    "status" => "success",
+                    "message" => "Data has been added successfully!",
+                );
             }
-
-            // commits all insert if true
-            $wpdb->query("COMMIT");
-
-            // Step 8: Return a success status and message 
-            return array(
-                "status" => "success",
-                "message" => "Data has been added successfully!",
-            );
-
-
         }
-
     }
