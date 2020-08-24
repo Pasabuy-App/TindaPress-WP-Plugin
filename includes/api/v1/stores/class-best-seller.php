@@ -19,6 +19,7 @@
 
         public static function list_open(){
 
+            // 2nd Initial QA 2020-08-24 10:34 PM - Miguel
             global $wpdb;
             
             // declaring table names to variable
@@ -36,16 +37,16 @@
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 
             //  Step2 : Validate if user is exist
 			if (DV_Verification::is_verified() == false) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification issues!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification issues!",
                 );
             }
 
@@ -74,19 +75,11 @@
                 mp_ord.stid Desc");
 
             //  Step4 : Check result
-            if (!$result) {
-                
-                return array(
-                    "status" => "failed",
-                    "message" =>  "No results found.",
-                );
-
-            }else{
-                return array(
-                    "status" => "success",
-                    "data" =>  max($result),
-                );
-            }
+           
+            return array(
+                "status" => "success",
+                "data" =>  max($result),
+            );
         }
 
     }

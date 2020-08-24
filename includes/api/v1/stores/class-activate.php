@@ -21,6 +21,7 @@
         //QA done 2020-08-12 10:10 PM
         public static function list_open(){
 
+            // 2nd Initial QA 2020-08-24 10:33 PM - Miguel
             global $wpdb;
             
             $user = TP_Activate_Store::catch_post();
