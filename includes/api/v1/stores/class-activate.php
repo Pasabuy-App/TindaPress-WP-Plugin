@@ -29,22 +29,23 @@
             $table_store = TP_STORES_TABLE;
             $table_revisions = TP_REVISIONS_TABLE;
             $table_revision_field = TP_REVISION_FIELDS;
-            $date_created = TP_Globals::date_stamp();
+            $table_category = TP_CATEGORIES_TABLE;
+            $date = TP_Globals::date_stamp();
 
             // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
             
             // Step 2: Validate user
             if (DV_Verification::is_verified() == false) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification Issues!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification Issues!",
                 );
             }
 
@@ -63,9 +64,11 @@
                     "message" => "Required fields cannot be empty.",
                 );
             }
+
+            $user = self::catch_post();
             
             // Step 5: Check if store exists
-            $store_data = $wpdb->get_row("SELECT child_val as stats FROM tp_revisions WHERE ID = (SELECT `status` FROM tp_stores WHERE ID = '{$user["store_id"]}')");
+            $store_data = $wpdb->get_row("SELECT child_val as stats FROM $table_revisions WHERE ID = (SELECT `status` FROM $table_store WHERE ID = '{$user["store_id"]}')");
                
             // Check if no rows found
             if (!$store_data) {
@@ -87,45 +90,51 @@
             $wpdb->query("START TRANSACTION");
 
                 //Get current value of this store
-                $get_last_value = $wpdb->get_row("SELECT
-                    tp_rev.child_val AS title,
-                    (select child_val from $table_revisions where id = tp_str.short_info) AS short_info,
-                    (select child_val from $table_revisions where id = tp_str.long_info) AS long_info,
-                    (select child_val from $table_revisions where id = tp_str.logo) AS logo,
-                    (select child_val from $table_revisions where id = tp_str.banner) AS banner,
-                    (select child_val from $table_revisions where id = tp_str.status) AS `status`
-                FROM
-                    $table_store tp_str
-                INNER JOIN 
-                    $table_revisions tp_rev ON tp_rev.ID = tp_str.title 
-                WHERE 
-                    tp_str.ID = '{$user["store_id"]}'
+                $get_store_data = $wpdb->get_row("SELECT
+                        str.ID,
+                        str.ctid AS `catid`,
+                        ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.ID = cat.title  AND rev.date_created = (SELECT MAX(tp_rev.date_created) FROM $table_revisions tp_rev WHERE ID = rev.ID  AND revs_type ='categories'   )  ) as cat_name,
+                        ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.id = str.title AND  rev.date_created = ( SELECT MAX(date_created) FROM $table_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores' )  ) AS title,
+                        ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.id = str.short_info AND  rev.date_created = ( SELECT MAX(date_created) FROM $table_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores' ) ) AS short_info,
+                        ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.id = str.long_info AND  rev.date_created = ( SELECT MAX(date_created) FROM $table_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores' ) ) AS long_info,
+                        ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.id = str.logo AND  rev.date_created = ( SELECT MAX(date_created) FROM $table_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores' ) ) AS avatar,
+                        ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.id = str.banner AND  rev.date_created = ( SELECT MAX(date_created) FROM $table_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores' ) ) AS banner,
+                        ( SELECT rev.child_val FROM $table_revisions rev WHERE rev.id = str.`status` AND ID = (SELECT MAX(tp_rev.ID) FROM $table_revisions tp_rev WHERE tp_rev.ID = rev.ID AND tp_rev.child_key = 'status' AND tp_rev.revs_type = 'stores')   )  AS `status`,
+                        ( SELECT dv_rev.child_val FROM dv_revisions  dv_rev WHERE dv_rev.ID = `add`.street AND dv_rev.date_created = (SELECT MAX(date_created)  FROM dv_revisions WHERE ID = dv_rev.ID AND revs_type ='address')   ) AS street,
+                        ( SELECT brgy_name FROM dv_geo_brgys WHERE ID = ( SELECT dv_rev.child_val FROM dv_revisions dv_rev WHERE dv_rev.id = `add`.brgy  AND dv_rev.date_created = (SELECT MAX(date_created)  FROM dv_revisions WHERE ID = dv_rev.ID AND revs_type ='address') ) ) AS brgy,
+                        ( SELECT city_name FROM dv_geo_cities WHERE city_code = ( SELECT dv_rev.child_val FROM dv_revisions dv_rev WHERE dv_rev.id = `add`.city  AND dv_rev.date_created = (SELECT MAX(date_created)  FROM dv_revisions WHERE ID = dv_rev.ID AND revs_type ='address')  ) ) AS city,
+                        ( SELECT prov_name FROM dv_geo_provinces WHERE prov_code = ( SELECT dv_rev.child_val FROM dv_revisions dv_rev WHERE dv_rev.id = `add`.province AND dv_rev.date_created = (SELECT MAX(date_created)  FROM dv_revisions WHERE ID = dv_rev.ID AND revs_type ='address')  ) ) AS province,
+                        ( SELECT country_name FROM dv_geo_countries WHERE id = ( SELECT dv_rev.child_val FROM dv_revisions dv_rev WHERE dv_rev.id = `add`.country  AND dv_rev.date_created = (SELECT MAX(date_created)  FROM dv_revisions WHERE ID = dv_rev.ID AND revs_type ='address')  ) ) AS country,
+                        ( SELECT child_val FROM dv_revisions WHERE ID = ( SELECT revs FROM dv_contacts WHERE types = 'phone' AND stid = str.ID LIMIT 1 ) LIMIT 1 ) AS phone,
+                        ( SELECT child_val FROM dv_revisions WHERE ID = ( SELECT revs FROM dv_contacts  WHERE types = 'email' AND stid = str.ID LIMIT 1 ) LIMIT 1 ) AS email 
+                    FROM
+                        $table_store str
+                        INNER JOIN dv_address `add` ON str.address = `add`.ID
+                        INNER JOIN $table_category cat ON cat.ID = str.ctid
+                        WHERE 
+                            str.ID = '{$user["store_id"]}'
                 ");
 
-                //Inserting new data using the current value
-                $wpdb->query("INSERT INTO $table_revisions $table_revision_field VALUES ( 'stores', '{$user["store_id"]}', 'title', '$get_last_value->title', '{$user["created_by"]}', '$date_created'  ) ");
-                $title = $wpdb->insert_id;
+            if ($get_store_data->status == '1') {
+                return array(
+                    "status" => "failed",
+                    "message" => "This store is already activated."
+                );
+            }
+            if (empty($get_store_data)) {
+                return array(
+                    "status" => "failed",
+                    "message" => "This store does not exists."
+                );
+            }
+            
+            $results = $wpdb->query(" INSERT INTO $table_revisions $table_revision_field VALUES ('stores', '$get_store_data->ID', 'status', '1', '{$user["created_by"]}', '$date') ");
+            $results_ID = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revisions $table_revision_field VALUES ( 'stores', '{$user["store_id"]}', 'short_info', '$get_last_value->short_info', '{$user["created_by"]}', '$date_created'  ) ");
-                $short_info = $wpdb->insert_id;
-
-                $wpdb->query("INSERT INTO $table_revisions $table_revision_field VALUES ( 'stores', '{$user["store_id"]}', 'long_info', '$get_last_value->long_info', '{$user["created_by"]}', '$date_created'  ) ");
-                $long_info = $wpdb->insert_id;
-
-                $wpdb->query("INSERT INTO $table_revisions $table_revision_field VALUES ( 'stores', '{$user["store_id"]}', 'logo', '$get_last_value->logo', '{$user["created_by"]}', '$date_created'  ) ");
-                $logo = $wpdb->insert_id;
-
-                $wpdb->query("INSERT INTO $table_revisions $table_revision_field VALUES ( 'stores', '{$user["store_id"]}', 'banner', '$get_last_value->banner', '{$user["created_by"]}', '$date_created'  ) ");
-                $banner = $wpdb->insert_id;
-
-                $wpdb->query("INSERT INTO $table_revisions $table_revision_field VALUES ( 'stores', '{$user["store_id"]}', 'status', '1', '{$user["created_by"]}', '$date_created'  ) ");
-                $status = $wpdb->insert_id;
-
-                //Update stores table to overwrite past values
-                $update_store = $wpdb->query("UPDATE tp_stores SET `title` = '$title', `short_info` = '$short_info', `long_info` = '$long_info', `logo` = '$logo', `banner` = '$banner', `status` = '$status' WHERE ID = '{$user["store_id"]}' ");
+            $update_store = $wpdb->query("UPDATE $table_store SET `status` = '$results_ID' WHERE ID = '$get_store_data->ID' ");
 
             // Step 7: Check if any queries above failed
-            if ($title < 1 || $short_info < 1 || $long_info < 1 || $logo < 1 || $banner < 1 || $status < 1 || $update_store < 1 ) {
+            if ($results < 1 ) {
                 //Do a rollback if any of the above queries failed
                 $wpdb->query("ROLLBACK");
                 return array(
