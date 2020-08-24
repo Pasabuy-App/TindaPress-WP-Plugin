@@ -24,6 +24,8 @@
         public static function store_insert_category(){
             
             //Inital QA done 2020-08-11 10:20 AM
+            // 2nd Initial QA 2020-08-24 5:17 PM - Miguel
+            
             global $wpdb;
             $table_revs = TP_REVISIONS_TABLE;
             $table_revs_fields = TP_REVISION_FIELDS;
@@ -65,8 +67,6 @@
 						"message" => "Required fields cannot be empty.",
                 );
             }
-
-   
 
             $title = $_POST['title'];
             
@@ -110,11 +110,10 @@
 
                 $result = $wpdb->query("UPDATE $table_revs SET `parent_id` = $parent_id WHERE ID IN ($title_id, $info_id, $status_id) ");
 
-                // Questionable. 
-                // $store_result = $wpdb->query("UPDATE `tp_stores` SET `ctid` = $parent_id WHERE `ID` = $store_id ");
 
             // Step 8: Check if any of the queries above failed
             if ($title_id < 1 || $info_id < 1 || $status_id < 1 || $parent_id < 1 || $result < 1 || $store_result < 1) {
+
                 // when insert failed rollback all inserted data
                 $wpdb->query("ROLLBACK");
                 return array(
@@ -122,16 +121,19 @@
                         "message" => "An error occured while submitting data to database.",
                 );
             
+            }else{
+
+                // commits all insert if true
+                $wpdb->query("COMMIT");
+
+                // Step 9: Return a success status and message 
+                return array(
+                    "status" => "success",
+                    "message" => "Data has been added successfully.",
+                );
             }
 
-            // commits all insert if true
-            $wpdb->query("COMMIT");
-
-            // Step 9: Return a success status and message 
-            return array(
-                "status" => "success",
-                "message" => "Data has been added successfully.",
-            );
+            
 
 
         }

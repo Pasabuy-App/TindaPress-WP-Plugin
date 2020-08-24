@@ -23,7 +23,9 @@
         //Inserting Category function
         public static function update_category(){
             
-            //Inital QA done 2020-08-11 09:56AM
+            //Inital QA done 2020-08-11 09:56 AM
+            // 2nd Initial QA 2020-08-24 5:17 PM - Miguel
+
             global $wpdb;
             $table_revs = TP_REVISIONS_TABLE;
             $table_revs_fields = TP_REVISION_FIELDS;
