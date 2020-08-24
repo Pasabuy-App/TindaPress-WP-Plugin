@@ -20,7 +20,16 @@
         public static function delete_category(){
             
             //Inital QA done 2020-08-11 10:55 AM
+            // 2nd Initial QA 2020-08-24 5:05 PM - Miguel
+
+            // Initialize global database wp database connection
             global $wpdb;
+
+            // table variable declaration
+            $table_revs = TP_REVISIONS_TABLE;
+            $table_categories = TP_CATEGORIES_TABLE;
+            $table_revs_fields = TP_REVISION_FIELDS;
+            $date_created = TP_Globals::date_stamp();
             
             // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -68,13 +77,7 @@
 
             $category_id = $_POST["catid"];
             $wpid = $_POST["wpid"];
-            $table_revs = TP_REVISIONS_TABLE;
-            $table_categories = TP_CATEGORIES_TABLE;
-            $table_revs_fields = TP_REVISION_FIELDS;
 
-            $date_created = TP_Globals::date_stamp();
-        
-            
             // Step 5: Get status of this category
              $category = $wpdb->get_row("SELECT cat.ID, cat.types, cat.status as status_id,
                 ( SELECT rev.child_val FROM $table_revs rev WHERE ID = cat.status) as status
@@ -91,20 +94,19 @@
             // Step 6: Check if this category id exists
             if ( !$category ) {
 				return array(
-						"status" => "failed",
-						"message" => "This category does not exists.",
+					"status" => "failed",
+					"message" => "This category does not exists.",
                 );
             }
 
             if ( $category->status == 0) {
 				return array(
-						"status" => "failed",
-						"message" => "This category is already deactivated.",
+					"status" => "failed",
+					"message" => "This category is already deactivated.",
                 );
             }
 
-
-
+            // Start MYSQL Query
             $wpdb->query("START TRANSACTION");
 
                  $get_category_last_value = $wpdb->get_row("SELECT
@@ -145,12 +147,6 @@
                     "status" => "success",
                     "message" => "Data has been deleted successfully.",
                 );
-
             }
-
-          
-
-        
         }
-
     }
