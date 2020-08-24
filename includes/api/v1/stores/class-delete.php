@@ -20,6 +20,7 @@
             );
         }
         
+        // 2nd Initial QA 2020-08-24 10:38 PM - Miguel
         //QA done 2020-08-12 10:18 pm
         public static function list_open(){
 
@@ -30,9 +31,7 @@
             // declaring table names to variable
             $table_store = TP_STORES_TABLE;
             $table_revisions = TP_REVISIONS_TABLE;
-
             $table_revision_field = TP_REVISION_FIELDS;
-
             $date_created = TP_Globals::date_stamp();
 
 
@@ -136,6 +135,7 @@
                     "status" => "failed",
                     "message" => "An error occured while submmiting data to database.",
                 );
+                
             } else{
                 //Commit if no errors found
                 $wpdb->query("COMMIT");
@@ -149,11 +149,11 @@
         // Catch Post 
         public static function catch_post()
         {
-              $cur_user = array();
+            $cur_user = array();
                
-                $cur_user['created_by'] = $_POST["wpid"];
-                $cur_user['store_id']      = $_POST["stid"];
+            $cur_user['created_by'] = $_POST["wpid"];
+            $cur_user['store_id']      = $_POST["stid"];
   
-              return  $cur_user;
+            return  $cur_user;
         }
     }
