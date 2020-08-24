@@ -19,6 +19,7 @@
 
         public static function delete_variants(){
             
+            // 2nd Initial QA 2020-08-24 11:10 PM - Miguel
             global $wpdb;
             $table_variants = TP_VARIANTS_TABLE;
             $table_revs = TP_REVISIONS_TABLE;
