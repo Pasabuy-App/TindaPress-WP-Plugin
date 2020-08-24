@@ -70,14 +70,6 @@
                 AND
                     '$date' BETWEEN `date_open` AND `date_close`");
 
-            // Step 5: Check results if empty
-            if ( !$open_stores) {
-                return array(
-                    "status" => "failed",
-                    "message" => "No open stores found.",
-                );
-            }
-
             // Step 8: Return a success status and message
             return array(
                 "status" => "success",

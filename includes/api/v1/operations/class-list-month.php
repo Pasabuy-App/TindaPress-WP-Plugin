@@ -20,24 +20,27 @@
         public static function list_month_orders(){
             
             //Initial QA done 2020-08-11 11:20 AM
+            // 2nd Initial QA 2020-08-24 5:47 PM - Miguel
+
             global $wpdb;
             $table_revs = TP_REVISIONS_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
+            $table_product = TP_PRODUCT_TABLE;
 
             // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 			
 			// Step 2: Validate user
 			if (DV_Verification::is_verified() == false) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification Issues!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification Issues!",
                 );
                 
             }
@@ -48,7 +51,6 @@
             //Create start date and end date of current month
             $start = date('Y-m-01 H:i:s', strtotime($date));
             $end = date('Y-m-t H:i:s', strtotime($date));
-
 
             // Step 4: Start mysql query
             $list_month = $wpdb->get_results("SELECT o.date_created as date, st.ID, ops.id as operation_id, o.id as order_id,
@@ -67,27 +69,16 @@
                 INNER JOIN
                     mp_order_items oi ON oi.odid = o.id
                 INNER JOIN
-                    tp_products p ON p.id = oi.pdid
+                    $table_product p ON p.id = oi.pdid
                 WHERE 
                     rev.child_val = 1
                 AND
                     o.date_created BETWEEN '$start' AND '$end'");
 
-            // Step 5: Check results if empty
-            if ( !$list_month) {
-                return array(
-                    "status" => "failed",
-                    "message" => "No results found.",
-                );
-            }
-            
             // Step 6: Return a success status and message 
             return array(
                 "status" => "success",
                 "data" => $list_month
             );
-
-        
         }
-
     }
