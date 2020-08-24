@@ -24,7 +24,7 @@
         public static function update_category(){
             
             //Inital QA done 2020-08-11 09:56 AM
-            // 2nd Initial QA 2020-08-24 5:17 PM - Miguel
+            // 2nd Initial QA 2020-08-24 5:19 PM - Miguel
 
             global $wpdb;
             $table_revs = TP_REVISIONS_TABLE;
