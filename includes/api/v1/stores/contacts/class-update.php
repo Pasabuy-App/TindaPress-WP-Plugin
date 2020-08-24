@@ -19,21 +19,22 @@
 
         public static function listen_open (){
 
+            // 2nd Initial QA 2020-08-24 8:08 PM - Miguel
             global $wpdb;
 
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 
 			// Step 2: Validate user
             if (DV_Verification::is_verified() == false) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification issues!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification issues!",
                 );
             }
 
@@ -87,7 +88,6 @@
             $type = $_POST["type"];
             $val = $_POST["val"];
             $date_created = TP_Globals::date_stamp();
-
             $table_contact = DV_CONTACTS_TABLE;
             $table_dv_revsions = DV_REVS_TABLE;
 
@@ -99,12 +99,14 @@
                         "message" => "This contact does not exists.",
                 );
             }  
+
             if ( $val_contact->status === '0' ) {
                 return array(
                         "status" => "failed",
                         "message" => "This contact does not exist.",
                 );
             } 
+            
             if ( $val_contact->val === $val ) {
                 return array(
                         "status" => "failed",
@@ -125,13 +127,11 @@
                     "status" => "failed",
                     "message" => "An error occured while submitting data to database.",
                 );
-                
+            }else{
+                return array(
+                    "status" => "success",
+                    "message" => "Data has been successfully updated.",
+                );
             }
-
-            return array(
-                "status" => "success",
-                "message" => "Data has been successfully updated.",
-            );
-
         }
     }
