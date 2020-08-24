@@ -81,8 +81,6 @@
 
         // Variants Classes
         require plugin_dir_path(__FILE__) . '/v1/variants/class-insert-variants.php';
-        require plugin_dir_path(__FILE__) . '/v1/variants/class-select-by-product.php';
-        require plugin_dir_path(__FILE__) . '/v1/variants/class-select-by-id.php';
         require plugin_dir_path(__FILE__) . '/v1/variants/class-update-variants.php';
         require plugin_dir_path(__FILE__) . '/v1/variants/class-delete-variants.php';
         require plugin_dir_path(__FILE__) . '/v1/variants/class-activate-variants.php';
@@ -370,19 +368,9 @@
                 'callback' => array('TP_Insert_Variants','listen'),
             ));
 
-            register_rest_route( 'tindapress/v1/variants/product', 'select', array(
-                'methods' => 'POST',
-                'callback' => array('TP_Select_Variants','listen'),
-            ));
-
             register_rest_route( 'tindapress/v1/variants', 'list', array(
                 'methods' => 'POST',
                 'callback' => array('TP_List_Variants','listen'),
-            ));
-
-            register_rest_route( 'tindapress/v1/variants', 'select', array(
-                'methods' => 'POST',
-                'callback' => array('TP_Select_Variants_Id','listen'),
             ));
 
             register_rest_route( 'tindapress/v1/variants', 'delete', array(
