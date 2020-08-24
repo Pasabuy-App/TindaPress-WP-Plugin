@@ -19,21 +19,22 @@
 
         public static function listen_open (){
 
+            // 2nd Initial QA 2020-08-24 7:43 PM - Miguel
             global $wpdb;
 
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 
 			// Step 2: Validate user
             if (DV_Verification::is_verified() == false) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification issues!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification issues!",
                 );
             }
 
@@ -57,21 +58,21 @@
             $stid = $_POST["stid"];
             $cid = $_POST["cid"];
             $date_created = TP_Globals::date_stamp();
-
             $table_contact = DV_CONTACTS_TABLE;
 
             // Step 9: Check if contact is exists using contact id, store id and types
             $val_contact = $wpdb->get_row("SELECT ID, status FROM $table_contact  WHERE ID = '$cid' AND stid = '$stid' ");    
             if ( !$val_contact ) {
                 return array(
-                        "status" => "failed",
-                        "message" => "This contact does not exists.",
+                    "status" => "failed",
+                    "message" => "This contact does not exists.",
                 );
             }   
+            
             if ( $val_contact->status === '1' ) {
                 return array(
-                        "status" => "failed",
-                        "message" => "This contact has already been activated.",
+                    "status" => "failed",
+                    "message" => "This contact has already been activated.",
                 );
             }
             
@@ -85,12 +86,11 @@
                     "message" => "An error occured while submitting data to database.",
                 );
                 
+            }else{
+                return array(
+                    "status" => "success",
+                    "message" => "Data has been successfully activated.",
+                );
             }
-
-            return array(
-                "status" => "success",
-                "message" => "Data has been successfully activated.",
-            );
-
         }
     }
