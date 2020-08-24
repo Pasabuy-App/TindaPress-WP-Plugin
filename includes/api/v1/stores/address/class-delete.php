@@ -20,10 +20,10 @@
         }
 
         public static function listen_open (){
+
+            // 2nd Initial QA 2020-08-24 7:01 PM - Miguel
             global $wpdb;
-            
             $date_created = TP_Globals::date_stamp();
-            
             $dv_rev_table = DV_REVS_TABLE;
             $table_address = DV_ADDRESS_TABLE;
                  
@@ -31,16 +31,16 @@
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 
             // Step 2: Validate user
             if (DV_Verification::is_verified() == false) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification issues!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification issues!",
                 );
             }
 
@@ -81,7 +81,7 @@
 
             // Step 7: Start mysql transaction
             $wpdb->query("START TRANSACTION");
-               $get_address_data =  $wpdb->get_row("SELECT * FROM $table_address WHERE ID = $address_id");
+                $get_address_data =  $wpdb->get_row("SELECT * FROM $table_address WHERE ID = $address_id");
 
                 $result = $wpdb->query("UPDATE $dv_rev_table SET `child_val` = 0, `date_created` = '$date_created' WHERE ID = $get_address_data->status   ");
 
@@ -100,8 +100,6 @@
                     "status" => "success",
                     "message" => "Data has been deleted successfully.",
                 );
-
             }
-
         }
     }
