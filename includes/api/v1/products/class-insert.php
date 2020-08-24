@@ -23,6 +23,8 @@
         //QA Done 2020-08-12 10:45 am
         public static function insert_product(){
 
+            // 2nd Initial QA 2020-08-24 6:09 PM - Miguel
+
             global $wpdb;
 
             // variables for query
@@ -38,16 +40,16 @@
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 
             //  Step 2 : Validate if user is exist
 			if (DV_Verification::is_verified() == false) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification Issues!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification Issues!",
                 );
             }
 
@@ -61,7 +63,6 @@
 					"status" => "unknown",
 					"message" => "Please contact your administrator. Request unknown!",
                 );
-                
             }
 
             // Step 4 : Check if all variable is not empty
@@ -98,7 +99,7 @@
                 WHERE tp_str.ID = $store_id
             ");
             
-            //Check if no rows found
+            // Check if no rows found
             if ( !$get_store ) {
                 return rest_ensure_response( 
                     array(
@@ -108,13 +109,11 @@
                 );
             }
 
-            //Check if status = 0
+            // Check if status = 0
             if ( $get_store->status == 0 ) {
-                return rest_ensure_response( 
-                    array(
-                        "status" => "failed",
-                        "message" => "This store is currently deactivated.",
-                    )
+                return array(
+                    "status" => "failed",
+                    "message" => "This store is currently deactivated.",
                 );
             }
        
@@ -162,8 +161,8 @@
                 // when insert failed rollback all inserted data
                 $wpdb->query("ROLLBACK");
                 return array(
-                        "status" => "failed",
-                        "message" => "An error occured while submitting data to database.",
+                    "status" => "failed",
+                    "message" => "An error occured while submitting data to database.",
                 );
             }
             
@@ -177,19 +176,18 @@
                 //Do a rollback to disregard all queries
                 $wpdb->query("ROLLBACK");
                 return array(
-                        "status" => "failed",
-                        "message" => "An error occured while submitting data to database.",
+                    "status" => "failed",
+                    "message" => "An error occured while submitting data to database.",
                 );
 
             }else {
                 //If no errors found, do a commit to finalize the transaction
                 $wpdb->query("COMMIT");
                 return array(
-                        "status" => "success",
-                        "message" => "Data has been added successfully.",
+                    "status" => "success",
+                    "message" => "Data has been added successfully.",
                 );
             }
-
         }
 
         // Catch Post 

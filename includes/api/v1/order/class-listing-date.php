@@ -20,9 +20,9 @@
         public static function list_open(){
 
             //Initial QA done 2020-08-10 10:54 am
+            // 2nd Initial QA 2020-08-24 5:55 PM - Miguel
             
             global $wpdb;
-
             // variables for query
             $table_store = TP_STORES_TABLE;
             $table_products = TP_PRODUCT_TABLE;
