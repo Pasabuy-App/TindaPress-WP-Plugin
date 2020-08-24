@@ -45,7 +45,7 @@
                         <div class="form-group">
                             <label for="new_category">CATEGORY:</label><br>
                             <select class="form-control" id="new_category" name="new_category" required>
-                                <?php if(!isset($_GET['id'])) { ?>
+                                <?php if(!isset($_GET['stid'])) { ?>
                                 <script type="text/javascript">
                                     jQuery(document).ready( function ( $ ) 
                                     {   
@@ -80,7 +80,7 @@
                                     });
                                 </script>  
                                 <?php } else { ?>
-                                    <option selected="selected" value="<?php echo $_GET['id']; ?>"><?php echo $_GET['name']; ?></option>
+                                    <option selected="selected" value="<?php echo $_GET['stid']; ?>"><?php echo $_GET['stname']; ?></option>
                                 <?php } ?>                              
                             </select>
                         </div>

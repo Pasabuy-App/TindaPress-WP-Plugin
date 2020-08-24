@@ -30,6 +30,9 @@
             add_submenu_page(TP_MENU_STARTED, 'TP Product Browser', 'Products',
                 'manage_options', TP_MENU_PRODUCT, 'tindapress_product_browser_page_callback' );
 
+            add_submenu_page(TP_MENU_STARTED, 'TP Variant Browser', 'Variants',
+                'manage_options', TP_MENU_VARIANT, 'tindapress_variant_browser_page_callback' );
+
              add_submenu_page(TP_MENU_STARTED, 'TP Settings', 'Settings',
                 'manage_options', TP_MENU_SETTING, 'tindapress_setting_page_callback' );
         }
@@ -53,7 +56,12 @@
         function tindapress_product_browser_page_callback()
         {
             include_once( TP_PLUGIN_PATH . '/includes/view/menu/product-browser.php' );
-        }        
+        }    
+        
+        function tindapress_variant_browser_page_callback()
+        {
+            include_once( TP_PLUGIN_PATH . '/includes/view/menu/variant-browser.php' );
+        } 
 
         function tindapress_setting_page_callback()
         {
