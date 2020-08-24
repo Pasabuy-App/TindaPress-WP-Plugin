@@ -27,7 +27,6 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/class-delete.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-listing.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-search.php';
-     
         require plugin_dir_path(__FILE__) . '/v1/stores/class-newest.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-popular.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-best-seller.php';
@@ -46,13 +45,12 @@
         require plugin_dir_path(__FILE__) . '/v1/settings/class-logo.php';
 
         //Category Classes
-         require plugin_dir_path(__FILE__) . '/v1/category/class-delete.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-insert.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-store-insert.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-update.php';
-         require plugin_dir_path(__FILE__) . '/v1/category/class-activate.php';
-        //  new
-         require plugin_dir_path(__FILE__) . '/v1/category/class-listing.php';
+        require plugin_dir_path(__FILE__) . '/v1/category/class-delete.php';
+        require plugin_dir_path(__FILE__) . '/v1/category/class-insert.php';
+        require plugin_dir_path(__FILE__) . '/v1/category/class-store-insert.php';
+        require plugin_dir_path(__FILE__) . '/v1/category/class-update.php';
+        require plugin_dir_path(__FILE__) . '/v1/category/class-activate.php';
+        require plugin_dir_path(__FILE__) . '/v1/category/class-listing.php';
 
         //Operations Classes
         require plugin_dir_path(__FILE__) . '/v1/operations/class-list-open.php';
@@ -85,10 +83,6 @@
         require plugin_dir_path(__FILE__) . '/v1/variants/class-delete-variants.php';
         require plugin_dir_path(__FILE__) . '/v1/variants/class-activate-variants.php';
         require plugin_dir_path(__FILE__) . '/v1/variants/class-listing.php';
-
-
-
-
 
         //Global Classes
         require plugin_dir_path(__FILE__) . '/v1/class-globals.php';
@@ -157,7 +151,6 @@
                 'methods' => 'POST',
                 'callback' => array('TP_Store_Listing_Documents','listen'),
             ));
-     
             
         /*
          * STORE RESTAPI
@@ -272,7 +265,6 @@
             ));
 
             // End of Address folder
-            
 
         /*
          * ORDER RESTAPI
@@ -388,9 +380,6 @@
                 'methods' => 'POST',
                 'callback' => array('TP_Update_Variants','listen'),
             ));
-
-            
-                
     
     }
     add_action( 'rest_api_init', 'tindapress_route' );
