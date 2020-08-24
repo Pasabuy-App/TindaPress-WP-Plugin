@@ -98,7 +98,7 @@
                                                 },
                                                 url: '<?php echo site_url() . "/wp-json/datavice/v1/location/country/active"; ?>',
                                                 success: function(data) {
-                                                    
+                                                    console.log(data)
                                                     if(data.status == "success") {
                                                         var $country = $('#new_country');
                                                         $country.empty();

@@ -20,7 +20,13 @@
         public static function activate_category(){
             
             //Inital QA done 2020-08-11 10:55 AM
+            // 2nd Initial QA 2020-08-24 4:55 PM - Miguel
             global $wpdb;
+
+            $table_revs = TP_REVISIONS_TABLE;
+            $table_categories = TP_CATEGORIES_TABLE;
+            $table_revs_fields = TP_REVISION_FIELDS;
+            $date_created = TP_Globals::date_stamp();
             
             // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -68,12 +74,6 @@
 
             $category_id = $_POST["catid"];
             $wpid = $_POST["wpid"];
-            $table_revs = TP_REVISIONS_TABLE;
-            $table_categories = TP_CATEGORIES_TABLE;
-            $table_revs_fields = TP_REVISION_FIELDS;
-
-            $date_created = TP_Globals::date_stamp();
-        
             
             // Step 5: Get status of this category
              $category = $wpdb->get_row("SELECT cat.ID, cat.types, cat.status as status_id,
@@ -95,15 +95,13 @@
 						"message" => "This category does not exists.",
                 );
             }
-
+            // Check if status is active
             if ( $category->status == 1 ) {
 				return array(
 						"status" => "failed",
 						"message" => "This category is already activated.",
                 );
             }
-
-
 
             $wpdb->query("START TRANSACTION");
 
@@ -145,12 +143,6 @@
                     "status" => "success",
                     "message" => "Data has been activated successfully.",
                 );
-
             }
-
-          
-
-        
         }
-
     }
