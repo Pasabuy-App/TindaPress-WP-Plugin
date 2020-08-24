@@ -19,6 +19,7 @@
             );
         }
 
+        // 2nd Initial QA 2020-08-24 10:59 PM - Miguel
         //QA done 2020-08-12 8:09 pm
         public static function listen_open(){
             global $wpdb;
