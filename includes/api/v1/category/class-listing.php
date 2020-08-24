@@ -20,8 +20,10 @@
         public static function list_type(){
 
             global $wpdb;
-            $table_revs = TP_REVISIONS_TABLE;
+            $table_revisions = TP_REVISIONS_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
+            $table_store = TP_STORES_TABLE;
+            $table_product = TP_PRODUCT_TABLE;
 
             // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -41,38 +43,43 @@
                 
             }
 
+            // Concatination query for category 
             $sql = "SELECT
                     cat.ID,
                     cat.types,
                 IF  (
                     cat.`types` = 'store',
-                    ( SELECT COUNT( ctid ) FROM tp_stores WHERE ctid = cat.ID ),
-                    ( SELECT COUNT( ctid ) FROM tp_products WHERE ctid = cat.ID ) 
+                    ( SELECT COUNT( ctid ) FROM $table_store WHERE ctid = cat.ID ),
+                    ( SELECT COUNT( ctid ) FROM $table_product WHERE ctid = cat.ID ) 
                     ) AS `total`,
-                    ( SELECT rev.child_val FROM tp_revisions rev WHERE `revs_type` = 'categories' AND ID = cat.title ) AS title,
-                    ( SELECT rev.child_val FROM tp_revisions rev WHERE `revs_type` = 'categories' AND ID = cat.info ) AS info,
+                    ( SELECT rev.child_val FROM $table_revisions rev WHERE `revs_type` = 'categories' AND ID = cat.title ) AS title,
+                    ( SELECT rev.child_val FROM $table_revisions rev WHERE `revs_type` = 'categories' AND ID = cat.info ) AS info,
                 IF
                     ( rev.child_val = 1, 'Active', 'Inactive' ) AS `status` 
                 FROM
-                    tp_categories cat
-                    INNER JOIN tp_revisions rev ON rev.ID = cat.`status` ";
+                    $table_categories cat
+                    INNER JOIN $table_revisions rev ON rev.ID = cat.`status` ";
 
+            // Ternary for isset listener
             isset($_POST['stid'])   ? $std = $_POST['stid']   : $std = NULL  ;
             isset($_POST['catid'])  ? $cat = $_POST['catid']  : $cat = NULL  ;
             isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL  ;
             isset($_POST['type'])   ? $typ = $_POST['type']   : $typ = NULL  ;
-                
+            
+            // Ternary for value of varables 
             $store_id    = $std  == '0' ? NULL: $store_id    = $std;
             $category_id = $cat  == '0' ? NULL: $category_id = $cat;
             $type        = $typ  == '0' ? NULL: ($typ == '1'? $type = 'store': ($typ == '2'? $type = 'product' : $type = 'tags' ) );
             $status      = $sts  == '0' || $sts == NULL ? NULL : ($sts == '2' && $sts !== '0'? '0':'1');
 
+            // Condition for store ID
             if (isset($_POST['stid'])) {
                 if ( $store_id != NULL ) {
                     $sql .= " WHERE cat.stid = '$store_id' ";
                 }
             }
 
+            // Condition for category ID
             if (isset($_POST['catid'])) {
                 
                 if ($store_id != NULL && $category_id != NULL) {
@@ -86,6 +93,7 @@
                 }
             }
 
+            // Condition for status of category
             if (isset($_POST['status'])) {
 
                 if ($status != NULL) {
@@ -99,9 +107,9 @@
     
                     }
                 }
-                
             }
 
+            // Condition for category type
             if (isset($_POST['type'])) {
 
                 if ($type != NULL) {
@@ -120,22 +128,18 @@
     
                     }
                 }
-                
             }
 
+            // Uncoment for debugging
             // return $sql;
+            
+            // Execute mysql query
             $results =  $wpdb->get_results($sql);
-            if (!$results) {
-                return array(
-                    "status" => "success",
-                    "message" => "No results found.",
-                );
-            } else {
-                return array(
-                    "status" => "success",
-                    "data" => $results,
-                );
-            }
+            
+            return array(
+                "status" => "success",
+                "data" => $results,
+            );
         
         }
 
