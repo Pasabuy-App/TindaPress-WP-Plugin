@@ -19,11 +19,11 @@
 
         public static function list_open(){
 
+            // 2nd Initial QA 2020-08-24 11:02 PM - Miguel
             global $wpdb;
 
             $user = TP_Update_Store::catch_post();
             $later = TP_Globals::date_stamp();
-
             // declaring table names to variable
             $table_store = TP_STORES_TABLE;
             $table_store_fields = TP_STORES_FIELDS;
@@ -31,7 +31,6 @@
             $table_revs_fields = TP_REVISION_FIELDS;
             $table_dv_revs = DV_REVS_TABLE;
             $table_contact = DV_CONTACTS_TABLE;
-
             // declaring variable
             $revs_type = "stores";
 
@@ -39,16 +38,16 @@
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
             
             // Step2 : Check if wpid and snky is valid
             if (DV_Verification::is_verified() == false) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification Issues!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification Issues!",
                 );
             }
 
@@ -60,14 +59,12 @@
                 || !isset($_POST["long_info"]) 
                 || !isset($_POST["logo"]) 
                 || !isset($_POST["banner"]) 
-                // NEW
                 || !isset($_POST["phone"]) 
                 || !isset($_POST["email"]) 
-
                 ) {
 				return array(
-						"status" => "unknown",
-						"message" => "Please contact your administrator. Request unknown!",
+					"status" => "unknown",
+					"message" => "Please contact your administrator. Request unknown!",
                 );
             }
 
@@ -79,14 +76,12 @@
                 || empty($_POST["long_info"]) 
                 || empty($_POST["logo"]) 
                 || empty($_POST["banner"]) 
-                // NEW
                 || !isset($_POST["phone"]) 
                 || !isset($_POST["email"]) 
-
                 ) {
                 return array(
-                        "status" => "failed",
-                        "message" => "Required fields cannot be empty.",
+                    "status" => "failed",
+                    "message" => "Required fields cannot be empty.",
                 );
             }   
 
@@ -95,8 +90,8 @@
             // Step5 : Check if this store id exists
             if ( !$get_store ) {
                 return array(
-                        "status" => "failed",
-                        "message" => "This store does not exists.",
+                    "status" => "failed",
+                    "message" => "This store does not exists.",
                 );
             }
 
@@ -104,8 +99,6 @@
             $wpdb->query("START TRANSACTION");
 
                 //get country id
-                // $get_country = $wpdb->get_row("SELECT ID FROM dv_geo_countries WHERE `country_code` = '$country_code'");
-
 
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'title', '{$user["title"]}', '{$user["created_by"]}', '$later')");
                 $title = $wpdb->insert_id;
@@ -121,7 +114,6 @@
 
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'banner', '{$user["banner"]}', '{$user["created_by"]}', '$later')");
                 $banner = $wpdb->insert_id;
-
 
                 // Query of store contact.
                 // Phone
@@ -176,27 +168,26 @@
                     "message" => "Data has been updated successfully.",
                 );
             }
-
         }
 
         // Catch Post 
         public static function catch_post()
         {
-              $cur_user = array();
+            $cur_user = array();
                
-                $cur_user['created_by'] = $_POST["wpid"];
-                $cur_user['ctid']       = $_POST["ctid"];
-                $cur_user['address']    = $_POST["address"];
-                $cur_user['store_id']   = $_POST["stid"];
+            $cur_user['created_by'] = $_POST["wpid"];
+            $cur_user['ctid']       = $_POST["ctid"];
+            $cur_user['address']    = $_POST["address"];
+            $cur_user['store_id']   = $_POST["stid"];
                 
-                $cur_user['title']      = $_POST["title"];
-                $cur_user['short_info'] = $_POST["short_info"];
-                $cur_user['long_info']  = $_POST["long_info"];
-                $cur_user['logo']       = $_POST["logo"];
-                $cur_user['banner']     = $_POST["banner"];
-                $cur_user['phone']     = $_POST["phone"];
-                $cur_user['email']     = $_POST["email"];
+            $cur_user['title']      = $_POST["title"];
+            $cur_user['short_info'] = $_POST["short_info"];
+            $cur_user['long_info']  = $_POST["long_info"];
+            $cur_user['logo']       = $_POST["logo"];
+            $cur_user['banner']     = $_POST["banner"];
+            $cur_user['phone']     = $_POST["phone"];
+            $cur_user['email']     = $_POST["email"];
   
-              return  $cur_user;
+            return  $cur_user;
         }
     }
