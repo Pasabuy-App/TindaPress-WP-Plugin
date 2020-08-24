@@ -112,7 +112,6 @@
 
                 if (isset( $_POST['vrid'] ) && isset($_POST['pdid'])) {
                     if ($variants_id != NULL && $product_id != NULL) {
-                        return true;
                         $result = $option;  
                     }
                 }
@@ -125,38 +124,38 @@
                            
                         
                         /**
-                        if (isset($_POST['pdid'])) {
-                            if ($product_id !== NULL && $product_id == '0') {
-                                $result = $value;
+                            if (isset($_POST['pdid'])) {
+                                if ($product_id !== NULL && $product_id == '0') {
+                                    $result = $value;
+                                }
+                            }else{
+                                $value->options = $option;  
+
                             }
-                        }else{
-                            $value->options = $option;  
 
-                        }
+                            if (isset($_POST['vrid'])  ) {
+                                if ($variants_id !== NULL  ) {
 
-                        if (isset($_POST['vrid'])  ) {
-                            if ($variants_id !== NULL  ) {
+                                    if (isset($_POST['pdid'])) {
+                                        if ($product_id !== NULL) {
+                                            
+                                                $value->options = $option;
 
-                                if (isset($_POST['pdid'])) {
-                                    if ($product_id !== NULL) {
-                                        
-                                            $value->options = $option;
+                                            
 
-                                        
+                                        }else{
+
+                                            $result = $option;
+
+                                        }
 
                                     }else{
 
                                         $result = $option;
-
                                     }
-
-                                }else{
-
-                                    $result = $option;
+                                    
                                 }
-                                
                             }
-                        }
                          */
 
             }
