@@ -23,6 +23,7 @@
         //QA done 2020-08-12 11:01 am
         public static function update_product(){
             
+            // 2nd Initial QA 2020-08-24 6:49 PM - Miguel
             global $wpdb;
 
             // Variables for Tables
@@ -81,8 +82,8 @@
                 || empty($_POST["dimension"]) 
                 || empty($_POST["preview"])) {
                return array(
-                       "status" => "unknown",
-                       "message" => "Required fields cannot be empty",
+                    "status" => "unknown",
+                    "message" => "Required fields cannot be empty",
                );
                
            }
@@ -98,11 +99,11 @@
             }
             
             // variables for query    
-            $later = TP_Globals::date_stamp();
+            $later      = TP_Globals::date_stamp();
             $created_by = $_POST['wpid'];
             $product_id = $_POST['pdid'];
-            $stid = $_POST['stid'];
-            $revs_type = "products";
+            $stid       = $_POST['stid'];
+            $revs_type  = "products";
 
             // Step 6: Check product if it exists
             $get_product = $wpdb->get_row("SELECT
@@ -139,8 +140,11 @@
 
             $user = TP_Product_Update::catch_post();
             $ctid = "";
+
             if(isset($_POST['catid'])){
+
                 $cat_id = $_POST['catid'];
+
                 $check_cat = $wpdb->get_row("SELECT
                     cat.ID,
                     child_val as `status`
@@ -162,7 +166,7 @@
                         "message" => "This category is currently inactive.",
                     );
                 }else{
-                     $ctid = "`ctid` = '$cat_id', ";
+                     $ctid = " `ctid` = '$cat_id', ";
                 }
             }
 
@@ -199,7 +203,7 @@
                 $dimension = $wpdb->insert_id;
                 
                 //  (stid, ctid, title, preview, short_info, long_info, status, sku, price,  weight,  dimension , created_by, date_created)
-                 $result = $wpdb->query("UPDATE $table_product SET $ctid `title` = $title, `preview` = $preview, `short_info` = $short_info, `long_info` = $long_info, `status` = $status, `sku` = $sku, `price` = $price,  `weight` = $weight,  `dimension` = $dimension  WHERE ID = {$user["pdid"]} ");
+                $result = $wpdb->query("UPDATE $table_product SET $ctid `title` = $title, `preview` = $preview, `short_info` = $short_info, `long_info` = $long_info, `status` = $status, `sku` = $sku, `price` = $price,  `weight` = $weight,  `dimension` = $dimension  WHERE ID = {$user["pdid"]} ");
 
             // Step 8: Check if any of the queries above failed
             if ($result < 1 || $title < 1 || $short_info < 1 || $long_info < 1 || $sku < 1 || $price < 1 || $weight < 1 || $dimension < 1 || $preview < 1 ) {
@@ -219,8 +223,6 @@
                     "message" => "Data has been updated successfully.",
                 );
             }
-         
-
         }
 
           // Catch Post 
