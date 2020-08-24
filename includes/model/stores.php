@@ -57,6 +57,9 @@
                             "snky": "<?php echo wp_get_session_token(); ?>"
                         };
                         postParam.status = 0;
+                        <?php if( isset($_GET['catid']) ) { ?>
+                            postParam.status = '<?= $_GET['catid'] ?>';
+                        <?php } ?>
                         <?php if( isset($_GET['status']) ) { ?>
                             postParam.status = '<?= $_GET['status'] ?>';
                         <?php } ?>
@@ -95,11 +98,11 @@
                 var columns = [
                     //{ "sTitle": "IDENTITY",   "mData": "ID" },
                     <?php
-                        if(!isset($_GET['id'])) {
+                        //if(!isset($_GET['id'])) {
                     ?>
-                            { "sTitle": "CATEGORY",   "mData": "catname" },
+                            //{ "sTitle": "CATEGORY",   "mData": "catname" },
                     <?php
-                        }
+                        //}
                     ?>
                     { "sTitle": "NAME",   "mData": "title" },
                     { "sTitle": "SHORT",   "mData": "short_info" },
@@ -124,7 +127,7 @@
                                         ' data-status="' + item.status + '"' +  
                                         ' data-title="' + item.title + '"' +  
                                         ' data-sinfo="' + item.short_info + '"' + 
-                                        ' >Options</button>' +
+                                        ' >Modify</button>' +
 
                                     '<button type="button" class="btn btn-secondary btn-sm appkey-' + item.ID + '"' +
                                         ' data-clipboard-text="' + item.ID + '"' +
@@ -133,14 +136,16 @@
                                         '>Copy ID</button>' +  
 
                                     '<button type="button" class="btn btn-info btn-sm"' +
-                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_CATEGORY."&stid="; ?>' + item.ID + '&stname=' +item.title + '&type=' + '2' + '`;" ' +
+                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_CATEGORY; ?>' + 
+                                        '&stid=' + item.ID + '&stname=' + item.title + 
+                                        '&type=' + '2' + '`;" ' +
                                         ' title="Click this to navigate to variant list of this project."' + 
                                         ' >Categories</button>' +
 
-                                    '<button type="button" class="btn btn-success btn-sm"' +
-                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT."&id="; ?>' + item.ID + '&name=' +item.title + '`;" ' +
-                                        ' title="Click this to navigate to variant list of this project."' + 
-                                        ' >Products</button>' +
+                                    // '<button type="button" class="btn btn-success btn-sm"' +
+                                    //     ' onclick="window.location.href = `<?php //echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT."&id="; ?>' + item.ID + '&name=' +item.title + '`;" ' +
+                                    //     ' title="Click this to navigate to variant list of this project."' + 
+                                    //     ' >Products</button>' +
 
                                              
                                 '</div>'; 

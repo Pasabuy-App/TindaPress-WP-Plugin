@@ -14,22 +14,22 @@
 
 	<?php /* Header Section */ ?>
 		<div class="tp-welcome-header">
-			<h1>STORE BROWSER</h1>
+			<h1>VARIANT BROWSER</h1>
 			<p>
-                Add, Edit, Delete Stores.
+                Add, Edit, Delete Variants.
 			</p>
 		</div>
 	<?php /* Header Section */ ?>
 
 	<div class="tp-panel-body">
 		<div class="tp-panel-first">
-			<?php if(isset($_GET['id']) && isset($_GET['name'])) { ?>
+			<?php if( isset($_GET['stid']) && isset($_GET['stname']) && isset($_GET['pdid']) && isset($_GET['pdname'])) { ?>
 				<div class="alert alert-primary header-info">
-					Category: <strong id="<?= $_GET['id']; ?>"><?php echo $_GET['name']; ?></strong>
+					Variants: <strong id="<?= $_GET['pdid']; ?>"><?php echo $_GET['pdname']; ?></strong> from <strong id="<?= $_GET['stid']; ?>"><?php echo $_GET['stname']; ?></strong> Store
 				</div>
 			<?php } else { ?>
 				<div class="alert alert-primary header-info">
-					<strong>All Stores</strong>
+					<strong>All Variants</strong>
 				</div>
 			<?php } ?>
 			<select class="space-left" id="set_status" name="set_status">
@@ -39,14 +39,14 @@
 			</select>
 			<button type="button" id="filter" name="filter" class="btn btn-primary space-left">Filter</button>
 		</div>
-		<table id="stores-datatables" class="stripe" style="width: 100%;"></table>
+		<table id="products-datatables" class="stripe" style="width: 100%;"></table>
 		<div id="stores-notification" class="alert alert-info tp-center-item " role="alert" style="margin-top: 20px;">
-			Currently fetching updates for all available stores. Please wait...
+			Currently fetching updates for all available variants. Please wait...
 		</div>
 	</div>
 
-	<?php include_once( TP_PLUGIN_PATH . "/includes/model/stores.php" ); ?>
-	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/store-create-modal.php" ); ?>
-	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/store-edit-modal.php" ); ?>
+	<?php include_once( TP_PLUGIN_PATH . "/includes/model/variants.php" ); ?>
+	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/variant-create-modal.php" ); ?>
+	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/variant-edit-modal.php" ); ?>
 	<div id="jquery-overlay" class="modal-backdrop fade show tp-display-hide" style="z-index: 9999;"></div>
 	

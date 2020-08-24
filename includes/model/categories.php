@@ -100,8 +100,8 @@
                 var columns = [
                     { "sTitle": "ID",   "mData": "ID" },
                     { "sTitle": "NAME",   "mData": "title" },
+                    { "sTitle": "TOTAL",   "mData": "total" },
                     { "sTitle": "DESCRIPTION",   "mData": "info" },
-                    { "sTitle": "TYPES",   "mData": "types" },
                     <?php if( isset($_GET['type']) && (int)$_GET['type'] > 0 ) { ?>
                         <?php if( (int)$_GET['type'] == 1 ) { ?>
                             { "sTitle": "STORES",   "mData": "total" },
@@ -112,25 +112,33 @@
                     { "sTitle": "STATUS",   "mData": "status" },
                     {"sTitle": "Action", "mRender": function(data, type, item)
                         {
-                            return '' + 
-
-                                '<div class="btn-group" role="group" aria-label="Basic example">' +
-
+                            let buttons = '<div class="btn-group" role="group" aria-label="Basic example">';
+                                if(item.types == 'store') {
+                                        buttons += '<button type="button" class="btn btn-success btn-sm"' +
+                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_STORE."&catid="; ?>' + item.ID + '&catname=' +item.title + '`;" ' +
+                                        ' title="Click this to navigate to variant list of this project."' + 
+                                        ' >' + item.types.toUpperCase()+'S</button>';
+                                } if(item.types == 'product') { 
                                     <?php if( isset($_GET['stid']) && isset($_GET['stname']) ) { ?>
-                                        '<button type="button" class="btn btn-success btn-sm"' +
-                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT."&id="; ?>' + '<?= $_GET['stid'] ?>' + 
-                                        '&name=' +'<?= $_GET['stname'] ?>'+ '&catid=' +item.ID+ '&catname=' +item.title+ '`;" ' +
+                                        buttons += '<button type="button" class="btn btn-success btn-sm"' +
+                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT; ?>' + 
+                                        '&stid=' + '<?= $_GET['stid'] ?>' + '&stname=' +'<?= $_GET['stname'] ?>' + 
+                                        '&catid=' +item.ID+ '&catname=' +item.title+ '`;" ' +
                                         ' title="Click this to navigate to variant list of this project."' + 
-                                        ' >PRODUCTS</button>' +
-
+                                        ' >' + item.types.toUpperCase()+'S</button>';
                                     <?php } else { ?>
-                                        '<button type="button" class="btn btn-success btn-sm"' +
-                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_STORE."&id="; ?>' + item.ID + '&name=' +item.title+ '`;" ' +
+                                        buttons += '<button type="button" class="btn btn-success btn-sm"' +
+                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT."&catid="; ?>' + item.ID + 
+                                        '&catname=' + item.title + '`;" ' +
                                         ' title="Click this to navigate to variant list of this project."' + 
-                                        ' >Stores</button>' +
-                                    <?php } ?>                                    
-                                        
-                                '</div>'; 
+                                        ' >' + item.types.toUpperCase()+'S</button>';
+                                    <?php } ?>
+                                } else {
+
+                                }
+                            buttons += '</div>';
+
+                            return buttons;
                         }
                     }
                 ];
@@ -159,7 +167,20 @@
                                 this.disable();
                             },
                             action: function ( e, dt, node, config ) {
+                                var selData = tptables.row('.selected').data();
+                                $('#edit_id').val(selData.ID);
                                 $('#EditAppOption').modal('show');
+                            }
+                        },
+                        {
+                            text: 'View ID',
+                            state: false,
+                            init: function ( dt, node, config ) {
+                                this.disable();
+                            },
+                            action: function ( e, dt, node, config ) {
+                                var selData = tptables.row('.selected').data();
+                                alert('ID: ' + selData.ID);
                             }
                         },
                         {
@@ -186,12 +207,13 @@
                 });
                 tptables.on( 'select', function ( e, dt, type, indexes ) {
                         var rowData = tptables.rows( indexes ).data().toArray()[0];
-                        activeItem = rowData; //console.log("Selected: " + JSON.stringify( rowData.ID ));
+                        //console.log("Selected: " + JSON.stringify( rowData.ID ));
                         tptables.button( 1 ).enable();
+                        tptables.button( 2 ).enable();
                     });
                 tptables.on( 'deselect', function ( e, dt, type, indexes ) {
-                        activeItem = 'undefined';
                         tptables.button( 1 ).disable();
+                        //tptables.button( 2 ).disable();
                     } );
             }            
 
@@ -322,7 +344,7 @@
             $('#edit-app-form').submit( function(event) {
                 event.preventDefault();
                 var clickedBtnId = $(this).find("button[type=submit]:focus").attr('id');
-                console.log($(this).find("button[type=submit]:focus").is('[disabled=disabled]'));
+                //console.log($(this).find("button[type=submit]:focus").is('[disabled=disabled]'));
                 $( "#dialog-confirm-edit" ).dialog({
                     title: 'Confirmation',
                     resizable: false,
@@ -422,7 +444,6 @@
 
             // LISTEN FOR MODAL SHOW AND ATTACHED ID.
             $('#EditAppOption').on('show.bs.modal', function(e) {
-                $('#edit_id').val( activeItem.id ); 
                 $('#edit_title').val( activeItem.title ); 
                 $('#edit_info').val( activeItem.info ); 
 

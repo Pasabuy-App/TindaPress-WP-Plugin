@@ -23,16 +23,25 @@
 
 	<div class="tp-panel-body">
 		<div class="tp-panel-first">
-			<?php if(isset($_GET['id']) && isset($_GET['name'])) { ?>
+			<?php if(isset($_GET['stid']) && isset($_GET['stname'])) { ?>
 				<div class="alert alert-primary header-info">
-					<strong>Store: </strong><strong id="<?= $_GET['id']; ?>"><?php echo $_GET['name']; ?></strong>
+					Product Category: 
+					<?php if(isset($_GET['catname'])) {
+						echo " <strong>" . $_GET['catname'] . "</strong> for ";
+					} ?>
+					<strong id="<?= $_GET['stid']; ?>"><?php echo $_GET['stname']; ?></strong> Store
+				</div>
+			<?php } else if(isset($_GET['catid']) && isset($_GET['catname'])) { ?>
+				<div class="alert alert-primary header-info">
+					Product Category: 
+					<?php echo " <strong>" . $_GET['catname'] . "</strong> "; ?>
 				</div>
 			<?php } else { ?>
 				<div class="alert alert-primary header-info">
 					<strong>All Products</strong>
 				</div>
 			<?php } ?>
-			<?php if(isset($_GET['id']) && isset($_GET['name'])) { ?>
+			<?php if(isset($_GET['stid']) && isset($_GET['stname'])) { ?>
 			<select class="space-left" id="set_cat" name="set_cat" required>
 				<script type="text/javascript">
 					jQuery(document).ready( function ( $ ) 
@@ -45,11 +54,10 @@
 									snky: "<?php echo wp_get_session_token(); ?>",
 									status: "1", //active.
 									type: "2", //product.
-									stid: "<?= (int)$_GET['id'] ?>"
+									stid: "<?= (int)$_GET['stid'] ?>"
 								},
 								url: '<?php echo site_url() . "/wp-json/tindapress/v1/category/list"; ?>',
 								success: function(data) {
-									console.log(data);
 									var country = $('#set_cat');
 										country.empty();
 										var	selectDefault = 'All Category'; 
