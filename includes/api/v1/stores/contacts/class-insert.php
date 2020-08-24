@@ -26,16 +26,16 @@
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 
             // Step2 : Check if wpid and snky is valid
             if (DV_Verification::is_verified() == false) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification issues!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification issues!",
                 );
             }
 
@@ -63,13 +63,18 @@
             $user = TP_Store_Insert_Contacts::catch_post();
             $date_created = TP_Globals::date_stamp();
 
-           $get_store = $wpdb->get_row("SELECT ID FROM tp_stores  WHERE ID = '{$user["store_id"]}' AND  (SELECT child_val FROM tp_revisions WHERE ID = tp_stores.`status`  ) = 1 ");
-                
+            $get_store = $wpdb->get_row("SELECT
+                tp_stores.ID
+                FROM
+                tp_stores
+                INNER JOIN tp_revisions rev ON tp_stores.`status` = rev.ID
+                WHERE rev.`revs_type` = 'stores' AND rev.child_key ='status' AND rev.child_val = 1 AND rev.ID =  ( SELECT MAX(ID) FROM tp_revisions WHERE ID = rev.ID   ) AND tp_stores.ID = '{$user["store_id"]}'");
+            
             // Step5 : Check if this store id exists
-            if ( !$get_store ) {
+            if ( empty($get_store) ) {
                 return array(
-                        "status" => "failed",
-                        "message" => "This store does not exists.",
+                    "status" => "failed",
+                    "message" => "This store does not exists.",
                 );
             }
 
@@ -111,9 +116,7 @@
                     "status" => "success",
                     "message" => "Data has been successfully added.",
                 );
-                
             }
-
         }
 
         public static function catch_post(){
