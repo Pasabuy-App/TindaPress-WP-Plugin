@@ -19,6 +19,7 @@
         
         public static function add_store(){
 
+            // 2nd Initial QA 2020-08-24 10:42 PM - Miguel
             global $wpdb;
 
             // declaring table names to variable
@@ -40,16 +41,16 @@
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 
             // Step2 : Check if wpid and snky is valid
             if (DV_Verification::is_verified() == false) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification issues!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification issues!",
                 );
             }
 
@@ -67,8 +68,8 @@
                 || !isset($_POST["bg"]) 
                 ) {
 				return array(
-						"status" => "unknown",
-						"message" => "Please contact your administrator. Request unknown!",
+					"status" => "unknown",
+					"message" => "Please contact your administrator. Request unknown!",
                 ); 
             }
 
@@ -90,20 +91,19 @@
                     "message" => "Required fields cannot be empty.",
                 );
             }
-
             
             //Country input validation
                 // Step 2 : Check if country passed is in integer format.
-                // TODO : char length == 2 and trim and convert to ucase
-                // if ( !is_numeric($_POST['co']) ) {
-                //     return rest_ensure_response( 
-                //         array(
-                //                 "status" => "failed",
-                //                 "message" => "Invalid value for country.",
-                //         )
-                //     );
-                // }
-                
+                // TODO : char length == 2 and trim and convert to ucase // DONE
+                if ( strlen($_POST['co']) !== 2 ) {
+                    return rest_ensure_response( 
+                        array(
+                                "status" => "failed",
+                                "message" => "Invalid value for country.",
+                        )
+                    );
+                }
+
               // Step 2 : Check if country_id is in database. 
                 $country_code = $_POST['co'];
                 $co_status = DV_Globals:: check_availability(DV_COUNTRY_TABLE, "WHERE `country_code` = '$country_code'");
@@ -225,26 +225,6 @@
                     );
                 }
             // end of barangay validation
-            
-
-
-            // // // Remove all illegal characters from a url
-            // $banner_url = filter_var($_POST["banner"], FILTER_SANITIZE_URL);
-            // $logo_url = filter_var($_POST["logo"], FILTER_SANITIZE_URL);
-            
-            // if (!filter_var($banner_url, FILTER_VALIDATE_URL)) {
-            //     return array(
-            //         "status" => "failed",
-            //         "message" => "Banner $banner_url is not valid URL"
-            //     );
-            // }
-
-            // if (!filter_var($logo_url, FILTER_VALIDATE_URL)) {
-            //     return array(
-            //         "status" => "failed",
-            //         "message" => "Logo $banner_url is not valid URL"
-            //     );
-            // }
 
             // Step5 : Validate permission
             $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_add_store' );
@@ -355,8 +335,6 @@
                 // Update store for address column
                 $result = $wpdb->query("UPDATE $table_store SET `address` = $address_id WHERE ID = $store_id ");
 
-           
-
             // Step8 : Check if failed
             if ( $title < 1 || $short_info < 1 || $long_info < 1 || $logo < 1 || $banner < 1 || $status < 1 || $store_id < 1 || $result_update_tp_rev_store < 1 || 
                  $result_update_tp_rev_store < 1 || 
@@ -368,37 +346,38 @@
                     "status" => "failed",
                     "message" => "An error occured while submitting data to database.",
                 );
+
             }else{
                 $wpdb->query("COMMIT");
                 return array(
                     "status" => "success",
                     "message" => "Data has been added successfully.",
                 );
+
             }
         }
 
         // Catch Post 
         public static function catch_post()
         {
-              $cur_user = array();
+            $cur_user = array();
                
-                $cur_user['created_by']  = $_POST["wpid"];
-                $cur_user['catid']        = $_POST["catid"];
+            $cur_user['created_by']  = $_POST["wpid"];
+            $cur_user['catid']        = $_POST["catid"];
 
-                $cur_user['title']       = $_POST["title"];
-                $cur_user['short_info']  = $_POST["short_info"];
-                $cur_user['long_info']   = $_POST["long_info"];
-                $cur_user['logo']        = $_POST["logo"];
-                $cur_user['banner']      = $_POST["banner"];
+            $cur_user['title']       = $_POST["title"];
+            $cur_user['short_info']  = $_POST["short_info"];
+            $cur_user['long_info']   = $_POST["long_info"];
+            $cur_user['logo']        = $_POST["logo"];
+            $cur_user['banner']      = $_POST["banner"];
 
-                // Address Listen
-                $cur_user['street']     = $_POST["st"];
-                $cur_user['country']    = $_POST["co"];
-                $cur_user['province']   = $_POST["pv"];
-                $cur_user['city']       = $_POST["ct"];
-                $cur_user['barangy']    = $_POST["bg"];
-                
+            // Address Listen
+            $cur_user['street']     = $_POST["st"];
+            $cur_user['country']    = $_POST["co"];
+            $cur_user['province']   = $_POST["pv"];
+            $cur_user['city']       = $_POST["ct"];
+            $cur_user['barangy']    = $_POST["bg"];
                
-              return  $cur_user;
+            return  $cur_user;
         }
     }
