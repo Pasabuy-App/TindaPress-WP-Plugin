@@ -52,7 +52,7 @@
             }
             
             // Step4 : Sanitize if variable is empty
-            if ( empty($_POST["name"]) || empty($_POST["pdid"]) || ( empty($_POST['base']) && empty($_POST['price']) ) ) {
+            if ( empty($_POST["name"]) || empty($_POST["pdid"]) ) {
 				return array(
 						"status" => "failed",
 						"message" => "Required fields cannot be empty.",

@@ -69,7 +69,8 @@
                 tp_variants var
                 INNER JOIN tp_revisions rev ON rev.parent_id = var.ID 
             WHERE
-                rev.revs_type = 'variants' 
+                var.parent_id = 0
+                AND rev.revs_type = 'variants' 
                 AND child_key = 'status' 
                 AND rev.date_created = ( SELECT MAX( date_created ) FROM tp_revisions WHERE ID = rev.ID AND child_key = rev.child_key )
             ";
@@ -93,9 +94,9 @@
             }
 
             $result = $wpdb->get_results($sql);
-      
+    
             foreach ($result as $key => $value) {
-
+                
                 $parent = $value->ID;
 
                 $option = $wpdb->get_results("SELECT
@@ -117,50 +118,19 @@
                 }
 
                 if (isset($_POST['type'])  ) {
+
                     if ( $type !== NULL && $product_id !== NULL ) {
                         $value->options = $option;
                     }
                 }
+
+              
+
                            
-                        
-                        /**
-                            if (isset($_POST['pdid'])) {
-                                if ($product_id !== NULL && $product_id == '0') {
-                                    $result = $value;
-                                }
-                            }else{
-                                $value->options = $option;  
-
-                            }
-
-                            if (isset($_POST['vrid'])  ) {
-                                if ($variants_id !== NULL  ) {
-
-                                    if (isset($_POST['pdid'])) {
-                                        if ($product_id !== NULL) {
-                                            
-                                                $value->options = $option;
-
-                                            
-
-                                        }else{
-
-                                            $result = $option;
-
-                                        }
-
-                                    }else{
-
-                                        $result = $option;
-                                    }
-                                    
-                                }
-                            }
-                         */
 
             }
                   
-
+        
 
 
             return array(

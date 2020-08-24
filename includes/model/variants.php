@@ -68,14 +68,13 @@
                         postParam.wpid = "<?php echo get_current_user_id(); ?>";
                         postParam.snky = "<?php echo wp_get_session_token(); ?>";
 
-                        <?php if( isset($_GET['pdid']) && !isset($_GET['vrid']) ) { ?>
+                        <?php if( isset($_GET['pdid']) ) { ?>
                             postParam.pdid = "<?= $_GET['pdid'] ?>";
-                        <?php } else { ?>
-                            postParam.pid = '0';
                         <?php } ?>
                         <?php if( isset($_GET['vrid']) ) { ?>
                             postParam.vrid = "<?= $_GET['vrid'] ?>";
                         <?php } ?>
+                       
                         postParam.status = $("#set_status").val();
                     var postUrl = "<?= site_url() . '/wp-json/tindapress/v1/variants/list' ?>";
                     
@@ -259,7 +258,10 @@
                     postParam.info = $('#new_info').val();
                     postParam.pdid = $('#new_product').val();
                     <?php if( isset($_GET['vrid']) ) { ?>
-                    postParam.vrid = '<?= $_GET['vrid'] ?>';
+                    postParam.pid = '<?= $_GET['vrid'] ?>';
+                    
+                    <?php } else  {?>
+                        postParam.pid = 0; 
                     <?php } ?>
                     postParam.base = $('#new_base').val();
                     postParam.price = $('#new_price').val();
