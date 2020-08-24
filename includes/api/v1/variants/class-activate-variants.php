@@ -69,16 +69,15 @@
             //Check if this exists
             $get_parent = $wpdb->get_row("SELECT var.ID,
                 (SELECT child_val FROM tp_revisions WHERE ID = MAX(rev.ID)) as status
-                FROM
-                    tp_variants var
-                INNER JOIN tp_revisions rev ON rev.parent_id = var.ID 
-                WHERE var.ID = '$variants_id'  
-                AND rev.revs_type = 'variants' 
-                AND child_key = 'status' 
+            FROM
+                tp_variants var
+            INNER JOIN tp_revisions rev ON rev.parent_id = var.ID 
+            WHERE var.ID = '$variants_id'  
+            AND rev.revs_type = 'variants' 
+            AND child_key = 'status' 
             ");
-            
 
-            if (!$get_parent) {
+            if ($get_parent->ID === null){
                 return array(
                     "status" => "failed",
                     "message" => "This variant does not exists" 
@@ -90,8 +89,8 @@
                     "status" => "failed",
                     "message" => "This variant is already active." 
                 );
-            }
-
+            } 
+            
             $parent_id = $get_parent->ID;
 
             $wpdb->query("START TRANSACTION");
