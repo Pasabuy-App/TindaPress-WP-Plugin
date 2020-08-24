@@ -19,6 +19,7 @@
 
         public static function list_open(){
 
+            // 2nd Initial QA 2020-08-24 10:49 PM - Miguel
             global $wpdb;
 
             // declaring table names to variable
@@ -53,36 +54,40 @@
 
             // Step3 : Query
             $sql ="SELECT
-            str.ID,
-            str.ctid AS `catid`,
-            ( SELECT rev.child_val FROM tp_revisions rev WHERE rev.ID = cat.title  AND rev.date_created = (SELECT MAX(tp_rev.date_created) FROM tp_revisions tp_rev WHERE ID = rev.ID  AND revs_type ='categories'   )  ) as cat_name,
-            ( SELECT rev.child_val FROM tp_revisions rev WHERE rev.id = str.title AND  rev.date_created = ( SELECT MAX(date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores' )  ) AS title,
-            ( SELECT rev.child_val FROM tp_revisions rev WHERE rev.id = str.short_info AND  rev.date_created = ( SELECT MAX(date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores' ) ) AS short_info,
-            ( SELECT rev.child_val FROM tp_revisions rev WHERE rev.id = str.long_info AND  rev.date_created = ( SELECT MAX(date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores' ) ) AS long_info,
-            ( SELECT rev.child_val FROM tp_revisions rev WHERE rev.id = str.logo AND  rev.date_created = ( SELECT MAX(date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores' ) ) AS avatar,
-            ( SELECT rev.child_val FROM tp_revisions rev WHERE rev.id = str.banner AND  rev.date_created = ( SELECT MAX(date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores' ) ) AS banner,
-        IF
-            ( ( SELECT rev.child_val FROM tp_revisions rev WHERE rev.id = str.`status` AND date_created = (SELECT MAX(tp_rev.date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND tp_rev.child_key = 'status')   ) = 1, 'Active', 'Inactive' ) AS `status`,
-            ( SELECT dv_rev.child_val FROM dv_revisions  dv_rev WHERE dv_rev.ID = `add`.street AND dv_rev.date_created = (SELECT MAX(date_created)  FROM dv_revisions WHERE ID = dv_rev.ID AND revs_type ='address')   ) AS street,
-            ( SELECT brgy_name FROM dv_geo_brgys WHERE ID = ( SELECT dv_rev.child_val FROM dv_revisions dv_rev WHERE dv_rev.id = `add`.brgy  AND dv_rev.date_created = (SELECT MAX(date_created)  FROM dv_revisions WHERE ID = dv_rev.ID AND revs_type ='address') ) ) AS brgy,
-            ( SELECT city_name FROM dv_geo_cities WHERE city_code = ( SELECT dv_rev.child_val FROM dv_revisions dv_rev WHERE dv_rev.id = `add`.city  AND dv_rev.date_created = (SELECT MAX(date_created)  FROM dv_revisions WHERE ID = dv_rev.ID AND revs_type ='address')  ) ) AS city,
-            ( SELECT prov_name FROM dv_geo_provinces WHERE prov_code = ( SELECT dv_rev.child_val FROM dv_revisions dv_rev WHERE dv_rev.id = `add`.province AND dv_rev.date_created = (SELECT MAX(date_created)  FROM dv_revisions WHERE ID = dv_rev.ID AND revs_type ='address')  ) ) AS province,
-            ( SELECT country_name FROM dv_geo_countries WHERE id = ( SELECT dv_rev.child_val FROM dv_revisions dv_rev WHERE dv_rev.id = `add`.country  AND dv_rev.date_created = (SELECT MAX(date_created)  FROM dv_revisions WHERE ID = dv_rev.ID AND revs_type ='address')  ) ) AS country,
-            ( SELECT child_val FROM dv_revisions WHERE ID = ( SELECT revs FROM dv_contacts WHERE types = 'phone' AND stid = str.ID LIMIT 1 ) LIMIT 1 ) AS phone,
-            ( SELECT child_val FROM dv_revisions WHERE ID = ( SELECT revs FROM dv_contacts  WHERE types = 'email' AND stid = str.ID LIMIT 1 ) LIMIT 1 ) AS email 
-        FROM
-            tp_stores str
-            INNER JOIN dv_address `add` ON str.address = `add`.ID
-            INNER JOIN tp_categories cat ON cat.ID = str.ctid 
-            ";
-             isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL  ;
+                str.ID,
+                str.ctid AS `catid`,
+                ( SELECT rev.child_val FROM $table_revs rev WHERE rev.ID = cat.title  AND rev.date_created = (SELECT MAX(tp_rev.date_created) FROM $table_revs tp_rev WHERE ID = rev.ID  AND revs_type ='categories'   )  ) as cat_name,
+                ( SELECT rev.child_val FROM $table_revs rev WHERE rev.id = str.title AND  rev.date_created = ( SELECT MAX(date_created) FROM $table_revs tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores' )  ) AS title,
+                ( SELECT rev.child_val FROM $table_revs rev WHERE rev.id = str.short_info AND  rev.date_created = ( SELECT MAX(date_created) FROM $table_revs tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores' ) ) AS short_info,
+                ( SELECT rev.child_val FROM $table_revs rev WHERE rev.id = str.long_info AND  rev.date_created = ( SELECT MAX(date_created) FROM $table_revs tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores' ) ) AS long_info,
+                ( SELECT rev.child_val FROM $table_revs rev WHERE rev.id = str.logo AND  rev.date_created = ( SELECT MAX(date_created) FROM $table_revs tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores' ) ) AS avatar,
+                ( SELECT rev.child_val FROM $table_revs rev WHERE rev.id = str.banner AND  rev.date_created = ( SELECT MAX(date_created) FROM $table_revs tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores' ) ) AS banner,
+            IF
+                ( ( SELECT rev.child_val FROM $table_revs rev WHERE rev.id = str.`status` AND date_created = (SELECT MAX(tp_rev.date_created) FROM $table_revs tp_rev WHERE tp_rev.ID = rev.ID AND tp_rev.child_key = 'status')   ) = 1, 'Active', 'Inactive' ) AS `status`,
+                ( SELECT dv_rev.child_val FROM $table_dv_revisions  dv_rev WHERE dv_rev.ID = `add`.street AND dv_rev.date_created = (SELECT MAX(date_created)  FROM $table_dv_revisions WHERE ID = dv_rev.ID AND revs_type ='address')   ) AS street,
+                ( SELECT brgy_name FROM $table_brgy WHERE ID = ( SELECT dv_rev.child_val FROM $table_dv_revisions dv_rev WHERE dv_rev.id = `add`.brgy  AND dv_rev.date_created = (SELECT MAX(date_created)  FROM $table_dv_revisions WHERE ID = dv_rev.ID AND revs_type ='address') ) ) AS brgy,
+                ( SELECT city_name FROM $table_city WHERE city_code = ( SELECT dv_rev.child_val FROM $table_dv_revisions dv_rev WHERE dv_rev.id = `add`.city  AND dv_rev.date_created = (SELECT MAX(date_created)  FROM $table_dv_revisions WHERE ID = dv_rev.ID AND revs_type ='address')  ) ) AS city,
+                ( SELECT prov_name FROM $table_province WHERE prov_code = ( SELECT dv_rev.child_val FROM $table_dv_revisions dv_rev WHERE dv_rev.id = `add`.province AND dv_rev.date_created = (SELECT MAX(date_created)  FROM $table_dv_revisions WHERE ID = dv_rev.ID AND revs_type ='address')  ) ) AS province,
+                ( SELECT country_name FROM $table_country WHERE id = ( SELECT dv_rev.child_val FROM $table_dv_revisions dv_rev WHERE dv_rev.id = `add`.country  AND dv_rev.date_created = (SELECT MAX(date_created)  FROM $table_dv_revisions WHERE ID = dv_rev.ID AND revs_type ='address')  ) ) AS country,
+                ( SELECT child_val FROM $table_dv_revisions WHERE ID = ( SELECT revs FROM dv_contacts WHERE types = 'phone' AND stid = str.ID LIMIT 1 ) LIMIT 1 ) AS phone,
+                ( SELECT child_val FROM $table_dv_revisions WHERE ID = ( SELECT revs FROM dv_contacts  WHERE types = 'email' AND stid = str.ID LIMIT 1 ) LIMIT 1 ) AS email 
+            FROM
+                $table_store str
+                INNER JOIN dv_address `add` ON str.address = `add`.ID
+                INNER JOIN tp_categories cat ON cat.ID = str.ctid 
+                ";
+            
+            // Ternary for isset condition 
+            isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL  ;
             isset($_POST['catid']) ? $ctd = $_POST['catid'] : $ctd = NULL  ;
-              isset($_POST['stid']) ? $std = $_POST['stid'] : $std = NULL  ;
+            isset($_POST['stid']) ? $std = $_POST['stid'] : $std = NULL  ;
             
-             $status = $sts == '0' || $sts == NULL ? NULL : ($sts == '2'&& $sts !== '0'? '0':'1');
-             $catid = $ctd == '0'? NULL: $catid = $ctd;
-              $stid = $std == "0" ? NULL: $stid = $std;
+            // Ternary condition for isset value
+            $status = $sts == '0' || $sts == NULL ? NULL : ($sts == '2'&& $sts !== '0'? '0':'1');
+            $catid = $ctd == '0'? NULL: $catid = $ctd;
+            $stid = $std == "0" ? NULL: $stid = $std;
             
+            // Status condition
             if(isset($_POST['status'])){
                 if($status != NULL){
 
@@ -91,19 +96,23 @@
                 }
             }
             
+            // Category condition
             if (isset($_POST['catid'])) {
                 if ($catid != NULL && $catid != '0') {
 
                     if ($status !== NULL ) {
     
                         $sql .= " AND `str`.ctid = $catid ";
+
                     }else{
+
                         $sql .= " WHERE `str`.ctid = $catid ";
     
                     }
                 }    
             }
 
+            // Store ID Condition
             if (isset($_POST['stid'])) {
                 if ($stid != 0 ) {
                    
@@ -117,9 +126,12 @@
                     
                 }
             }
-            
+            // Uncomment for debugging
+
             // return $sql;
+            // Execute query
             $result = $wpdb->get_results($sql);
+
             // Step4 : Check if no result
             if (!$result ) {
                 return array(
@@ -127,14 +139,13 @@
                         "message" => "No results found.",
                 );
 
-            }
-            
-            // Step5 : Return Result 
-            return array(
+            }else{
+
+                // Step5 : Return Result 
+                return array(
                     "status" => "success",
                     "data" => $result,
-            );
-            
+                );
+            }
         }
-
     }

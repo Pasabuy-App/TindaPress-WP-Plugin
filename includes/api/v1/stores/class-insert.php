@@ -23,19 +23,16 @@
             global $wpdb;
 
             // declaring table names to variable
-            $table_store = TP_STORES_TABLE;
+            $table_store        = TP_STORES_TABLE;
             $table_store_fields = TP_STORES_FIELDS;
-            $table_tp_revs = TP_REVISIONS_TABLE;
-            $table_revs_fields = TP_REVISION_FIELDS;
-            $revs_type = "stores";
-
-            $table_contact = DV_CONTACTS_TABLE;
-            $table_dv_revs = DV_REVS_TABLE;
-
-            $rev_fields = DV_INSERT_REV_FIELDS;
-            $dv_rev_table = DV_REVS_TABLE;
-
-            $table_address = DV_ADDRESS_TABLE;
+            $table_tp_revs      = TP_REVISIONS_TABLE;
+            $table_revs_fields  = TP_REVISION_FIELDS;
+            $revs_type          = "stores";
+            $table_contact      = DV_CONTACTS_TABLE;
+            $table_dv_revs      = DV_REVS_TABLE;
+            $rev_fields         = DV_INSERT_REV_FIELDS;
+            $dv_rev_table       = DV_REVS_TABLE;
+            $table_address      = DV_ADDRESS_TABLE;
 
             // Step1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
