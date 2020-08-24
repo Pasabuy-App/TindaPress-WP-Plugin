@@ -69,9 +69,10 @@
                 tp_variants var
                 INNER JOIN tp_revisions rev ON rev.parent_id = var.ID 
             WHERE
-                rev.revs_type = 'variants' 
+                var.parent_id = 0
+                AND rev.revs_type = 'variants' 
                 AND child_key = 'status' 
-                AND rev.date_created = ( SELECT MAX( date_created ) FROM tp_revisions WHERE ID = rev.ID AND child_key = rev.child_key )
+                AND rev.ID = ( SELECT MAX( ID ) FROM tp_revisions WHERE parent_id = rev.parent_id AND child_key = rev.child_key )
             ";
 
             if (isset($_POST['pdid'])) {
@@ -93,17 +94,16 @@
             }
 
             $result = $wpdb->get_results($sql);
-      
+    
             foreach ($result as $key => $value) {
-
+                
                 $parent = $value->ID;
-
                 $option = $wpdb->get_results("SELECT
                     rev.ID,
                     rev.child_val as 'name',
                     (SELECT child_val FROM tp_revisions rev WHERE parent_id = var.ID AND child_key = 'price' AND revs_type ='variants'  AND date_created = ( SELECT MAX(date_created) FROM tp_revisions WHERE ID = rev.ID  ) ) as `price`,
                     (SELECT child_val FROM tp_revisions rev WHERE parent_id = var.ID AND child_key = 'info' AND revs_type ='variants'  AND date_created = ( SELECT MAX(date_created) FROM tp_revisions WHERE ID = rev.ID  ) ) as `info`,
-                    IF((SELECT child_val FROM tp_revisions rev WHERE parent_id = var.ID AND child_key = 'status' AND revs_type ='variants'  AND date_created = ( SELECT MAX(date_created) FROM tp_revisions WHERE ID = rev.ID  ) ) = 1, 'Active', IF((SELECT child_val FROM tp_revisions rev WHERE parent_id = var.ID AND child_key = 'status' AND revs_type ='variants'  AND date_created = ( SELECT MAX(date_created) FROM tp_revisions WHERE ID = rev.ID  ) ) is NULL , 'Inactive', 'Inactive' )) as `status`
+                    IF( ( SELECT child_val FROM tp_revisions rev WHERE parent_id = var.ID AND child_key = 'status' AND revs_type ='variants' AND ID = ( SELECT MAX(ID) FROM tp_revisions WHERE child_key ='status' AND revs_type ='variants'  ) ) = 1, 'Active', 'Inactive' ) as `status`
                 FROM
                     tp_revisions rev
                     INNER JOIN tp_variants var ON var.parent_id = '$parent' 
@@ -117,50 +117,19 @@
                 }
 
                 if (isset($_POST['type'])  ) {
+
                     if ( $type !== NULL && $product_id !== NULL ) {
                         $value->options = $option;
                     }
                 }
+
+              
+
                            
-                        
-                        /**
-                            if (isset($_POST['pdid'])) {
-                                if ($product_id !== NULL && $product_id == '0') {
-                                    $result = $value;
-                                }
-                            }else{
-                                $value->options = $option;  
-
-                            }
-
-                            if (isset($_POST['vrid'])  ) {
-                                if ($variants_id !== NULL  ) {
-
-                                    if (isset($_POST['pdid'])) {
-                                        if ($product_id !== NULL) {
-                                            
-                                                $value->options = $option;
-
-                                            
-
-                                        }else{
-
-                                            $result = $option;
-
-                                        }
-
-                                    }else{
-
-                                        $result = $option;
-                                    }
-                                    
-                                }
-                            }
-                         */
 
             }
                   
-
+        
 
 
             return array(

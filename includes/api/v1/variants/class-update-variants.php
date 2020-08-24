@@ -44,7 +44,7 @@
             }
 
             // Step 3: Sanitize request
-			if ( !isset($_POST['pdid']) || !isset($_POST['vid']) || !isset($_POST['key']) || !isset($_POST['ckey']) || !isset($_POST['val']) ) {
+			if ( !isset($_POST['pdid']) || !isset($_POST['vid']) || !isset($_POST['name']) ) {
 				return array(
 						"status" => "unknown",
 						"message" => "Please contact your administrator. Request unknown!",
@@ -52,7 +52,7 @@
             }
             
             // Step 4: Sanitize if variable is empty
-            if ( empty($_POST['pdid']) || empty($_POST['vid']) || empty($_POST['key']) || empty($_POST['ckey']) || empty($_POST['val'])  ) {
+            if ( empty($_POST['pdid']) || empty($_POST['vid']) || empty($_POST['name']) || ( empty($_POST['base']) && empty($_POST['price']) ) ) {
 				return array(
 						"status" => "failed",
 						"message" => "Required fields cannot be empty.",
@@ -61,35 +61,37 @@
 
             $product_id = $_POST['pdid'];
             $variants_id = $_POST['vid'];
-            $variant_key = $_POST['key'];
-            $variant_childkey = $_POST['ckey'];
-            $new_value = $_POST['val'];
+            $variant_name = $_POST['name'];
+            // $variant_childkey = $_POST['ckey'];
+            // $new_value = $_POST['val'];
             $wpid = $_POST['wpid'];
             $date = TP_Globals:: date_stamp();
 
-            //Check if this exists
-            $get_parent = $wpdb->get_row("SELECT `ID`,
-            (SELECT `child_val` FROM $table_revs WHERE `ID` = $table_variants.status) as status,
-            (SELECT `child_val` FROM $table_revs WHERE `parent_id` = $variants_id AND `child_key` = 'name') as name,
-            (SELECT `ID` FROM $table_revs WHERE `parent_id` = $variants_id AND `child_key` = 'name') as name_id
-            FROM $table_variants 
-            WHERE `ID` = $variants_id
-            AND `pdid` = $product_id");
+            // Validate if exists and if status is 0 or 1 using variant id and product id
+            $get_parent = $wpdb->get_row("SELECT var.ID,
+                (SELECT child_val FROM tp_revisions WHERE ID = MAX(rev.ID)) as status
+            FROM
+                tp_variants var
+            INNER JOIN tp_revisions rev ON rev.parent_id = var.ID 
+            WHERE var.ID = '$variants_id'  
+            AND rev.revs_type = 'variants' 
+            AND child_key = 'status' 
+            ");
 
-            if (!$get_parent) {
+            if ($get_parent->ID === null){
                 return array(
                     "status" => "failed",
-                    "message" => "This variant does not exists." 
+                    "message" => "This variant does not exists" 
                 );
             }
-
-            if ($get_parent->status == 0) {
+            
+            if ($get_parent->status == '0') {
                 return array(
                     "status" => "failed",
-                    "message" => "This variant is currently inactive." 
+                    "message" => "This variant is already inactive." 
                 );
             }
-      
+            return 0;
             $get_key = $wpdb->get_row("SELECT `ID` FROM $table_revs WHERE `parent_id` = $get_parent->name_id AND `child_key` = '$get_parent->name' AND `child_val` LIKE '%$variant_key%'");
             
             $wpdb->query("START TRANSACTION");

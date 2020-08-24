@@ -67,36 +67,37 @@
             $get_parent = array();
             
             //Check if this exists
-            $get_parent = $wpdb->get_row("SELECT `ID`,
-            (SELECT `child_val` FROM $table_revs WHERE `ID` = $table_variants.status) as status
-            FROM $table_variants 
-            WHERE `ID` = $variants_id");
-            
+            $get_parent = $wpdb->get_row("SELECT var.ID,
+                (SELECT child_val FROM tp_revisions WHERE ID = MAX(rev.ID)) as status
+            FROM
+                tp_variants var
+            INNER JOIN tp_revisions rev ON rev.parent_id = var.ID 
+            WHERE var.ID = '$variants_id'  
+            AND rev.revs_type = 'variants' 
+            AND child_key = 'status' 
+            ");
 
-            if (!$get_parent) {
+            if ($get_parent->ID === null){
                 return array(
                     "status" => "failed",
                     "message" => "This variant does not exists" 
                 );
             }
             
-            if ($get_parent->status == 0) {
+            if ($get_parent->status == '0') {
                 return array(
                     "status" => "failed",
                     "message" => "This variant is already inactive." 
                 );
             }
-
+            
             $parent_id = $get_parent->ID;
 
             $wpdb->query("START TRANSACTION");
 
-            $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $parent_id, 'status', '0', $wpid, '$date')");
-            $status_id = $wpdb->insert_id;
-            
-            $update_parent = $wpdb->query("UPDATE $table_variants SET `status` = $status_id WHERE ID = $parent_id");
+            $result = $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $parent_id, 'status', '0', $wpid, '$date')");
 
-            if ($status_id < 1 || $update_parent < 1) {
+            if ($result < 1) {
                 $wpdb->query("ROLLBACK");
                 return array(
                     "status" => "error",
