@@ -19,7 +19,7 @@
         
         public static function list_open(){
             
-            // 2nd Initial QA 2020-08-24 10:51 PM - Miguel
+            // 2nd Initial QA 2020-08-24 10:53 PM - Miguel
             global $wpdb;
 
             // variable for time stamp
@@ -47,16 +47,16 @@
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
             
             // Step2 : Check if wpid and snky is valid
             if (DV_Verification::is_verified() == false) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification Issues!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification Issues!",
                 );
             }
 
@@ -94,8 +94,8 @@
     
             // step6 : return result
             return array(
-                    "status" => "success",
-                    "data" => $result
+                "status" => "success",
+                "data" => $result
             );
         }
 

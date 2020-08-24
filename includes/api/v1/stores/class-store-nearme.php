@@ -39,16 +39,16 @@
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 
             // Step 2: Validate user
             if (DV_Verification::is_verified() == false) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification issues!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification issues!",
                 );
             }
 
@@ -92,17 +92,9 @@
             ");
 
             // Step 5: Return results
-            if (!$results) {
-                return array(
-                    "status" => "success",
-                    "message" => "No results found."
-                );
-            }else{
-                return array(
-                    "status" => "success",
-                    "data" => $results
-                );
-            }
-
+            return array(
+                "status" => "success",
+                "data" => $results
+            );
         }
     }

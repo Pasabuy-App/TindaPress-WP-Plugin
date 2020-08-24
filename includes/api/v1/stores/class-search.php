@@ -90,14 +90,7 @@
                 tp_rev.child_val REGEXP '^$value';
             ");
 
-            // Step6 : Check if no result
-            if (!$result ) {
-                return array(
-                        "status" => "failed",
-                        "message" => "No results found.",
-                );
-            }
-            
+     
             // Step7 : Return Result 
             return array(
                     "status" => "success",
