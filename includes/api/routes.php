@@ -38,6 +38,8 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-delete.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-insert.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-update.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-approve.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-listing.php';
         
         //Settings Classes
         require plugin_dir_path(__FILE__) . '/v1/settings/class-banner.php';
@@ -140,12 +142,22 @@
 
             register_rest_route( 'tindapress/v1/documents', 'delete', array(
                 'methods' => 'POST',
-                'callback' => array('TP_Delte_Documents','listen'),
+                'callback' => array('TP_Delete_Documents','listen'),
             ));
 
             register_rest_route( 'tindapress/v1/documents', 'update', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Update_Documents','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/documents', 'approve', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Approve_Documents','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/documents', 'listing', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Store_Listing_Documents','listen'),
             ));
      
             

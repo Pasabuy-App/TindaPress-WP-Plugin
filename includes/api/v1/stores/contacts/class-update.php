@@ -92,13 +92,19 @@
             $table_dv_revsions = DV_REVS_TABLE;
 
             // Step 9: Check if contact is exists using contact id, store id and types
-            $val_contact = $wpdb->get_row("SELECT ID, (SELECT child_val FROM $table_dv_revsions WHERE ID = revs) AS val FROM $table_contact  WHERE ID = '$cid' AND stid = '$stid' AND types = '$type' ");    
+            $val_contact = $wpdb->get_row("SELECT ID, status, (SELECT child_val FROM $table_dv_revsions WHERE ID = revs) AS val FROM $table_contact  WHERE ID = '$cid' AND stid = '$stid' AND types = '$type' ");    
             if ( !$val_contact ) {
                 return array(
                         "status" => "failed",
                         "message" => "This contact does not exists.",
                 );
-            }   
+            }  
+            if ( $val_contact->status === '0' ) {
+                return array(
+                        "status" => "failed",
+                        "message" => "This contact does not exist.",
+                );
+            } 
             if ( $val_contact->val === $val ) {
                 return array(
                         "status" => "failed",

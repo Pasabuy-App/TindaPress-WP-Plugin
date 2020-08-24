@@ -71,15 +71,15 @@
 
 
 
-            // Step 5: Check if user has roles_access of can_activate_store or either contributor or editor
-            $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_activate_products' );
+            // // Step 5: Check if user has roles_access of can_activate_store or either contributor or editor
+            // $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_activate_products' );
             
-            if ($permission == true) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Current user has no access in activating products.",
-                );
-            }
+            // if ($permission == true) {
+            //     return array(
+            //         "status" => "failed",
+            //         "message" => "Current user has no access in activating products.",
+            //     );
+            // }
 
             // variables
             $parentid = $_POST['pdid'];
@@ -134,7 +134,7 @@
                     $get_product_last_value->$key = str_replace("'","''", $value);
                 }
 
-                return$wpdb->query("INSERT INTO $table_revs $table_revs_fields VALUES ('$get_product_last_value->type', '$parentid', 'title', '$get_product_last_value->title', '$wpid', '$date_stamp')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields VALUES ('$get_product_last_value->type', '$parentid', 'title', '$get_product_last_value->title', '$wpid', '$date_stamp')");
                 $title = $wpdb->insert_id;
 
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$get_product_last_value->type', '$parentid', 'preview', '$get_product_last_value->preview', '$wpid', '$date_stamp')");
@@ -166,7 +166,15 @@
             
 
             // Step 8: Check for query results. Do a rollback if errors found
-            if ( $result < 1 ) {
+            if ( $title < 1  
+                || $preview < 1 
+                || $short_info < 1 
+                || $long_info < 1 
+                || $sku < 1 
+                || $price < 1 
+                || $weight < 1 
+                || $dimension < 1 
+                || $update_product < 1 ) {
             
                 $wpdb->query("ROLLBACK");
             

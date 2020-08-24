@@ -66,10 +66,12 @@
             isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL  ;
             isset($_POST['stid'])   ? $std = $_POST['stid']   : $std = NULL  ;
             isset($_POST['catid'])  ? $ctd = $_POST['catid']  : $ctd = NULL  ;
+            isset($_POST['pid'])  ? $pid = $_POST['pid']  : $pid = NULL  ;
 
             (int)$status = $sts == '0'? NULL:($sts == '2'? '0':'1')  ;
             (int)$catid = $ctd == '0'? '0': $catid = $ctd;
             (int)$stid = $std == '0'? '0': $stid = $std;
+            (int)$pdid = $pid == '0'? '0': $pdid = $pid;
 
 
             if($status != NULL){
@@ -97,6 +99,17 @@
                 }else{
                     
                     $sql .= " WHERE tp_prod.stid = $stid ";
+
+                }
+            }
+
+            if ($pdid != NULL && $pdid != '0' ) {
+                if ($status !== NULL || $catid != '0' ||  $stid != '0') {
+                   
+                    $sql .= " AND tp_prod.ID = $pdid ";
+                }else{
+                    
+                    $sql .= " WHERE tp_prod.ID = $pdid ";
 
                 }
             }
