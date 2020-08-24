@@ -18,6 +18,8 @@
         }
 
         public static function listen_open (){
+
+            // 2nd Initial QA 2020-08-24 8:05 PM - Miguel
             global $wpdb;
 
             // NOTE : POST 'type' is not required even if its not listen in client it will not show error
@@ -29,16 +31,16 @@
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 
             // Step 2: Validate user
             if (DV_Verification::is_verified() == false) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification issues!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification issues!",
                 );
             }
 
@@ -123,7 +125,5 @@
                     "data" => $result
                 );
             }
-            
         }
-
     }

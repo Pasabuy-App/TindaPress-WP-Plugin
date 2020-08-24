@@ -18,6 +18,8 @@
         }
 
         public static function listen_open (){
+
+            // 2nd Initial QA 2020-08-24 8:00 PM - Miguel
             global $wpdb;
 
             $table_contact = DV_CONTACTS_TABLE;
