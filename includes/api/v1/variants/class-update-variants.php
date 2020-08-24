@@ -50,6 +50,13 @@
 					"message" => "Please contact your administrator. Request unknown!",
                 );
             }
+
+            if ( isset($_POST['base'])  && isset($_POST['price']) ){
+				return array(
+					"status" => "failed",
+					"message" => "Please select base or price.",
+                );
+            }
             
             // Step 4: Sanitize if variable is empty
             if ( empty($_POST['pdid']) || empty($_POST['vid']) || empty($_POST['name']) || ( empty($_POST['base']) && empty($_POST['price']) ) ) {
@@ -58,45 +65,103 @@
 					"message" => "Required fields cannot be empty.",
                 );
             }
+            
+            // Step 5: Sanitize if base or price
+            if ( ( !is_numeric($_POST['base']) && !is_numeric($_POST['price']) ) ) {
+				return array(
+						"status" => "failed",
+						"message" => "Invalid input.",
+                );
+            }
 
+            // Step 6: Store post to variable
             $product_id = $_POST['pdid'];
             $variants_id = $_POST['vid'];
             $variant_name = $_POST['name'];
             $wpid = $_POST['wpid'];
             $date = TP_Globals:: date_stamp();
+            isset($_POST['info']) ? $info = $_POST['info'] : $info = NULL;
 
-            // Validate if exists and if status is 0 or 1 using variant id and product id
-            $get_parent = $wpdb->get_row("SELECT var.ID,
-                (SELECT child_val FROM $table_revs WHERE ID = MAX(rev.ID)) as status
+            // Step 7: Validate if exists and if status is 0 or 1 using variant id and product id
+            $get_parent = $wpdb->get_row("SELECT var.ID, var.parent_id,
+                (SELECT child_val FROM tp_revisions WHERE ID = MAX(rev.ID)) as status
             FROM
                 $table_variants var
             INNER JOIN $table_revs rev ON rev.parent_id = var.ID 
-            WHERE var.ID = '$variants_id'  
+            WHERE var.ID = '$variants_id'  AND var.pdid = '$product_id'
             AND rev.revs_type = 'variants' 
             AND child_key = 'status' 
             ");
 
-            if ($get_parent->ID === null){
+            if (!$get_parent){ // Check if null
                 return array(
                     "status" => "failed",
-                    "message" => "This variant does not exists" 
+                    "message" => "This variant does not exists." 
                 );
             }
             
-            if ($get_parent->status == '0') {
+            if ($get_parent->status === '0') { // Check the status
                 return array(
                     "status" => "failed",
                     "message" => "This variant is already inactive." 
                 );
             }
 
+            if ( isset($_POST['base']) ){ // If the post base is set
+                if ( !($get_parent->parent_id === '0') ) { 
+                    return array(
+                        "status" => "failed",
+                        "message" => "The variant id is not a variant." 
+                    );
+                }
+                $ckbp = 'baseprice';// Name of Variant and base price
+                $cvbp = $_POST['base'];
+            }
+
+            if ( isset($_POST['price']) ){// If the post price is set
+                if ( ($get_parent->parent_id === '0') ) { 
+                    return array(
+                        "status" => "failed",
+                        "message" => "This is a variant not an option." 
+                    );
+                }
+                $ckbp = 'price';// Name of Option and price
+                $cvbp = $_POST['price'];
+            }
+
+            $child_key = array( // Store into array
+                $ckbp => $cvbp ,
+                "status" => "1",
+                "name" => $variant_name
+            );
+            
+            // Step 8: Query
             $wpdb->query("START TRANSACTION");
 
-            $get_key = $wpdb->get_row("SELECT `ID` FROM $table_revs WHERE `parent_id` = $get_parent->name_id AND `child_key` = '$get_parent->name' AND `child_val` LIKE '%$variant_key%'");
+            foreach ($child_key as $key => $val){ // loop the array and insert into tp revisions
+                $rev_insert = $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', '$variants_id', '$key', '$val', $wpid, '$date')");
+            }
 
-            $rev_insert = $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', '$get_key->ID', '$variant_childkey', '$new_value', $wpid, '$date')");
+            if ( isset($_POST['info']) ){ // if  post info is set, insert into tp revisions
+                $rev_insert_info = $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', '$variants_id', 'info', '$info', $wpid, '$date')");
+            } else { // if not set, get the value of last info using revision id and insert into tp revisions
+                $get_info = $wpdb->get_row("SELECT (SELECT child_val FROM tp_revisions WHERE ID = MAX(rev.ID)) as info
+            FROM
+                $table_variants var
+            INNER JOIN 
+                $table_revs rev ON rev.parent_id = var.ID 
+            WHERE 
+                var.ID = '$variants_id'  AND var.pdid = '$product_id'
+            AND 
+                rev.revs_type = 'variants' 
+            AND 
+                child_key = 'info' 
+            ");
+                $rev_insert_info =  $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', '$variants_id', 'info', '$get_info->info', $wpid, '$date')");
+            }
 
-            if ($rev_insert < 1) {
+            // Step 9: Check result
+            if ($rev_insert < 1 || $rev_insert_info < 1) {
                 $wpdb->query("ROLLBACK");
                 return array(
                     "status" => "error",
@@ -111,13 +176,5 @@
                     "message" => "Data has been updated successfully.",
                 );
             }
-
-            
-
-
-        }   
-
-        
-
-        
+        } 
     }
