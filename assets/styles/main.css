@@ -189,3 +189,14 @@ button[disabled] {
     padding: 3px 15px;
     margin-left: 17px;
 }
+
+#upload {
+    opacity: 0;
+}
+
+#upload-label {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    transform: translateY(-50%);
+}

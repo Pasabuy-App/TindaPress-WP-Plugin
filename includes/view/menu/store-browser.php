@@ -48,5 +48,8 @@
 	<?php include_once( TP_PLUGIN_PATH . "/includes/model/stores.php" ); ?>
 	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/store-create-modal.php" ); ?>
 	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/store-edit-modal.php" ); ?>
+	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/store-add-logo-modal.php" ); ?>
+	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/store-add-gps-modal.php" ); ?>
+
 	<div id="jquery-overlay" class="modal-backdrop fade show tp-display-hide" style="z-index: 9999;"></div>
 	
