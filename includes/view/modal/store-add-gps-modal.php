@@ -32,7 +32,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="inputGroup-sizing-default">Latitude&nbsp&nbsp&nbsp</span>
                                 </div>
-                                <input required type="number"  class="form-control" id="lat" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                                <input required type="float"  class="form-control" id="lat" aria-label="Default" aria-describedby="inputGroup-sizing-default">
                             </div>
                         </div>
                         <div class="form-group">
@@ -40,7 +40,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="inputGroup-sizing-default">Longitude</span>
                                 </div>
-                                <input required type="number"  class="form-control" id="long" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                                <input required type="float"  class="form-control" id="long" aria-label="Default" aria-describedby="inputGroup-sizing-default">
                             </div>
                         </div>
                         

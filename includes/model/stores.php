@@ -99,7 +99,7 @@
             //DISPLAY DATA INTO THE TARGET DATATABLES.
             function displayingLoadedApps( data )
             {
-                console.log(data)
+                
                 //Set table column header.
                 var columns = [
                     //{ "sTitle": "IDENTITY",   "mData": "ID" },
@@ -538,6 +538,20 @@
                 $('#edit_status').val( data.status == 'Active' ? 1 : 0 );
         });
 
+        
+        $('#AddLogo').on('hide.bs.modal', function(e) {
+                if( typeof activeTimeout !== 'undefined' )
+                {
+                    clearTimeout( activeTimeout );
+                }
+
+                if( !$('#LogoMessage').hasClass('tp-display-hide') )
+                {
+                    $('#LogoMessage').addClass('tp-display-hide');
+                }
+        });
+
+
         $('#AddGPS').on('show.bs.modal', function(e) {
                 var data = e.relatedTarget.dataset;
                 $('#address_id').val( data.addr );
@@ -555,6 +569,7 @@
                     $('#GPSResponse').addClass('tp-display-hide');
                 }
         });
+
 
         $('#gps-app-form').submit( function(event) {
             event.preventDefault();
@@ -587,38 +602,105 @@
                 });
             });
 
-            function confirmGpsProcess() {
-                var latitude = $('#lat').val();
-                var longitude = $('#long').val();
-                
-                var postParam = {};
-                        postParam.wpid = "<?php echo get_current_user_id(); ?>";
-                        postParam.snky = "<?php echo wp_get_session_token(); ?>";
-                        postParam.addr = $('#address_id').val();
-                        postParam.status = $('#edit_status').val();
-                        postParam.lat = latitude;
-                        postParam.lon = longitude;
-                    
-                var postUrl = '<?= site_url() . "/wp-json/datavice/v1/coordinates/insert"; ?>';
-            
-                $.ajax({
-                    dataType: 'json',
-                    type: 'POST', 
-                    data: postParam,
-                    url: postUrl,
-                    success : function( data )
+        $('#logo-app-form').submit( function(event) {
+            event.preventDefault();
+            $( "#dialog-confirm-logo" ).dialog({
+                title: 'Confirmation',
+                resizable: false,
+                height: "auto",
+                width: 320,
+                modal: false,
+                open: function() {
+                    $('#jquery-overlay').removeClass('tp-display-hide');
+                    $('#confirm-content-logo').html(
+                        '<span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>' +
+                        'Please confirm to complete the process, else just press cancel.'
+                    );
+                },
+                buttons: {
+                    "Confirm": function() 
                     {
-                        $('#GPSResponse').addClass('alert-'+data.status);
-                        $('#GPSResponse').removeClass('tp-display-hide');
-                        $('#GPSContent').html( data.message );
-                        $('#gps-app-form').trigger("reset");
+                        confirmLogoProcess();
+                        $('#jquery-overlay').addClass('tp-display-hide');
+                        $( this ).dialog( "close" );
                     },
-                    error : function(jqXHR, textStatus, errorThrown) 
+                    Cancel: function() 
                     {
-                        console.log("" + JSON.stringify(jqXHR) + " :: " + textStatus + " :: " + errorThrown);
+                        $('#jquery-overlay').addClass('tp-display-hide');
+                        $( this ).dialog( "close" );
                     }
-                });
-            }
+                }
+            });
+        });
+
+        function confirmLogoProcess() {
+            
+            var postParam = new FormData();
+            postParam.append( "img", $('#upload')[0].files[0]);
+            postParam.append( "wpid", "<?php echo get_current_user_id(); ?>");
+            postParam.append( "snky", "<?php echo wp_get_session_token(); ?>");
+            postParam.append( "stid", $('#logo_store_id').val());
+            postParam.append( "status", $('#edit_status').val());
+            postParam.append( "type", 'logo');
+                
+            var postUrl = '<?= site_url() . "/wp-json/datavice/v1/process/upload"; ?>';
+            $.ajax({
+                dataType: 'json',
+                type: 'POST', 
+                data: postParam,
+                url: postUrl,
+                processData : false,
+                contentType: false,
+                success : function( data )
+                {
+                    let status;
+                    if (data.status == 'failed' || data.status == 'error' || data.status == 'unknown') {
+                       status = 'danger';
+                    }
+                    $('#LogoMessage').addClass('alert-'+status);
+                    $('#LogoMessage').removeClass('tp-display-hide');
+                    $('#LogoContent').html( data.message );
+                    $('#logo-app-form').trigger("reset");
+                },
+                error : function(jqXHR, textStatus, errorThrown) 
+                {
+                    console.log("" + JSON.stringify(jqXHR) + " :: " + textStatus + " :: " + errorThrown);
+                }
+            });
+        }
+
+        function confirmGpsProcess() {
+            var latitude = $('#lat').val();
+            var longitude = $('#long').val();
+            
+            var postParam = {};
+                    postParam.wpid = "<?php echo get_current_user_id(); ?>";
+                    postParam.snky = "<?php echo wp_get_session_token(); ?>";
+                    postParam.addr = $('#address_id').val();
+                    postParam.status = $('#edit_status').val();
+                    postParam.lat = latitude;
+                    postParam.lon = longitude;
+                
+            var postUrl = '<?= site_url() . "/wp-json/datavice/v1/coordinates/insert"; ?>';
+        
+            $.ajax({
+                dataType: 'json',
+                type: 'POST', 
+                data: postParam,
+                url: postUrl,
+                success : function( data )
+                {
+                    $('#GPSResponse').addClass('alert-'+data.status);
+                    $('#GPSResponse').removeClass('tp-display-hide');
+                    $('#GPSContent').html( data.message );
+                    $('#gps-app-form').trigger("reset");
+                },
+                error : function(jqXHR, textStatus, errorThrown) 
+                {
+                    console.log("" + JSON.stringify(jqXHR) + " :: " + textStatus + " :: " + errorThrown);
+                }
+            });
+        }
 
     });
 </script>

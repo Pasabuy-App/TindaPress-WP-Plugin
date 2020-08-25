@@ -25,16 +25,16 @@
                 </div>
 
                 <div class="modal-body">
-                    <form id="store-logo-form">
+                    <form id="logo-app-form">
                         <div class="form-group">
                             <div class="z-depth-1-half mb-4">
-                                <img id=imageResult src="https://mdbootstrap.com/img/Photos/Others/placeholder.jpg" class="img-fluid"
+                                <img id=imageResult  src="https://mdbootstrap.com/img/Photos/Others/placeholder.jpg" class="img-fluid"
                                 alt="example placeholder">
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="input-group mb-3 px-2 py-2 rounded-pill bg-white shadow-sm">
-                                <input id="upload" type="file" onchange="readURL(this);" class="form-control border-0">
+                                <input id="upload" required type="file" onchange="readURL(this);" class="form-control border-0">
                                 <label id="upload-label" for="upload" class="font-weight-light text-muted">Select logo of this store</label>
                                 <div class="input-group-append">
                                     <label for="upload" class="btn btn-light m-0 rounded-pill px-4"> <i class="fa fa-cloud-upload mr-2 text-muted"></i><small class="text-uppercase font-weight-bold text-muted">Choose file</small></label>
@@ -50,17 +50,17 @@
                         </div>
                         <div class="tp-center-item">
                             <input id="logo_store_id" type="hidden" value="">
-                            <button id="add-logo-app-btn" type="button" class="btn btn-primary"> - Add Logo - </button>
+                            <button id="add-logo-app-btn" type="submit" class="btn btn-primary"> - Add Logo - </button>
                         </div>
-                        <div id="dialog-confirm-edit" title="Confirmation">
-                            <p id="confirm-content-edit"></p>
+                        <div id="dialog-confirm-logo" title="Confirmation">
+                            <p id="confirm-content-logo"></p>
                         </div>
                     </form>
                 </div>
 
                 <div class="modal-footer">
-                    <div id="DFAMessage" class="alert tp-fullwidth tp-center-item tp-display-hide" role="alert">
-                        <p id="DFAMcontent">A simple success alert—check it out!</p>
+                    <div id="LogoMessage" class="alert tp-fullwidth tp-center-item tp-display-hide" role="alert">
+                        <p id="LogoContent">A simple success alert—check it out!</p>
                     </div>
                 </div>
 
