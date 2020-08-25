@@ -104,7 +104,8 @@
 
             //DISPLAY DATA INTO THE TARGET DATATABLES.
             function displayingLoadedApps( data )
-            {
+            {   
+                console.log(data)
                 //Set table column header.
                 var columns = [
                     // { "sTitle": "IDENTITY",   "mData": "ID" },
@@ -151,6 +152,17 @@
                                         '&pdid=' + item.ID + '&pdname=' + item.product_name + 
                                         '`;" ' + ' title="Click this to navigate to variant list of this project."' + 
                                         ' >Variants</button>' +
+
+                                        '<button type="button" class="btn btn-info btn-sm"' +
+                                        ' data-toggle="modal" data-target="#AddProductLogo"' +
+                                        ' title="Click this to add product logo."' +
+                                        ' data-id="' + item.ID + '"' +  
+                                        ' data-stid="' + item.stid+ '"' + 
+                                        ' data-pdid="' + item.ID + '"' + 
+                                        ' data-status="' + item.status + '"' + 
+                                        ' >Logo</button>' +
+
+
                                     <?php } ?>
               
                                 '</div>'; 
@@ -476,5 +488,95 @@
             });
 
         //#endregion
+
+            $('#AddProductLogo').on('show.bs.modal', function(e) {
+                    var data = e.relatedTarget.dataset;
+                    $('#product_id').val( data.pdid );
+                    $('#store_id').val( data.stid );
+                    $('#product_status').val( data.status == 'Active' ? 1 : 0 );
+            });
+
+            
+            $('#AddProductLogo').on('hide.bs.modal', function(e) {
+                    if( typeof activeTimeout !== 'undefined' )
+                    {
+                        clearTimeout( activeTimeout );
+                    }
+
+                    if( !$('#ProductLogoMessage').hasClass('tp-display-hide') )
+                    {
+                        $('#ProductLogoMessage').addClass('tp-display-hide');
+                    }
+            });
+
+            $('#product-logo-app-form').submit( function(event) {
+                event.preventDefault();
+                $( "#dialog-confirm-product-logo" ).dialog({
+                    title: 'Confirmation',
+                    resizable: false,
+                    height: "auto",
+                    width: 320,
+                    modal: false,
+                    open: function() {
+                        $('#jquery-overlay').removeClass('tp-display-hide');
+                        $('#confirm-content-product-logo').html(
+                            '<span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>' +
+                            'Please confirm to complete the process, else just press cancel.'
+                        );
+                    },
+                    buttons: {
+                        "Confirm": function() 
+                        {
+                            confirmProductLogoProcess();
+                            $('#jquery-overlay').addClass('tp-display-hide');
+                            $( this ).dialog( "close" );
+                        },
+                        Cancel: function() 
+                        {
+                            $('#jquery-overlay').addClass('tp-display-hide');
+                            $( this ).dialog( "close" );
+                        }
+                    }
+                });
+            });
+
+            function confirmProductLogoProcess() {
+                
+                var postParam = new FormData();
+                postParam.append( "img", $('#upload')[0].files[0]);
+                postParam.append( "wpid", "<?php echo get_current_user_id(); ?>");
+                postParam.append( "snky", "<?php echo wp_get_session_token(); ?>");
+                postParam.append( "stid", $('#store_id').val());
+                postParam.append( "pdid", $('#product_id').val());
+                postParam.append( "status", $('#product_status').val());
+                postParam.append( "type", 'logo');
+                console.log(postParam)
+                var postUrl = '<?= site_url() . "/wp-json/datavice/v1/process/upload"; ?>';
+                $.ajax({
+                    dataType: 'json',
+                    type: 'POST', 
+                    data: postParam,
+                    url: postUrl,
+                    processData : false,
+                    contentType: false,
+                    success : function( data )
+                    {
+                        let status;
+                        if (data.status == 'failed' || data.status == 'error' || data.status == 'unknown') {
+                            status = 'danger';
+                        } else {
+                            status = data.status;
+                        }
+                        $('#ProductLogoMessage').addClass('alert-'+status);
+                        $('#ProductLogoMessage').removeClass('tp-display-hide');
+                        $('#ProductLogoContent').html( data.message );
+                        $('#product-logo-app-form').trigger("reset");
+                    },
+                    error : function(jqXHR, textStatus, errorThrown) 
+                    {
+                        console.log("" + JSON.stringify(jqXHR) + " :: " + textStatus + " :: " + errorThrown);
+                    }
+                });
+            }
     });
 </script>

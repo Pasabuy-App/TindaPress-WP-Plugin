@@ -656,6 +656,8 @@
                     let status;
                     if (data.status == 'failed' || data.status == 'error' || data.status == 'unknown') {
                        status = 'danger';
+                    } else {
+                            status = data.status;
                     }
                     $('#LogoMessage').addClass('alert-'+status);
                     $('#LogoMessage').removeClass('tp-display-hide');
