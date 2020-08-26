@@ -118,7 +118,7 @@
              $access = array_column($get_access, 'access');
 
             //Check if user has permitted role access or one of our staff
-            if ( !in_array($role , $access, true) || DV_Globals::check_roles('editor') == false || DV_Globals::check_roles('contributor') == false ) {
+            if ( !in_array($role , $access, true) || DV_Globals::check_roles('editor') == true || DV_Globals::check_roles('contributor') == true ) {
                 return true;
             }
             return false;
