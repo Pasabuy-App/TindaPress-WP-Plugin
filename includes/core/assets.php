@@ -31,11 +31,11 @@
             
             wp_enqueue_style( 'tp_bootstrap_style', TP_PLUGIN_URL . 'assets/bootstrap/css/bootstrap.min.css' );
             wp_enqueue_script( 'tp_bootstrap_script', TP_PLUGIN_URL . 'assets/bootstrap/js/bootstrap.min.js' );
+            wp_enqueue_style( 'tp_jqueryui_style', TP_PLUGIN_URL . 'assets/jquery-ui/jquery-ui.min.css' );
 
             wp_enqueue_style( 'tp_datatables_style', TP_PLUGIN_URL . 'assets/datatables/datatables.min.css' );
             wp_enqueue_script( 'tp_datatables_script', TP_PLUGIN_URL . 'assets/datatables/datatables.min.js' );
 
-            wp_enqueue_style( 'tp_jqueryui_style', TP_PLUGIN_URL . 'assets/jquery-ui/jquery-ui.min.css' );
             wp_enqueue_script( 'tp_jqueryui_script', TP_PLUGIN_URL . 'assets/jquery-ui/jquery-ui.min.js' );
 
             wp_enqueue_style( 'tp_admin_style', TP_PLUGIN_URL . 'assets/styles/main.css' );

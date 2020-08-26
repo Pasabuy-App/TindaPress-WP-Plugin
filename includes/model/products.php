@@ -104,7 +104,8 @@
 
             //DISPLAY DATA INTO THE TARGET DATATABLES.
             function displayingLoadedApps( data )
-            {
+            {   
+                console.log(data)
                 //Set table column header.
                 var columns = [
                     // { "sTitle": "IDENTITY",   "mData": "ID" },
@@ -138,11 +139,11 @@
                                         ' data-pdname="' + item.product_name + '"' + 
                                         ' >Modify</button>' +
 
-                                        '<button type="button" class="btn btn-secondary btn-sm appkey-' + item.ID + '"' +
-                                        ' data-clipboard-text="' + item.ID + '"' +
-                                        ' onclick="copyFromId(\'CategoryID-' + item.ID + '\')" ' +
-                                        ' title="Click this to copy the ID to your clipboard."' +
-                                        '>Copy ID</button>' +  
+                                        // '<button type="button" class="btn btn-secondary btn-sm appkey-' + item.ID + '"' +
+                                        // ' data-clipboard-text="' + item.ID + '"' +
+                                        // ' onclick="copyFromId(\'CategoryID-' + item.ID + '\')" ' +
+                                        // ' title="Click this to copy the ID to your clipboard."' +
+                                        // '>Copy ID</button>' +  
 
                                         '<button type="button" class="btn btn-success btn-sm"' +
                                         ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_VARIANT; ?>' + 
@@ -151,6 +152,18 @@
                                         '&pdid=' + item.ID + '&pdname=' + item.product_name + 
                                         '`;" ' + ' title="Click this to navigate to variant list of this project."' + 
                                         ' >Variants</button>' +
+
+                                        '<button type="button" class="btn btn-info btn-sm"' +
+                                        ' data-toggle="modal" data-target="#AddProductLogo"' +
+                                        ' title="Click this to add product logo."' +
+                                        ' data-id="' + item.ID + '"' +  
+                                        ' data-stid="' + item.stid+ '"' + 
+                                        ' data-pdid="' + item.ID + '"' + 
+                                        ' data-status="' + item.status + '"' + 
+                                        ' data-logo="' + item.preview + '"' + 
+                                        ' >Logo</button>' +
+
+
                                     <?php } ?>
               
                                 '</div>'; 
@@ -161,6 +174,11 @@
 
                 //Displaying data on datatables.
                 tptables = $('#products-datatables').DataTable({
+                    select: {
+                        style: 'os',
+                        blurable: true,
+                        style: 'single'
+                    },
                     destroy: true,
                     searching: true,
                     dom: 'Bfrtip',
@@ -186,6 +204,17 @@
                         },
                     <?php } ?>
                         {
+                            text: 'View ID',
+                            state: false,
+                            init: function ( dt, node, config ) {
+                                this.disable();
+                            },
+                            action: function ( e, dt, node, config ) {
+                                var selData = tptables.row('.selected').data();
+                                alert('ID: ' + selData.ID);
+                            }
+                        },
+                        {
                             text: 'Refresh',
                             action: function ( e, dt, node, config ) {
                                 loadingAppList( productTables );
@@ -200,6 +229,15 @@
                         {"className": "dt-center", "targets": "_all"}
                     ],
                 });
+                tptables.on( 'select', function ( e, dt, type, indexes ) {
+                        var rowData = tptables.rows( indexes ).data().toArray()[0];
+                        // console.log("Selected: " + JSON.stringify( rowData.ID ));
+                        tptables.button( 2 ).enable();
+                });
+                tptables.on( 'deselect', function ( e, dt, type, indexes ) {
+                        tptables.button( 2 ).disable();
+                } );
+
             }
 
             //IMPLEMENT DATATABLES RESPONSIVENESS.
@@ -387,17 +425,17 @@
                 else
                 {
                     postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/products/update"; ?>';
-                    postParam.catid = $('#new_category').val();
-                    postParam.stid = $('#new_store').val();
-                    postParam.pdid = $('#new_store').val();
-                    postParam.title = $('#new_title').val();
-                    postParam.short_info = $('#new_info').val();
+                    postParam.catid = $('#edit_category').val();
+                    postParam.stid = $('#edit_store').val();
+                    postParam.pdid = $('#edit_id').val();
+                    postParam.title = $('#edit_title').val();
+                    postParam.short_info = $('#edit_info').val();
                     postParam.long_info = "None";
-                    postParam.price = $('#new_price').val();
+                    postParam.price = $('#edit_price').val();
                     postParam.sku = "None";
                     postParam.weight = "None";
                     postParam.dimension = "None";
-                    postParam.preview = "None";
+
                 }
 
                 // This will be handled by create-app.php.
@@ -453,12 +491,13 @@
             // LISTEN FOR MODAL SHOW AND ATTACHED ID.
             $('#EditAppOption').on('show.bs.modal', function(e) {
                 var data = e.relatedTarget.dataset;
-                $('#edit_id').val( data.aid );
-                $('#edit_title').val( data.aid );
-                $('#edit_info').val( data.aid );
-                $('#edit_price').val( data.aid );
-                $('#edit_store').val( data.aid );
-                $('#edit_category').val( data.aid );
+                console.log(data)
+                $('#edit_id').val( data.pdid );
+                $('#edit_title').val( data.pdname );
+                $('#edit_info').val( data.sinfo );
+                $('#edit_price').val( data.price );
+                // $('#edit_store').val( data.stname );
+                // $('#edit_category').val( data.catname );
 
                 $('#delete-app-btn').removeClass('disabled');
                 $('#update-app-btn').removeClass('disabled');
@@ -476,5 +515,103 @@
             });
 
         //#endregion
+
+            $('#AddProductLogo').on('show.bs.modal', function(e) {
+                    var data = e.relatedTarget.dataset;
+                    $('#product_id').val( data.pdid );
+                    $('#store_id').val( data.stid );
+                    $('#product_status').val( data.status == 'Active' ? 1 : 0 );
+
+                    if ( (typeof null === data.logo && !null) || data.logo === 'None' || data.logo === null || !data.logo ) {
+                        $('#productImageResult').attr('src', 'https://mdbootstrap.com/img/Photos/Others/placeholder.jpg' );
+                        
+                    } else {
+                        $('#productImageResult').attr('src', data.logo );
+
+                    }
+            });
+
+            
+            $('#AddProductLogo').on('hide.bs.modal', function(e) {
+                    if( typeof activeTimeout !== 'undefined' )
+                    {
+                        clearTimeout( activeTimeout );
+                    }
+
+                    if( !$('#ProductLogoMessage').hasClass('tp-display-hide') )
+                    {
+                        $('#ProductLogoMessage').addClass('tp-display-hide');
+                    }
+            });
+
+            $('#product-logo-app-form').submit( function(event) {
+                event.preventDefault();
+                $( "#dialog-confirm-product-logo" ).dialog({
+                    title: 'Confirmation',
+                    resizable: false,
+                    height: "auto",
+                    width: 320,
+                    modal: false,
+                    open: function() {
+                        $('#jquery-overlay').removeClass('tp-display-hide');
+                        $('#confirm-content-product-logo').html(
+                            '<span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>' +
+                            'Please confirm to complete the process, else just press cancel.'
+                        );
+                    },
+                    buttons: {
+                        "Confirm": function() 
+                        {
+                            confirmProductLogoProcess();
+                            $('#jquery-overlay').addClass('tp-display-hide');
+                            $( this ).dialog( "close" );
+                        },
+                        Cancel: function() 
+                        {
+                            $('#jquery-overlay').addClass('tp-display-hide');
+                            $( this ).dialog( "close" );
+                        }
+                    }
+                });
+            });
+
+            function confirmProductLogoProcess() {
+                
+                var postParam = new FormData();
+                postParam.append( "img", $('#upload')[0].files[0]);
+                postParam.append( "wpid", "<?php echo get_current_user_id(); ?>");
+                postParam.append( "snky", "<?php echo wp_get_session_token(); ?>");
+                postParam.append( "stid", $('#store_id').val());
+                postParam.append( "pdid", $('#product_id').val());
+                postParam.append( "status", $('#product_status').val());
+                postParam.append( "type", 'logo');
+                console.log(postParam)
+                var postUrl = '<?= site_url() . "/wp-json/datavice/v1/process/upload"; ?>';
+                $.ajax({
+                    dataType: 'json',
+                    type: 'POST', 
+                    data: postParam,
+                    url: postUrl,
+                    processData : false,
+                    contentType: false,
+                    success : function( data )
+                    {
+                        let status;
+                        if (data.status == 'failed' || data.status == 'error' || data.status == 'unknown') {
+                            status = 'danger';
+                        } else {
+                            status = data.status;
+                        }
+                        $('#ProductLogoMessage').addClass('alert-'+status);
+                        $('#ProductLogoMessage').removeClass('tp-display-hide');
+                        $('#ProductLogoContent').html( data.message );
+                        $('#product-logo-app-form').trigger("reset");
+                    },
+                    error : function(jqXHR, textStatus, errorThrown) 
+                    {
+                        console.log("" + JSON.stringify(jqXHR) + " :: " + textStatus + " :: " + errorThrown);
+                    }
+                });
+            }
     });
 </script>

@@ -21,6 +21,8 @@
 
 	//Configs config
 	define('TP_CONFIGS_TABLE', TP_PREFIX.'configs');
+	// define("TP_CONFIG_DATA", $dv_config_list);
+	// define("TP_CONFIG_FIELD", "(title, info, config_key, config_val)");
 
 	//Documents config
 	define('TP_DOCU_TABLE', TP_PREFIX.'documents');
@@ -68,4 +70,7 @@
 	define('TP_MENU_PRODUCT', TP_PREFIX.'products');
 	define('TP_MENU_VARIANT', TP_PREFIX.'variants');
 	define('TP_MENU_SETTING', TP_PREFIX.'settings');
+
+
+
 

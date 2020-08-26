@@ -31,6 +31,11 @@
             window.location.href = '<?php echo TP_Globals::wp_admin_url().TP_MENU_STORE.$store_group."&status="; ?>' + $('#set_status').val();
         });
 
+
+        
+       
+
+
         //THIS ARE ALL THE PUBLIC VARIABLES.
         var activeTimeout = 'undefined';
 
@@ -72,12 +77,15 @@
                         url: postUrl,
                         success : function( data )
                         {
+                            console.log(data);
                             if(data.status == "success") {
                                 displayingLoadedApps( data.data );
                             } else {
                                 displayingLoadedApps( [] );
                             }
                             
+                            $('#imageResult').attr('src', data.avatar );
+
                             if( !$('#stores-notification').hasClass('tp-display-hide') )
                             {
                                 $('#stores-notification').addClass('tp-display-hide');
@@ -94,6 +102,7 @@
             //DISPLAY DATA INTO THE TARGET DATATABLES.
             function displayingLoadedApps( data )
             {
+                
                 //Set table column header.
                 var columns = [
                     //{ "sTitle": "IDENTITY",   "mData": "ID" },
@@ -116,6 +125,7 @@
                     { "sTitle": "Country",   "mData": "country" },
                     {"sTitle": "Action", "mRender": function(data, type, item)
                         {
+                            
                             return '' + 
 
                                 '<div class="btn-group" role="group" aria-label="Basic example">' +
@@ -141,6 +151,25 @@
                                         '&type=' + '2' + '`;" ' +
                                         ' title="Click this to navigate to variant list of this project."' + 
                                         ' >Categories</button>' +
+                            
+                                        '<button type="button" class="btn btn-success btn-sm"' +
+                                        ' data-toggle="modal" data-target="#AddLogo"' +
+                                        ' title="Click this to upload logo of the store."' +
+                                        ' data-id="' + item.ID + '"' +  
+                                        ' data-status="' + item.status + '"' +  
+                                        ' data-logo="' + item.avatar + '"' +
+                                        ' >Logo</button>' +
+                                        
+                                        '<button type="button" class="btn btn-primary btn-sm"' +
+                                        ' data-toggle="modal" data-target="#AddGPS"' +
+                                        ' title="Click this to add GPS location of the store."' +
+                                        ' data-id="' + item.ID + '"' +  
+                                        ' data-status="' + item.status + '"' +  
+                                        ' data-addr="' + item.add_id + '"' +
+                                        ' data-lat="' + item.lat + '"' +  
+                                        ' data-long="' + item.long + '"' +  
+                                        ' >GPS</button>' +
+
 
                                     // '<button type="button" class="btn btn-success btn-sm"' +
                                     //     ' onclick="window.location.href = `<?php //echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT."&id="; ?>' + item.ID + '&name=' +item.title + '`;" ' +
@@ -437,6 +466,7 @@
                     url: postUrl,
                     success : function( data )
                     {
+                        
                         if( clickedBtnId == 'delete-app-btn' ) {
                             $('#new_title').val('');
                             $('#new_info').val('');
@@ -508,5 +538,191 @@
             });
 
         //#endregion
+
+        // LISTEN FOR MODAL SHOW AND ATTACHED ID.
+        $('#AddLogo').on('show.bs.modal', function(e) {
+                var data = e.relatedTarget.dataset;
+                if ( (typeof null === data.logo && !null) || data.logo === 'None' || data.logo === null || !data.logo ) {
+                    $('#imageResult').attr('src', 'https://mdbootstrap.com/img/Photos/Others/placeholder.jpg' );
+                    
+                } else {
+                    $('#imageResult').attr('src', data.logo );
+
+                }
+
+                $('#logo_store_id').val( data.id );
+                $('#edit_status').val( data.status == 'Active' ? 1 : 0 );
+        });
+
+        
+        $('#AddLogo').on('hide.bs.modal', function(e) {
+                if( typeof activeTimeout !== 'undefined' )
+                {
+                    clearTimeout( activeTimeout );
+                }
+
+                if( !$('#LogoMessage').hasClass('tp-display-hide') )
+                {
+                    $('#LogoMessage').addClass('tp-display-hide');
+                }
+        });
+
+
+        $('#AddGPS').on('show.bs.modal', function(e) {
+                var data = e.relatedTarget.dataset;
+                $('#address_id').val( data.addr );
+                $('#edit_status').val( data.status == 'Active' ? 1 : 0 );
+                (data.lat === null) ? $('#lat').val('') : $('#lat').val(data.lat);
+                (data.long === null) ? $('#long').val('') : $('#long').val(data.long);
+
+
+        });
+
+        $('#AddGPS').on('hide.bs.modal', function(e) {
+                if( typeof activeTimeout !== 'undefined' )
+                {
+                    clearTimeout( activeTimeout );
+                }
+
+                if( !$('#GPSResponse').hasClass('tp-display-hide') )
+                {
+                    $('#GPSResponse').addClass('tp-display-hide');
+                }
+        });
+
+
+        $('#gps-app-form').submit( function(event) {
+            event.preventDefault();
+                $( "#dialog-confirm-gps" ).dialog({
+                    title: 'Confirmation',
+                    resizable: false,
+                    height: "auto",
+                    width: 320,
+                    modal: false,
+                    open: function() {
+                        $('#jquery-overlay').removeClass('tp-display-hide');
+                        $('#confirm-content-gps').html(
+                            '<span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>' +
+                            'Please confirm to complete the process, else just press cancel.'
+                        );
+                    },
+                    buttons: {
+                        "Confirm": function() 
+                        {
+                            confirmGpsProcess();
+                            $('#jquery-overlay').addClass('tp-display-hide');
+                            $( this ).dialog( "close" );
+                        },
+                        Cancel: function() 
+                        {
+                            $('#jquery-overlay').addClass('tp-display-hide');
+                            $( this ).dialog( "close" );
+                        }
+                    }
+                });
+            });
+
+        $('#logo-app-form').submit( function(event) {
+            event.preventDefault();
+            $( "#dialog-confirm-logo" ).dialog({
+                title: 'Confirmation',
+                resizable: false,
+                height: "auto",
+                width: 320,
+                modal: false,
+                open: function() {
+                    $('#jquery-overlay').removeClass('tp-display-hide');
+                    $('#confirm-content-logo').html(
+                        '<span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>' +
+                        'Please confirm to complete the process, else just press cancel.'
+                    );
+                },
+                buttons: {
+                    "Confirm": function() 
+                    {
+                        confirmLogoProcess();
+                        $('#jquery-overlay').addClass('tp-display-hide');
+                        $( this ).dialog( "close" );
+                    },
+                    Cancel: function() 
+                    {
+                        $('#jquery-overlay').addClass('tp-display-hide');
+                        $( this ).dialog( "close" );
+                    }
+                }
+            });
+        });
+
+        function confirmLogoProcess() {
+            
+            var postParam = new FormData();
+            postParam.append( "img", $('#upload')[0].files[0]);
+            postParam.append( "wpid", "<?php echo get_current_user_id(); ?>");
+            postParam.append( "snky", "<?php echo wp_get_session_token(); ?>");
+            postParam.append( "stid", $('#logo_store_id').val());
+            postParam.append( "status", $('#edit_status').val());
+            postParam.append( "type", 'logo');
+                
+            var postUrl = '<?= site_url() . "/wp-json/datavice/v1/process/upload"; ?>';
+            $.ajax({
+                dataType: 'json',
+                type: 'POST', 
+                data: postParam,
+                url: postUrl,
+                processData : false,
+                contentType: false,
+                success : function( data )
+                {
+                    let status;
+                    if (data.status == 'failed' || data.status == 'error' || data.status == 'unknown') {
+                       status = 'danger';
+                    } else {
+                            status = data.status;
+                    }
+                    $('#LogoMessage').addClass('alert-'+status);
+                    $('#LogoMessage').removeClass('tp-display-hide');
+                    $('#LogoContent').html( data.message );
+                    $('#logo-app-form').trigger("reset");
+                },
+                error : function(jqXHR, textStatus, errorThrown) 
+                {
+                    console.log("" + JSON.stringify(jqXHR) + " :: " + textStatus + " :: " + errorThrown);
+                }
+            });
+        }
+
+        function confirmGpsProcess() {
+            var latitude = $('#lat').val();
+            var longitude = $('#long').val();
+            
+            var postParam = {};
+                    postParam.wpid = "<?php echo get_current_user_id(); ?>";
+                    postParam.snky = "<?php echo wp_get_session_token(); ?>";
+                    postParam.addr = $('#address_id').val();
+                    postParam.status = $('#edit_status').val();
+                    postParam.lat = latitude;
+                    postParam.lon = longitude;
+                
+            var postUrl = '<?= site_url() . "/wp-json/datavice/v1/coordinates/insert"; ?>';
+        
+            $.ajax({
+                dataType: 'json',
+                type: 'POST', 
+                data: postParam,
+                url: postUrl,
+                success : function( data )
+                {
+                    $('#GPSResponse').addClass('alert-'+data.status);
+                    $('#GPSResponse').removeClass('tp-display-hide');
+                    $('#GPSContent').html( data.message );
+                    $('#gps-app-form').trigger("reset");
+                },
+                error : function(jqXHR, textStatus, errorThrown) 
+                {
+                    console.log("" + JSON.stringify(jqXHR) + " :: " + textStatus + " :: " + errorThrown);
+                }
+            });
+        }
+
     });
 </script>

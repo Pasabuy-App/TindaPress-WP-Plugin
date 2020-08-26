@@ -95,5 +95,7 @@
 	<?php include_once( TP_PLUGIN_PATH . "/includes/model/products.php" ); ?>
 	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/product-create-modal.php" ); ?>
 	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/product-edit-modal.php" ); ?>
+	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/product-add-logo-modal.php" ); ?>
+
 	<div id="jquery-overlay" class="modal-backdrop fade show tp-display-hide" style="z-index: 9999;"></div>
 	

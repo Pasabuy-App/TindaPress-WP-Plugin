@@ -30,8 +30,8 @@
                             <input readonly type="text" class="form-control" id="edit_title" name="edit_title" placeholder="Public name of this Store.">
                         </div>
                         <div class="form-group">
-                            <label for="edit_status">CATEGORY:</label><br>
-                            <select class="form-control" id="edit_status" name="edit_status" required>
+                            <label for="edit_status">Status:</label><br>
+                            <select class="form-control tp-max-width" id="edit_status" name="edit_status" required>
                                 <option value="1">Active</option>
                                 <option selected="selected" value="0">Inactive</option>
                             </select>

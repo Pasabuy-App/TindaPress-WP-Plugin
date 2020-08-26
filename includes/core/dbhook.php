@@ -137,6 +137,8 @@
 				$sql .= "PRIMARY KEY (`ID`) ";
 				$sql .= ") ENGINE = InnoDB; ";
 			$result = $wpdb->get_results($sql);
+
+			// $wpdb->query("INSERT INTO `".$tbl_configs."` $conf_fields VALUES $conf_list");
 		}
 
 		//Database table creation for plugin_config

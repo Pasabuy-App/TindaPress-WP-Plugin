@@ -36,14 +36,14 @@
                         </div>
                         <div class="form-group">
                             <label for="new_product">Product:</label><br>
-                            <select class="form-control" id="new_product" name="new_product">
+                            <select class="form-control tp-max-width" id="new_product" name="new_product">
                                 <option selected="selected" value="<?php echo $_GET['pdid']; ?>"><?php echo $_GET['pdname']; ?></option>
                             </select>
                         </div>
                         <?php if( !isset($_GET['vrid']) && !isset($_GET['vrname']) ) { ?>
                         <div class="form-group">
                             <label for="new_base">Base:</label><br>
-                            <select class="form-control" id="new_base" name="new_base">
+                            <select class="form-control tp-max-width" id="new_base" name="new_base">
                                 <option selected="selected" value="0">Yes</option>
                                 <option value="0">No</option>
                             </select>

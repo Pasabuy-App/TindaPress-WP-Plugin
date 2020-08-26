@@ -44,7 +44,7 @@
                         </div>
                         <div class="form-group">
                             <label for="new_category">CATEGORY:</label><br>
-                            <select class="form-control" id="new_category" name="new_category" required>
+                            <select class="form-control tp-max-width" id="new_category" name="new_category" required>
                                 <?php if(!isset($_GET['stid'])) { ?>
                                 <script type="text/javascript">
                                     jQuery(document).ready( function ( $ ) 
@@ -86,7 +86,7 @@
                         </div>
                         <div class="form-group">
                             <label for="new_country">COUNTRY:</label><br>
-                            <select class="form-control" id="new_country" name="new_country" required>
+                            <select class="form-control tp-max-width" id="new_country" name="new_country" required>
                                 <script type="text/javascript">
                                     jQuery(document).ready( function ( $ ) 
                                     {   
@@ -125,7 +125,7 @@
                         </div>
                         <div class="form-group">
                             <label for="new_province">PROVINCE:</label><br>
-                            <select class="form-control" id="new_province" name="new_province" required>
+                            <select class="form-control tp-max-width" id="new_province" name="new_province" required>
                                 <script type="text/javascript">
                                     jQuery(document).ready( function ( $ ) 
                                     {  
@@ -178,7 +178,7 @@
                         </div>
                         <div class="form-group">
                             <label for="new_city">CITY:</label><br>
-                            <select class="form-control" id="new_city" name="new_city" required>
+                            <select class="form-control tp-max-width" id="new_city" name="new_city" required>
                                 <script type="text/javascript">
                                     jQuery(document).ready( function ( $ ) 
                                     {  
@@ -231,7 +231,7 @@
                         </div>
                         <div class="form-group">
                             <label for="new_brgy">Barangay:</label><br>
-                            <select class="form-control" id="new_brgy" name="new_brgy" required>
+                            <select class="form-control tp-max-width" id="new_brgy" name="new_brgy" required>
                                 <script type="text/javascript">
                                     jQuery(document).ready( function ( $ ) 
                                     {  

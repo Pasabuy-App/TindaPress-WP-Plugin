@@ -73,7 +73,8 @@
             $date = TP_Globals:: date_stamp();
             
             $get_product = $wpdb->get_row("SELECT
-                    tp_prod.ID, tp_prod.ctid, tp_prod.status as status_id
+                    tp_prod.ID, tp_prod.ctid, tp_prod.status as status_id,
+                    ( SELECT child_val FROM $table_revs rev WHERE ID = tp_prod.status AND revs_type = 'products' AND rev.ID = (SELECT MAX(ID) FROM tp_revisions WHERE ID = rev.ID ) ) as `status`
                 FROM
                     $table_product tp_prod
                 INNER JOIN 
@@ -136,7 +137,7 @@
                 $wpdb->query("INSERT INTO `$table_variants` $variants_fields VALUES (0, $product_id, $wpid, '$date')");
                 $last_id = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $last_id, 'baseprice', '$base_price', $wpid, '$date')");
+                $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $last_id, 'baseprice', '1', $wpid, '$date')");
                 $rev_bp = $wpdb->insert_id;
                 
             } else {
