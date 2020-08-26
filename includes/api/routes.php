@@ -53,17 +53,6 @@
         require plugin_dir_path(__FILE__) . '/v1/category/class-activate.php';
         require plugin_dir_path(__FILE__) . '/v1/category/class-listing.php';
 
-        //Operations Classes
-        require plugin_dir_path(__FILE__) . '/v1/operations/class-list-open.php';
-        require plugin_dir_path(__FILE__) . '/v1/operations/class-list-month.php';
-        require plugin_dir_path(__FILE__) . '/v1/operations/class-list-orders.php';
-        require plugin_dir_path(__FILE__) . '/v1/operations/class-list-by-date.php';
-
-        //Orders Classes
-        require plugin_dir_path(__FILE__) . '/v1/order/class-total-sales.php';
-        require plugin_dir_path(__FILE__) . '/v1/order/class-total-sales-date.php';
-        require plugin_dir_path(__FILE__) . '/v1/order/class-listing-date.php';
-
         // Address Folder
         require plugin_dir_path(__FILE__) . '/v1/stores/address/class-insert.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/address/class-update.php';
@@ -271,24 +260,7 @@
 
             // End of Address folder
 
-        /*
-         * ORDER RESTAPI
-        */
-            
-            register_rest_route( 'tindapress/v1/order/total', 'sales', array(
-                'methods' => 'POST',
-                'callback' => array('TP_Total_sales','listen'),
-            ));
-
-            register_rest_route( 'tindapress/v1/order/total', 'monthly', array(
-                'methods' => 'POST',
-                'callback' => array('TP_Total_sales_date','listen'),
-            ));
-
-            register_rest_route( 'tindapress/v1/order', 'date', array(
-                'methods' => 'POST',
-                'callback' => array('TP_OrdersByDate','listen'),
-            ));
+      
 
         /*
          * CATEGORIES RESTAPI
@@ -332,29 +304,7 @@
                 'callback' => array('TP_Logo_update','listen'),
             ));
 
-        /*
-         * OPERATIONS RESTAPI
-        */
-
-            register_rest_route( 'tindapress/v1/operations/list', 'open', array(
-                'methods' => 'POST',
-                'callback' => array('TP_List_Open','listen'),
-            ));
-
-            register_rest_route( 'tindapress/v1/operations/list', 'orders', array(
-                'methods' => 'POST',
-                'callback' => array('TP_List_Orders','listen'),
-            ));
-
-            register_rest_route( 'tindapress/v1/operations/list', 'month', array(
-                'methods' => 'POST',
-                'callback' => array('TP_List_Month','listen'),
-            ));
-
-            register_rest_route( 'tindapress/v1/operations/list', 'date', array(
-                'methods' => 'POST',
-                'callback' => array('TP_List_Date','listen'),
-            ));
+       
 
         /*
          * VARIANTS RESTAPI
