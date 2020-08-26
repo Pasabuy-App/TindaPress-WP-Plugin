@@ -82,7 +82,7 @@
             if ($get_data->child_val == $comm) {
                 return array(
                     "status" => "failed",
-                    "message" => "Commisiont is already ".$comm." at server  ."
+                    "message" => "Commitions is already set to ".$comm."%   ."
                 );
             }
             
