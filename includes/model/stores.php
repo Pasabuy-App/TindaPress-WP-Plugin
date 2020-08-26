@@ -165,7 +165,9 @@
                                         ' title="Click this to add GPS location of the store."' +
                                         ' data-id="' + item.ID + '"' +  
                                         ' data-status="' + item.status + '"' +  
-                                        ' data-addr="' + item.add_id + '"' +  
+                                        ' data-addr="' + item.add_id + '"' +
+                                        ' data-lat="' + item.lat + '"' +  
+                                        ' data-long="' + item.long + '"' +  
                                         ' >GPS</button>' +
 
 
@@ -570,6 +572,9 @@
                 var data = e.relatedTarget.dataset;
                 $('#address_id').val( data.addr );
                 $('#edit_status').val( data.status == 'Active' ? 1 : 0 );
+                (data.lat === null) ? $('#lat').val('') : $('#lat').val(data.lat);
+                (data.long === null) ? $('#long').val('') : $('#long').val(data.long);
+
 
         });
 

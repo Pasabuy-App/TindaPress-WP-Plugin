@@ -36,7 +36,7 @@
 
             //SET INTERVAL DRAW UPDATE.
             loadingAppList( categoryTables );
-        
+           
             //LOAD APPLIST WITH AJAX.
             var tptables = 'undefined';
 

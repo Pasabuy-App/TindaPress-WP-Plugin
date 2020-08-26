@@ -41,13 +41,13 @@
                         </div>
                         <div class="form-group">
                             <label for="edit_store">STORE:</label><br>
-                            <select class="form-control" id="edit_store" name="edit_store">
+                            <select class="form-control tp-max-width" id="edit_store" name="edit_store">
                                 <option selected="selected" value="<?php echo $_GET['stid']; ?>"><?php echo $_GET['stname']; ?></option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="edit_category">CATEGORY:</label><br>
-                            <select class="form-control" id="edit_category" name="edit_category">
+                            <select class="form-control tp-max-width" id="edit_category" name="edit_category">
                                 <option selected="selected" value="<?php echo $_GET['catid']; ?>"><?php echo $_GET['catname']; ?></option>
                             </select>
                         </div>
@@ -59,8 +59,8 @@
                         </div>
                         <div class="tp-center-item">
                             <input id="edit_id" type="hidden" value="">
-                            <button id="delete-app-btn" type="submit" class="btn btn-danger"> - DELETE - </button>
-                            <!-- <button id="update-app-btn" type="submit" class="btn btn-success"> - UPDATE - </button> -->
+                            <!-- <button id="delete-app-btn" type="submit" class="btn btn-danger"> - DELETE - </button> -->
+                            <button id="update-app-btn" type="submit" class="btn btn-success"> - UPDATE - </button>
                         </div>
                         <div id="dialog-confirm-edit" title="Confirmation">
                             <p id="confirm-content-edit"></p>

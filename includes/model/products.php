@@ -160,6 +160,7 @@
                                         ' data-stid="' + item.stid+ '"' + 
                                         ' data-pdid="' + item.ID + '"' + 
                                         ' data-status="' + item.status + '"' + 
+                                        ' data-logo="' + item.preview + '"' + 
                                         ' >Logo</button>' +
 
 
@@ -173,6 +174,11 @@
 
                 //Displaying data on datatables.
                 tptables = $('#products-datatables').DataTable({
+                    select: {
+                        style: 'os',
+                        blurable: true,
+                        style: 'single'
+                    },
                     destroy: true,
                     searching: true,
                     dom: 'Bfrtip',
@@ -198,6 +204,17 @@
                         },
                     <?php } ?>
                         {
+                            text: 'View ID',
+                            state: false,
+                            init: function ( dt, node, config ) {
+                                this.disable();
+                            },
+                            action: function ( e, dt, node, config ) {
+                                var selData = tptables.row('.selected').data();
+                                alert('ID: ' + selData.ID);
+                            }
+                        },
+                        {
                             text: 'Refresh',
                             action: function ( e, dt, node, config ) {
                                 loadingAppList( productTables );
@@ -212,6 +229,15 @@
                         {"className": "dt-center", "targets": "_all"}
                     ],
                 });
+                tptables.on( 'select', function ( e, dt, type, indexes ) {
+                        var rowData = tptables.rows( indexes ).data().toArray()[0];
+                        // console.log("Selected: " + JSON.stringify( rowData.ID ));
+                        tptables.button( 2 ).enable();
+                });
+                tptables.on( 'deselect', function ( e, dt, type, indexes ) {
+                        tptables.button( 2 ).disable();
+                } );
+
             }
 
             //IMPLEMENT DATATABLES RESPONSIVENESS.
@@ -399,17 +425,17 @@
                 else
                 {
                     postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/products/update"; ?>';
-                    postParam.catid = $('#new_category').val();
-                    postParam.stid = $('#new_store').val();
-                    postParam.pdid = $('#new_store').val();
-                    postParam.title = $('#new_title').val();
-                    postParam.short_info = $('#new_info').val();
+                    postParam.catid = $('#edit_category').val();
+                    postParam.stid = $('#edit_store').val();
+                    postParam.pdid = $('#edit_id').val();
+                    postParam.title = $('#edit_title').val();
+                    postParam.short_info = $('#edit_info').val();
                     postParam.long_info = "None";
-                    postParam.price = $('#new_price').val();
+                    postParam.price = $('#edit_price').val();
                     postParam.sku = "None";
                     postParam.weight = "None";
                     postParam.dimension = "None";
-                    postParam.preview = "None";
+
                 }
 
                 // This will be handled by create-app.php.
@@ -465,12 +491,13 @@
             // LISTEN FOR MODAL SHOW AND ATTACHED ID.
             $('#EditAppOption').on('show.bs.modal', function(e) {
                 var data = e.relatedTarget.dataset;
-                $('#edit_id').val( data.aid );
-                $('#edit_title').val( data.aid );
-                $('#edit_info').val( data.aid );
-                $('#edit_price').val( data.aid );
-                $('#edit_store').val( data.aid );
-                $('#edit_category').val( data.aid );
+                console.log(data)
+                $('#edit_id').val( data.pdid );
+                $('#edit_title').val( data.pdname );
+                $('#edit_info').val( data.sinfo );
+                $('#edit_price').val( data.price );
+                // $('#edit_store').val( data.stname );
+                // $('#edit_category').val( data.catname );
 
                 $('#delete-app-btn').removeClass('disabled');
                 $('#update-app-btn').removeClass('disabled');
@@ -494,6 +521,14 @@
                     $('#product_id').val( data.pdid );
                     $('#store_id').val( data.stid );
                     $('#product_status').val( data.status == 'Active' ? 1 : 0 );
+
+                    if ( (typeof null === data.logo && !null) || data.logo === 'None' || data.logo === null || !data.logo ) {
+                        $('#productImageResult').attr('src', 'https://mdbootstrap.com/img/Photos/Others/placeholder.jpg' );
+                        
+                    } else {
+                        $('#productImageResult').attr('src', data.logo );
+
+                    }
             });
 
             
