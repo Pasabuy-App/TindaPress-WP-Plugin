@@ -102,7 +102,7 @@
                         rev.child_val as 'name',
                         (SELECT child_val FROM $table_revs rev WHERE parent_id = var.ID AND child_key = 'price' AND revs_type ='variants'  AND date_created = ( SELECT MAX(date_created) FROM $table_revs WHERE ID = rev.ID  ) ) as `price`,
                         (SELECT child_val FROM $table_revs rev WHERE parent_id = var.ID AND child_key = 'info' AND revs_type ='variants'  AND date_created = ( SELECT MAX(date_created) FROM $table_revs WHERE ID = rev.ID  ) ) as `info`,
-                        IF( ( SELECT child_val FROM $table_revs rev WHERE parent_id = var.ID AND child_key = 'status' AND revs_type ='variants' AND ID = ( SELECT MAX(ID) FROM $table_revs WHERE child_key ='status' AND revs_type ='variants'  ) ) = 1, 'Active', 'Inactive' ) as `status`
+                        IF( ( SELECT child_val FROM $table_revs rev WHERE parent_id = var.ID AND child_key = 'status' AND revs_type ='variants' AND ID = ( SELECT MAX(ID) FROM $table_revs WHERE child_key ='status' AND revs_type ='variants' AND ID = rev.ID  ) ) = 1, 'Active', 'Inactive' ) as `status`
                     FROM
                         $table_revs rev
                         INNER JOIN $table_variants var ON var.parent_id = '$parent' 

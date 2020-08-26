@@ -137,7 +137,7 @@
                 $wpdb->query("INSERT INTO `$table_variants` $variants_fields VALUES (0, $product_id, $wpid, '$date')");
                 $last_id = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $last_id, 'baseprice', '$base_price', $wpid, '$date')");
+                $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $last_id, 'baseprice', '1', $wpid, '$date')");
                 $rev_bp = $wpdb->insert_id;
                 
             } else {
