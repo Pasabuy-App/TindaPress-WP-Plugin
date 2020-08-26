@@ -156,7 +156,7 @@
         /*
          * STORE RESTAPI
         */
-            register_rest_route( 'tindapress/v1/stores', 'commision', array(
+            register_rest_route( 'tindapress/v1/stores', 'comm', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Update_Commision','listen'),
             ));
