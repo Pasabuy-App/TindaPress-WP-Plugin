@@ -77,19 +77,19 @@
 
             $wpdb->query("START TRANSACTION");
     
-            $get_data = $wpdb->get_row("SELECT child_key, child_val FROM tp_revisions WHERE parent_id = $store_id AND revs_type = 'stores' AND child_key = 'commitions' ");
+            $get_data = $wpdb->get_row("SELECT child_key, child_val FROM tp_revisions WHERE parent_id = $store_id AND revs_type = 'stores' AND child_key = 'commission' ");
             
             if ($get_data->child_val == $comm) {
                 return array(
                     "status" => "failed",
-                    "message" => "Commitions is already set to ".$comm."%   ."
+                    "message" => "Commission is already set to ".$comm."%   ."
                 );
             }
             
             
             if ($get_data == NULL) {
              
-                $insert_data = $wpdb->query(" INSERT INTO tp_revisions ( revs_type, parent_id, child_key, child_val, date_created ) VALUES ( 'stores', '$store_id', 'commitions', '$comm', '$date_created' ) ");
+                $insert_data = $wpdb->query(" INSERT INTO tp_revisions ( revs_type, parent_id, child_key, child_val, date_created ) VALUES ( 'stores', '$store_id', 'commission', '$comm', '$date_created' ) ");
                 
                 if ($insert_data < 1) {
                     $wpdb->query("ROLLBACK");
@@ -107,7 +107,7 @@
 
             }else{
                 
-                $insert_data = $wpdb->query(" UPDATE tp_revisions SET child_val = '$comm' WHERE parent_id = $store_id AND revs_type ='stores' AND child_key = 'commitions' ");
+                $insert_data = $wpdb->query(" UPDATE tp_revisions SET child_val = '$comm' WHERE parent_id = $store_id AND revs_type ='stores' AND child_key = 'commission' ");
 
                 if ($insert_data < 1) {
                     $wpdb->query("ROLLBACK");

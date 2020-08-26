@@ -57,6 +57,10 @@
             str.ID,
             str.ctid AS `catid`,
             str.address AS `add_id`,
+            CONCAT(( SELECT rev.child_val FROM tp_revisions rev WHERE rev.parent_id = str.ID AND  rev.date_created = ( SELECT MAX(date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores'  ) AND child_key ='commission' ), ' %') AS comm,
+
+
+
             ( SELECT rev.child_val FROM tp_revisions rev WHERE rev.ID = cat.title  AND rev.date_created = (SELECT MAX(tp_rev.date_created) FROM tp_revisions tp_rev WHERE ID = rev.ID  AND revs_type ='categories'   )  ) as cat_name,
             ( SELECT rev.child_val FROM tp_revisions rev WHERE rev.id = str.title AND  rev.date_created = ( SELECT MAX(date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores' )  ) AS title,
             ( SELECT rev.child_val FROM tp_revisions rev WHERE rev.id = str.short_info AND  rev.date_created = ( SELECT MAX(date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores' ) ) AS short_info,

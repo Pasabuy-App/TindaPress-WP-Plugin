@@ -115,6 +115,7 @@
                     ?>
                     { "sTitle": "NAME",   "mData": "title" },
                     { "sTitle": "SHORT",   "mData": "short_info" },
+                    { "sTitle": "COMMISSION",   "mData": "comm"},
                     { "sTitle": "STATUS",   "mData": "status" },
                     { "sTitle": "PHONE",   "mData": "phone" },
                     { "sTitle": "EMAIL",   "mData": "email" },
@@ -169,6 +170,13 @@
                                         ' data-lat="' + item.lat + '"' +  
                                         ' data-long="' + item.long + '"' +  
                                         ' >GPS</button>' +
+
+                                        '<button type="button" class="btn btn-info btn-sm"' +
+                                        ' data-toggle="modal" data-target="#CommissionModal"' +
+                                        ' title="Click this to add commission of the store."' +
+                                        ' data-id="' + item.ID + '"' + 
+                                        ' data-title="' + item.title + '"' +  
+                                        ' >Commission</button>' +
 
 
                                     // '<button type="button" class="btn btn-success btn-sm"' +
@@ -590,6 +598,56 @@
                 }
         });
 
+        $('#CommissionModal').on('show.bs.modal', function(e) {
+                var data = e.relatedTarget.dataset;
+                $('#comm_store_id').val( data.id );
+                $('#edit_store_name').val( data.title );
+
+                $('#delete-app-btn').removeClass('disabled');
+                $('#update-app-btn').removeClass('disabled');
+        });
+
+        // MAKE SURE THAT TIMEOUT IS CANCELLED.
+        $('#CommissionModal').on('hide.bs.modal', function(e) {
+            if( typeof activeTimeout !== 'undefined' ) {
+                clearTimeout( activeTimeout );
+            }
+
+            if( !$('#DFAMessage').hasClass('tp-display-hide') ){
+                $('#DFAMessage').addClass('tp-display-hide');
+            }
+        });
+
+        $('#commission-app-form').submit( function(event) {
+            event.preventDefault();
+                $( "#dialog-confirm-commission" ).dialog({
+                    title: 'Confirmation',
+                    resizable: false,
+                    height: "auto",
+                    width: 320,
+                    modal: false,
+                    open: function() {
+                        $('#jquery-overlay').removeClass('tp-display-hide');
+                        $('#confirm-content-commission').html(
+                            '<span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>' +
+                            'Please confirm to complete the process, else just press cancel.'
+                        );
+                    },
+                    buttons: {
+                        "Confirm": function() 
+                        {
+                            confirmCommissionProcess();
+                            $('#jquery-overlay').addClass('tp-display-hide');
+                            $( this ).dialog( "close" );
+                        },
+                        Cancel: function() 
+                        {
+                            $('#jquery-overlay').addClass('tp-display-hide');
+                            $( this ).dialog( "close" );
+                        }
+                    }
+                });
+        });
 
         $('#gps-app-form').submit( function(event) {
             event.preventDefault();
@@ -620,7 +678,7 @@
                         }
                     }
                 });
-            });
+        });
 
         $('#logo-app-form').submit( function(event) {
             event.preventDefault();
@@ -716,6 +774,42 @@
                     $('#GPSResponse').removeClass('tp-display-hide');
                     $('#GPSContent').html( data.message );
                     $('#gps-app-form').trigger("reset");
+                },
+                error : function(jqXHR, textStatus, errorThrown) 
+                {
+                    console.log("" + JSON.stringify(jqXHR) + " :: " + textStatus + " :: " + errorThrown);
+                }
+            });
+        }
+
+        function confirmCommissionProcess() {
+           
+            var postParam = {};
+                    postParam.wpid = "<?php echo get_current_user_id(); ?>";
+                    postParam.snky = "<?php echo wp_get_session_token(); ?>";
+                    postParam.stid = $('#comm_store_id').val();
+                    postParam.comm = $('#edit_commission').val();
+                
+            console.log(postParam);
+            var postUrl = '<?= site_url() . "/wp-json/tindapress/v1/stores/comm"; ?>';
+        
+            $.ajax({
+                dataType: 'json',
+                type: 'POST', 
+                data: postParam,
+                url: postUrl,
+                success : function( data )
+                {
+                    let status;
+                    if (data.status == 'failed' || data.status == 'error' || data.status == 'unknown') {
+                       status = 'danger';
+                    } else {
+                        status = data.status;
+                    }
+                    $('#CommMessage').addClass('alert-'+status);
+                    $('#CommMessage').removeClass('tp-display-hide');
+                    $('#CommContent').html( data.message );
+                
                 },
                 error : function(jqXHR, textStatus, errorThrown) 
                 {
