@@ -33,7 +33,7 @@
                             <select class="form-control tp-max-width" id="edit_commission" name="edit_commission" required>
                                 <option value="" hidden selected>Select Commission Rate</option>
                                 <option value="17.5">17.5%</option>
-                                <option value="17.5">20%</option>
+                                <option value="20">20%</option>
                             </select>
                         </div>
                         <div class="form-group">
