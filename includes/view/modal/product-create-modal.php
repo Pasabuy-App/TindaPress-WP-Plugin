@@ -41,13 +41,13 @@
                         </div>
                         <div class="form-group">
                             <label for="new_store">STORE:</label><br>
-                            <select class="form-control" id="new_store" name="new_store">
+                            <select class="form-control tp-max-width" id="new_store" name="new_store">
                                 <option selected="selected" value="<?php echo $_GET['stid']; ?>"><?php echo $_GET['stname']; ?></option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="new_category">CATEGORY:</label><br>
-                            <select class="form-control" id="new_category" name="new_category">
+                            <select class="form-control tp-max-width" id="new_category" name="new_category">
                                 <?php //if( isset($_GET['catid']) ) { ?>
                                 <option selected="selected" value="<?php echo $_GET['catid']; ?>"><?php echo $_GET['catname']; ?></option>
                                 <?php //} else { ?>

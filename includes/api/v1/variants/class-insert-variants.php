@@ -73,7 +73,8 @@
             $date = TP_Globals:: date_stamp();
             
             $get_product = $wpdb->get_row("SELECT
-                    tp_prod.ID, tp_prod.ctid, tp_prod.status as status_id
+                    tp_prod.ID, tp_prod.ctid, tp_prod.status as status_id,
+                    ( SELECT child_val FROM $table_revs rev WHERE ID = tp_prod.status AND revs_type = 'products' AND rev.ID = (SELECT MAX(ID) FROM tp_revisions WHERE ID = rev.ID ) ) as `status`
                 FROM
                     $table_product tp_prod
                 INNER JOIN 

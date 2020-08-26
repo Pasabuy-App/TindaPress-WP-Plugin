@@ -139,11 +139,11 @@
                                         ' data-pdname="' + item.product_name + '"' + 
                                         ' >Modify</button>' +
 
-                                        '<button type="button" class="btn btn-secondary btn-sm appkey-' + item.ID + '"' +
-                                        ' data-clipboard-text="' + item.ID + '"' +
-                                        ' onclick="copyFromId(\'CategoryID-' + item.ID + '\')" ' +
-                                        ' title="Click this to copy the ID to your clipboard."' +
-                                        '>Copy ID</button>' +  
+                                        // '<button type="button" class="btn btn-secondary btn-sm appkey-' + item.ID + '"' +
+                                        // ' data-clipboard-text="' + item.ID + '"' +
+                                        // ' onclick="copyFromId(\'CategoryID-' + item.ID + '\')" ' +
+                                        // ' title="Click this to copy the ID to your clipboard."' +
+                                        // '>Copy ID</button>' +  
 
                                         '<button type="button" class="btn btn-success btn-sm"' +
                                         ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_VARIANT; ?>' + 
