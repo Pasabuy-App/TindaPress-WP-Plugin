@@ -22,6 +22,10 @@
             // 2nd Initial QA 2020-08-24 5:16 PM - Miguel
             global $wpdb;
 
+
+
+            return "HAHAHAHA";
+
             $table_revisions = TP_REVISIONS_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
             $table_store = TP_STORES_TABLE;
