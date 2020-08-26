@@ -32,7 +32,8 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/class-best-seller.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-activate.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-store-nearme.php';
-
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-update-commision.php';
+        
         // Document Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-delete.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-insert.php';
@@ -155,6 +156,10 @@
         /*
          * STORE RESTAPI
         */
+            register_rest_route( 'tindapress/v1/stores', 'commision', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Update_Commision','listen'),
+            ));
 
             register_rest_route( 'tindapress/v1/stores', 'insert', array(
                 'methods' => 'POST',
