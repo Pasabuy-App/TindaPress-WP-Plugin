@@ -77,12 +77,15 @@
                         url: postUrl,
                         success : function( data )
                         {
+                            console.log(data);
                             if(data.status == "success") {
                                 displayingLoadedApps( data.data );
                             } else {
                                 displayingLoadedApps( [] );
                             }
                             
+                            $('#imageResult').attr('src', data.avatar );
+
                             if( !$('#stores-notification').hasClass('tp-display-hide') )
                             {
                                 $('#stores-notification').addClass('tp-display-hide');
@@ -122,6 +125,7 @@
                     { "sTitle": "Country",   "mData": "country" },
                     {"sTitle": "Action", "mRender": function(data, type, item)
                         {
+                            
                             return '' + 
 
                                 '<div class="btn-group" role="group" aria-label="Basic example">' +
@@ -153,6 +157,7 @@
                                         ' title="Click this to upload logo of the store."' +
                                         ' data-id="' + item.ID + '"' +  
                                         ' data-status="' + item.status + '"' +  
+                                        ' data-logo="' + item.avatar + '"' +
                                         ' >Logo</button>' +
                                         
                                         '<button type="button" class="btn btn-primary btn-sm"' +
@@ -459,6 +464,7 @@
                     url: postUrl,
                     success : function( data )
                     {
+                        
                         if( clickedBtnId == 'delete-app-btn' ) {
                             $('#new_title').val('');
                             $('#new_info').val('');
@@ -534,6 +540,14 @@
         // LISTEN FOR MODAL SHOW AND ATTACHED ID.
         $('#AddLogo').on('show.bs.modal', function(e) {
                 var data = e.relatedTarget.dataset;
+                if ( (typeof null === data.logo && !null) || data.logo === 'None' || data.logo === null || !data.logo ) {
+                    $('#imageResult').attr('src', 'https://mdbootstrap.com/img/Photos/Others/placeholder.jpg' );
+                    
+                } else {
+                    $('#imageResult').attr('src', data.logo );
+
+                }
+
                 $('#logo_store_id').val( data.id );
                 $('#edit_status').val( data.status == 'Active' ? 1 : 0 );
         });
@@ -556,6 +570,7 @@
                 var data = e.relatedTarget.dataset;
                 $('#address_id').val( data.addr );
                 $('#edit_status').val( data.status == 'Active' ? 1 : 0 );
+
         });
 
         $('#AddGPS').on('hide.bs.modal', function(e) {

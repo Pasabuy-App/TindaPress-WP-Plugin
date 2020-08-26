@@ -117,7 +117,7 @@
                                         buttons += '<button type="button" class="btn btn-success btn-sm"' +
                                         ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_STORE."&catid="; ?>' + item.ID + '&catname=' +item.title + '`;" ' +
                                         ' title="Click this to navigate to variant list of this project."' + 
-                                        ' >' + item.types.toUpperCase()+'S</button>';
+                                        ' >&nbsp&nbsp&nbsp' + item.types.toUpperCase()+'S&nbsp&nbsp&nbsp</button>';
                                 } if(item.types == 'product') { 
                                     <?php if( isset($_GET['stid']) && isset($_GET['stname']) ) { ?>
                                         buttons += '<button type="button" class="btn btn-success btn-sm"' +
@@ -213,7 +213,7 @@
                     });
                 tptables.on( 'deselect', function ( e, dt, type, indexes ) {
                         tptables.button( 1 ).disable();
-                        //tptables.button( 2 ).disable();
+                        tptables.button( 2 ).disable();
                     } );
             }            
 

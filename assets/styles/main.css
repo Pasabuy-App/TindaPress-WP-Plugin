@@ -200,3 +200,7 @@ button[disabled] {
     left: 1rem;
     transform: translateY(-50%);
 }
+
+.tp-max-width{
+    max-width: 100% !important;
+}
