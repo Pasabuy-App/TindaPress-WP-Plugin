@@ -259,13 +259,19 @@
                 $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'status', '1', '{$user["created_by"]}', '$date_created')");
                 $status = $wpdb->insert_id;
 
+                $wpdb->query(" INSERT INTO $table_tp_revs $table_revs_fields VALUES ( '$revs_type', '0', 'commission', '20', '{$user["created_by"]}', '$date_created' ) ");
+                $comm = $wpdb->insert_id;
+
+
                 // Insert query for store                                          
                 $wpdb->query("INSERT INTO $table_store $table_store_fields VALUES ('{$user["catid"]}', $title, $short_info, $long_info, $logo, $banner, $status, '0', '{$user["created_by"]}', '$date_created' )");
                 $store_id = $wpdb->insert_id;
+
+                
                 // End query for store
 
                 // update table revision
-                 $result_update_tp_rev_store = $wpdb->query("UPDATE $table_tp_revs SET `parent_id` = $store_id WHERE ID IN ($title, $short_info, $long_info, $logo, $banner, $status) ");
+                 $result_update_tp_rev_store = $wpdb->query("UPDATE $table_tp_revs SET `parent_id` = $store_id WHERE ID IN ($title, $short_info, $long_info, $logo, $banner, $status, $comm) ");
             
             !isset($_POST['phone']) || empty($_POST['phone']) ? $phone =   NULL : $phone = $_POST['phone']; 
             !isset($_POST['email']) || empty($_POST['email']) ? $email =  NULL : $email = $_POST['email'] ; 
@@ -336,7 +342,7 @@
             if ( $title < 1 || $short_info < 1 || $long_info < 1 || $logo < 1 || $banner < 1 || $status < 1 || $store_id < 1 || $result_update_tp_rev_store < 1 || 
                  $result_update_tp_rev_store < 1 || 
                 $status < 1 || $street < 1 || $brgy < 1 || $city < 1 || $province < 1 || $country < 1 || $address_id < 1 || 
-                $result_update_dv_rev_address < 1 || $result < 1
+                $result_update_dv_rev_address < 1 || $result < 1 || $store_id < 1
                ) {
                 $wpdb->query("ROLLBACK");
                 return array(

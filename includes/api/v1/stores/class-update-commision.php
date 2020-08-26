@@ -119,7 +119,7 @@
                     $wpdb->query("COMMIT");
                     return array(
                         "status" => "success",
-                        "message" => "Data has been successfully subbmmited."
+                        "message" => "Data has been successfully submitted."
                     );
                 }
 

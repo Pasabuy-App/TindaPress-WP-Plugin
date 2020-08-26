@@ -613,8 +613,11 @@
                 clearTimeout( activeTimeout );
             }
 
-            if( !$('#DFAMessage').hasClass('tp-display-hide') ){
-                $('#DFAMessage').addClass('tp-display-hide');
+            $('#CommMessage').removeClass('alert-danger');
+            $('#CommMessage').removeClass('alert-success');
+
+            if( !$('#CommMessage').hasClass('tp-display-hide') ){
+                $('#CommMessage').addClass('tp-display-hide');
             }
         });
 
@@ -783,7 +786,8 @@
         }
 
         function confirmCommissionProcess() {
-           
+            $('#CommMessage').removeClass('alert-danger');
+            $('#CommMessage').removeClass('alert-success');
             var postParam = {};
                     postParam.wpid = "<?php echo get_current_user_id(); ?>";
                     postParam.snky = "<?php echo wp_get_session_token(); ?>";
@@ -800,7 +804,8 @@
                 url: postUrl,
                 success : function( data )
                 {
-                    let status;
+                    console.log(data)
+                    let status = '';
                     if (data.status == 'failed' || data.status == 'error' || data.status == 'unknown') {
                        status = 'danger';
                     } else {
