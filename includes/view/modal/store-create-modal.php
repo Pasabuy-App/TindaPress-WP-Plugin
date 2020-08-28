@@ -94,7 +94,7 @@
                                                 dataType: 'json',
                                                 type: 'POST', 
                                                 data: {
-                                                    mkey: "<?php echo DV_Library_Config::dv_get_config('master_key', 123); ?>"
+                                                    mkey: "<?php echo DV_Library_Config::dv_get_config('master_key', 'datavice'); ?>"
                                                 },
                                                 url: '<?php echo site_url() . "/wp-json/datavice/v1/location/country/active"; ?>',
                                                 success: function(data) {
@@ -141,7 +141,7 @@
                                                     dataType: 'json',
                                                     type: 'POST', 
                                                     data: {
-                                                        mkey: "<?php echo DV_Library_Config::dv_get_config('master_key', 123); ?>",
+                                                        mkey: "<?php echo DV_Library_Config::dv_get_config('master_key', 'datavice'); ?>",
                                                         country_code: countryCode
                                                     },
                                                     url: '<?php echo site_url() . "/wp-json/datavice/v1/location/province/active"; ?>',
@@ -194,7 +194,7 @@
                                                     dataType: 'json',
                                                     type: 'POST', 
                                                     data: {
-                                                        mkey: "<?php echo DV_Library_Config::dv_get_config('master_key', 123); ?>",
+                                                        mkey: "<?php echo DV_Library_Config::dv_get_config('master_key', 'datavice'); ?>",
                                                         prov_code: provinceCode
                                                     },
                                                     url: '<?php echo site_url() . "/wp-json/datavice/v1/location/city/active"; ?>',
@@ -247,7 +247,7 @@
                                                     dataType: 'json',
                                                     type: 'POST', 
                                                     data: {
-                                                        mkey: "<?php echo DV_Library_Config::dv_get_config('master_key', 123); ?>",
+                                                        mkey: "<?php echo DV_Library_Config::dv_get_config('master_key', 'datavice'); ?>",
                                                         city_code: cityCode
                                                     },
                                                     url: '<?php echo site_url() . "/wp-json/datavice/v1/location/brgy/active"; ?>',
