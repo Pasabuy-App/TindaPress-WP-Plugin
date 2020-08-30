@@ -54,8 +54,6 @@
             // Step3 : Sanitize all request
             if ( !isset($_POST["title"]) 
                 || !isset($_POST["catid"]) 
-                || !isset($_POST["short_info"]) 
-                || !isset($_POST["long_info"]) 
                 || !isset($_POST["logo"]) 
                 || !isset($_POST["banner"]) 
                 || !isset($_POST["st"]) 
@@ -72,8 +70,6 @@
 
         // Step4 : Sanitize all variable is empty
             if ( empty($_POST["title"]) 
-                || empty($_POST["short_info"]) 
-                || empty($_POST["long_info"]) 
                 || empty($_POST["catid"]) 
                 || empty($_POST["logo"]) 
                 || empty($_POST["banner"]) 
@@ -369,8 +365,8 @@
             $cur_user['catid']        = $_POST["catid"];
 
             $cur_user['title']       = $_POST["title"];
-            $cur_user['short_info']  = $_POST["short_info"];
-            $cur_user['long_info']   = $_POST["long_info"];
+            $cur_user['short_info']  = isset($_POST["short_info"]) ? $_POST["short_info"] : "";
+            $cur_user['long_info']   = isset($_POST["long_info"]) ? $_POST["short_info"] : "";
             $cur_user['logo']        = $_POST["logo"];
             $cur_user['banner']      = $_POST["banner"];
 

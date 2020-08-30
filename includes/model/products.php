@@ -105,7 +105,6 @@
             //DISPLAY DATA INTO THE TARGET DATATABLES.
             function displayingLoadedApps( data )
             {   
-                console.log(data)
                 //Set table column header.
                 var columns = [
                     // { "sTitle": "IDENTITY",   "mData": "ID" },
@@ -491,7 +490,6 @@
             // LISTEN FOR MODAL SHOW AND ATTACHED ID.
             $('#EditAppOption').on('show.bs.modal', function(e) {
                 var data = e.relatedTarget.dataset;
-                console.log(data)
                 $('#edit_id').val( data.pdid );
                 $('#edit_title').val( data.pdname );
                 $('#edit_info').val( data.sinfo );
@@ -585,7 +583,6 @@
                 postParam.append( "pdid", $('#product_id').val());
                 postParam.append( "status", $('#product_status').val());
                 postParam.append( "type", 'logo');
-                console.log(postParam)
                 var postUrl = '<?= site_url() . "/wp-json/datavice/v1/process/upload"; ?>';
                 $.ajax({
                     dataType: 'json',

@@ -31,7 +31,7 @@
                         </div>
                         <div class="form-group">
                             <label for="new_info">Description:</label>
-                            <textarea required type="text" class="form-control" id="new_info" name="new_info" rows="3"
+                            <textarea type="text" class="form-control" id="new_info" name="new_info" rows="3"
                                 placeholder="Short description of your Store." ></textarea>
                         </div>
                         <div class="form-group">
@@ -98,7 +98,6 @@
                                                 },
                                                 url: '<?php echo site_url() . "/wp-json/datavice/v1/location/country/active"; ?>',
                                                 success: function(data) {
-                                                    console.log(data)
                                                     if(data.status == "success") {
                                                         var $country = $('#new_country');
                                                         $country.empty();
@@ -133,7 +132,7 @@
                                         $country.empty();
                                         $country.append("<option value='0' selected='selected'>Select Country First</option>");
 
-                                        $("#new_country").live('change', function() {
+                                        $(".form-group").on('click', '#new_country', function() {
                                             if($(this).val() != 0) {
                                                 var e = document.getElementById("new_country");
                                                 var countryCode = e.options[e.selectedIndex].value;
@@ -186,7 +185,7 @@
                                         $city.empty();
                                         $city.append("<option value='0' selected='selected'>Select Province First</option>");
 
-                                        $("#new_province").live('change', function() {
+                                        $(".form-group").on('click', '#new_province', function() {
                                             if($(this).val() != 0) {
                                                 var e = document.getElementById("new_province");
                                                 var provinceCode = e.options[e.selectedIndex].value;
@@ -239,7 +238,7 @@
                                         $city.empty();
                                         $city.append("<option value='0' selected='selected'>Select City First</option>");
 
-                                        $("#new_city").live('change', function() {
+                                        $(".form-group").on('click', '#new_city', function() {
                                             if($(this).val() != 0) {
                                                 var e = document.getElementById("new_city");
                                                 var cityCode = e.options[e.selectedIndex].value;

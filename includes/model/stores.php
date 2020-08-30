@@ -31,11 +31,6 @@
             window.location.href = '<?php echo TP_Globals::wp_admin_url().TP_MENU_STORE.$store_group."&status="; ?>' + $('#set_status').val();
         });
 
-
-        
-       
-
-
         //THIS ARE ALL THE PUBLIC VARIABLES.
         var activeTimeout = 'undefined';
 
@@ -77,7 +72,6 @@
                         url: postUrl,
                         success : function( data )
                         {
-                            console.log(data);
                             if(data.status == "success") {
                                 displayingLoadedApps( data.data );
                             } else {
@@ -794,7 +788,6 @@
                     postParam.stid = $('#comm_store_id').val();
                     postParam.comm = $('#edit_commission').val();
                 
-            console.log(postParam);
             var postUrl = '<?= site_url() . "/wp-json/tindapress/v1/stores/comm"; ?>';
         
             $.ajax({
@@ -804,7 +797,6 @@
                 url: postUrl,
                 success : function( data )
                 {
-                    console.log(data)
                     let status = '';
                     if (data.status == 'failed' || data.status == 'error' || data.status == 'unknown') {
                        status = 'danger';

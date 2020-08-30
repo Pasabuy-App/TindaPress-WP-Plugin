@@ -207,7 +207,6 @@
                 });
                 tptables.on( 'select', function ( e, dt, type, indexes ) {
                         var rowData = tptables.rows( indexes ).data().toArray()[0];
-                        //console.log("Selected: " + JSON.stringify( rowData.ID ));
                         tptables.button( 1 ).enable();
                         tptables.button( 2 ).enable();
                     });
