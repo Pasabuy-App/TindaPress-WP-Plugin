@@ -69,7 +69,7 @@
             }
 
             // Step 4: Check if parameters passed are not null
-            if (empty($_POST["title"]) || empty($_POST["info"])  || empty($_POST["types"]) ) {
+            if (empty($_POST["title"]) || empty($_POST["types"]) ) {
 				return array(
 						"status" => "failed",
 						"message" => "Required fields cannot be empty.",

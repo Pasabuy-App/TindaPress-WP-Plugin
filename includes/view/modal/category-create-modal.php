@@ -31,8 +31,8 @@
                         </div>
                         <div class="form-group">
                             <label for="new_info">Description:</label>
-                            <textarea required type="text" class="form-control" id="new_info" name="new_info" rows="3"
-                                placeholder="Short description of your Category." ></textarea>
+                            <textarea type="text" class="form-control" id="new_info" name="new_info" rows="3"
+                                placeholder="Optional! Description of Category." ></textarea>
                         </div>
                         <div class="form-group">
                             <div class="alert alert-dark tp-center-item" role="alert">
