@@ -145,9 +145,8 @@
             if (!$result ) {
                 return array(
                         "status" => "success",
-                        "message" => "No results found.",
+                        "message" => [],
                 );
-
             }else{
 
                 // Step5 : Return Result 

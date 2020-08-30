@@ -121,7 +121,7 @@
             if (!$result) {
                 return array(
                     "status" => "success",
-                    "message" => "No results found."
+                    "message" => [],
                 );
             }else{
                 return array(
