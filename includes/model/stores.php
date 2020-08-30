@@ -77,8 +77,12 @@
                             } else {
                                 displayingLoadedApps( [] );
                             }
-                            
-                            $('#imageResult').attr('src', data.avatar );
+
+                            console.log( "Demoguy: " + data );
+
+                            if(data.avatar != 'None') {
+                                $('#imageResult').attr('src', data.avatar );
+                            }                            
 
                             if( !$('#stores-notification').hasClass('tp-display-hide') )
                             {
@@ -545,7 +549,7 @@
         $('#AddLogo').on('show.bs.modal', function(e) {
                 var data = e.relatedTarget.dataset;
                 if ( (typeof null === data.logo && !null) || data.logo === 'None' || data.logo === null || !data.logo ) {
-                    $('#imageResult').attr('src', 'https://mdbootstrap.com/img/Photos/Others/placeholder.jpg' );
+                    $('#imageResult').attr('src', '<?php echo TP_PLUGIN_URL . "/assets/images/default.jpg"; ?>' );
                     
                 } else {
                     $('#imageResult').attr('src', data.logo );
@@ -717,6 +721,7 @@
             postParam.append( "stid", $('#logo_store_id').val());
             postParam.append( "status", $('#edit_status').val());
             postParam.append( "type", 'logo');
+            postParam.append( "mkey", 'datavice');
                 
             var postUrl = '<?= site_url() . "/wp-json/datavice/v1/process/upload"; ?>';
             $.ajax({
@@ -734,6 +739,8 @@
                     } else {
                             status = data.status;
                     }
+                    loadingAppList( storeTables );
+
                     $('#LogoMessage').addClass('alert-'+status);
                     $('#LogoMessage').removeClass('tp-display-hide');
                     $('#LogoContent').html( data.message );
@@ -770,7 +777,8 @@
                     $('#GPSResponse').addClass('alert-'+data.status);
                     $('#GPSResponse').removeClass('tp-display-hide');
                     $('#GPSContent').html( data.message );
-                    $('#gps-app-form').trigger("reset");
+                    //$('#gps-app-form').trigger("reset");
+                    loadingAppList( storeTables );
                 },
                 error : function(jqXHR, textStatus, errorThrown) 
                 {
@@ -806,6 +814,7 @@
                     $('#CommMessage').addClass('alert-'+status);
                     $('#CommMessage').removeClass('tp-display-hide');
                     $('#CommContent').html( data.message );
+                    loadingAppList( storeTables );
                 
                 },
                 error : function(jqXHR, textStatus, errorThrown) 

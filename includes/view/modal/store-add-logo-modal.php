@@ -28,7 +28,7 @@
                     <form id="logo-app-form">
                         <div class="form-group">
                             <div class="z-depth-1-half mb-4">
-                                <img id=imageResult  src="https://mdbootstrap.com/img/Photos/Others/placeholder.jpg" class="img-fluid"
+                                <img id=imageResult  src="<?php echo TP_PLUGIN_URL . "/assets/images/default.jpg"; ?>" class="img-fluid"
                                 alt="example placeholder">
                             </div>
                         </div>
