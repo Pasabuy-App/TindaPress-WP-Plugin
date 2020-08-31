@@ -18,6 +18,10 @@
         }
 
         public static function update_variants(){
+
+
+            // Hardening QA 12:07 8/31/2020
+            // Miguel Igdalino
             
             // 2nd Initial QA 2020-08-24 11:20 PM - Miguel
             global $wpdb;
@@ -80,17 +84,18 @@
             $variant_name = $_POST['name'];
             $wpid = $_POST['wpid'];
             $date = TP_Globals:: date_stamp();
+            
             isset($_POST['info']) ? $info = $_POST['info'] : $info = NULL;
 
             // Step 7: Validate if exists and if status is 0 or 1 using variant id and product id
             $get_parent = $wpdb->get_row("SELECT var.ID, var.parent_id,
-                (SELECT child_val FROM tp_revisions WHERE ID = MAX(rev.ID)) as status
-            FROM
-                $table_variants var
-            INNER JOIN $table_revs rev ON rev.parent_id = var.ID 
-            WHERE var.ID = '$variants_id'  AND var.pdid = '$product_id'
-            AND rev.revs_type = 'variants' 
-            AND child_key = 'status' 
+                    (SELECT child_val FROM tp_revisions WHERE ID = MAX(rev.ID)) as status
+                FROM
+                    $table_variants var
+                INNER JOIN $table_revs rev ON rev.parent_id = var.ID 
+                WHERE var.ID = '$variants_id'  AND var.pdid = '$product_id'
+                AND rev.revs_type = 'variants' 
+                AND child_key = 'status' 
             ");
 
             if (!$get_parent){ // Check if null
@@ -143,20 +148,27 @@
             }
 
             if ( isset($_POST['info']) ){ // if  post info is set, insert into tp revisions
+
                 $rev_insert_info = $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', '$variants_id', 'info', '$info', $wpid, '$date')");
-            } else { // if not set, get the value of last info using revision id and insert into tp revisions
-                $get_info = $wpdb->get_row("SELECT (SELECT child_val FROM tp_revisions WHERE ID = MAX(rev.ID)) as info
-            FROM
-                $table_variants var
-            INNER JOIN 
-                $table_revs rev ON rev.parent_id = var.ID 
-            WHERE 
-                var.ID = '$variants_id'  AND var.pdid = '$product_id'
-            AND 
-                rev.revs_type = 'variants' 
-            AND 
-                child_key = 'info' 
-            ");
+
+            } else { 
+
+                // if not set, get the value of last info using revision id and insert into tp revisions
+               $get_info = $wpdb->get_row("SELECT 
+               
+                        (SELECT child_val FROM tp_revisions WHERE ID = MAX(rev.ID)) as info
+                    FROM
+                        $table_variants var
+                    INNER JOIN 
+                        $table_revs rev ON rev.parent_id = var.ID 
+                    WHERE 
+                        var.ID = '$variants_id'  AND var.pdid = '$product_id'
+                    AND 
+                        rev.revs_type = 'variants' 
+                    AND 
+                        child_key = 'info' 
+                    ");
+
                 $rev_insert_info =  $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', '$variants_id', 'info', '$get_info->info', $wpid, '$date')");
             }
 

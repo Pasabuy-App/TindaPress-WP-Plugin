@@ -26,7 +26,6 @@
         public static function delete_product(){
 
             global $wpdb;
-            
             $product_type      = "products";
             $date_stamp        = TP_Globals::date_stamp();
             $product_table     = TP_PRODUCT_TABLE;
@@ -37,33 +36,32 @@
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 
             // Step 2: Validate if user is exist
 			if (DV_Verification::is_verified() == false) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification issues!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification issues!",
                 );
             }
 
              // Step 3: Check if params are passed
 			if (!isset($_POST['pdid']) ) {
 				return array(
-						"status" => "unknown",
-						"message" => "Please contact your administrator. Request unknown!",
+					"status" => "unknown",
+					"message" => "Please contact your administrator. Request unknown!",
                 );
-                
             }
 
             // Step 4: Check if params passed are not null
 			if ( empty($_POST['pdid']) ) {
 				return array(
-						"status" => "unknown",
-						"message" => "Required fields cannot be empty!",
+					"status" => "unknown",
+					"message" => "Required fields cannot be empty!",
                 );
             }
 
@@ -127,8 +125,6 @@
 					"status" => "success",
 					"message" => "Data has been deleted successfully.",
                 );
-
             }
         }
-        
     }

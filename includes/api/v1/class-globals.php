@@ -8,7 +8,11 @@
         * @package tindapress-wp-plugin
 		* @version 0.1.0
 		* This is the primary gateway of all the rest api request.
-	*/
+    */
+    
+		// Hardening QA 12:05 8/31/2020
+        // Miguel Igdalino
+        
   	class TP_Globals {
          
         public static function create($table_name, $data){
@@ -16,24 +20,6 @@
         
             return $wpdb->insert($table_name, $data);
                        
-        }
-        
-        // NOTE: unfinished
-        public static function retrieve($table_name, $fields, $sort_field, $sort){
-            global $wpdb;
-            // fields
-            $data = implode( ', ', $fields );
-            
-            // sort_fields
-            $str_sortFiled = implode( ', ', $sort_field );
-            $sorted_field = preg_replace('/[0-9,]+/', '', $str_sortFiled);
-            
-            // sort
-            $sorted = implode( ', ', $sort );
-            // $sorts = preg_replace('/[0-9,]+/', '', $str_sort);
-
-
-            return $wpdb->get_results("SELECT $data FROM $table_name $sorted_field $sorted ");
         }
 
         public static function delete($table_name , $id){
@@ -49,15 +35,12 @@
             return $wpdb->update( $table_name , $fields, array('id' => $id) );
         }
 
-        // date stamp 
+      
         public static function date_stamp(){
             date_default_timezone_set('Asia/Manila');
-
             
             return date("Y-m-d h:i:s");
-
         }
-
 
         public static function check_roles($role){
             
@@ -76,12 +59,7 @@
                 return 'DataVice';
             }
 
-            // if(!class_exists('MP_Process') ){
-            //     return 'MobilePOS';
-            // }
-
             return true;
-
         }
 
         public static function verify_role($wpid, $store_id, $role){
@@ -122,7 +100,6 @@
                 return true;
             }
             return false;
-
 
         }
 

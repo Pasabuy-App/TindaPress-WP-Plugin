@@ -138,7 +138,6 @@
                 );
             }
 
-
             //Barangay
             $bg_status = DV_Globals:: check_availability(DV_BRGY_TABLE, 'WHERE `id` = '.$_POST['bg']);
             
@@ -158,7 +157,6 @@
   
           
             $user = TP_Store_Update_address::catch_post();
-
             $date_created = TP_Globals::date_stamp();
             
             // Step 6 : Check if this store id exists

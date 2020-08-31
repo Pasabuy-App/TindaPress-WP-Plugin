@@ -46,8 +46,8 @@
 			// Step 2: Validate user
 			if (DV_Verification::is_verified() == false) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification issues!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification issues!",
                 );
                 
             }
@@ -65,27 +65,24 @@
             // Step 3: Check if parameters are passed
             if (!isset($_POST["title"]) || !isset($_POST["info"]) || !isset($_POST["catid"])) {
 				return array(
-						"status" => "unknown",
-						"message" => "Please contact your administrator. Request unknown!",
+					"status" => "unknown",
+					"message" => "Please contact your administrator. Request unknown!",
                 );
             }
 
             // Step 4: Check if parameters passed are not null
             if (empty($_POST["title"]) || empty($_POST["info"]) || empty($_POST["catid"]) ) {
 				return array(
-						"status" => "failed",
-						"message" => "Required fields cannot be empty.",
+					"status" => "failed",
+					"message" => "Required fields cannot be empty.",
                 );
             }
 
             // Step 5: Catching post values
 
-            $title = $_POST['title'];
-            
-            $info = $_POST['info'];
-
-            $wpid = $_POST["wpid"]; 
-
+            $title       = $_POST['title'];
+            $info        = $_POST['info'];
+            $wpid        = $_POST["wpid"]; 
             $category_id = $_POST["catid"];
 
             // Step 6: Check if this category exists
@@ -112,12 +109,12 @@
             }
 
             //Check if category is active or inactive
-            // if ($get_status->status == 0) {
-            //     return array(
-            //         "status" => "failed",
-            //         "message" => "This category is currently inactive.",
-            //     );
-            // }
+            if ($get_status->status == 0) {
+                return array(
+                    "status" => "failed",
+                    "message" => "This category is currently inactive.",
+                );
+            }
 
             $status_id = $get_status->status_id;
 
@@ -145,8 +142,8 @@
                 // when insert failed rollback all inserted data
                 $wpdb->query("ROLLBACK");
                 return array(
-                        "status" => "error",
-                        "message" => "An error occured while submitting data to database.",
+                    "status" => "error",
+                    "message" => "An error occured while submitting data to database.",
                 );
             
             }
@@ -159,7 +156,5 @@
                 "status" => "success",
                 "message" => "Data has been updated successfully!",
             );
-
         }
-
     }

@@ -20,7 +20,6 @@
 
             // 2nd Initial QA 2020-08-24 6:36 PM - Miguel
             global $wpdb;
-            
             $table_revisions = TP_REVISIONS_TABLE;
             $table_product = TP_PRODUCT_TABLE;
             $table_categories = TP_CATEGORIES_TABLE;
@@ -61,9 +60,7 @@
                 ( SELECT tp_rev.child_val FROM $table_revisions tp_rev WHERE ID = tp_prod.preview AND revs_type = 'products' AND child_key ='preview' AND tp_rev.ID = (SELECT MAX(ID) FROM $table_revisions WHERE ID = tp_rev.ID )  ) AS `preview`,
                 ( SELECT tp_rev.child_val FROM $table_revisions tp_rev WHERE ID = tp_prod.dimension AND revs_type = 'products' AND child_key ='dimension' AND tp_rev.ID = (SELECT MAX(ID) FROM $table_revisions WHERE ID = tp_rev.ID ) ) AS `dimension`,
                 ( SELECT tp_rev.child_val FROM $table_revisions tp_rev WHERE ID = tp_prod.dimension AND revs_type = 'products' AND child_key ='dimension' AND tp_rev.ID = (SELECT MAX(ID) FROM $table_revisions WHERE ID = tp_rev.ID ) ) AS `dimension`,
-
-            IF
-                ( ( SELECT tp_rev.child_val FROM $table_revisions tp_rev WHERE ID = tp_prod.`status` AND revs_type = 'products' AND child_key = 'status' AND tp_rev.ID = ( SELECT MAX(ID) FROM $table_revisions WHERE ID = tp_rev.ID )  ) = 1, 'Active', 'Inactive' ) AS `status` 
+                IF  ( ( SELECT tp_rev.child_val FROM $table_revisions tp_rev WHERE ID = tp_prod.`status` AND revs_type = 'products' AND child_key = 'status' AND tp_rev.ID = ( SELECT MAX(ID) FROM $table_revisions WHERE ID = tp_rev.ID )  ) = 1, 'Active', 'Inactive' ) AS `status` 
             FROM
                 $table_product tp_prod
                 INNER JOIN $table_revisions tp_rev ON tp_rev.ID = tp_prod.title
@@ -90,7 +87,6 @@
 
             // Category filtering
             if ($catid != NULL && $catid != '0') {
-
                 if ($status !== NULL  ) {
 
                     $sql .= " AND tp_prod.ctid = $catid ";
@@ -98,7 +94,6 @@
                     $sql .= " WHERE tp_prod.ctid = $catid ";
 
                 }
-
             }
 
             // Store ID filtering
@@ -136,7 +131,5 @@
                 "status" => "success",
                 "data" => $results,
             );
-
         }
-        
     }

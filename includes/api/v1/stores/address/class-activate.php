@@ -60,7 +60,6 @@
                     "message" => "Please contact your administrator. Request unknown!",
                 );
             }
-            
 
             $address_id = $_POST["addr"];
             // Step 5: Check if this address if exists in database.
@@ -82,7 +81,8 @@
 
             // Step 7: Start mysql transaction
             $wpdb->query("START TRANSACTION");
-               $get_address_data =  $wpdb->get_row("SELECT * FROM $table_address WHERE ID = $address_id");
+                
+                $get_address_data =  $wpdb->get_row("SELECT * FROM $table_address WHERE ID = $address_id");
 
                 $result = $wpdb->query("UPDATE $dv_rev_table SET `child_val` = 1, `date_created` = '$date_created' WHERE ID = $get_address_data->status   ");
 
@@ -102,8 +102,6 @@
                     "status" => "success",
                     "message" => "Data has been activated successfully.",
                 );
-
             }
-
         }
     }

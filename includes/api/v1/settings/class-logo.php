@@ -54,6 +54,14 @@
 				);
             }
 
+            $max_img_size = DV_Library_Config::dv_get_config('max_img_size', 123);
+            if (!$max_img_size) {
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Can't find config of img size.",
+                );
+            }
+
             // Step4 : sanitize if all variables is empty
             if ( empty($_POST["stid"]) ){
                 return array(
@@ -123,7 +131,7 @@
 				);
             }
             // Check file size
-            if ($files['img']['size'] > 500000) {
+            if ($files['img']['size'] > $max_img_size) {
                 $uploadOk = 0;
 
                 return array(

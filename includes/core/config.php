@@ -10,6 +10,9 @@
      * This is where you provide all the constant config.
 	*/
 
+		// Hardening QA 11:59 8/31/2020
+		// Miguel Igdalino
+		
 	//Defining Global Variables
 	define('TP_CUSTOM', 'eCommerce'); 
 	define('TP_PREFIX', 'tp_'); 
@@ -21,8 +24,6 @@
 
 	//Configs config
 	define('TP_CONFIGS_TABLE', TP_PREFIX.'configs');
-	// define("TP_CONFIG_DATA", $dv_config_list);
-	// define("TP_CONFIG_FIELD", "(title, info, config_key, config_val)");
 
 	//Documents config
 	define('TP_DOCU_TABLE', TP_PREFIX.'documents');
@@ -60,8 +61,6 @@
 	//Variants Config
 	define('TP_VARIANTS_TABLE', TP_PREFIX.'variants');
 	define('TP_VARIANTS_FIELDS','(parent_id, pdid, created_by, date_created )');
-
-
 
 	//Store WP Menu
 	define('TP_MENU_STARTED', TP_PREFIX.'getting-started');

@@ -161,6 +161,7 @@
                     "status" => "failed",
                     "message" => "An error occured while submitting data to database.",
                 );
+                
             }else{
                 $wpdb->query("COMMIT");
                 return array(

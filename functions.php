@@ -49,4 +49,3 @@
 
     //Include the REST API of USocketNet to be accessible.
     include_once ( TP_PLUGIN_PATH . '/includes/api/routes.php' );
-?>
