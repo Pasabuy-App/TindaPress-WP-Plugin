@@ -63,7 +63,7 @@
                         <?php if( isset($_GET['status']) ) { ?>
                             postParam.status = '<?= $_GET['status'] ?>';
                         <?php } ?>
-                    var postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/stores/list"; ?>';                    
+                    var postUrl = '<?php echo TP_UIHOST . "/wp-json/tindapress/v1/stores/list"; ?>';                    
                     
                     $.ajax({
                         dataType: 'json',
@@ -333,7 +333,7 @@
                     dataType: 'json',
                     type: 'POST', 
                     data: postParam,
-                    url:  '<?php echo site_url() . "/wp-json/tindapress/v1/stores/insert"; ?>',
+                    url:  '<?php echo TP_UIHOST . "/wp-json/tindapress/v1/stores/insert"; ?>',
                     success : function( data )
                     {
                         if( data.status == 'success' ) {
@@ -454,12 +454,12 @@
                 
                 if( clickedBtnId == "delete-app-btn" ) {
                     if( $('#edit_status').val() == 0 ) {
-                        postUrl = '<?= site_url() . "/wp-json/tindapress/v1/stores/delete"; ?>';
+                        postUrl = '<?= TP_UIHOST . "/wp-json/tindapress/v1/stores/delete"; ?>';
                     } else {
-                        postUrl = '<?= site_url() . "/wp-json/tindapress/v1/stores/activate"; ?>';
+                        postUrl = '<?= TP_UIHOST . "/wp-json/tindapress/v1/stores/activate"; ?>';
                     }
                 } else {
-                    postUrl = '<?= site_url() . "/wp-json/tindapress/v1/stores/update"; ?>';
+                    postUrl = '<?= TP_UIHOST . "/wp-json/tindapress/v1/stores/update"; ?>';
                     postParam.title = $('#edit_title').val();
                     postParam.info = $('#edit_info').val();
                 }
@@ -723,7 +723,7 @@
             postParam.append( "type", 'logo');
             postParam.append( "mkey", 'datavice');
                 
-            var postUrl = '<?= site_url() . "/wp-json/datavice/v1/process/upload"; ?>';
+            var postUrl = '<?= TP_UIHOST . "/wp-json/datavice/v1/process/upload"; ?>';
             $.ajax({
                 dataType: 'json',
                 type: 'POST', 
@@ -765,7 +765,7 @@
                     postParam.lat = latitude;
                     postParam.lon = longitude;
                 
-            var postUrl = '<?= site_url() . "/wp-json/datavice/v1/coordinates/insert"; ?>';
+            var postUrl = '<?= TP_UIHOST . "/wp-json/datavice/v1/coordinates/insert"; ?>';
         
             $.ajax({
                 dataType: 'json',
@@ -796,7 +796,7 @@
                     postParam.stid = $('#comm_store_id').val();
                     postParam.comm = $('#edit_commission').val();
                 
-            var postUrl = '<?= site_url() . "/wp-json/tindapress/v1/stores/comm"; ?>';
+            var postUrl = '<?= TP_UIHOST . "/wp-json/tindapress/v1/stores/comm"; ?>';
         
             $.ajax({
                 dataType: 'json',

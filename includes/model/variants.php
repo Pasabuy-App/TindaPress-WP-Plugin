@@ -76,7 +76,7 @@
                         <?php } ?>
                        
                         postParam.status = $("#set_status").val();
-                    var postUrl = "<?= site_url() . '/wp-json/tindapress/v1/variants/list' ?>";
+                    var postUrl = "<?= TP_UIHOST . '/wp-json/tindapress/v1/variants/list' ?>";
                     
                     $.ajax({
                         dataType: 'json',
@@ -271,7 +271,7 @@
                     dataType: 'json',
                     type: 'POST', 
                     data: postParam,
-                    url: '<?php echo site_url() . "/wp-json/tindapress/v1/variants/insert"; ?>',
+                    url: '<?php echo TP_UIHOST . "/wp-json/tindapress/v1/variants/insert"; ?>',
                     success : function( data )
                     {
                         if( data.status == 'success' ) {
@@ -384,13 +384,13 @@
 
                 if( clickedBtnId == 'delete-app-btn' )
                 {
-                    postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/products/delete"; ?>';
+                    postUrl = '<?php echo TP_UIHOST . "/wp-json/tindapress/v1/products/delete"; ?>';
                     postParam.pid = $('#edit_id').val();
                 }
 
                 else
                 {
-                    postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/products/update"; ?>';
+                    postUrl = '<?php echo TP_UIHOST . "/wp-json/tindapress/v1/products/update"; ?>';
                     postParam.catid = $('#new_category').val();
                     postParam.stid = $('#new_store').val();
                     postParam.pdid = $('#new_store').val();

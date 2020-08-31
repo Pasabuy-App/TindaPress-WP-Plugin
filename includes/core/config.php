@@ -13,6 +13,8 @@
 	//Defining Global Variables
 	define('TP_CUSTOM', 'eCommerce'); 
 	define('TP_PREFIX', 'tp_'); 
+	define('TP_UIHOST', 'https://wphost-b.dev');
+	define('TP_FULLMODE', false);
 	
 	//Categories config
 	define('TP_CATEGORIES_TABLE', TP_PREFIX.'categories');

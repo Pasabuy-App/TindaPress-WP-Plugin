@@ -64,7 +64,7 @@
                         <?php if( isset($_GET['type']) ) { ?>
                             postParam.type = <?= (int)$_GET['type'] ?>;
                         <?php } ?>
-                    var postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/category/list"; ?>';
+                    var postUrl = '<?php echo TP_UIHOST . "/wp-json/tindapress/v1/category/list"; ?>';
                     
                     $.ajax({
                         dataType: 'json',
@@ -283,7 +283,7 @@
                     dataType: 'json',
                     type: 'POST', 
                     data: postParam,
-                    url: '<?php echo site_url() . "/wp-json/tindapress/v1/category/insert"; ?>',
+                    url: '<?php echo TP_UIHOST . "/wp-json/tindapress/v1/category/insert"; ?>',
                     success : function( data )
                     {
                         if( data.status == 'success' ) {
@@ -387,9 +387,9 @@
                 var postUrl = '';
                 
                 if( clickedBtnId === 'delete-app-btn' ) {
-                    postUrl = '<?= site_url() . "/wp-json/tindapress/v1/category/delete" ?>';
+                    postUrl = '<?= TP_UIHOST . "/wp-json/tindapress/v1/category/delete" ?>';
                 } else {
-                    postUrl = '<?= site_url() . "/wp-json/tindapress/v1/category/update" ?>';
+                    postUrl = '<?= TP_UIHOST . "/wp-json/tindapress/v1/category/update" ?>';
                     postParam.title = $('#edit_title').val();
                     postParam.info = $('#edit_info').val();
                 }
