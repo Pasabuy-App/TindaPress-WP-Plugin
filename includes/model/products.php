@@ -73,7 +73,7 @@
                         <?php if( isset($_GET['status']) ) { ?>
                             postParam.status = "<?= (int)$_GET['status'] ?>";
                         <?php } ?>
-                    var postUrl = "<?= site_url() . '/wp-json/tindapress/v1/products/list' ?>";
+                    var postUrl = "<?= TP_UIHOST . '/wp-json/tindapress/v1/products/list' ?>";
                     
                     $.ajax({
                         dataType: 'json',
@@ -307,7 +307,7 @@
                     dataType: 'json',
                     type: 'POST', 
                     data: postParam,
-                    url: '<?php echo site_url() . "/wp-json/tindapress/v1/products/insert"; ?>',
+                    url: '<?php echo TP_UIHOST . "/wp-json/tindapress/v1/products/insert"; ?>',
                     success : function( data )
                     {
                         if( data.status == 'success' ) {
@@ -417,13 +417,13 @@
 
                 if( clickedBtnId == 'delete-app-btn' )
                 {
-                    postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/products/delete"; ?>';
+                    postUrl = '<?php echo TP_UIHOST . "/wp-json/tindapress/v1/products/delete"; ?>';
                     postParam.pid = $('#edit_id').val();
                 }
 
                 else
                 {
-                    postUrl = '<?php echo site_url() . "/wp-json/tindapress/v1/products/update"; ?>';
+                    postUrl = '<?php echo TP_UIHOST . "/wp-json/tindapress/v1/products/update"; ?>';
                     postParam.catid = $('#edit_category').val();
                     postParam.stid = $('#edit_store').val();
                     postParam.pdid = $('#edit_id').val();
@@ -583,7 +583,7 @@
                 postParam.append( "pdid", $('#product_id').val());
                 postParam.append( "status", $('#product_status').val());
                 postParam.append( "type", 'logo');
-                var postUrl = '<?= site_url() . "/wp-json/datavice/v1/process/upload"; ?>';
+                var postUrl = '<?= TP_UIHOST . "/wp-json/datavice/v1/process/upload"; ?>';
                 $.ajax({
                     dataType: 'json',
                     type: 'POST', 

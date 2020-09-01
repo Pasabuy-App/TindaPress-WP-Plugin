@@ -38,14 +38,23 @@
     include_once ( TP_PLUGIN_PATH . '/includes/core/config.php' );
     include_once ( TP_PLUGIN_PATH . '/includes/core/update.php' );
 
-    // include_once ( TP_PLUGIN_PATH . '/includes/view/primary.php' );
-    include_once ( TP_PLUGIN_PATH . '/includes/view/primary.php' );
-
-     //Make sure to create required mysql tables.
+    //Make sure to create required mysql tables.
     include_once ( TP_PLUGIN_PATH . '/includes/core/dbhook.php' );
 
-    //Includes assets if page is defined.
-    include_once ( TP_PLUGIN_PATH . '/includes/core/assets.php' );
+    if(TP_UIHOST != site_url() || TP_FULLMODE == true) {
+        // include_once ( TP_PLUGIN_PATH . '/includes/view/primary.php' );
+        include_once ( TP_PLUGIN_PATH . '/includes/view/primary.php' );
+        //Includes assets if page is defined.
+        include_once ( TP_PLUGIN_PATH . '/includes/core/assets.php' );
+    }
 
+<<<<<<< HEAD
     //Include the REST API of USocketNet to be accessible.
     include_once ( TP_PLUGIN_PATH . '/includes/api/routes.php' );
+=======
+    if(TP_UIHOST == site_url() || TP_FULLMODE == true) {
+        //Include the REST API of USocketNet to be accessible.
+        include_once ( TP_PLUGIN_PATH . '/includes/api/routes.php' );
+    }
+?>
+>>>>>>> 7e9a8c2a055220b8db251c6dd673389bc44b7fd9
