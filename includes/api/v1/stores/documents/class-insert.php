@@ -39,8 +39,7 @@
             }
 
             // Step 3: Sanitize if all variables at POST
-            if ( !isset($_POST['doc_type']) 
-                || !isset($_POST['stid']) ) {
+            if ( !isset($_POST['doc_type']) || !isset($_POST['stid']) ) {
 				return array(
 					"status" => "unknown",
 					"message" => "Please contact your administrator. Request unknown!",
@@ -49,8 +48,7 @@
             }
                 
             // Step 4: Check if all variables is not empty 
-            if ( empty($_POST['doc_type']) 
-                || empty($_POST['stid']) ) {
+            if ( empty($_POST['doc_type']) || empty($_POST['stid']) ) {
                 return array(
                     "status" => "failed",
                     "message" => "Required fileds cannot be empty.",
@@ -112,6 +110,4 @@
                 );
             }
         }
-
-        
     }

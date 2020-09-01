@@ -25,22 +25,21 @@
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
            
             // Step 2: Validate user
             if (DV_Verification::is_verified() == false) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification Issues!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification Issues!",
                 );
             }
 
             // Step 3: Sanitize all Request
-            if (!isset($_POST['stid']) 
-                || !isset($_POST['doc_id']) ) {
+            if (!isset($_POST['stid']) || !isset($_POST['doc_id']) ) {
 				return array(
 					"status" => "unknown",
 					"message" => "Please contact your administrator. Request unknown!",
@@ -48,8 +47,7 @@
             }
             
             // Step 4: Sanitize all Request if emply
-            if ( empty($_POST['stid']) 
-                || empty($_POST['doc_id']) ) {
+            if ( empty($_POST['stid']) || empty($_POST['doc_id']) ) {
 				return array(
 						"status" => "failed",
 						"message" => "Required fields cannot be empty.",
@@ -97,7 +95,5 @@
                     "message" => "Data has been deleted successfully."
                 );
             }
-
         }
-
     }

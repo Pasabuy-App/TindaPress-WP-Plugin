@@ -18,9 +18,12 @@
         }
         
         public static function activate_category(){
-            
-            //Inital QA done 2020-08-11 10:55 AM
+
+            // Inital QA done 2020-08-11 10:55 AM
             // 2nd Initial QA 2020-08-24 4:55 PM - Miguel
+            // Final QA - Miguel Igdalino 
+            // Time :  
+
             global $wpdb;
 
             $table_revs = TP_REVISIONS_TABLE;
@@ -32,16 +35,16 @@
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 			
 			// Step 2: Validate user
 			if (DV_Verification::is_verified() == false) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification issues!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification issues!",
                 );
                 
             }
@@ -59,16 +62,16 @@
             // Step 3: Check if parameters are passed
             if ( !isset($_POST["catid"])  ) {
 				return array(
-						"status" => "unknown",
-						"message" => "Please contact your administrator. Request Unknown!",
+					"status" => "unknown",
+					"message" => "Please contact your administrator. Request Unknown!",
                 );
             }
 
             // Step 4: Check if parameters passed are not null
             if ( empty($_POST["catid"])  ) {
 				return array(
-						"status" => "failed",
-						"message" => "Required fields cannot be empty.",
+					"status" => "failed",
+					"message" => "Required fields cannot be empty.",
                 );
             }
 
@@ -91,15 +94,15 @@
             // Step 6: Check if this category id exists
             if ( !$category ) {
 				return array(
-						"status" => "failed",
-						"message" => "This category does not exists.",
+					"status" => "failed",
+					"message" => "This category does not exists.",
                 );
             }
             // Check if status is active
             if ( $category->status == 1 ) {
 				return array(
-						"status" => "failed",
-						"message" => "This category is already activated.",
+					"status" => "failed",
+					"message" => "This category is already activated.",
                 );
             }
 

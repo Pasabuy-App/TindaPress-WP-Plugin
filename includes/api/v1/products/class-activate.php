@@ -28,12 +28,11 @@
             global $wpdb;
             
             $date_stamp        = TP_Globals::date_stamp();
-            // $product_table     = TP_PRODUCT_TABLE;
+            // $product_table  = TP_PRODUCT_TABLE;
             $table_revs        = TP_REVISIONS_TABLE;
             $table_revs_fields = TP_REVISION_FIELDS;
-            // Variables for Table
-            $table_product = TP_PRODUCT_TABLE;
-            $table_categories = TP_CATEGORIES_TABLE;
+            $table_product     = TP_PRODUCT_TABLE;
+            $table_categories  = TP_CATEGORIES_TABLE;
 
             // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -75,14 +74,14 @@
             
             // Step 6: Check if products exists
             $get_product_data = $wpdb->get_row("SELECT
-                prod.ID,
-                child_val AS `status` 
-            FROM
-                tp_products prod
-                INNER JOIN tp_revisions rev ON rev.`ID` = prod.`status` 
-            WHERE
-                revs_type = 'products' 
-                AND child_key = 'status' AND prod.ID = '$parentid'");
+                    prod.ID,
+                    child_val AS `status` 
+                FROM
+                    tp_products prod
+                    INNER JOIN tp_revisions rev ON rev.`ID` = prod.`status` 
+                WHERE
+                    revs_type = 'products' 
+                    AND child_key = 'status' AND prod.ID = '$parentid'");
 
             if ( empty($get_product_data)  ) {
                 return array(
@@ -97,7 +96,6 @@
                     "message" => "This product is already activated.",
                 );
             }
-
 
             // Step 7: Start mysql transaction
             $wpdb->query("START TRANSACTION ");
@@ -123,8 +121,6 @@
 					"status" => "success",
 					"message" => "Data has been activated successfully.",
                 );
-
             }
         }
-        
     }

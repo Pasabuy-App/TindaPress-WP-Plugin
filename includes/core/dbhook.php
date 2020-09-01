@@ -14,6 +14,9 @@
 	
 		global $wpdb;
 
+		// Hardening QA 11:56 8/31/2020
+		// Miguel Igdalino
+		
 		//Initializing table name
 		$tbl_categories = TP_CATEGORIES_TABLE;
 		$tbl_cat_group = TP_CATEGORIES_GROUP_TABLE;
@@ -27,11 +30,13 @@
 		$tbl_stores = TP_STORES_TABLE;
 		$tbl_variants = TP_VARIANTS_TABLE;
 		
+		$wpdb->query("START TRANSACTION");
 		
 		//Database table creation for stores
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_stores'" ) != $tbl_stores) {
 			$sql = "CREATE TABLE `".$tbl_stores."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= "`hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
 				$sql .= "`ctid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Category of this Store with revision ID.', ";
 				$sql .= "`title` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Name of the store with revision ID.',  ";
 				$sql .= "`short_info` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Description of the store with revision ID.', ";
@@ -51,6 +56,7 @@
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_roles_meta'" ) != $tbl_roles_meta) {
 			$sql = "CREATE TABLE `".$tbl_roles_meta."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= "`hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
 				$sql .= "`roid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Role id this belong to.', ";
 				$sql .= "`access` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Access key', ";
 				$sql .= "`status` enum('inactive','active') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'inactive' COMMENT 'Role access is active or not.', ";
@@ -64,6 +70,7 @@
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_roles'" ) != $tbl_roles) {
 			$sql = "CREATE TABLE `".$tbl_roles."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= "`hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
 				$sql .= "`stid` int(11) NOT NULL DEFAULT 0 COMMENT 'Store id this roles belong.', ";
 				$sql .= "`title` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Name of this role with revision id.', ";
 				$sql .= "`info` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Info about this role with revision id.', ";
@@ -78,6 +85,7 @@
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_revisions'" ) != $tbl_revisions) {
 			$sql = "CREATE TABLE `".$tbl_revisions."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= "`hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
 				$sql .= "`revs_type` enum('none','configs','categories','documents','stores','products','personnels','roles','variants') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Target table', ";
 				$sql .= "`parent_id` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Parent ID of this Revision', ";
 				$sql .= "`child_key` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Column name on the table', ";
@@ -93,6 +101,7 @@
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_products'" ) != $tbl_products) {
 			$sql = "CREATE TABLE `".$tbl_products."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= "`hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
 				$sql .= "`stid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Store id of this product.', ";
 				$sql .= "`ctid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Category id of this product.', ";
 				$sql .= "`title` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Name of the store with revision ID.', ";
@@ -115,6 +124,7 @@
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_personnels'" ) != $tbl_personnels) {
 			$sql = "CREATE TABLE `".$tbl_personnels."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= "`hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
 				$sql .= "`stid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Store id.', ";
 				$sql .= "`wpid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User id.', ";
 				$sql .= "`roid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Role id.', ";
@@ -131,6 +141,7 @@
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_configs'" ) != $tbl_configs) {
 			$sql = "CREATE TABLE `".$tbl_configs."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= "`hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
 				$sql .= "`config_desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Config Description', ";
 				$sql .= "`config_key` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Config KEY', ";
 				$sql .= "`config_value` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Config VALUES', ";
@@ -145,6 +156,7 @@
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_docu'" ) != $tbl_docu) {
 			$sql = "CREATE TABLE `".$tbl_docu."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= "`hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
 				$sql .= "`stid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Store ID of Merchant', ";
 				$sql .= "`preview` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Image url of document', ";
 				$sql .= "`doctype` enum('none','dti_registration','barangay_clearance','lease_contract','community_tax','occupancy_permit','sanitary_permit','fire_permit','mayors_permit') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Document type', ";
@@ -159,6 +171,7 @@
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_categories'" ) != $tbl_categories) {
 			$sql = "CREATE TABLE `".$tbl_categories."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= "`hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
 				$sql .= "`title` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Name of the Category with revision id.',";
 				$sql .= "`info` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Description of the Category with revision id.', ";
 				$sql .= "`status` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Status of the category with revision id.', ";
@@ -177,6 +190,7 @@
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_cat_group'" ) != $tbl_cat_group) {
 			$sql = "CREATE TABLE `".$tbl_cat_group."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= "`hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
 				$sql .= "`ctid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Category id', ";
 				$sql .= "`types` enum('none','product','store') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'none' COMMENT 'Type of category with revision id.', ";
 				$sql .= "`row_id` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Row which this group belongs to', ";
@@ -191,9 +205,8 @@
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_variants'" ) != $tbl_variants) {
 			$sql = "CREATE TABLE `".$tbl_variants."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
-				// $sql .= "`status` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Status from revision id.', ";
+				$sql .= "`hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
 				$sql .= "`parent_id` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Parent id from this table 0 if this row is parent.', ";
-				// $sql .= "`orders ` tinyint(2)  NOT NULL DEFAULT 0 COMMENT 'Arrangement of variants.', ";
 				$sql .= "`pdid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Product id from revision.', ";
 				$sql .= "`created_by` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User who created this variant.', ";
 				$sql .= "`date_created` datetime(0) NULL DEFAULT NULL COMMENT 'The date this variant is created.', ";
@@ -202,7 +215,7 @@
 			$result = $wpdb->get_results($sql);
 		}
 
-
+		$wpdb->query("COMMIT");
 	
     } 
     add_action( 'activated_plugin', 'tp_dbhook_activate' );

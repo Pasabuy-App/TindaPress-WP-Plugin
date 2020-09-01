@@ -89,11 +89,9 @@
                 // Step 2 : Check if country passed is in integer format.
                 // TODO : char length == 2 and trim and convert to ucase // DONE
                 if ( strlen($_POST['co']) !== 2 ) {
-                    return rest_ensure_response( 
-                        array(
-                                "status" => "failed",
-                                "message" => "Invalid value for country.",
-                        )
+                    return array(
+                        "status" => "failed",
+                        "message" => "Invalid value for country.",
                     );
                 }
 
@@ -102,20 +100,16 @@
                 $co_status = DV_Globals:: check_availability(DV_COUNTRY_TABLE, "WHERE `country_code` = '$country_code'");
                 
                 if ( $co_status == false ) {
-                    return rest_ensure_response( 
-                        array(
-                                "status" => "failed",
-                                "message" => "Invalid value for country.",
-                        )
+                    return array(
+                        "status" => "failed",
+                        "message" => "Invalid value for country.",
                     );
                 }
                 
                 if ( $co_status === "unavail" ) {
-                    return rest_ensure_response( 
-                        array(
-                                "status" => "failed",
-                                "message" => "Not available yet in selected country",
-                        )
+                    return array(
+                        "status" => "failed",
+                        "message" => "Not available yet in selected country",
                     );
                 }
             //end of country validation
@@ -123,11 +117,9 @@
             //Province input validation
                 // Step 2 : Check if province passed is in integer format.
                 if ( !is_numeric($_POST['pv']) ) {
-                    return rest_ensure_response( 
-                        array(
-                                "status" => "failed",
-                                "message" => "Invalid value for province.",
-                        )
+                    return array(
+                        "status" => "failed",
+                        "message" => "Invalid value for province.",
                     );
                 }
 
@@ -135,20 +127,16 @@
                 $pv_status = DV_Globals:: check_availability(DV_PROVINCE_TABLE, 'WHERE `prov_code` = '.$_POST['pv']);
                 
                 if ( $pv_status == false ) {
-                    return rest_ensure_response( 
-                        array(
-                                "status" => "failed",
-                                "message" => "Invalid value for province.",
-                        )
+                    return array(
+                        "status" => "failed",
+                        "message" => "Invalid value for province.",
                     );
                 }
                 
                 if ( $pv_status === "unavail" ) {
-                    return rest_ensure_response( 
-                        array(
-                                "status" => "failed",
-                                "message" => "Not available yet in selected province",
-                        )
+                    return array(
+                        "status" => "failed",
+                        "message" => "Not available yet in selected province",
                     );
                 }
             // end of province validation
@@ -156,11 +144,9 @@
             //City input validation
                 // Step 2 : Check if city passed is in integer format.
                 if ( !is_numeric($_POST['ct']) ) {
-                    return rest_ensure_response( 
-                        array(
-                                "status" => "failed",
-                                "message" => "Invalid value for city.",
-                        )
+                    return array(
+                        "status" => "failed",
+                        "message" => "Invalid value for city.",
                     );
                 }
 
@@ -168,20 +154,16 @@
                 $ct_status = DV_Globals:: check_availability(DV_CITY_TABLE, 'WHERE `city_code` = '.$_POST['ct']);
                 
                 if ( $ct_status == false ) {
-                    return rest_ensure_response( 
-                        array(
-                                "status" => "failed",
-                                "message" => "Invalid value for city.",
-                        )
+                    return array(
+                        "status" => "failed",
+                        "message" => "Invalid value for city.",
                     );
                 }
                 
                 if ( $ct_status === "unavail" ) {
-                    return rest_ensure_response( 
-                        array(
-                                "status" => "failed",
-                                "message" => "Not available yet in selected city",
-                        )
+                    return array(
+                        "status" => "failed",
+                        "message" => "Not available yet in selected city",
                     );
                 }
             // end of city validation
@@ -189,11 +171,9 @@
             //Barangay input validation
                 // Step 2 : Check if barangay passed is in integer format.
                 if ( !is_numeric($_POST['bg']) ) {
-                    return rest_ensure_response( 
-                        array(
-                                "status" => "failed",
-                                "message" => "Invalid value for barangay.",
-                        )
+                    return array(
+                        "status" => "failed",
+                        "message" => "Invalid value for barangay.",
                     );
                 }
 
@@ -201,20 +181,16 @@
                 $bg_status = DV_Globals:: check_availability(DV_BRGY_TABLE, 'WHERE `id` = '.$_POST['bg']);
                 
                 if ( $bg_status == false ) {
-                    return rest_ensure_response( 
-                        array(
-                                "status" => "failed",
-                                "message" => "Invalid value for barangay.",
-                        )
+                    return array(
+                        "status" => "failed",
+                        "message" => "Invalid value for barangay.",
                     );
                 }
                 
                 if ( $bg_status === "unavail" ) {
-                    return rest_ensure_response( 
-                        array(
-                                "status" => "failed",
-                                "message" => "Not available yet in selected barangay",
-                        )
+                    return array(
+                        "status" => "failed",
+                        "message" => "Not available yet in selected barangay",
                     );
                 }
             // end of barangay validation
@@ -352,7 +328,6 @@
                     "status" => "success",
                     "message" => "Data has been added successfully.",
                 );
-
             }
         }
 
@@ -362,7 +337,7 @@
             $cur_user = array();
                
             $cur_user['created_by']  = $_POST["wpid"];
-            $cur_user['catid']        = $_POST["catid"];
+            $cur_user['catid']       = $_POST["catid"];
 
             $cur_user['title']       = $_POST["title"];
             $cur_user['short_info']  = isset($_POST["short_info"]) ? $_POST["short_info"] : "";

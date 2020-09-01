@@ -76,7 +76,6 @@
 
         //Global Classes
         require plugin_dir_path(__FILE__) . '/v1/class-globals.php';
-         
 
 	// Init check if USocketNet successfully request from wapi.
     function tindapress_route()
@@ -258,10 +257,6 @@
                 'callback' => array('TP_Store_Nearme','listen'),
             ));
 
-            // End of Address folder
-
-      
-
         /*
          * CATEGORIES RESTAPI
         */
@@ -303,8 +298,6 @@
                 'methods' => 'POST',
                 'callback' => array('TP_Logo_update','listen'),
             ));
-
-       
 
         /*
          * VARIANTS RESTAPI

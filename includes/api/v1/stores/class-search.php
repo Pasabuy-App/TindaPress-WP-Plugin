@@ -38,32 +38,32 @@
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
             
             // Step2 : Check if wpid and snky is valid
             if (DV_Verification::is_verified() == false) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification Issues!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification Issues!",
                 );
             }
 
             // Step3 : Sanitize request
 			if (!isset($_POST['search']) ) {
 				return array(
-						"status" => "unknown",
-						"message" => "Please contact your administrator. Request unknown!",
+					"status" => "unknown",
+					"message" => "Please contact your administrator. Request unknown!",
                 );
             }
 
              // Step4 : Sanitize variable if empty
 			if (empty($_POST['search']) ) {
 				return array(
-						"status" => "failed",
-						"message" => "Required fields cannot be empty.",
+					"status" => "failed",
+					"message" => "Required fields cannot be empty.",
                 );
             }
 
@@ -90,12 +90,10 @@
                 tp_rev.child_val REGEXP '^$value';
             ");
 
-     
             // Step7 : Return Result 
             return array(
-                    "status" => "success",
-                    "data" => $result
+                "status" => "success",
+                "data" => $result
             );
-              
         }
     }

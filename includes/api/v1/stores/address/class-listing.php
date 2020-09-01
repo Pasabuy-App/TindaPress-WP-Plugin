@@ -23,7 +23,6 @@
             global $wpdb;
 
             // NOTE : POST 'type' is not required even if its not listen in client it will not show error
-
             // declaring table names to variable
             $table_store = TP_STORES_TABLE;
             $table_revisions = TP_REVISIONS_TABLE;
@@ -146,7 +145,6 @@
                             $sql .= " WHERE `add`.stid = '$store_id' ";
 
                         }
-
                     }
                 }
             }
@@ -163,12 +161,9 @@
 
             // return $sql;
             $result = $wpdb->get_results($sql);
-          
             return array(
                 "status" => "success",
                 "data" => $result
             );
-            
         }
-
     }

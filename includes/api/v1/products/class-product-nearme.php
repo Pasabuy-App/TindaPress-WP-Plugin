@@ -80,8 +80,7 @@
                 ( SELECT tp_rev.child_val FROM $table_revisions tp_rev WHERE ID = tp_prod.price AND revs_type = 'products' AND child_key ='price' AND tp_rev.ID = (SELECT MAX(ID) FROM $table_revisions WHERE ID = tp_rev.ID )  ) AS `price`,
                 ( SELECT tp_rev.child_val FROM $table_revisions tp_rev WHERE ID = tp_prod.weight AND revs_type = 'products' AND child_key ='weight' AND tp_rev.ID = (SELECT MAX(ID) FROM $table_revisions WHERE ID = tp_rev.ID )  ) AS `weight`,
                 ( SELECT tp_rev.child_val FROM $table_revisions tp_rev WHERE ID = tp_prod.dimension AND revs_type = 'products' AND child_key ='dimension' AND tp_rev.ID = (SELECT MAX(ID) FROM $table_revisions WHERE ID = tp_rev.ID ) ) AS `dimension`,
-            IF
-                ( ( SELECT tp_rev.child_val FROM $table_revisions tp_rev WHERE ID = tp_prod.`status` AND revs_type = 'products' AND child_key = 'status' AND tp_rev.ID = ( SELECT MAX(ID) FROM $table_revisions WHERE ID = tp_rev.ID )  ) = 1, 'Active', 'Inactive' ) AS `status`,
+                IF  ( ( SELECT tp_rev.child_val FROM $table_revisions tp_rev WHERE ID = tp_prod.`status` AND revs_type = 'products' AND child_key = 'status' AND tp_rev.ID = ( SELECT MAX(ID) FROM $table_revisions WHERE ID = tp_rev.ID )  ) = 1, 'Active', 'Inactive' ) AS `status`,
                 ROUND(  (SELECT `distance_kilometer`( 
                         (SELECT child_val FROM $table_dv_revision WHERE ID = 	( SELECT `latitude` FROM $table_address WHERE ID = ( SELECT `address` FROM $table_store WHERE ID = tp_prod.stid ) AND types = 'business' ) AND revs_type ='address' ), 
                         (SELECT child_val FROM $table_dv_revision WHERE ID = 	( SELECT `longitude` FROM $table_address WHERE ID = ( SELECT `address` FROM $table_store WHERE ID = tp_prod.stid ) AND types = 'business' ) AND revs_type ='address' ), 

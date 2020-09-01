@@ -8,7 +8,10 @@
 	 * @package tindapress-wp-plugin
      * @version 0.1.0
      * This is where you include CSS and JS files using WP enqueue script functions.
-	*/
+    */
+    
+		// Hardening QA 12:00 8/31/2020
+		// Miguel Igdalino
 
 	//Initializing table fields to be called
     $checkUSNarr = array(

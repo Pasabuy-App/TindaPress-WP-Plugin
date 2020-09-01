@@ -87,8 +87,6 @@
                 );
             }
 
-
-                    
             // Step 5: Check if address fields if exists in database. 
 
             // Country

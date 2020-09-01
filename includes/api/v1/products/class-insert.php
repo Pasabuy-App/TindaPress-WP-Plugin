@@ -26,7 +26,6 @@
             // 2nd Initial QA 2020-08-24 6:09 PM - Miguel
 
             global $wpdb;
-
             // variables for query
             $table_product        = TP_PRODUCT_TABLE;
             $table_product_fields = TP_PRODUCT_FIELDS;
@@ -80,7 +79,6 @@
 					"status" => "unknown",
 					"message" => "Required fields cannot be empty!",
                 );
-                
             }
 
             // Step 5: Catch all post request
@@ -193,20 +191,20 @@
         // Catch Post 
         public static function catch_post()
         {
-                $cur_user = array();
+            $cur_user = array();
                
-                $cur_user['created_by'] = $_POST["wpid"];
-                $cur_user['catid']       = $_POST["catid"];
-                $cur_user['stid']       = $_POST["stid"];
-                $cur_user['title']      = $_POST["title"];
-                $cur_user['short_info'] = $_POST["short_info"];
-                $cur_user['long_info']  = $_POST["long_info"];
-                $cur_user['sku']        = $_POST["sku"];
-                $cur_user['price']      = $_POST["price"];
-                $cur_user['weight']     = $_POST["weight"];
-                $cur_user['dimension']  = $_POST["dimension"];
-                $cur_user['preview']    = $_POST["preview"];
+            $cur_user['created_by'] = $_POST["wpid"];
+            $cur_user['catid']      = $_POST["catid"];
+            $cur_user['stid']       = $_POST["stid"];
+            $cur_user['title']      = $_POST["title"];
+            $cur_user['short_info'] = $_POST["short_info"];
+            $cur_user['long_info']  = $_POST["long_info"];
+            $cur_user['sku']        = $_POST["sku"];
+            $cur_user['price']      = $_POST["price"];
+            $cur_user['weight']     = $_POST["weight"];
+            $cur_user['dimension']  = $_POST["dimension"];
+            $cur_user['preview']    = $_POST["preview"];
   
-                return  $cur_user;
+            return  $cur_user;
         }
     }

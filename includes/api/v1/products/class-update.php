@@ -36,7 +36,6 @@
             // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
-
                 return array(
                     "status" => "unknown",
                     "message" => "Please contact your administrator. ".$plugin." plugin missing!",
@@ -45,7 +44,6 @@
 
 			//  Step 2: Validate user
 			if (DV_Verification::is_verified() == false) {
-                
                 return array(
                     "status" => "unknown",
                     "message" => "Please contact your administrator. Verification issues!",
@@ -66,7 +64,6 @@
                     "status" => "unknown",
                     "message" => "Please contact your administrator. Request unknown!",
                 );
-                
             }
 
             // Step 4: Check if params passed are not empty
@@ -83,7 +80,6 @@
                     "status" => "unknown",
                     "message" => "Required fields cannot be empty",
                );
-               
            }
 
             // Step 5: Check if user has roles_access of can_activate_store or either contributor or editor
@@ -167,8 +163,6 @@
                 }
             }
 
-        
-
             $data = array('title' => $_POST["title"],
                           'short_info' => $_POST["short_info"],
                           'long_info' => $_POST["long_info"],
@@ -176,7 +170,6 @@
                           'price' => $_POST["price"],
                           'weight' => $_POST["weight"],
                           'dimension' => $_POST["dimension"],
-                      
             );
 
             $where = array('id' => $user['pdid']); 
@@ -185,69 +178,15 @@
 
             if ($update == false) {
                 return  array(
-                        "status" => "error",
-                        "message" => "An error occured while submitting data to the server."
+                    "status" => "error",
+                    "message" => "An error occured while submitting data to the server."
                 );
             }
            
             return array(
-                    "status" => "success",
-                    "message" => "Data has been updated successfully."
+                "status" => "success",
+                "message" => "Data has been updated successfully."
             );
-
-            // // Step 7: Start mysql transaction
-            // $wpdb->query("START TRANSACTION");
-
-            //     $wpdb->query("UPDATE $table_revs SET child_val = '0' WHERE ID = $status_id ");
-
-            //     $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '{$user["pdid"]}', 'title', '{$user["title"]}', '{$user["created_by"]}', '$later')");
-            //     $title = $wpdb->insert_id;
-
-            //     $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '{$user["pdid"]}', 'preview', '{$user["preview"]}', '{$user["created_by"]}', '$later')");
-            //     $preview = $wpdb->insert_id;
-
-            //     $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '{$user["pdid"]}', 'short_info', '{$user["short_info"]}', '{$user["created_by"]}', '$later')");
-            //     $short_info = $wpdb->insert_id;
-
-            //     $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '{$user["pdid"]}', 'long_info', '{$user["long_info"]}', '{$user["created_by"]}', '$later')");
-            //     $long_info = $wpdb->insert_id;
-
-            //     $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '{$user["pdid"]}', 'status', '1', '{$user["created_by"]}', '$later')");
-            //     $status = $wpdb->insert_id;
-
-            //     $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '{$user["pdid"]}', 'sku', '{$user["sku"]}', '{$user["created_by"]}', '$later')");
-            //     $sku = $wpdb->insert_id;
-
-            //     $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '{$user["pdid"]}', 'price', '{$user["price"]}', '{$user["created_by"]}', '$later')");
-            //     $price = $wpdb->insert_id;
-
-            //     $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '{$user["pdid"]}', 'weight', '{$user["weight"]}', '{$user["created_by"]}', '$later')");
-            //     $weight = $wpdb->insert_id;
-
-            //     $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '{$user["pdid"]}', 'dimension', '{$user["dimension"]}', '{$user["created_by"]}', '$later')");
-            //     $dimension = $wpdb->insert_id;
-                
-            //     //  (stid, ctid, title, preview, short_info, long_info, status, sku, price,  weight,  dimension , created_by, date_created)
-            //     $result = $wpdb->query("UPDATE $table_product SET $ctid `title` = $title, `preview` = $preview, `short_info` = $short_info, `long_info` = $long_info, `status` = $status, `sku` = $sku, `price` = $price,  `weight` = $weight,  `dimension` = $dimension  WHERE ID = {$user["pdid"]} ");
-
-            // // Step 8: Check if any of the queries above failed
-            // if ($result < 1 || $title < 1 || $short_info < 1 || $long_info < 1 || $sku < 1 || $price < 1 || $weight < 1 || $dimension < 1 || $preview < 1 ) {
-               
-            //     //Do a rollback if errors are found
-            //     $wpdb->query("ROLLBACK");
-            //     return array(
-            //         "status" => "failed",
-            //         "message" => "An error occured while submitting data to the server.",
-            //     );
-
-            // }else{
-            //     //Do a commit if no errors found
-            //     $wpdb->query("COMMIT");
-            //     return array(
-            //         "status" => "success",
-            //         "message" => "Data has been updated successfully.",
-            //     );
-            // }
         }
 
           // Catch Post 

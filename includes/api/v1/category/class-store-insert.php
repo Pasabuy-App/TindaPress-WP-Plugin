@@ -38,16 +38,16 @@
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 			
 			// Step 2: Validate user
 			if (DV_Verification::is_verified() == false) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification issues!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification issues!",
                 );
                 
             }
@@ -55,27 +55,23 @@
             // Step 3: Check if parameters are passed
             if (!isset($_POST["title"]) || !isset($_POST["info"]) || !isset($_POST["stid"]) ) {
 				return array(
-						"status" => "unknown",
-						"message" => "Please contact your administrator. Request unknown!",
+					"status" => "unknown",
+					"message" => "Please contact your administrator. Request unknown!",
                 );
             }
 
             // Step 4: Check if parameters passed are not null
             if (empty($_POST["title"]) || empty($_POST["info"])  || !isset($_POST["stid"]) ) {
 				return array(
-						"status" => "failed",
-						"message" => "Required fields cannot be empty.",
+					"status" => "failed",
+					"message" => "Required fields cannot be empty.",
                 );
             }
 
             $title = $_POST['title'];
-            
             $info = $_POST['info'];
-
             $wpid = $_POST["wpid"]; 
-
             $store_id = $_POST["stid"]; 
-
             $types = 'product'; 
 
             // Step 6: Check if this store id exists
@@ -117,8 +113,8 @@
                 // when insert failed rollback all inserted data
                 $wpdb->query("ROLLBACK");
                 return array(
-                        "status" => "error",
-                        "message" => "An error occured while submitting data to database.",
+                    "status" => "error",
+                    "message" => "An error occured while submitting data to database.",
                 );
             
             }else{
@@ -132,10 +128,5 @@
                     "message" => "Data has been added successfully.",
                 );
             }
-
-            
-
-
         }
-
     }
