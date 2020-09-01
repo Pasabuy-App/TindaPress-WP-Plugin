@@ -48,13 +48,8 @@
         include_once ( TP_PLUGIN_PATH . '/includes/core/assets.php' );
     }
 
-<<<<<<< HEAD
-    //Include the REST API of USocketNet to be accessible.
-    include_once ( TP_PLUGIN_PATH . '/includes/api/routes.php' );
-=======
     if(TP_UIHOST == site_url() || TP_FULLMODE == true) {
         //Include the REST API of USocketNet to be accessible.
         include_once ( TP_PLUGIN_PATH . '/includes/api/routes.php' );
     }
 ?>
->>>>>>> 7e9a8c2a055220b8db251c6dd673389bc44b7fd9
