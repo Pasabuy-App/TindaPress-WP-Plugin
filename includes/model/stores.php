@@ -72,6 +72,7 @@
                         url: postUrl,
                         success : function( data )
                         {
+                            console.log(data)
                             if(data.status == "success") {
                                 displayingLoadedApps( data.data );
                             } else {
@@ -174,6 +175,7 @@
                                         ' title="Click this to add commission of the store."' +
                                         ' data-id="' + item.ID + '"' + 
                                         ' data-title="' + item.title + '"' +  
+                                        ' data-comm="' + item.comm + '"' +  
                                         ' >Commission</button>' +
 
 
@@ -600,6 +602,7 @@
                 var data = e.relatedTarget.dataset;
                 $('#comm_store_id').val( data.id );
                 $('#edit_store_name').val( data.title );
+                (data.comm === null) ? $('#edit_commission').val('') : $('#edit_commission').val(data.comm.replace('%', '') );
 
                 $('#delete-app-btn').removeClass('disabled');
                 $('#update-app-btn').removeClass('disabled');
@@ -795,7 +798,6 @@
                     postParam.snky = "<?php echo wp_get_session_token(); ?>";
                     postParam.stid = $('#comm_store_id').val();
                     postParam.comm = $('#edit_commission').val();
-                
             var postUrl = '<?= TP_UIHOST . "/wp-json/tindapress/v1/stores/comm"; ?>';
         
             $.ajax({

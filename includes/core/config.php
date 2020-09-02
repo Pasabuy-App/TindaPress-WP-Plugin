@@ -56,6 +56,11 @@
 	define('TP_ROLES_TABLE', TP_PREFIX.'roles');
 	define('TP_ROLES_META_TABLE', TP_PREFIX.'roles_meta');
 
+	// Role Access
+	define('TP_ACCESS_TABLE', TP_PREFIX.'access');
+	define('TP_ACCESS_TABLE_FIELDS', 'hash_id, access');
+	define('TP_ACCESS_VALUE', $tp_access_val);
+
 	//Stores config
 	define('TP_STORES_TABLE', TP_PREFIX.'stores');
 	define('TP_STORES_FIELDS','(ctid, title, short_info, long_info, logo, banner, status, address, created_by, date_created )');

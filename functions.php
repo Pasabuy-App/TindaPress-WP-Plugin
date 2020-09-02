@@ -35,6 +35,7 @@
 
     //Important config files and plugin updates.
     // include_once ( TP_PLUGIN_PATH . '/includes/source/config.php' );
+    include_once ( TP_PLUGIN_PATH . '/includes/core/source.php' );
     include_once ( TP_PLUGIN_PATH . '/includes/core/config.php' );
     include_once ( TP_PLUGIN_PATH . '/includes/core/update.php' );
 
