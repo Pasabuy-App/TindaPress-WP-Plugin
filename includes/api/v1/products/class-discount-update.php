@@ -10,17 +10,16 @@
         * @version 0.1.0
     */
     
-    class TP_Product_Discount_Create {
+    class TP_Product_Discount_Update {
         
         //REST API Call
         public static function listen(){
-            
             return rest_ensure_response( 
-                self:: insert_product()
+                self:: listen_open()
             );
         }
         
-        public static function insert_product(){
+        public static function listen_open(){
             global $wpdb;
             $tbl_revs_fields = TP_REVISION_FIELDS;
             $tbl_revssion = TP_REVISIONS_TABLE;
@@ -82,11 +81,12 @@
                 );
             }
 
-
+            $user = self::catch_post();
+            
             // Validate Product
             $product_id = $_POST['pdid'];
                 
-                $validate_product = $wpdb->get_row(
+                 $validate_product = $wpdb->get_row(
                     $wpdb->prepare("SELECT child_val FROM tp_revisions WHERE ID = (SELECT `status` FROM  tp_products WHERE ID = %d ) AND revs_type = 'products' AND child_key = 'status' AND parent_id = %d ", $product_id, $product_id )
                 );
 
@@ -104,40 +104,39 @@
                         "message" => "This product is currently inactive.",
                     );
                 }
-            // End of validation product
 
-            $user = self::catch_post();
+            // End of validation product
 
             $type = $_POST['type'];
 
+            
             $wpdb->query("START TRANSACTION");
-
-
 
             // Validate product discount
             
-                $check_produc_discount = $wpdb->get_row("SELECT
-                 (SELECT child_val  FROM tp_revisions rev  WHERE child_key = 'discount_name'  AND revs_type = 'products'  AND parent_id = '{$user["product_id"]}' 	AND ID = ( SELECT max(ID) FROM tp_revisions WHERE child_key = 'discount_name' AND parent_id = '{$user["product_id"]}' AND revs_type = 'products' ) ) as  `name`,
-                 (SELECT child_val  FROM tp_revisions rev  WHERE child_key = 'discount_value'  AND revs_type = 'products'  AND parent_id = '{$user["product_id"]}' 	AND ID = ( SELECT max(ID) FROM tp_revisions WHERE child_key = 'discount_value' AND parent_id = '{$user["product_id"]}' AND revs_type = 'products' )) as  `value`, 
-                 (SELECT child_val  FROM tp_revisions rev  WHERE child_key = 'discount_expiry'  AND revs_type = 'products'  AND parent_id = '{$user["product_id"]}' 	AND ID = ( SELECT max(ID) FROM tp_revisions WHERE child_key = 'discount_expiry' AND parent_id = '{$user["product_id"]}' AND revs_type = 'products' )) as  `expiry`,
-                 IF ( (SELECT child_val  FROM tp_revisions rev  WHERE child_key = 'discount_status'  AND revs_type = 'products'  AND parent_id = '{$user["product_id"]}' 	AND ID = ( SELECT max(ID) FROM tp_revisions WHERE child_key = 'discount_status' AND parent_id = '{$user["product_id"]}' AND revs_type = 'products' )) = 1 , 'Active', 'Inactive') as  `status` 
-                 ");
-
-                if ($check_produc_discount->status === 'Active') {
-                    if($check_produc_discount->name !== NULL && $check_produc_discount->value !== NULL && $check_produc_discount->expiry !== NULL ){
-                        return array(
-                            "status" => "failed",
-                            "message" => "This product is already have an discount.",
-                        );
-                    }
+                 $check_produc_discount = $wpdb->get_row("SELECT
+                    (SELECT child_val  FROM tp_revisions rev  WHERE child_key = 'discount_name'    AND revs_type = 'products'  AND parent_id = '{$user["product_id"]}' 	AND ID = ( SELECT max(ID) FROM tp_revisions WHERE child_key = 'discount_name' AND parent_id = '{$user["product_id"]}' AND revs_type = 'products' ) ) as  `name`,
+                    (SELECT child_val  FROM tp_revisions rev  WHERE child_key = 'discount_value'   AND revs_type = 'products'  AND parent_id = '{$user["product_id"]}' 	AND ID = ( SELECT max(ID) FROM tp_revisions WHERE child_key = 'discount_value' AND parent_id = '{$user["product_id"]}' AND revs_type = 'products' )) as  `value`, 
+                    (SELECT child_val  FROM tp_revisions rev  WHERE child_key = 'discount_expiry'  AND revs_type = 'products'  AND parent_id = '{$user["product_id"]}' 	AND ID = ( SELECT max(ID) FROM tp_revisions WHERE child_key = 'discount_expiry' AND parent_id = '{$user["product_id"]}' AND revs_type = 'products' )) as  `expiry`,
+                    IF ( (SELECT child_val  FROM tp_revisions rev  WHERE child_key = 'discount_status'  AND revs_type = 'products'  AND parent_id = '{$user["product_id"]}' 	AND ID = ( SELECT max(ID) FROM tp_revisions WHERE child_key = 'discount_status' AND parent_id = '{$user["product_id"]}' AND revs_type = 'products' )) = 1 , 'Active', 'Inactive') as  `status` ");
+               
+                if ($check_produc_discount->status === 'Inactive') {
+                    return array(
+                        "status" => "failed",
+                        "message" => "This product discount is currently Inactive.",
+                    );
+                }
+                if(empty($check_produc_discount->name) === true && empty($check_produc_discount->value) === true && empty($check_produc_discount->expiry) === true && $check_produc_discount->status === 'Inactive' ){
+                    return array(
+                        "status" => "failed",
+                        "message" => "This product does not have a discount.",
+                    );
                 }
 
             // End validate product discount
-
-
-        
+            
             // insert discount name
-            $result_discount = $wpdb->query($wpdb->prepare("INSERT INTO $tbl_revssion $tbl_revs_fields VALUES ( '%s', %d, '%s', '%s', %d, '%s' )", 'products', $user['product_id'], 'discount_name', $type, $user['wpid'], $date  ));
+            $result_discount = $wpdb->query($wpdb->prepare("INSERT INTO $tbl_revssion $tbl_revs_fields VALUES ( '%s', %d, '%s', '%s', '%s', '%s' )", 'products', $user['product_id'], 'discount_name', $type, $user['wpid'], $date  ));
             $result_discount_id = $wpdb->insert_id;
             
             $update_hash_discount = $wpdb->query("UPDATE $tbl_revssion SET `hash_id` = SHA2( $result_discount_id ,256) WHERE ID = $result_discount_id AND revs_type = 'products' ");
@@ -172,6 +171,7 @@
                     "message" => "Data has been added successfully."
                 );
             }
+
         }
 
         public static function validateDate($date, $format = 'Y-m-d h:i:s')
@@ -182,15 +182,12 @@
 
         public static function catch_post(){
             $curl_user = array();
-
             $curl_user['wpid'] = $_POST['wpid'];
             $curl_user['type'] = $_POST['type'];
             $curl_user['product_id'] = $_POST['pdid'];
             $curl_user['value'] = $_POST['value'];
             $curl_user['expiry'] = $_POST['exp'];
-            
+
             return $curl_user;
-
         }
-
     }

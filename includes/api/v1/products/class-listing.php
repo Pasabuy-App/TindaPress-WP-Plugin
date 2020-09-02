@@ -60,7 +60,8 @@
                 ( SELECT tp_rev.child_val FROM $table_revisions tp_rev WHERE ID = tp_prod.preview AND revs_type = 'products' AND child_key ='preview' AND tp_rev.ID = (SELECT MAX(ID) FROM $table_revisions WHERE ID = tp_rev.ID )  ) AS `preview`,
                 ( SELECT tp_rev.child_val FROM $table_revisions tp_rev WHERE ID = tp_prod.dimension AND revs_type = 'products' AND child_key ='dimension' AND tp_rev.ID = (SELECT MAX(ID) FROM $table_revisions WHERE ID = tp_rev.ID ) ) AS `dimension`,
                 ( SELECT tp_rev.child_val FROM $table_revisions tp_rev WHERE ID = tp_prod.dimension AND revs_type = 'products' AND child_key ='dimension' AND tp_rev.ID = (SELECT MAX(ID) FROM $table_revisions WHERE ID = tp_rev.ID ) ) AS `dimension`,
-                IF  ( ( SELECT tp_rev.child_val FROM $table_revisions tp_rev WHERE ID = tp_prod.`status` AND revs_type = 'products' AND child_key = 'status' AND tp_rev.ID = ( SELECT MAX(ID) FROM $table_revisions WHERE ID = tp_rev.ID )  ) = 1, 'Active', 'Inactive' ) AS `status` 
+                IF  ( ( SELECT tp_rev.child_val FROM $table_revisions tp_rev WHERE ID = tp_prod.`status` AND revs_type = 'products' AND child_key = 'status' AND tp_rev.ID = ( SELECT MAX(ID) FROM $table_revisions WHERE ID = tp_rev.ID )  ) = 1, 'Active', 'Inactive' ) AS `status`,
+                null as discount
             FROM
                 $table_product tp_prod
                 INNER JOIN $table_revisions tp_rev ON tp_rev.ID = tp_prod.title
@@ -126,10 +127,41 @@
             // Execute query
             $results =  $wpdb->get_results($sql);
             
+            foreach ($results as $key => $value) {
+                
+                $value->discount =  $wpdb->get_row("SELECT
+                (SELECT child_val  FROM tp_revisions rev  WHERE child_key = 'discount_name'  AND revs_type = 'products'  AND parent_id = '$value->ID' 	AND ID = ( SELECT max(ID) FROM tp_revisions WHERE child_key = 'discount_name' AND parent_id = '$value->ID' AND revs_type = 'products' ) ) as  `name`,
+                (SELECT child_val  FROM tp_revisions rev  WHERE child_key = 'discount_value'  AND revs_type = 'products'  AND parent_id = '$value->ID' 	AND ID = ( SELECT max(ID) FROM tp_revisions WHERE child_key = 'discount_value' AND parent_id = '$value->ID' AND revs_type = 'products' )) as  `value`, 
+                (SELECT child_val  FROM tp_revisions rev  WHERE child_key = 'discount_expiry'  AND revs_type = 'products'  AND parent_id = '$value->ID' 	AND ID = ( SELECT max(ID) FROM tp_revisions WHERE child_key = 'discount_expiry' AND parent_id = '$value->ID' AND revs_type = 'products' )) as  `expiry`,
+                IF ( (SELECT child_val  FROM tp_revisions rev  WHERE child_key = 'discount_status'  AND revs_type = 'products'  AND parent_id = '$value->ID' 	AND ID = ( SELECT max(ID) FROM tp_revisions WHERE child_key = 'discount_status' AND parent_id = '$value->ID' AND revs_type = 'products' )) = 1 , 'Active', 'Inactive') as  `status` 
+                ");
+
+            }
+
             // return results
             return array(
                 "status" => "success",
                 "data" => $results,
             );
         }
+
+        public static function validateDate($date, $format = 'Y-m-d h:i:s')
+        {
+            $d = DateTime::createFromFormat($format, $date);
+            return $d && $d->format($format) == $date;
+        }
+
+        public static function catch_post(){
+            $curl_user = array();
+
+            $curl_user['wpid'] = $_POST['wpid'];
+            $curl_user['type'] = $_POST['type'];
+            $curl_user['product_id'] = $_POST['pdid'];
+            $curl_user['value'] = $_POST['value'];
+            $curl_user['expiry'] = $_POST['exp'];
+            
+            return $curl_user;
+
+        }
+        
     }

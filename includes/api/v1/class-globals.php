@@ -66,14 +66,11 @@
             global $wpdb;
             
             if ($store_id == 0) {
-                
                 //Check if personnel is part of the store
                  $personnels = $wpdb->get_row("SELECT `wpid`, `roid`
                     FROM `tp_personnels` 
                     WHERE `wpid` = $wpid");
-
             }else{
-              
                 //Check if personnel is part of the store
                 $personnels = $wpdb->get_row("SELECT `wpid`, `roid`
                     FROM `tp_personnels` 

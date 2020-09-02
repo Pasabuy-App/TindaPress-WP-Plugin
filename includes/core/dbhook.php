@@ -29,7 +29,10 @@
 		$tbl_roles_meta = TP_ROLES_META_TABLE;
 		$tbl_stores = TP_STORES_TABLE;
 		$tbl_variants = TP_VARIANTS_TABLE;
-		
+		$tbl_access = TP_ACCESS_TABLE;
+		$tbl_access_fields = TP_ACCESS_TABLE_FIELDS;
+		$tbl_access_data = TP_ACCESS_VALUE;
+
 		$wpdb->query("START TRANSACTION");
 		
 		//Database table creation for stores
@@ -53,17 +56,16 @@
 		}
 
 		//Database table creation for roles_meta
-		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_roles_meta'" ) != $tbl_roles_meta) {
-			$sql = "CREATE TABLE `".$tbl_roles_meta."` (";
-				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
-				$sql .= "`hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
-				$sql .= "`roid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Role id this belong to.', ";
-				$sql .= "`access` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Access key', ";
-				$sql .= "`status` enum('inactive','active') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'inactive' COMMENT 'Role access is active or not.', ";
-				$sql .= "`date_created` datetime(0) NULL DEFAULT NULL COMMENT 'The date this role meta created.', ";
+		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_access'" ) != $tbl_access) {
+			$sql = "CREATE TABLE `".$tbl_access."` (";
+				$sql .= " `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= "  `hash_id` varchar(255) NOT NULL,";
+				$sql .= "  `access` varchar(255) NOT NULL, ";
 				$sql .= "PRIMARY KEY (`ID`) ";
 				$sql .= ") ENGINE = InnoDB; ";
 			$result = $wpdb->get_results($sql);
+
+			$wpdb->query("INSERT INTO $tbl_access (hash_id, access) VALUES  $tbl_access_data ");
 		}
 
 		//Database table creation for roles
@@ -71,14 +73,28 @@
 			$sql = "CREATE TABLE `".$tbl_roles."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
 				$sql .= "`hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
-				$sql .= "`stid` int(11) NOT NULL DEFAULT 0 COMMENT 'Store id this roles belong.', ";
-				$sql .= "`title` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Name of this role with revision id.', ";
-				$sql .= "`info` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Info about this role with revision id.', ";
+				$sql .= "`wpid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User id who have access.', ";
+				$sql .= "`stid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Store id this roles belong.', ";
 				$sql .= "`created_by` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User who created this role.', ";
 				$sql .= "`date_created` datetime(0) NULL DEFAULT NULL COMMENT 'The date this roles created.', ";
 				$sql .= "PRIMARY KEY (`ID`) ";
 				$sql .= ") ENGINE = InnoDB; ";
 			$result = $wpdb->get_results($sql);
+			
+		}
+
+		//Database table creation for roles_meta
+		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_roles_meta'" ) != $tbl_roles_meta) {
+			$sql = "CREATE TABLE `".$tbl_roles_meta."` (";
+				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= "`hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
+				$sql .= "`roid` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Role ID', ";
+				$sql .= "`acsid` bigint(20)  NOT NULL DEFAULT '0' COMMENT 'Access ID .', ";
+				$sql .= "`date_created` datetime DEFAULT current_timestamp() COMMENT 'The date this role meta created.', ";
+				$sql .= "PRIMARY KEY (`ID`) ";
+				$sql .= ") ENGINE = InnoDB; ";
+			$result = $wpdb->get_results($sql);
+
 		}
 
 		//Database table creation for revisions

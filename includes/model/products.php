@@ -82,6 +82,7 @@
                         url: postUrl,
                         success : function( data )
                         {
+                            console.log(data)
                             if(data.status == "success") {
                                 displayingLoadedApps( data.data );
                             } else {
