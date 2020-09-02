@@ -9,8 +9,7 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
-?>
-<?php
+
 
     class TP_Product_Delete {
 

@@ -20,6 +20,7 @@
         require plugin_dir_path(__FILE__) . '/v1/products/class-update.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-listing.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-product-nearme.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-discount-create.php';
 
         //Stores Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/class-insert.php';
@@ -111,6 +112,11 @@
             register_rest_route( 'tindapress/v1/products', 'nearme', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Product_Nearme','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/products/discount', 'create', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Product_Discount_Create','listen'),
             ));
 
         /*

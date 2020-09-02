@@ -31,7 +31,8 @@
             $table_product_fields = TP_PRODUCT_FIELDS;
             $table_revs           = TP_REVISIONS_TABLE;
             $table_revs_fields    = TP_REVISION_FIELDS;
-            $table_store        = TP_STORES_TABLE;
+            $table_category       = TP_CATEGORIES_TABLE;
+            $table_store            = TP_STORES_TABLE;
             $date = TP_Globals::date_stamp();
             $revs_type = "products";
             
@@ -124,6 +125,37 @@
                     "message" => "Current user has no access in adding products.",
                 );
             }
+
+            // Validate Category
+               
+                if (!is_numeric($_POST['catid'])) {
+                    return array(
+                        "status" => "failed",
+                        "message" => "Category is not in valid format",
+                    );
+                }
+                $cat = $_POST['catid'];
+                $check_category = $wpdb->get_row(
+                    $wpdb->prepare("SELECT `child_val` FROM $table_revs WHERE ID = (SELECT `status` FROM $table_category WHERE ID = %d) AND revs_type = 'categories' AND child_key = 'status' AND parent_id = %d ", $cat, $cat )
+                );
+
+                if (!$check_category) {
+                    return array(
+                        "status" => "failed",
+                        "message" => "This category does not exists",
+                    );
+                }
+                
+                if ($check_category->child_val == 0) {
+                    return array(
+                        "status" => "failed",
+                        "message" => "This category is currently inactive",
+                    );
+                }
+                
+            // End of category validation
+
+        
             // Step 8: Start mysql transaction
             $wpdb->query("START TRANSACTION");
 

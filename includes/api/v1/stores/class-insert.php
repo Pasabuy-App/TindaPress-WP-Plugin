@@ -33,7 +33,7 @@
             $rev_fields         = DV_INSERT_REV_FIELDS;
             $dv_rev_table       = DV_REVS_TABLE;
             $table_address      = DV_ADDRESS_TABLE;
-
+            $table_category     = TP_CATEGORIES_TABLE;
             // Step1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
@@ -53,7 +53,6 @@
 
             // Step3 : Sanitize all request
             if ( !isset($_POST["title"]) 
-                || !isset($_POST["catid"]) 
                 || !isset($_POST["logo"]) 
                 || !isset($_POST["banner"]) 
                 || !isset($_POST["st"]) 
@@ -70,7 +69,6 @@
 
         // Step4 : Sanitize all variable is empty
             if ( empty($_POST["title"]) 
-                || empty($_POST["catid"]) 
                 || empty($_POST["logo"]) 
                 || empty($_POST["banner"]) 
                 || empty($_POST["st"]) 
@@ -194,6 +192,50 @@
                     );
                 }
             // end of barangay validation
+
+
+
+            // Validate Category
+                if (!isset($_POST['catid'])) {
+                    return array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. Request unknown!",
+                    );
+                }
+
+                if (empty($_POST['catid'])) {
+                    return array(
+                        "status" => "failed",
+                        "message" => "Required fields cannot be empty.",
+                    );
+                }
+
+                if (!is_numeric($_POST['catid'])) {
+                    return array(
+                        "status" => "failed",
+                        "message" => "Category is not in valid format",
+                    );
+                }
+                $cat = $_POST['catid'];
+                $check_category = $wpdb->get_row(
+                    $wpdb->prepare("SELECT `child_val` FROM $table_tp_revs WHERE ID = (SELECT `status` FROM $table_category WHERE ID = %d) AND revs_type = 'categories' AND child_key = 'status' AND parent_id = %d ", $cat, $cat )
+                );
+
+                if (!$check_category) {
+                    return array(
+                        "status" => "failed",
+                        "message" => "This category does not exists",
+                    );
+                }
+                
+                if ($check_category->child_val == 0) {
+                    return array(
+                        "status" => "failed",
+                        "message" => "This category is currently inactive",
+                    );
+                }
+                
+            // End of category validation
 
             // Step5 : Validate permission
             $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_add_store' );
