@@ -73,7 +73,7 @@
                 WHERE
                     var.parent_id = 0
                     AND rev.revs_type = 'variants' 
-                    AND child_key = 'status' 
+                    AND child_key = 'baseprice' 
                     AND rev.ID = ( SELECT MAX( ID ) FROM $table_revs WHERE parent_id = rev.parent_id AND child_key = rev.child_key )
             ";
 
