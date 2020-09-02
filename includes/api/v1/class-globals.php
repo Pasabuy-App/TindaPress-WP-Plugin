@@ -191,7 +191,7 @@
             $conditions = implode( ' AND ', $conditions );
             
             foreach ($insert_values as $key => $value) {
-                $result = $wpdb->query("UPDATE $parent_table SET $key = $value");
+                $result = $wpdb->query("UPDATE $parent_table SET $key = $value WHERE `ID` = $parent_id");
                 if ($result < 1) {
                     $wpdb->query("ROLLBACK");
                     return false;

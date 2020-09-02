@@ -16,7 +16,7 @@
 	//Defining Global Variables
 	define('TP_CUSTOM', 'eCommerce'); 
 	define('TP_PREFIX', 'tp_'); 
-	define('TP_UIHOST', 'https://wphost-b.dev');
+	define('TP_UIHOST', 'http://localhost/wordpress');
 	define('TP_FULLMODE', true);
 	
 	//Categories config
