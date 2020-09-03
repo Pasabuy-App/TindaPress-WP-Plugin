@@ -13,7 +13,7 @@
     class TP_Personel_Create_Role {
 
         //REST API Call
-        public static function listen(WP_REST_Request $data){
+        public static function listen(){
             
             return rest_ensure_response( 
                 self::listen_open()
@@ -24,10 +24,12 @@
         public static function listen_open(){
             global $wpdb;
 
-             $data = $_POST['data'];
-            $var = json_decode($data);
-            return $var;
-            return "hahaha";
+
+
+
+
+
+            return $_POST['access'];    
 
             if (!isset($_POST['stid']) || !isset($_POST['acsid']) ) {
                 return array(

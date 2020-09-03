@@ -37,12 +37,12 @@
             }
 
             // Step2 : Check if wpid and snky is valid
-            // if (DV_Verification::is_verified() == false) {
-            //     return array(
-            //         "status" => "unknown",
-            //         "message" => "Please contact your administrator. Verification Issues!",
-            //     );
-            // }
+            if (DV_Verification::is_verified() == false) {
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification Issues!",
+                );
+            }
 
             // Step3 : Sanitize request
 			if ( !isset($_POST['name']) || !isset($_POST['pdid']) || !isset($_POST['pid']) ) {

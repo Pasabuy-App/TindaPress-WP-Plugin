@@ -16,8 +16,8 @@
 	//Defining Global Variables
 	define('TP_CUSTOM', 'eCommerce'); 
 	define('TP_PREFIX', 'tp_'); 
-	define('TP_UIHOST', 'http://localhost/wordpress');
-	define('TP_FULLMODE', true);
+	define('TP_UIHOST', 'https://pasabuy.app');
+	define('TP_FULLMODE', false);
 	
 	//Categories config
 	define('TP_CATEGORIES_TABLE', TP_PREFIX.'categories');
@@ -55,11 +55,6 @@
 	//Roles Config
 	define('TP_ROLES_TABLE', TP_PREFIX.'roles');
 	define('TP_ROLES_META_TABLE', TP_PREFIX.'roles_meta');
-
-	// Role Access
-	define('TP_ACCESS_TABLE', TP_PREFIX.'access');
-	define('TP_ACCESS_TABLE_FIELDS', 'hash_id, access');
-	define('TP_ACCESS_VALUE', $tp_access_val);
 
 	//Stores config
 	define('TP_STORES_TABLE', TP_PREFIX.'stores');

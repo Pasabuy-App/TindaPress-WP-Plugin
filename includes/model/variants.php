@@ -85,7 +85,13 @@
                         url: postUrl,
                         success : function( data )
                         {
-                            console.log(data)
+                           
+                            if (!("options" in data)) {
+                                $('').addClass('tp-display-hide')
+                            } else {
+                                $('').removeClass('tp-display-hide')
+                            }
+                             
                             if(data.status == "success") {
                                 displayingLoadedApps( data.data );
                             } else {
@@ -109,7 +115,7 @@
             //DISPLAY DATA INTO THE TARGET DATATABLES.
             function displayingLoadedApps( data )
             {
-                console.log(data)
+                
                 //Set table column header.
                 var columns = [
                     // { "sTitle": "IDENTITY",   "mData": "ID" },
@@ -122,19 +128,26 @@
                     //{ "sTitle": "INFO",   "mData": "info" },
                     { "sTitle": "STATUS",   "mData": "status" },
                     {"sTitle": "Action", "mRender": function(data, type, item)
-                       
+                        
                         {
+                            console.log(item)
+                            if (!("options" in item)) {
+                                $('.modify-btn').hide();
+                            }
                             return '' + 
-                                    '<button type="button" class="btn btn-primary btn-sm"' +
+                              
+                               '<button  type="button" class="btn btn-primary btn-sm modify-btn"' +
                                         ' data-toggle="modal" data-target="#EditAppOption"' +
                                         ' title="Click this to modified or delete this project."' +
-                                        ' data-id="' + item.ID + '"' +  
+                                        ' data-id="' + item.ID + '"' +
+                                     
                                         ' data-base="' + item.base + '"' +  
                                         ' data-info="' + item.info + '"' + 
                                         ' data-name="' + item.name + '"' + 
                                         ' data-pdid="' + item.pdid + '"' + 
                                         ' data-status="' + item.status + '"' +  
                                         ' >Modify</button>' + 
+                                
 
                                     '<button type="button" class="btn btn-secondary btn-sm appkey-' + item.ID + '"' +
                                         ' data-clipboard-text="' + item.ID + '"' +
@@ -260,6 +273,7 @@
                 });
             });
 
+            // Insert variants
             function confirmCreateProcess()
             {
                 $('#create-app-btn').addClass('disabled');
@@ -268,7 +282,14 @@
                     postParam.wpid = "<?php echo get_current_user_id(); ?>";
                     postParam.snky = "<?php echo wp_get_session_token(); ?>";
                     postParam.name = $('#new_title').val();
-                    postParam.info = $('#new_info').val();
+
+                    if (postParam.info == NULL) {
+                        $('#new_info').val('');
+                        
+                    }else{
+                        postParam.info = $('#new_info').val();
+
+                    }
                     postParam.pdid = $('#new_product').val();
                     <?php if( isset($_GET['vrid']) ) { ?>
                     postParam.pid = '<?= $_GET['vrid'] ?>';
@@ -359,10 +380,10 @@
             });
 
             //DELETE OR UPDATE FOCUSED APP ON MODAL.
-            $('#edit-app-form').submit( function(event) {
+            $('#update-app-form').submit( function(event) {
                 event.preventDefault();
                 var clickedBtnId = $(this).find("button[type=submit]:focus").attr('stid');
-                $( "#dialog-confirm-edit" ).dialog({
+                $( "#dialog-confirm-variant" ).dialog({
                     title: 'Confirmation',
                     resizable: false,
                     height: "auto",
@@ -370,7 +391,7 @@
                     modal: false,
                     open: function() {
                         $('#jquery-overlay').removeClass('tp-display-hide');
-                        $('#confirm-content-edit').html(
+                        $('#confirm-content-variant').html(
                             '<span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>' +
                             'Please confirm to complete the process, else just press cancel.'
                         );
@@ -392,8 +413,10 @@
                 
             });
 
+            // Update vriants
             function confirmEditProcess( clickedBtnId )
             {
+          
                 $('#delete-app-btn').addClass('disabled');
                 $('#update-app-btn').addClass('disabled');
 
@@ -413,19 +436,14 @@
                 else
                 {
                     postUrl = '<?php echo TP_UIHOST . "/wp-json/tindapress/v1/variants/update"; ?>';
-                    postParam.catid = $('#new_category').val();
-                    postParam.stid = $('#new_store').val();
-                    postParam.pdid = $('#new_store').val();
+                    postParam.name = $('#edit_title').val();
+                    postParam.info = $('#edit_info').val();
+                    postParam.pdid = $('#edit_product').val();
                     postParam.title = $('#edit_title').val();
-                    postParam.short_info = $('#new_info').val();
-                    postParam.long_info = "None";
-                    postParam.price = $('#new_price').val();
-                    postParam.sku = "None";
-                    postParam.weight = "None";
-                    postParam.dimension = "None";
-                    postParam.preview = "None";
+                    postParam.base = $('#edit_base').val();
+                    postParam.vid = $('#edit_vrid').val();
                 }
-
+                
                 // This will be handled by create-app.php.
                 $.ajax({
                     dataType: 'json',
@@ -434,6 +452,21 @@
                     url: postUrl,
                     success : function( data )
                     {
+
+                        let status;
+                        if (data.status == 'failed' || data.status == 'error' || data.status == 'unknown') {
+                            status = 'danger';
+                        } else {
+                            status = data.status;
+                        }
+                        loadingAppList( productTables );
+
+                        console.log(data.status)
+                        $('#CNAMessage').addClass('alert-'+status);
+                        $('#CNAMessage').removeClass('tp-display-hide');
+                        $('#CNAMcontent').text( data.message );
+                        $('#update-app-form').trigger("reset");
+                        $("#EditAppOption").modal("hide"); 
                         if( clickedBtnId == 'delete-app-btn' ) {
                             $('#new_category').val('');
                             $('#new_store').val('');
@@ -444,15 +477,10 @@
                             $('#delete-app-btn').removeClass('disabled');
                             $('#update-app-btn').removeClass('disabled');
                         }
-                        
-                        $('#DFAMessage').addClass('alert-'+data.status);
-                        $('#DFAMessage').removeClass('tp-display-hide');
-                        $('#DFAMcontent').text( data.message );
 
-                        loadingAppList( productTables );
                         activeTimeout = setTimeout( function() {
-                            $('#DFAMessage').removeClass('alert-'+data.status);
-                            $('#DFAMessage').addClass('tp-display-hide');
+                            $('#CNAMessage').removeClass('alert-'+data.status);
+                            $('#CNAMessage').addClass('tp-display-hide');
                             if( clickedBtnId == 'delete-app-btn' ) {
                                 $('#EditAppOption').modal('hide');
                             }
@@ -479,12 +507,12 @@
             // LISTEN FOR MODAL SHOW AND ATTACHED ID.
             $('#EditAppOption').on('show.bs.modal', function(e) {
                 var data = e.relatedTarget.dataset;
-                console.log(data)
-                $('#edit_id').val( data.ID );
+                console.log(data.name)
+                // $('#edit_vrid').val( data.ID );
                 $('#edit_title').val( data.name );
                 $('#edit_info').val( data.info );
-                // $('#edit_price').val( data.aid );
                 $('#edit_product').val( data.pdid );
+                $('#edit_vrid').val( data.ID );
 
                 if (data.base === 'Yes') {
                     $('#edit_base').val( 1 );
@@ -494,6 +522,7 @@
 
                 }
 
+                $('#edit_vrid').val( data.id );
                 $('#delete-app-btn').removeClass('disabled');
                 $('#update-app-btn').removeClass('disabled');
             });
