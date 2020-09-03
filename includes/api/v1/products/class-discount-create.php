@@ -113,7 +113,6 @@
             $wpdb->query("START TRANSACTION");
 
 
-
             // Validate product discount
             
                 $check_produc_discount = $wpdb->get_row("SELECT

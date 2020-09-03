@@ -109,6 +109,7 @@
             //DISPLAY DATA INTO THE TARGET DATATABLES.
             function displayingLoadedApps( data )
             {
+                console.log(data)
                 //Set table column header.
                 var columns = [
                     // { "sTitle": "IDENTITY",   "mData": "ID" },
@@ -121,8 +122,19 @@
                     //{ "sTitle": "INFO",   "mData": "info" },
                     { "sTitle": "STATUS",   "mData": "status" },
                     {"sTitle": "Action", "mRender": function(data, type, item)
+                       
                         {
                             return '' + 
+                                    '<button type="button" class="btn btn-primary btn-sm"' +
+                                        ' data-toggle="modal" data-target="#EditAppOption"' +
+                                        ' title="Click this to modified or delete this project."' +
+                                        ' data-id="' + item.ID + '"' +  
+                                        ' data-base="' + item.base + '"' +  
+                                        ' data-info="' + item.info + '"' + 
+                                        ' data-name="' + item.name + '"' + 
+                                        ' data-pdid="' + item.pdid + '"' + 
+                                        ' data-status="' + item.status + '"' +  
+                                        ' >Modify</button>' + 
 
                                     '<button type="button" class="btn btn-secondary btn-sm appkey-' + item.ID + '"' +
                                         ' data-clipboard-text="' + item.ID + '"' +
@@ -392,19 +404,19 @@
                     postParam.wpid = "<?php echo get_current_user_id(); ?>";
                     postParam.snky = "<?php echo wp_get_session_token(); ?>";
 
-                if( clickedBtnId == 'delete-app-btn' )
+                    if( clickedBtnId == 'delete-app-btn' )
                 {
-                    postUrl = '<?php echo TP_UIHOST . "/wp-json/tindapress/v1/products/delete"; ?>';
+                    postUrl = '<?php echo TP_UIHOST . "/wp-json/tindapress/v1/variants/delete"; ?>';
                     postParam.pid = $('#edit_id').val();
                 }
 
                 else
                 {
-                    postUrl = '<?php echo TP_UIHOST . "/wp-json/tindapress/v1/products/update"; ?>';
+                    postUrl = '<?php echo TP_UIHOST . "/wp-json/tindapress/v1/variants/update"; ?>';
                     postParam.catid = $('#new_category').val();
                     postParam.stid = $('#new_store').val();
                     postParam.pdid = $('#new_store').val();
-                    postParam.title = $('#new_title').val();
+                    postParam.title = $('#edit_title').val();
                     postParam.short_info = $('#new_info').val();
                     postParam.long_info = "None";
                     postParam.price = $('#new_price').val();
@@ -467,12 +479,20 @@
             // LISTEN FOR MODAL SHOW AND ATTACHED ID.
             $('#EditAppOption').on('show.bs.modal', function(e) {
                 var data = e.relatedTarget.dataset;
-                $('#edit_id').val( data.aid );
-                $('#edit_title').val( data.aid );
-                $('#edit_info').val( data.aid );
-                $('#edit_price').val( data.aid );
-                $('#edit_store').val( data.aid );
-                $('#edit_category').val( data.aid );
+                console.log(data)
+                $('#edit_id').val( data.ID );
+                $('#edit_title').val( data.name );
+                $('#edit_info').val( data.info );
+                // $('#edit_price').val( data.aid );
+                $('#edit_product').val( data.pdid );
+
+                if (data.base === 'Yes') {
+                    $('#edit_base').val( 1 );
+                    
+                }else{
+                    $('#edit_base').val( 0 );
+
+                }
 
                 $('#delete-app-btn').removeClass('disabled');
                 $('#update-app-btn').removeClass('disabled');

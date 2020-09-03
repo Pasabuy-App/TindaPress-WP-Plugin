@@ -40,55 +40,39 @@
             }
 
             // Step 2: Check if wpid and snky is valid
-            if (DV_Verification::is_verified() == false) {
+            // if (DV_Verification::is_verified() == false) {
+            //     return array(
+            //         "status" => "unknown",
+            //         "message" => "Please contact your administrator. Verification Issues!",
+            //     );
+            // }
+
+            isset($_POST['vid'])? $variants_id = $_POST['vid']: $variants_id = NULL;
+            isset($_POST['pdid'])? $product_id = $_POST['pdid']: $product_id = NULL;
+            isset($_POST['name'])? $title_variants = $_POST['name']: $title_variants = NULL;
+            isset($_POST['info'])? $info_variants = $_POST['info']: $info_variants = NULL;
+            isset($_POST['base'])? $base = $_POST['base']: $base = NULL;
+
+            if (isset($_POST['base']) && $_POST['base'] !== '1' && $_POST['base'] !== '0' ) {
                 return array(
-                    "status" => "unknown",
-                    "message" => "Please contact your administrator. Verification Issues!",
+                    "status" => "failed",
+                    "message" => "Please contact your administrator. Invalid value of baseprice",
                 );
             }
 
-            // Step 3: Sanitize request
-			if ( !isset($_POST['pdid']) || !isset($_POST['vid']) || !isset($_POST['name']) ) {
-				return array(
-					"status" => "unknown",
-					"message" => "Please contact your administrator. Request unknown!",
-                );
-            }
 
-            if ( isset($_POST['base'])  && isset($_POST['price']) ){
-				return array(
-					"status" => "failed",
-					"message" => "Please select base or price.",
-                );
-            }
+            //
+
             
-            // Step 4: Sanitize if variable is empty
-            if ( empty($_POST['pdid']) || empty($_POST['vid']) || empty($_POST['name']) || ( empty($_POST['base']) && empty($_POST['price']) ) ) {
-				return array(
-					"status" => "failed",
-					"message" => "Required fields cannot be empty.",
-                );
-            }
-            
-            // Step 5: Sanitize if base or price
-            if ( ( !is_numeric($_POST['base']) && !is_numeric($_POST['price']) ) ) {
-				return array(
-						"status" => "failed",
-						"message" => "Invalid input.",
-                );
-            }
 
-            // Step 6: Store post to variable
-            $product_id = $_POST['pdid'];
-            $variants_id = $_POST['vid'];
-            $variant_name = $_POST['name'];
-            $wpid = $_POST['wpid'];
+         
+
             $date = TP_Globals:: date_stamp();
             
             isset($_POST['info']) ? $info = $_POST['info'] : $info = NULL;
 
             // Step 7: Validate if exists and if status is 0 or 1 using variant id and product id
-            $get_parent = $wpdb->get_row("SELECT var.ID, var.parent_id,
+            return $get_parent = $wpdb->get_row("SELECT var.ID, var.parent_id,
                     (SELECT child_val FROM tp_revisions WHERE ID = MAX(rev.ID)) as status
                 FROM
                     $table_variants var
@@ -137,7 +121,8 @@
             $child_key = array( // Store into array
                 $ckbp => $cvbp ,
                 "status" => "1",
-                "name" => $variant_name
+                "name" => $variant_name,
+                "baseprice" 
             );
             
             // Step 8: Query
