@@ -23,6 +23,9 @@
         require plugin_dir_path(__FILE__) . '/v1/products/class-discount-create.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-discount-update.php';
 
+        // Personel Classes
+        require plugin_dir_path(__FILE__) . '/v1/personel/class-insert-role.php';
+
         //Stores Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/class-insert.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-update.php';
@@ -82,6 +85,15 @@
 	// Init check if USocketNet successfully request from wapi.
     function tindapress_route()
     {
+        
+        /*
+         * PRODUCT RESTAPI
+        */
+            register_rest_route( 'tindapress/v1/personel/role', 'create', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Personel_Create_Role','listen'),
+            ));
+
         /*
          * PRODUCT RESTAPI
         */

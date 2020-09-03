@@ -275,6 +275,7 @@
                     url: '<?php echo TP_UIHOST . "/wp-json/tindapress/v1/variants/insert"; ?>',
                     success : function( data )
                     {
+                        let status;
                         if( data.status == 'success' ) {
                             $('#new_title').val('');
                             $('#new_info').val('');
@@ -284,9 +285,17 @@
                             <?php } else { ?>
                             $('#new_price').val('');
                             <?php } ?>
+                        } 
+
+                        if (data.status == 'failed' || data.status == 'error' || data.status == 'unknown') {
+                                status = 'danger';
+                                $('#CNAMessage').removeClass('alert-success');
+                        } else {
+                                $('#CNAMessage').removeClass('alert-danger');
+                                status = data.status;
                         }
 
-                        $('#CNAMessage').addClass('alert-'+data.status);
+                        $('#CNAMessage').addClass('alert-'+status);
                         $('#CNAMessage').removeClass('tp-display-hide');
                         $('#CNAMcontent').text( data.message );
 

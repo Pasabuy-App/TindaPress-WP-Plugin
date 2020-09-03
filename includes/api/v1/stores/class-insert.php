@@ -280,7 +280,8 @@
                 // Insert query for store                                          
                 $wpdb->query("INSERT INTO $table_store $table_store_fields VALUES ('{$user["catid"]}', $title, $short_info, $long_info, $logo, $banner, $status, '0', '{$user["created_by"]}', '$date_created' )");
                 $store_id = $wpdb->insert_id;
-
+                
+                $wpdb->query("UPDATE $table_store SET hash_id = sha2($store_id, 256) WHERE ID = $store_id");
                 
                 // End query for store
 

@@ -37,12 +37,12 @@
             }
 
             // Step2 : Check if wpid and snky is valid
-            if (DV_Verification::is_verified() == false) {
-                return array(
-                    "status" => "unknown",
-                    "message" => "Please contact your administrator. Verification Issues!",
-                );
-            }
+            // if (DV_Verification::is_verified() == false) {
+            //     return array(
+            //         "status" => "unknown",
+            //         "message" => "Please contact your administrator. Verification Issues!",
+            //     );
+            // }
 
             // Step3 : Sanitize request
 			if ( !isset($_POST['name']) || !isset($_POST['pdid']) || !isset($_POST['pid']) ) {
@@ -112,18 +112,9 @@
                 ");
 
             if (isset($_POST['base'])) {
-
-                if ($base_price == 1) {
-                    if (in_array('1', $validate_variant )  ) {
-                        return array(
-                            "status" => "failed",
-                            "message" => "Please this product has already have a base price."
-                        );
-                    }
-                }
     
                 for ($i=0; $i < count($validate_variant); $i++) { 
-                    if ($validate_variant[$i]->baseprice == 1) {
+                    if ($validate_variant[$i]->baseprice == $base_price) {
                         return array(
                             "status" => "failed",
                             "message" => "Please deactivate the active base price first."
@@ -131,13 +122,13 @@
                     }
                 }
             }
-          
+
             if ($parent_id == 0) {
 
                 $wpdb->query("INSERT INTO `$table_variants` $variants_fields VALUES (0, $product_id, $wpid, '$date')");
                 $last_id = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $last_id, 'baseprice', '1', $wpid, '$date')");
+                $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $last_id, 'baseprice', '$base_price', $wpid, '$date')");
                 $rev_bp = $wpdb->insert_id;
                 
             } else {

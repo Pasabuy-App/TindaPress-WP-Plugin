@@ -64,8 +64,8 @@
                 ( SELECT child_val FROM $table_revs rev WHERE  rev.parent_id = var.ID AND rev.child_key = 'name' AND rev.revs_type = 'variants' ) as `name`,
                 ( SELECT child_val FROM $table_revs rev WHERE  rev.parent_id = var.ID AND rev.child_key = 'info' AND rev.revs_type = 'variants' ) as `info`,
                 IF( ( SELECT child_val FROM $table_revs rev WHERE  rev.parent_id = var.ID AND rev.child_key = 'baseprice' AND rev.revs_type = 'variants' ) = 1, 'Yes', 'No') as `base`,
-
-                    IF( rev.child_val = 1 , 'Active','Inactive') AS `status`,
+                   
+                    IF( ( SELECT child_val FROM $table_revs rev WHERE  rev.parent_id = var.ID AND rev.child_key = 'status' AND rev.revs_type = 'variants' ) = 1 , 'Active','Inactive') AS `status`,
                     null as options
                 FROM
                     $table_variants var
