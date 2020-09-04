@@ -16,8 +16,8 @@
 	//Defining Global Variables
 	define('TP_CUSTOM', 'eCommerce'); 
 	define('TP_PREFIX', 'tp_'); 
-	define('TP_UIHOST', 'https://pasabuy.app');
-	define('TP_FULLMODE', false);
+	define('TP_UIHOST', 'http://localhost/wordpress/');
+	define('TP_FULLMODE', true);
 	
 	//Categories config
 	define('TP_CATEGORIES_TABLE', TP_PREFIX.'categories');

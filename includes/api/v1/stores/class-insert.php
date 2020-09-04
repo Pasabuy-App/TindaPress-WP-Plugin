@@ -345,8 +345,11 @@
                     VALUES ('$status', 'business', '$store_id', $street, $brgy, $city, $province, $country, '$date_created')");
                 $address_id = $wpdb->insert_id;
 
+                $wpdb->query("UPDATE $dv_rev_table SET hash_id = sha2($address_id, 256) WHERE ID = $address_id");
+
                 //Update revision table for saving the parent_id(address_id)
                 $result_update_dv_rev_address =  $wpdb->query("UPDATE $dv_rev_table SET `parent_id` = {$address_id} WHERE ID IN ($status, $street, $brgy, $city, $province, $country)");
+
                 
                 // End of store address.
 

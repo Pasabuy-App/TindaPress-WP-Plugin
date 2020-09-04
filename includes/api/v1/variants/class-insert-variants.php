@@ -108,7 +108,7 @@
                 FROM
                     tp_variants var
                 INNER JOIN tp_revisions rev ON rev.parent_id = var.ID
-                    WHERE var.parent_id = 0 AND rev.child_key = 'baseprice' AND revs_type ='variants' AND var.pdid = '$product_id'
+                    WHERE var.parent_id = 0 AND rev.child_key = 'baseprice' AND revs_type ='variants' AND var.pdid = '$product_id' AND rev.ID =  (SELECT MAX(ID) FROM tp_revisions rev WHERE parent_id = rev.parent_id AND revs_type = 'variants' AND child_key = 'baseprice' )
                 ");
 
             if (isset($_POST['base'])) {

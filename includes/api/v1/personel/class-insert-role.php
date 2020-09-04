@@ -25,11 +25,33 @@
             global $wpdb;
 
 
+            $data = $_POST['data'];
+            
+            $var = array();
+
+      
+            
+            $access = $wpdb->get_results("SELECT hash_id FROM tp_access");
 
 
+            for ($cnt=0; $cnt < count($access) ; $cnt++) { 
+                $vas[] = $access[$cnt]->hash_id;
+            }
+            
+            // validate if access id is existed in database
+                for ($count=0; $count < count($data['access']) ; $count++) { 
+                
+                    if ( !in_array($data['access'][$count], $vas ) ) {
+                        return array(
+                            "status" => "failed",
+                            "message" => "This access does not exists.",
+                        );
+                    }
+
+                }
+            // end
 
 
-            return $_POST['access'];    
 
             if (!isset($_POST['stid']) || !isset($_POST['acsid']) ) {
                 return array(
@@ -37,27 +59,18 @@
                     "message" => "Please contact your administrator. Request unknown."
                 );
             }
+
+
+            
+            
+            
             $user = self::catch_post();
 
-
-            // Validate Access
-
-                $check_access = $wpdb->get_row(
-                "SELECT hash_id FROM tp_access WHERE hash_id = '{$user["access_id"]}'"
-                );
-
-                if (!$check_access) {
-                    return array(
-                        "status" => "failed",
-                        "message" => "This access does not exists."
-                    );
-                }
-
-            // End validate
-
-
             $wpdb->query("START TRANSACTION");
-                
+            
+            $wpdb->query("INSERT INTO tp_roles (  ) VALUES ()");
+
+            
             // insert table role
                 $result_role = $wpdb->query(
                     $wpdb->prepare("INSERT INTO tp_roles (`wpid`, `stid`, `created_by` ) 

@@ -282,15 +282,16 @@
                     postParam.wpid = "<?php echo get_current_user_id(); ?>";
                     postParam.snky = "<?php echo wp_get_session_token(); ?>";
                     postParam.name = $('#new_title').val();
-
-                    if (postParam.info == NULL) {
-                        $('#new_info').val('');
-                        
-                    }else{
-                        postParam.info = $('#new_info').val();
-
-                    }
                     postParam.pdid = $('#new_product').val();
+                    postParam.info = $('#new_info').val();
+
+                    // if (postParam.info == NULL) {
+                    //     $('#new_info').val('');
+                        
+                    // }else{
+                    //     postParam.info = $('#new_info').val();
+
+                    // }
                     <?php if( isset($_GET['vrid']) ) { ?>
                     postParam.pid = '<?= $_GET['vrid'] ?>';
                     
@@ -299,6 +300,7 @@
                     <?php } ?>
                     postParam.base = $('#new_base').val();
                     postParam.price = $('#new_price').val();
+                    console.log(postParam)
 
                 // This will be handled by create-app.php.
                 $.ajax({
@@ -488,15 +490,15 @@
                         }, 4000);
                     },
                     error : function(jqXHR, textStatus, errorThrown) {
-                        $('#DFAMessage').addClass('alert-danger');
-                        $('#DFAMessage').removeClass('tp-display-hide');
-                        $('#DFAMcontent').text( textStatus + ': Kindly consult to your administrator for this issue.' );
+                        $('#CNAMessage').addClass('alert-danger');
+                        $('#CNAMessage').removeClass('tp-display-hide');
+                        $('#CNAMcontent').text( textStatus + ': Kindly consult to your administrator for this issue.' );
 
                         $('#delete-app-btn').removeClass('disabled');
                         $('#update-app-btn').removeClass('disabled');
                         activeTimeout = setTimeout( function() {
-                            $('#DFAMessage').removeClass('alert-danger');
-                            $('#DFAMessage').addClass('tp-display-hide');
+                            $('#CNAMessage').removeClass('alert-danger');
+                            $('#CNAMessage').addClass('tp-display-hide');
                             activeTimeout = 'undefined';
                         }, 7000);
                         console.log("" + jqXHR + " :: " + textStatus + " :: " + errorThrown);
@@ -507,8 +509,6 @@
             // LISTEN FOR MODAL SHOW AND ATTACHED ID.
             $('#EditAppOption').on('show.bs.modal', function(e) {
                 var data = e.relatedTarget.dataset;
-                console.log(data.name)
-                // $('#edit_vrid').val( data.ID );
                 $('#edit_title').val( data.name );
                 $('#edit_info').val( data.info );
                 $('#edit_product').val( data.pdid );
