@@ -1,18 +1,18 @@
 <?php
-   
+
 	// Exit if accessed directly
 	if ( ! defined( 'ABSPATH' ) ) {
 		exit;
 	}
 
-	/** 
+	/**
         * @package tindapress-wp-plugin
 		* @version 0.1.0
 		* This is the primary gateway of all the rest api request.
 	*/
 
-    //Require the USocketNet class which have the core function of this plguin. 
-        
+    //Require the USocketNet class which have the core function of this plguin.
+
         //Products Classes
         require plugin_dir_path(__FILE__) . '/v1/products/class-activate.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-delete.php';
@@ -22,6 +22,8 @@
         require plugin_dir_path(__FILE__) . '/v1/products/class-product-nearme.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-discount-create.php';
         require plugin_dir_path(__FILE__) . '/v1/products/class-discount-update.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-wishlist-insert.php';
+        require plugin_dir_path(__FILE__) . '/v1/products/class-wishlist-listing.php';
 
         //Stores Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/class-insert.php';
@@ -35,14 +37,14 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/class-activate.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-store-nearme.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-update-commision.php';
-        
+
         // Document Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-delete.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-insert.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-update.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-approve.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-listing.php';
-        
+
         //Settings Classes
         require plugin_dir_path(__FILE__) . '/v1/settings/class-banner.php';
         require plugin_dir_path(__FILE__) . '/v1/settings/class-logo.php';
@@ -120,10 +122,19 @@
                 'callback' => array('TP_Product_Discount_Create','listen'),
             ));
 
-            
             register_rest_route( 'tindapress/v1/products/discount', 'update', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Product_Discount_Update','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/products/wishlist', 'insert', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Product_Wishlist','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/products/wishlist', 'list', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Product_Wishlist_Listing','listen'),
             ));
 
         /*
@@ -153,7 +164,7 @@
                 'methods' => 'POST',
                 'callback' => array('TP_Store_Listing_Documents','listen'),
             ));
-            
+
         /*
          * STORE RESTAPI
         */
@@ -186,7 +197,7 @@
                 'methods' => 'POST',
                 'callback' => array('TP_SearchStore','listen'),
             ));
-    
+
             register_rest_route( 'tindapress/v1/stores', 'newest', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Newest','listen'),
@@ -341,6 +352,6 @@
                 'methods' => 'POST',
                 'callback' => array('TP_Update_Variants','listen'),
             ));
-    
+
     }
     add_action( 'rest_api_init', 'tindapress_route' );
