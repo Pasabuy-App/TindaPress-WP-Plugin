@@ -12,13 +12,13 @@
 
 		// Hardening QA 11:59 8/31/2020
 		// Miguel Igdalino
-		
+
 	//Defining Global Variables
-	define('TP_CUSTOM', 'eCommerce'); 
-	define('TP_PREFIX', 'tp_'); 
+	define('TP_CUSTOM', 'eCommerce');
+	define('TP_PREFIX', 'tp_');
 	define('TP_UIHOST', 'http://localhost/wordpress/');
 	define('TP_FULLMODE', true);
-	
+
 	//Categories config
 	define('TP_CATEGORIES_TABLE', TP_PREFIX.'categories');
 	define('TP_CATEGORIES_GROUP_TABLE', TP_PREFIX.'categories_group');
@@ -51,6 +51,13 @@
 	//Revision Config
 	define('TP_REVISIONS_TABLE', TP_PREFIX.'revisions');
 	define('TP_REVISION_FIELDS','(revs_type, parent_id, child_key , child_val, created_by, date_created )');
+
+
+	//Roles Config
+	define('TP_WISHLIST_TABLE', TP_PREFIX.'wishlist');
+	define('TP_WISHLIST_FIELDS','`product_id`, `status`, `created_by`');
+
+
 
 	//Roles Config
 	define('TP_ROLES_TABLE', TP_PREFIX.'roles');
