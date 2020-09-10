@@ -1,18 +1,18 @@
 <?php
 	// Exit if accessed directly
-	if ( ! defined( 'ABSPATH' ) ) 
+	if ( ! defined( 'ABSPATH' ) )
 	{
 		exit;
 	}
 
-	/** 
+	/**
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
     class TP_Store_Listing {
 
         public static function listen(){
-            return rest_ensure_response( 
+            return rest_ensure_response(
                 TP_Store_Listing:: list_open()
             );
         }
@@ -34,7 +34,7 @@
             $table_category = TP_CATEGORIES_TABLE;
             $table_contacts = DV_CONTACTS_TABLE;
             $table_dv_revisions = DV_REVS_TABLE;
-            
+
             // Step1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
@@ -43,7 +43,7 @@
                         "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
-           
+
             // Step2 : Check if wpid and snky is valid
             if (DV_Verification::is_verified() == false) {
                 return array(
@@ -73,21 +73,21 @@
             ( SELECT dv_rev.child_val FROM dv_revisions  dv_rev WHERE dv_rev.ID = `add`.latitude AND dv_rev.date_created = (SELECT MAX(date_created)  FROM dv_revisions WHERE ID = dv_rev.ID AND revs_type ='address') AND child_key ='latitude' AND revs_type ='address'  ) AS `lat`,
             ( SELECT dv_rev.child_val FROM dv_revisions  dv_rev WHERE dv_rev.ID = `add`.longitude AND dv_rev.date_created = (SELECT MAX(date_created)  FROM dv_revisions WHERE ID = dv_rev.ID AND revs_type ='address') AND child_key ='longitude' AND revs_type ='address'  ) AS `long`,
             ( SELECT child_val FROM dv_revisions WHERE ID = ( SELECT revs FROM dv_contacts WHERE types = 'phone' AND stid = str.ID LIMIT 1 ) LIMIT 1 ) AS phone,
-            ( SELECT child_val FROM dv_revisions WHERE ID = ( SELECT revs FROM dv_contacts  WHERE types = 'email' AND stid = str.ID LIMIT 1 ) LIMIT 1 ) AS email 
+            ( SELECT child_val FROM dv_revisions WHERE ID = ( SELECT revs FROM dv_contacts  WHERE types = 'email' AND stid = str.ID LIMIT 1 ) LIMIT 1 ) AS email
         FROM
             tp_stores str
             INNER JOIN dv_address `add` ON str.address = `add`.ID
-            INNER JOIN tp_categories cat ON cat.ID = str.ctid 
+            INNER JOIN tp_categories cat ON cat.ID = str.ctid
             ";
              isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL  ;
             isset($_POST['catid']) ? $ctd = $_POST['catid'] : $ctd = NULL  ;
             isset($_POST['stid']) ? $std = $_POST['stid'] : $std = NULL  ;
-            
+
             // Ternary condition for isset value
             $status = $sts == '0' || $sts == NULL ? NULL : ($sts == '2'&& $sts !== '0'? '0':'1');
             $catid = $ctd == '0'? NULL: $catid = $ctd;
             $stid = $std == "0" ? NULL: $stid = $std;
-            
+
             // Status condition
             if(isset($_POST['status'])){
                 if($status != NULL){
@@ -95,27 +95,27 @@
                     $sql .= " WHERE ( SELECT rev.child_val FROM tp_revisions rev WHERE rev.id = str.`status` AND date_created = (SELECT MAX(tp_rev.date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND tp_rev.child_key = 'status')   ) = $status";
                 }
             }
-            
+
             // Category condition
             if (isset($_POST['catid'])) {
                 if ($catid != NULL && $catid != '0') {
 
                     if ($status !== NULL ) {
-    
+
                         $sql .= " AND `str`.ctid = $catid ";
 
                     }else{
 
                         $sql .= " WHERE `str`.ctid = $catid ";
-    
+
                     }
-                }    
+                }
             }
 
             // Store ID Condition
             if (isset($_POST['stid'])) {
                 if ($stid != 0 ) {
-                   
+
                     if ( $status == NULL && empty($status) && $catid == NULL && empty($catid) ) {
                         $sql .= " WHERE `str`.ID = '$stid' ";
 
@@ -123,7 +123,7 @@
                         $sql .= " AND `str`.ID = '$stid' ";
 
                     }
-                    
+
                 }
             }
             // Uncomment for debugging
@@ -135,12 +135,23 @@
             // Step4 : Check if no result
             if (!$result ) {
                 return array(
-                        "status" => "success",
-                        "data" => [],
+                    "status" => "success",
+                    "data" => [],
                 );
             }else{
 
-                // Step5 : Return Result 
+                foreach ($result as $key => $value) {
+
+                    if($value->avatar == null ){
+                        $value->avatar =  TP_PLUGIN_URL . "assets/images/default-store.png" ;
+                    }
+
+                    if($value->banner == null ){
+                        $value->banner =  TP_PLUGIN_URL . "assets/images/default-banner.png" ;
+                    }
+
+                }
+                // Step5 : Return Result
                 return array(
                     "status" => "success",
                     "data" => $result,
