@@ -129,13 +129,9 @@
 
             foreach ($results as $key => $value) {
 
-                 if($value->preview == null && $value->preview == 'None' ){
+                if($value->preview == null && $value->preview == 'None' ){
                     $value->preview =  TP_PLUGIN_URL . "assets/images/default-product.png" ;
                 }
-/*
-                if($value->banner == null ){
-                    $value->banner =  TP_PLUGIN_URL . "assets/images/default-banner.png" ;
-                } */
 
                 $value->discount =  $wpdb->get_row("SELECT
                 (SELECT child_val  FROM tp_revisions rev  WHERE child_key = 'discount_name'  AND revs_type = 'products'  AND parent_id = '$value->ID' 	AND ID = ( SELECT max(ID) FROM tp_revisions WHERE child_key = 'discount_name' AND parent_id = '$value->ID' AND revs_type = 'products' ) ) as  `name`,
@@ -145,9 +141,6 @@
                 ");
 
             }
-
-
-
 
             // return results
             return array(
