@@ -142,11 +142,11 @@
 
                 foreach ($result as $key => $value) {
 
-                    if($value->avatar == null && $value->avatar == 'None' ){
+                    if($value->avatar == null || $value->avatar == 'None' ){
                         $value->avatar =  TP_PLUGIN_URL . "assets/images/default-store.png" ;
                     }
 
-                    if($value->banner == null && $value->banner == 'None' ){
+                    if($value->banner == null || $value->banner == 'None' ){
                         $value->banner =  TP_PLUGIN_URL . "assets/images/default-banner.png" ;
                     }
 
