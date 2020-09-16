@@ -79,7 +79,7 @@
             INNER JOIN dv_address `add` ON str.address = `add`.ID
             INNER JOIN tp_categories cat ON cat.ID = str.ctid
             ";
-             isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL  ;
+            isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL  ;
             isset($_POST['catid']) ? $ctd = $_POST['catid'] : $ctd = NULL  ;
             isset($_POST['stid']) ? $std = $_POST['stid'] : $std = NULL  ;
 
@@ -128,8 +128,32 @@
             }
             // Uncomment for debugging
 
+            $limit ='12';
+
+            if( isset($_POST['lid']) ){
+				// Step 4: Validate parameter
+                if (empty($_POST['lid']) ) {
+                    return array(
+                        "status" => "failed",
+                        "message" => "Required fields cannot be empty.",
+                    );
+                }
+				if ( !is_numeric($_POST["lid"])) {
+					return array(
+						"status" => "failed",
+						"message" => "Parameters not in valid format.",
+					);
+				}
+
+				$lastid = $_POST['lid'];
+				$sql .= " AND str.ID < $lastid ";
+				$limit = 7;
+
+            }
+
             // return $sql;
             // Execute query
+			$sql .= " ORDER BY str.ID DESC LIMIT $limit ";
             $result = $wpdb->get_results($sql);
 
             // Step4 : Check if no result
@@ -148,6 +172,14 @@
 
                     if($value->banner == null || $value->banner == 'None' ){
                         $value->banner =  TP_PLUGIN_URL . "assets/images/default-banner.png" ;
+                    }
+
+                    if($value->lat == null || $value->lat == 'None' ){
+                        $value->lat = "" ;
+                    }
+
+                    if($value->long == null || $value->long == 'None' ){
+                        $value->long = "" ;
                     }
 
                 }

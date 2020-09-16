@@ -58,7 +58,7 @@
 	define('TP_WISHLIST_FIELDS','`product_id`, `status`, `created_by`');
 
 	define('TP_ACCESS_TABLE', TP_PREFIX.'access');
-
+	define('TP_ACCESS_VALUE', $tp_access_val);
 
 	//Roles Config
 	define('TP_ROLES_TABLE', TP_PREFIX.'roles');

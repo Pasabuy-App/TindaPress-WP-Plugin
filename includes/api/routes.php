@@ -26,6 +26,7 @@
 
         // Personel Classes
         require plugin_dir_path(__FILE__) . '/v1/personel/class-insert-role.php';
+        require plugin_dir_path(__FILE__) . '/v1/personel/class-insert-role-access.php';
 
         //Stores Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/class-insert.php';
@@ -93,6 +94,11 @@
             register_rest_route( 'tindapress/v1/personel/role', 'create', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Personel_Create_Role','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/personel/role/create', 'access', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Personel_Create_Role_Meta','listen'),
             ));
 
         /*
