@@ -11,12 +11,12 @@
 	*/
 
 	function tp_dbhook_activate() {
-	
+
 		global $wpdb;
 
 		// Hardening QA 11:56 8/31/2020
 		// Miguel Igdalino
-		
+
 		//Initializing table name
 		$tbl_categories = TP_CATEGORIES_TABLE;
 		$tbl_cat_group = TP_CATEGORIES_GROUP_TABLE;
@@ -32,9 +32,10 @@
 		$tbl_access = TP_ACCESS_TABLE;
 		$tbl_access_fields = TP_ACCESS_TABLE_FIELDS;
 		$tbl_access_data = TP_ACCESS_VALUE;
+		$tbl_wishlist = TP_WISHLIST_TABLE;
 
 		$wpdb->query("START TRANSACTION");
-		
+
 		//Database table creation for stores
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_stores'" ) != $tbl_stores) {
 			$sql = "CREATE TABLE `".$tbl_stores."` (";
@@ -80,7 +81,7 @@
 				$sql .= "PRIMARY KEY (`ID`) ";
 				$sql .= ") ENGINE = InnoDB; ";
 			$result = $wpdb->get_results($sql);
-			
+
 		}
 
 		//Database table creation for roles_meta
@@ -113,7 +114,7 @@
 			$result = $wpdb->get_results($sql);
 		}
 
-		//Database table creation for products 
+		//Database table creation for products
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_products'" ) != $tbl_products) {
 			$sql = "CREATE TABLE `".$tbl_products."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
@@ -183,7 +184,7 @@
 				$sql .= ") ENGINE = InnoDB; ";
 			$result = $wpdb->get_results($sql);
 		}
-		//Database table creation for categories 
+		//Database table creation for categories
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_categories'" ) != $tbl_categories) {
 			$sql = "CREATE TABLE `".$tbl_categories."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
@@ -231,7 +232,22 @@
 			$result = $wpdb->get_results($sql);
 		}
 
+
+		//Database table creation for wishlist
+		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_wishlist'" ) != $tbl_wishlist) {
+			$sql = "CREATE TABLE `".$tbl_wishlist."` (";
+				$sql .= " `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= " `hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
+				$sql .= " `product_id` bigint(20) DEFAULT NULL, ";
+				$sql .= " `status` tinyint(2) NOT NULL, ";
+				$sql .= " `created_by` bigint(20) NOT NULL, ";
+				$sql .= " `date_created` datetime DEFAULT current_timestamp() COMMENT 'The date this wishlist created.', ";
+				$sql .= "PRIMARY KEY (`ID`) ";
+				$sql .= ") ENGINE = InnoDB; ";
+			$result = $wpdb->get_results($sql);
+		}
+
 		$wpdb->query("COMMIT");
-	
-    } 
+
+    }
     add_action( 'activated_plugin', 'tp_dbhook_activate' );

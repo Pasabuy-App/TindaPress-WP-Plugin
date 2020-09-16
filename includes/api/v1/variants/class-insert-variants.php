@@ -108,22 +108,13 @@
                 FROM
                     tp_variants var
                 INNER JOIN tp_revisions rev ON rev.parent_id = var.ID
-                    WHERE var.parent_id = 0 AND rev.child_key = 'baseprice' AND revs_type ='variants' AND var.pdid = '$product_id'
+                    WHERE var.parent_id = 0 AND rev.child_key = 'baseprice' AND revs_type ='variants' AND var.pdid = '$product_id' AND rev.ID =  (SELECT MAX(ID) FROM tp_revisions rev WHERE parent_id = rev.parent_id AND revs_type = 'variants' AND child_key = 'baseprice' )
                 ");
 
             if (isset($_POST['base'])) {
-
-                if ($base_price == 1) {
-                    if (in_array('1', $validate_variant )  ) {
-                        return array(
-                            "status" => "failed",
-                            "message" => "Please this product has already have a base price."
-                        );
-                    }
-                }
     
                 for ($i=0; $i < count($validate_variant); $i++) { 
-                    if ($validate_variant[$i]->baseprice == 1) {
+                    if ($validate_variant[$i]->baseprice == $base_price) {
                         return array(
                             "status" => "failed",
                             "message" => "Please deactivate the active base price first."
@@ -131,13 +122,13 @@
                     }
                 }
             }
-          
+
             if ($parent_id == 0) {
 
                 $wpdb->query("INSERT INTO `$table_variants` $variants_fields VALUES (0, $product_id, $wpid, '$date')");
                 $last_id = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $last_id, 'baseprice', '1', $wpid, '$date')");
+                $wpdb->query("INSERT INTO `$table_revs` $rev_fields VALUES ('variants', $last_id, 'baseprice', '$base_price', $wpid, '$date')");
                 $rev_bp = $wpdb->insert_id;
                 
             } else {
