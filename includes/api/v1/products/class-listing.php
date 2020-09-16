@@ -153,7 +153,7 @@
 
             foreach ($results as $key => $value) {
 
-                if($value->preview == null && $value->preview == 'None' ){
+                if($value->preview == null || $value->preview == 'None' ){
                     $value->preview =  TP_PLUGIN_URL . "assets/images/default-product.png" ;
                 }
 
