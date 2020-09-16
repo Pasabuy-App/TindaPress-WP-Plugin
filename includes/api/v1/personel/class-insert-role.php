@@ -1,11 +1,11 @@
 <?php
 	// Exit if accessed directly
-	if ( ! defined( 'ABSPATH' ) ) 
+	if ( ! defined( 'ABSPATH' ) )
 	{
 		exit;
 	}
 
-	/** 
+	/**
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
@@ -14,8 +14,8 @@
 
         //REST API Call
         public static function listen(){
-            
-            return rest_ensure_response( 
+
+            return rest_ensure_response(
                 self::listen_open()
             );
         }
@@ -24,99 +24,123 @@
         public static function listen_open(){
             global $wpdb;
 
+            $table_role = TP_ROLES_TABLE;
+            $table_revisions = TP_REVISIONS_TABLE;
+            $table_store = TP_STORES_TABLE;
 
-            $data = $_POST['data'];
-            
-            $var = array();
-
-      
-            
-            $access = $wpdb->get_results("SELECT hash_id FROM tp_access");
+            $date = TP_Globals::date_stamp();
 
 
-            for ($cnt=0; $cnt < count($access) ; $cnt++) { 
-                $vas[] = $access[$cnt]->hash_id;
-            }
-            
-            // validate if access id is existed in database
-                for ($count=0; $count < count($data['access']) ; $count++) { 
-                
-                    if ( !in_array($data['access'][$count], $vas ) ) {
-                        return array(
-                            "status" => "failed",
-                            "message" => "This access does not exists.",
-                        );
-                    }
-
-                }
-            // end
-
-
-
-            if (!isset($_POST['stid']) || !isset($_POST['acsid']) ) {
+            // Step1 : Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
                 return array(
-                    "status" => "unknown",
-                    "message" => "Please contact your administrator. Request unknown."
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 
+            // Step2 : Check if wpid and snky is valid
+            if (DV_Verification::is_verified() == false) {
+                return array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. Verification Issues!",
+                );
+            }
 
-            
-            
-            
+            if (!isset($_POST['stid']) || !isset($_POST['title']) || !isset($_POST['info']) ) {
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Request unknown"
+                );
+            }
+
+            if (empty($_POST['stid']) || empty($_POST['title']) || empty($_POST['info']) ) {
+                return array(
+                    "status" => "failed",
+                    "message" => "Required fields cannot be empty."
+                );
+            }
+
+            // Get post listener
             $user = self::catch_post();
 
             $wpdb->query("START TRANSACTION");
-            
-            $wpdb->query("INSERT INTO tp_roles (  ) VALUES ()");
 
-            
-            // insert table role
-                $result_role = $wpdb->query(
-                    $wpdb->prepare("INSERT INTO tp_roles (`wpid`, `stid`, `created_by` ) 
-                    VALUES ('%s', '%s', '%s' )", $user['user_id'], $user['store_id'], $user['user_id'] )
-                );
-                $role_id = $wpdb->insert_id;
+            // Verifying Store
+                $get_store = $wpdb->get_row("SELECT
+                    tp_str.ID,
+                    ( SELECT tp_rev.child_val FROM $table_revisions tp_rev WHERE ID = tp_str.status ) AS `status`
+                    FROM
+                        $table_store tp_str
+                    INNER JOIN
+                        $table_revisions tp_rev ON tp_rev.ID = tp_str.`status`
+                    WHERE tp_str.ID = '{$user["store_id"]}'
+                ");
 
-                $update_id = $wpdb->query("UPDATE tp_roles SET hash_id = sha2($role_id,256) WHERE ID = $role_id");
-
-                $get_role_id = $wpdb->get_row("SELECT hash_id FROM tp_roles WHERE ID = $role_id");
-            // Insert table role meta
-                $result_role_meta = $wpdb->query(
-                    $wpdb->prepare(
-                        "INSERT INTO tp_roles_meta (roid, acsid) VALUES ('%s', '%s')", $get_role_id->hash_id, $user["access_id"]
-                    )
-                );
-                $result_role_meta_id = $wpdb->insert_id;
-
-                $wpdb->query("UPDATE tp_roles_meta SET hash_id = sha2($result_role_meta_id, 256) WHERE ID = $result_role_meta_id");
-
-
-                if ($result_role < 1 || $update_id < 1 || $result_role_meta < 1) {
-                    $wpdb->query("ROLLBACK");
-                    return array(
-                        "status" => "failed",
-                        "message" => "An error occured while submitting data to server."
-                    );
-                }else{
-                    $wpdb->query("COMMIT");
-                    return array(
-                        "status" => "success",
-                        "message" => "Data has been added successfully."
+                // Check if no rows found
+                if ( !$get_store ) {
+                    return rest_ensure_response(
+                        array(
+                            "status" => "failed",
+                            "message" => "This store does not exists.",
+                        )
                     );
                 }
 
+                // Check if status = 0
+                if ( $get_store->status == 0 ) {
+                    return array(
+                        "status" => "failed",
+                        "message" => "This store is currently deactivated.",
+                    );
+                }
+            // End verifying Store
 
+            // Insert data to tp_role
+            $role = $wpdb->query(
+                $wpdb->prepare("INSERT INTO $table_role (wpid, stid, created_by) VALUES ( %d, %d, %d ) ", $user['user_id'], $user['store_id'], $user['user_id'] )
+            ); $role_id = $wpdb->insert_id;
 
+            // role title
+            $title = $wpdb->query(
+                $wpdb->prepare("INSERT INTO $table_revisions (revs_type, parent_id, child_key , child_val, created_by, date_created ) VALUES ( '%s', %d, '%s', '%s' %d, '%s'  ) ",
+                'roles', $role_id, 'title', $user['title'], $user['user_id'], $date )
+            );
 
-            return "HAHAHAHAHA";
+            // role info
+            $info = $wpdb->query(
+                $wpdb->prepare("INSERT INTO $table_revisions (revs_type, parent_id, child_key , child_val, created_by, date_created ) VALUES ( '%s', %d, '%s', '%s' %d, '%s'  ) ",
+                'roles', $role_id, 'info', $user['info'], $user['user_id'], $date )
+            );
+
+            // role status
+            $info = $wpdb->query(
+                $wpdb->prepare("INSERT INTO $table_revisions (revs_type, parent_id, child_key , child_val, created_by, date_created ) VALUES ( '%s', %d, '%s', '%s' %d, '%s'  ) ",
+                'roles', $role_id, 'status', '1', $user['user_id'], $date )
+            );
+
+            if ($role == false || $title == false || $info == false) {
+                $wpdb->query("ROLLBACK");
+                return array(
+                    "status" => "failed",
+                    "message" => "An error occured while submitting data to server."
+                );
+            }else{
+                $wpdd->query("COMMIT");
+                return array(
+                    "status" => "success",
+                    "message" => "Data has been added successfully."
+                );
+            }
         }
 
         public static function catch_post(){
             $curl_user = array();
-            $curl_user['user_id'] = $_POST['wpid'];   
-            $curl_user['store_id'] = $_POST['stid'];   
-            $curl_user['access_id'] = $_POST['acsid'];   
+            $curl_user['user_id'] = $_POST['wpid'];
+            $curl_user['title'] = $_POST['title'];
+            $curl_user['info'] = $_POST['info'];
+            $curl_user['store_id'] = $_POST['stid'];
             return $curl_user;
         }
     }

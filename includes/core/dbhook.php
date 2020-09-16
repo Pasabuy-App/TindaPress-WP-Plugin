@@ -90,6 +90,7 @@
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
 				$sql .= "`hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
 				$sql .= "`roid` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Role ID', ";
+				$sql .= "`status` tinyint(5) NOT NULL DEFAULT '0' COMMENT 'Role ID', ";
 				$sql .= "`acsid` bigint(20)  NOT NULL DEFAULT '0' COMMENT 'Access ID .', ";
 				$sql .= "`date_created` datetime DEFAULT current_timestamp() COMMENT 'The date this role meta created.', ";
 				$sql .= "PRIMARY KEY (`ID`) ";
