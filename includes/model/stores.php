@@ -1,7 +1,7 @@
 
 <?php
 	// Exit if accessed directly
-	if ( ! defined( 'ABSPATH' ) ) 
+	if ( ! defined( 'ABSPATH' ) )
 	{
 		exit;
 	}
@@ -13,7 +13,7 @@
 ?>
 
 <script type="text/javascript">
-    jQuery(document).ready( function ( $ ) 
+    jQuery(document).ready( function ( $ )
     {
         if($("#set_status").val() !== 0) {
             <?php if(isset($_GET['status'])) { ?>
@@ -34,13 +34,13 @@
         //THIS ARE ALL THE PUBLIC VARIABLES.
         var activeTimeout = 'undefined';
 
-        //#region Page = APPLICATION LIST 
+        //#region Page = APPLICATION LIST
             //GET THE REFERENCE OF THE CURRENT PAGE DATTABLES.
             var storeTables = $('#stores-datatables');
 
             //SET INTERVAL DRAW UPDATE.
             loadingAppList( storeTables );
-        
+
             //LOAD APPLIST WITH AJAX.
             var tptables = 'undefined';
             function loadingAppList( storeTables )
@@ -63,11 +63,11 @@
                         <?php if( isset($_GET['status']) ) { ?>
                             postParam.status = '<?= $_GET['status'] ?>';
                         <?php } ?>
-                    var postUrl = '<?php echo TP_UIHOST . "/wp-json/tindapress/v1/stores/list"; ?>';                    
-                    
+                    var postUrl = '<?php echo TP_UIHOST . "/wp-json/tindapress/v1/stores/list"; ?>';
+
                     $.ajax({
                         dataType: 'json',
-                        type: 'POST', 
+                        type: 'POST',
                         data: postParam,
                         url: postUrl,
                         success : function( data )
@@ -83,14 +83,14 @@
 
                             if(data.avatar != 'None') {
                                 $('#imageResult').attr('src', data.avatar );
-                            }                            
+                            }
 
                             if( !$('#stores-notification').hasClass('tp-display-hide') )
                             {
                                 $('#stores-notification').addClass('tp-display-hide');
                             }
                         },
-                        error : function(jqXHR, textStatus, errorThrown) 
+                        error : function(jqXHR, textStatus, errorThrown)
                         {
                             console.log("" + JSON.stringify(jqXHR) + " :: " + textStatus + " :: " + errorThrown);
                         }
@@ -101,7 +101,7 @@
             //DISPLAY DATA INTO THE TARGET DATATABLES.
             function displayingLoadedApps( data )
             {
-                
+
                 //Set table column header.
                 var columns = [
                     //{ "sTitle": "IDENTITY",   "mData": "ID" },
@@ -125,67 +125,67 @@
                     { "sTitle": "Country",   "mData": "country" },
                     {"sTitle": "Action", "mRender": function(data, type, item)
                         {
-                            
-                            return '' + 
+
+                            return '' +
 
                                 '<div class="btn-group" role="group" aria-label="Basic example">' +
 
                                     '<button type="button" class="btn btn-primary btn-sm"' +
                                         ' data-toggle="modal" data-target="#EditAppOption"' +
                                         ' title="Click this to modified or delete this project."' +
-                                        ' data-id="' + item.ID + '"' +  
-                                        ' data-status="' + item.status + '"' +  
-                                        ' data-title="' + item.title + '"' +  
-                                        ' data-sinfo="' + item.short_info + '"' + 
+                                        ' data-id="' + item.ID + '"' +
+                                        ' data-status="' + item.status + '"' +
+                                        ' data-title="' + item.title + '"' +
+                                        ' data-sinfo="' + item.short_info + '"' +
                                         ' >Modify</button>' +
 
                                     '<button type="button" class="btn btn-secondary btn-sm appkey-' + item.ID + '"' +
                                         ' data-clipboard-text="' + item.ID + '"' +
                                         ' onclick="copyFromId(\'CategoryID-' + item.ID + '\')" ' +
                                         ' title="Click this to copy the ID to your clipboard."' +
-                                        '>Copy ID</button>' +  
+                                        '>Copy ID</button>' +
 
                                     '<button type="button" class="btn btn-info btn-sm"' +
-                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_CATEGORY; ?>' + 
-                                        '&stid=' + item.ID + '&stname=' + item.title + 
+                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_CATEGORY; ?>' +
+                                        '&stid=' + item.ID + '&stname=' + item.title +
                                         '&type=' + '2' + '`;" ' +
-                                        ' title="Click this to navigate to variant list of this project."' + 
+                                        ' title="Click this to navigate to variant list of this project."' +
                                         ' >Categories</button>' +
-                            
+
                                         '<button type="button" class="btn btn-success btn-sm"' +
                                         ' data-toggle="modal" data-target="#AddLogo"' +
                                         ' title="Click this to upload logo of the store."' +
-                                        ' data-id="' + item.ID + '"' +  
-                                        ' data-status="' + item.status + '"' +  
+                                        ' data-id="' + item.ID + '"' +
+                                        ' data-status="' + item.status + '"' +
                                         ' data-logo="' + item.avatar + '"' +
                                         ' >Logo</button>' +
-                                        
+
                                         '<button type="button" class="btn btn-primary btn-sm"' +
                                         ' data-toggle="modal" data-target="#AddGPS"' +
                                         ' title="Click this to add GPS location of the store."' +
-                                        ' data-id="' + item.ID + '"' +  
-                                        ' data-status="' + item.status + '"' +  
+                                        ' data-id="' + item.ID + '"' +
+                                        ' data-status="' + item.status + '"' +
                                         ' data-addr="' + item.add_id + '"' +
-                                        ' data-lat="' + item.lat + '"' +  
-                                        ' data-long="' + item.long + '"' +  
+                                        ' data-lat="' + item.lat + '"' +
+                                        ' data-long="' + item.long + '"' +
                                         ' >GPS</button>' +
 
                                         '<button type="button" class="btn btn-info btn-sm"' +
                                         ' data-toggle="modal" data-target="#CommissionModal"' +
                                         ' title="Click this to add commission of the store."' +
-                                        ' data-id="' + item.ID + '"' + 
-                                        ' data-title="' + item.title + '"' +  
-                                        ' data-comm="' + item.comm + '"' +  
+                                        ' data-id="' + item.ID + '"' +
+                                        ' data-title="' + item.title + '"' +
+                                        ' data-comm="' + item.comm + '"' +
                                         ' >Commission</button>' +
 
 
                                     // '<button type="button" class="btn btn-success btn-sm"' +
                                     //     ' onclick="window.location.href = `<?php //echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT."&id="; ?>' + item.ID + '&name=' +item.title + '`;" ' +
-                                    //     ' title="Click this to navigate to variant list of this project."' + 
+                                    //     ' title="Click this to navigate to variant list of this project."' +
                                     //     ' >Products</button>' +
 
-                                             
-                                '</div>'; 
+
+                                '</div>';
                         }
                     }
                 ];
@@ -208,7 +208,7 @@
                             action: function ( e, dt, node, config ) {
                                 loadingAppList( storeTables );
                             }
-                        }, //'copy', 'csv', 'excel', 'pdf', 
+                        }, //'copy', 'csv', 'excel', 'pdf',
                         'print',
                     ],
                     responsive: true,
@@ -227,7 +227,7 @@
                     var count = columns.reduce( function (a,b) {
                         return b === false ? a+1 : a;
                     }, 0 );
-                
+
                     console.log( count +' column(s) are hidden' );
                 } );
             }
@@ -250,11 +250,11 @@
                         );
                     },
                     buttons: {
-                        "Confirm": function() 
+                        "Confirm": function()
                         {
                             var e = document.getElementById("new_category");
                             var storeCategory = e.options[e.selectedIndex].value;
-                            
+
                             var e = document.getElementById("new_country");
                             var countryValue = e.options[e.selectedIndex].value;
 
@@ -266,7 +266,7 @@
 
                             var e = document.getElementById("new_brgy");
                             var brgyValue = e.options[e.selectedIndex].value;
-                            
+
                             if(storeCategory == 0 || countryValue == 0 || provinceValue == 0 || cityValue == 0 || brgyValue == 0 ) {
                                 $('#CNAMessage').addClass('alert-failed');
                                 $('#CNAMessage').removeClass('tp-display-hide');
@@ -284,7 +284,7 @@
                                 $( this ).dialog( "close" );
                             }
                         },
-                        Cancel: function() 
+                        Cancel: function()
                         {
                             $('#jquery-overlay').addClass('tp-display-hide');
                             $( this ).dialog( "close" );
@@ -333,7 +333,7 @@
                 // This will be handled by create-app.php.
                 $.ajax({
                     dataType: 'json',
-                    type: 'POST', 
+                    type: 'POST',
                     data: postParam,
                     url:  '<?php echo TP_UIHOST . "/wp-json/tindapress/v1/stores/insert"; ?>',
                     success : function( data )
@@ -425,20 +425,20 @@
                         );
                     },
                     buttons: {
-                    "Confirm": function() 
+                    "Confirm": function()
                     {
                         confirmEditProcess( clickedBtnId );
                         $('#jquery-overlay').addClass('tp-display-hide');
                         $( this ).dialog( "close" );
                     },
-                    Cancel: function() 
+                    Cancel: function()
                     {
                         $('#jquery-overlay').addClass('tp-display-hide');
                         $( this ).dialog( "close" );
                     }
                     }
                 });
-                
+
             });
 
             function confirmEditProcess( clickedBtnId )
@@ -451,9 +451,9 @@
                     postParam.wpid = "<?php echo get_current_user_id(); ?>";
                     postParam.snky = "<?php echo wp_get_session_token(); ?>";
                     postParam.stid = $('#edit_id').val();
-                
+
                 var postUrl = "";
-                
+
                 if( clickedBtnId == "delete-app-btn" ) {
                     if( $('#edit_status').val() == 0 ) {
                         postUrl = '<?= TP_UIHOST . "/wp-json/tindapress/v1/stores/delete"; ?>';
@@ -469,12 +469,12 @@
                 // This will be handled by create-app.php.
                 $.ajax({
                     dataType: 'json',
-                    type: 'POST', 
+                    type: 'POST',
                     data: postParam,
                     url: postUrl,
                     success : function( data )
                     {
-                        
+
                         if( clickedBtnId == 'delete-app-btn' ) {
                             $('#new_title').val('');
                             $('#new_info').val('');
@@ -490,7 +490,7 @@
                             $('#delete-app-btn').removeClass('disabled');
                             $('#update-app-btn').removeClass('disabled');
                         }
-                        
+
                         $('#DFAMessage').addClass('alert-'+data.status);
                         $('#DFAMessage').removeClass('tp-display-hide');
                         $('#DFAMcontent').text( data.message );
@@ -552,7 +552,7 @@
                 var data = e.relatedTarget.dataset;
                 if ( (typeof null === data.logo && !null) || data.logo === 'None' || data.logo === null || !data.logo ) {
                     $('#imageResult').attr('src', '<?php echo TP_PLUGIN_URL . "/assets/images/default.jpg"; ?>' );
-                    
+
                 } else {
                     $('#imageResult').attr('src', data.logo );
 
@@ -562,7 +562,7 @@
                 $('#edit_status').val( data.status == 'Active' ? 1 : 0 );
         });
 
-        
+
         $('#AddLogo').on('hide.bs.modal', function(e) {
                 if( typeof activeTimeout !== 'undefined' )
                 {
@@ -638,13 +638,13 @@
                         );
                     },
                     buttons: {
-                        "Confirm": function() 
+                        "Confirm": function()
                         {
                             confirmCommissionProcess();
                             $('#jquery-overlay').addClass('tp-display-hide');
                             $( this ).dialog( "close" );
                         },
-                        Cancel: function() 
+                        Cancel: function()
                         {
                             $('#jquery-overlay').addClass('tp-display-hide');
                             $( this ).dialog( "close" );
@@ -669,13 +669,13 @@
                         );
                     },
                     buttons: {
-                        "Confirm": function() 
+                        "Confirm": function()
                         {
                             confirmGpsProcess();
                             $('#jquery-overlay').addClass('tp-display-hide');
                             $( this ).dialog( "close" );
                         },
-                        Cancel: function() 
+                        Cancel: function()
                         {
                             $('#jquery-overlay').addClass('tp-display-hide');
                             $( this ).dialog( "close" );
@@ -700,13 +700,13 @@
                     );
                 },
                 buttons: {
-                    "Confirm": function() 
+                    "Confirm": function()
                     {
                         confirmLogoProcess();
                         $('#jquery-overlay').addClass('tp-display-hide');
                         $( this ).dialog( "close" );
                     },
-                    Cancel: function() 
+                    Cancel: function()
                     {
                         $('#jquery-overlay').addClass('tp-display-hide');
                         $( this ).dialog( "close" );
@@ -716,7 +716,7 @@
         });
 
         function confirmLogoProcess() {
-            
+
             var postParam = new FormData();
             postParam.append( "img", $('#upload')[0].files[0]);
             postParam.append( "wpid", "<?php echo get_current_user_id(); ?>");
@@ -724,12 +724,12 @@
             postParam.append( "stid", $('#logo_store_id').val());
             postParam.append( "status", $('#edit_status').val());
             postParam.append( "type", 'logo');
-            postParam.append( "mkey", 'datavice');
-                
+            //postParam.append( "mkey", 'datavice');
+
             var postUrl = '<?= TP_UIHOST . "/wp-json/datavice/v1/process/upload"; ?>';
             $.ajax({
                 dataType: 'json',
-                type: 'POST', 
+                type: 'POST',
                 data: postParam,
                 url: postUrl,
                 processData : false,
@@ -749,7 +749,7 @@
                     $('#LogoContent').html( data.message );
                     $('#logo-app-form').trigger("reset");
                 },
-                error : function(jqXHR, textStatus, errorThrown) 
+                error : function(jqXHR, textStatus, errorThrown)
                 {
                     console.log("" + JSON.stringify(jqXHR) + " :: " + textStatus + " :: " + errorThrown);
                 }
@@ -759,7 +759,7 @@
         function confirmGpsProcess() {
             var latitude = $('#lat').val();
             var longitude = $('#long').val();
-            
+
             var postParam = {};
                     postParam.wpid = "<?php echo get_current_user_id(); ?>";
                     postParam.snky = "<?php echo wp_get_session_token(); ?>";
@@ -767,12 +767,12 @@
                     postParam.status = $('#edit_status').val();
                     postParam.lat = latitude;
                     postParam.lon = longitude;
-                
+
             var postUrl = '<?= TP_UIHOST . "/wp-json/datavice/v1/coordinates/insert"; ?>';
-        
+
             $.ajax({
                 dataType: 'json',
-                type: 'POST', 
+                type: 'POST',
                 data: postParam,
                 url: postUrl,
                 success : function( data )
@@ -783,7 +783,7 @@
                     //$('#gps-app-form').trigger("reset");
                     loadingAppList( storeTables );
                 },
-                error : function(jqXHR, textStatus, errorThrown) 
+                error : function(jqXHR, textStatus, errorThrown)
                 {
                     console.log("" + JSON.stringify(jqXHR) + " :: " + textStatus + " :: " + errorThrown);
                 }
@@ -799,10 +799,10 @@
                     postParam.stid = $('#comm_store_id').val();
                     postParam.comm = $('#edit_commission').val();
             var postUrl = '<?= TP_UIHOST . "/wp-json/tindapress/v1/stores/comm"; ?>';
-        
+
             $.ajax({
                 dataType: 'json',
-                type: 'POST', 
+                type: 'POST',
                 data: postParam,
                 url: postUrl,
                 success : function( data )
@@ -817,9 +817,9 @@
                     $('#CommMessage').removeClass('tp-display-hide');
                     $('#CommContent').html( data.message );
                     loadingAppList( storeTables );
-                
+
                 },
-                error : function(jqXHR, textStatus, errorThrown) 
+                error : function(jqXHR, textStatus, errorThrown)
                 {
                     console.log("" + JSON.stringify(jqXHR) + " :: " + textStatus + " :: " + errorThrown);
                 }

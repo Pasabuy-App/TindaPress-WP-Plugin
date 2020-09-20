@@ -166,6 +166,7 @@
 
                 foreach ($result as $key => $value) {
 
+
                     if($value->avatar == null || $value->avatar == 'None' ){
                         $value->avatar =  TP_PLUGIN_URL . "assets/images/default-store.png" ;
                     }
@@ -182,7 +183,13 @@
                         $value->long = "" ;
                     }
 
+                    if ($catid === null) {
+                        if ($value->catid  == 1 || $value->catid  == 2 ) {
+                            unset($result[$key]);
+                        }
+                    }
                 }
+
                 // Step5 : Return Result
                 return array(
                     "status" => "success",
