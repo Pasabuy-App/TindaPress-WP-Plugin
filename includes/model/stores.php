@@ -179,6 +179,15 @@
                                         ' data-comm="' + item.comm + '"' +
                                         ' >Commission</button>' +
 
+                                        '<button type="button" class="btn btn-warning btn-sm"' +
+                                        ' data-toggle="modal" data-target="#PartnerModal"' +
+                                        ' title="Click this to add Partner of the Pasabuy."' +
+                                        ' data-id="' + item.ID + '"' +
+                                        ' data-title="' + item.title + '"' +
+                                        ' data-isPartner="' + item.partner + '"' +
+                                        ' >Partner</button>' +
+
+
 
                                     // '<button type="button" class="btn btn-success btn-sm"' +
                                     //     ' onclick="window.location.href = `<?php //echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT."&id="; ?>' + item.ID + '&name=' +item.title + '`;" ' +
@@ -655,6 +664,67 @@
                 });
         });
 
+        $('#PartnerModal').on('show.bs.modal', function(e) {
+                var data = e.relatedTarget.dataset;
+
+                $('#ispartner_store_id').val( data.id );
+                $('#edit_store_name_partner').val( data.title );
+
+                if (data.ispartner == null ) {
+                    $('#edit_partner').val('')
+                }else{
+                    $('#edit_partner').val( data.ispartner )
+                }
+
+        });
+
+        $('#PartnerModal').on('hide.bs.modal', function(e) {
+            if( typeof activeTimeout !== 'undefined' ) {
+                clearTimeout( activeTimeout );
+            }
+
+            $('#IsPartnerMessage').removeClass('alert-danger');
+            $('#IsPartnerMessage').removeClass('alert-success');
+
+            if( !$('#IsPartnerMessage').hasClass('tp-display-hide') ){
+                $('#IsPartnerMessage').addClass('tp-display-hide');
+            }
+
+        });
+
+        // SUBMIT STORE ISPARTNER
+        $('#ispartner-app-form').submit( function(event) {
+            event.preventDefault();
+                $( "#dialog-confirm-ispartner" ).dialog({
+                    title: 'Confirmation',
+                    resizable: false,
+                    height: "auto",
+                    width: 320,
+                    modal: false,
+                    open: function() {
+                        $('#jquery-overlay').removeClass('tp-display-hide');
+                        $('#confirm-content-ispartner').html(
+                            '<span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>' +
+                            'Please confirm to complete the process, else just press cancel.'
+                        );
+                    },
+                    buttons: {
+                        "Confirm": function()
+                        {
+                            confirmPartnerProcess();
+                            $('#jquery-overlay').addClass('tp-display-hide');
+                            $( this ).dialog( "close" );
+                        },
+                        Cancel: function()
+                        {
+                            $('#jquery-overlay').addClass('tp-display-hide');
+                            $( this ).dialog( "close" );
+                        }
+                    }
+                });
+        });
+        // End
+
         $('#gps-app-form').submit( function(event) {
             event.preventDefault();
                 $( "#dialog-confirm-gps" ).dialog({
@@ -792,6 +862,7 @@
             });
         }
 
+
         function confirmCommissionProcess() {
             $('#CommMessage').removeClass('alert-danger');
             $('#CommMessage').removeClass('alert-success');
@@ -819,6 +890,45 @@
                     $('#CommMessage').removeClass('tp-display-hide');
                     $('#CommContent').html( data.message );
                     loadingAppList( storeTables );
+
+                },
+                error : function(jqXHR, textStatus, errorThrown)
+                {
+                    console.log("" + JSON.stringify(jqXHR) + " :: " + textStatus + " :: " + errorThrown);
+                }
+            });
+        }
+
+
+        function confirmPartnerProcess() {
+            $('#IsPartnerMessage').removeClass('alert-danger');
+            $('#IsPartnerMessage').removeClass('alert-success');
+            var postParam = {};
+                    postParam.wpid = "<?php echo get_current_user_id(); ?>";
+                    postParam.snky = "<?php echo wp_get_session_token(); ?>";
+                    postParam.stid = $('#ispartner_store_id').val();
+                    postParam.partner = $('#edit_partner').val();
+            var postUrl = '<?= TP_UIHOST . "/wp-json/tindapress/v1/stores/partner"; ?>';
+
+            $.ajax({
+                dataType: 'json',
+                type: 'POST',
+                data: postParam,
+                url: postUrl,
+                success : function( data )
+                {
+                    let status = '';
+                    if (data.status == 'failed' || data.status == 'error' || data.status == 'unknown') {
+                       status = 'danger';
+                    } else {
+                        status = data.status;
+                    }
+                    $('#IsPartnerMessage').addClass('alert-'+status);
+                    $('#IsPartnerMessage').removeClass('tp-display-hide');
+                    $('#IsPartnerContent').html( data.message );
+                    loadingAppList( storeTables );
+                    document.getElementById("ispartner-app-form").reset();
+                    //$('#IsPartnerMessage').addClass('tp-display-hide');
 
                 },
                 error : function(jqXHR, textStatus, errorThrown)

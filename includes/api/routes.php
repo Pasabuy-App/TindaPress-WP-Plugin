@@ -41,6 +41,7 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/class-store-nearme.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-update-commision.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-listing-byCategory.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-update-partner.php';
 
         // Document Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-delete.php';
@@ -60,6 +61,7 @@
         require plugin_dir_path(__FILE__) . '/v1/category/class-update.php';
         require plugin_dir_path(__FILE__) . '/v1/category/class-activate.php';
         require plugin_dir_path(__FILE__) . '/v1/category/class-listing.php';
+        require plugin_dir_path(__FILE__) . '/v1/category/class-listing-with-product.php';
 
         // Address Folder
         require plugin_dir_path(__FILE__) . '/v1/stores/address/class-insert.php';
@@ -181,6 +183,12 @@
         /*
          * STORE RESTAPI
         */
+
+            register_rest_route( 'tindapress/v1/stores', 'partner', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Update_Partner','listen'),
+            ));
+
             register_rest_route( 'tindapress/v1/stores/list', 'category', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Store_Listing_By_Category','listen'),
@@ -302,6 +310,11 @@
         /*
          * CATEGORIES RESTAPI
         */
+
+            register_rest_route( 'tindapress/v1/category/list', 'product', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Category_Listing_With_Product','listen'),
+            ));
 
             register_rest_route( 'tindapress/v1/category', 'insert', array(
                 'methods' => 'POST',
