@@ -56,14 +56,16 @@
                             "wpid": "<?php echo get_current_user_id(); ?>",
                             "snky": "<?php echo wp_get_session_token(); ?>"
                         };
-                        postParam.status = 0;
+
                         <?php if( isset($_GET['catid']) ) { ?>
-                            postParam.status = '<?= $_GET['catid'] ?>';
+                            postParam.catid = '<?= $_GET['catid'] ?>';
                         <?php } ?>
+
                         <?php if( isset($_GET['status']) ) { ?>
                             postParam.status = '<?= $_GET['status'] ?>';
                         <?php } ?>
-                    var postUrl = '<?php echo TP_UIHOST . "/wp-json/tindapress/v1/stores/list"; ?>';
+
+                        var postUrl = '<?php echo TP_UIHOST . "/wp-json/tindapress/v1/stores/list"; ?>';
 
                     $.ajax({
                         dataType: 'json',
@@ -72,14 +74,13 @@
                         url: postUrl,
                         success : function( data )
                         {
-                            console.log(data)
+
                             if(data.status == "success") {
                                 displayingLoadedApps( data.data );
                             } else {
                                 displayingLoadedApps( [] );
                             }
 
-                            console.log( "Demoguy: " + data );
 
                             if(data.avatar != 'None') {
                                 $('#imageResult').attr('src', data.avatar );
@@ -338,6 +339,7 @@
                     url:  '<?php echo TP_UIHOST . "/wp-json/tindapress/v1/stores/insert"; ?>',
                     success : function( data )
                     {
+                        console.log(data);
                         if( data.status == 'success' ) {
                             $('#new_title').val('');
                             $('#new_info').val('');

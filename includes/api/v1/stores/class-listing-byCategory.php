@@ -192,6 +192,7 @@
                             if ($type !== 'groceryhub' && $type !== 'storehub' && $type !== 'foodhub'  ) {
                                 # code...
                             }
+
                             switch ($type) {
                                 case 'groceryhub':
                                         if ($value->catid  != '2' ) {

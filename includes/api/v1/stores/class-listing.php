@@ -79,7 +79,7 @@
             INNER JOIN dv_address `add` ON str.address = `add`.ID
             INNER JOIN tp_categories cat ON cat.ID = str.ctid
             ";
-            
+
             isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL  ;
             isset($_POST['catid']) ? $ctd = $_POST['catid'] : $ctd = NULL  ;
             isset($_POST['stid']) ? $std = $_POST['stid'] : $std = NULL  ;
@@ -88,7 +88,6 @@
             $status = $sts == '0' || $sts == NULL ? NULL : ($sts == '2'&& $sts !== '0'? '0':'1');
             $catid = $ctd == '0'? NULL: $catid = $ctd;
             $stid = $std == "0" ? NULL: $stid = $std;
-
             // Status condition
             if(isset($_POST['status'])){
                 if($status != NULL){
@@ -155,6 +154,7 @@
             // return $sql;
             // Execute query
 			$sql .= " ORDER BY str.ID DESC LIMIT $limit ";
+
             $result = $wpdb->get_results($sql);
 
             // Step4 : Check if no result
