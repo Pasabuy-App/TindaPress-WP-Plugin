@@ -58,7 +58,7 @@
                         };
                         postParam.status = 0;
                         <?php if( isset($_GET['catid']) ) { ?>
-                            postParam.status = '<?= $_GET['catid'] ?>';
+                            postParam.ctid = '<?= $_GET['catid'] ?>';
                         <?php } ?>
                         <?php if( isset($_GET['status']) ) { ?>
                             postParam.status = '<?= $_GET['status'] ?>';
@@ -72,7 +72,9 @@
                         url: postUrl,
                         success : function( data )
                         {
-                            console.log(data)
+                            console.log(data+"datass")
+
+                            console.log(data.status+"haha")
                             if(data.status == "success") {
                                 displayingLoadedApps( data.data );
                             } else {
@@ -338,6 +340,7 @@
                     url:  '<?php echo TP_UIHOST . "/wp-json/tindapress/v1/stores/insert"; ?>',
                     success : function( data )
                     {
+                        console.log(data);
                         if( data.status == 'success' ) {
                             $('#new_title').val('');
                             $('#new_info').val('');
