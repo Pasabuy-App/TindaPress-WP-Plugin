@@ -134,17 +134,11 @@
                         "message" => "Required fields cannot be empty.",
                     );
                 }
-				if ( !is_numeric($_POST["lid"])) {
-					return array(
-						"status" => "failed",
-						"message" => "Parameters not in valid format.",
-					);
-				}
 
-				$lastid = $_POST['lid'];
-				$sql .= " AND tp_prod.ID < $lastid ";
-				$limit = 7;
 
+                $lastid = $_POST['lid'];
+                $offset = 12 + $lastid;
+				$limit = "7 OFFSET ".$offset;
             }
 
 			$sql .= " ORDER BY tp_prod.ID DESC LIMIT $limit ";
@@ -174,7 +168,7 @@
                     $get_discount->expiry = '';
                 }
 
-                $value->discount =$get_discount;
+                $value->discount = $get_discount;
 
             }
 
