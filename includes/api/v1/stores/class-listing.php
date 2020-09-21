@@ -79,6 +79,7 @@
             INNER JOIN dv_address `add` ON str.address = `add`.ID
             INNER JOIN tp_categories cat ON cat.ID = str.ctid
             ";
+            
             isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL  ;
             isset($_POST['catid']) ? $ctd = $_POST['catid'] : $ctd = NULL  ;
             isset($_POST['stid']) ? $std = $_POST['stid'] : $std = NULL  ;
@@ -183,11 +184,11 @@
                         $value->long = "" ;
                     }
 
-                    if ($catid === null) {
+                    /* if ($catid === null) {
                         if ($value->catid  == 1 || $value->catid  == 2 ) {
                             unset($result[$key]);
                         }
-                    }
+                    } */
                 }
 
                 // Step5 : Return Result
