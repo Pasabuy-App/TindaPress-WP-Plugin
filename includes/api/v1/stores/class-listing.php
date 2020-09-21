@@ -104,14 +104,22 @@
                 if ($catid != NULL && $catid != '0') {
 
                     if ($status !== NULL ) {
-
-                        $sql .= " AND `str`.ctid = $catid ";
+                        if ($catid === "all" ) {
+                            $sql .= " AND NOT str.ctid IN ('2','1','9') ";
+                        }
+                        else{
+                            $sql .= " AND `str`.ctid = $catid ";
+                        }
 
                     }else{
-
-                        $sql .= " WHERE `str`.ctid = $catid ";
-
+                        if ($catid === "all" ) {
+                            $sql .= " WHERE NOT str.ctid IN ('2','1','9') ";
+                        }
+                        else{
+                            $sql .= " WHERE `str`.ctid = $catid ";
+                        }
                     }
+
                 }
             }
 
