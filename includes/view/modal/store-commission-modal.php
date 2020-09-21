@@ -1,7 +1,7 @@
 
 <?php
 	// Exit if accessed directly
-	if ( ! defined( 'ABSPATH' ) ) 
+	if ( ! defined( 'ABSPATH' ) )
 	{
 		exit;
 	}
@@ -34,11 +34,12 @@
                                 <option value="" hidden selected>Select Commission Rate</option>
                                 <option value="17.5">17.5%</option>
                                 <option value="20">20%</option>
+                                <option value="0">0%</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <div class="alert alert-dark tp-center-item" role="alert">
-                                <strong>NOTE:</strong> Before we submit your request a dialog confirmation will appear 
+                                <strong>NOTE:</strong> Before we submit your request a dialog confirmation will appear
                                 to ask for your permission to complete the task.
                             </div>
                         </div>

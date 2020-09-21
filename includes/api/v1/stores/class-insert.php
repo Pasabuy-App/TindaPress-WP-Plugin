@@ -273,7 +273,7 @@
                 $wpdb->query("INSERT INTO $table_tp_revs $table_revs_fields  VALUES ('$revs_type', '0', 'status', '1', '{$user["created_by"]}', '$date_created')");
                 $status = $wpdb->insert_id;
 
-                $wpdb->query(" INSERT INTO $table_tp_revs $table_revs_fields VALUES ( '$revs_type', '0', 'commission', '20', '{$user["created_by"]}', '$date_created' ) ");
+                $wpdb->query(" INSERT INTO $table_tp_revs $table_revs_fields VALUES ( '$revs_type', '0', 'commission', '0', '{$user["created_by"]}', '$date_created' ) ");
                 $comm = $wpdb->insert_id;
 
 
