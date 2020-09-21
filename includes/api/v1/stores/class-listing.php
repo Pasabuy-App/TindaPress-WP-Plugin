@@ -88,7 +88,6 @@
             $status = $sts == '0' || $sts == NULL ? NULL : ($sts == '2'&& $sts !== '0'? '0':'1');
             $catid = $ctd == '0'? NULL: $catid = $ctd;
             $stid = $std == "0" ? NULL: $stid = $std;
-
             // Status condition
             if(isset($_POST['status'])){
                 if($status != NULL){
