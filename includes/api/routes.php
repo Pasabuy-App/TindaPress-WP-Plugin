@@ -61,6 +61,7 @@
         require plugin_dir_path(__FILE__) . '/v1/category/class-update.php';
         require plugin_dir_path(__FILE__) . '/v1/category/class-activate.php';
         require plugin_dir_path(__FILE__) . '/v1/category/class-listing.php';
+        require plugin_dir_path(__FILE__) . '/v1/category/class-listing-with-product.php';
 
         // Address Folder
         require plugin_dir_path(__FILE__) . '/v1/stores/address/class-insert.php';
@@ -309,6 +310,11 @@
         /*
          * CATEGORIES RESTAPI
         */
+
+            register_rest_route( 'tindapress/v1/category/list', 'product', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Category_Listing_With_Product','listen'),
+            ));
 
             register_rest_route( 'tindapress/v1/category', 'insert', array(
                 'methods' => 'POST',
