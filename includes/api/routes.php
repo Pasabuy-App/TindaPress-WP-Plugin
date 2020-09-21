@@ -41,6 +41,7 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/class-store-nearme.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-update-commision.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-listing-byCategory.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-update-partner.php';
 
         // Document Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-delete.php';
@@ -181,6 +182,12 @@
         /*
          * STORE RESTAPI
         */
+
+            register_rest_route( 'tindapress/v1/stores', 'partner', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Update_Partner','listen'),
+            ));
+
             register_rest_route( 'tindapress/v1/stores/list', 'category', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Store_Listing_By_Category','listen'),

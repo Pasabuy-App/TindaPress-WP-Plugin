@@ -276,6 +276,9 @@
                 $wpdb->query(" INSERT INTO $table_tp_revs $table_revs_fields VALUES ( '$revs_type', '0', 'commission', '0', '{$user["created_by"]}', '$date_created' ) ");
                 $comm = $wpdb->insert_id;
 
+                $wpdb->query(" INSERT INTO $table_tp_revs $table_revs_fields VALUES ( '$revs_type', '0', 'isPartner', 'false', '{$user["created_by"]}', '$date_created' ) ");
+                $isPartner = $wpdb->insert_id;
+
 
                 // Insert query for store
                 $wpdb->query("INSERT INTO $table_store $table_store_fields VALUES ('{$user["catid"]}', $title, $short_info, $long_info, $logo, $banner, $status, '0', '{$user["created_by"]}', '$date_created' )");
@@ -286,7 +289,7 @@
                 // End query for store
 
                 // update table revision
-                 $result_update_tp_rev_store = $wpdb->query("UPDATE $table_tp_revs SET `parent_id` = $store_id WHERE ID IN ($title, $short_info, $long_info, $logo, $banner, $status, $comm) ");
+                 $result_update_tp_rev_store = $wpdb->query("UPDATE $table_tp_revs SET `parent_id` = $store_id WHERE ID IN ($title, $short_info, $long_info, $logo, $banner, $status, $comm, $isPartner) ");
 
             !isset($_POST['phone']) || empty($_POST['phone']) ? $phone =   NULL : $phone = $_POST['phone'];
             !isset($_POST['email']) || empty($_POST['email']) ? $email =  NULL : $email = $_POST['email'] ;
