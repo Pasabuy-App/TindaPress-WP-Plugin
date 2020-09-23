@@ -1,7 +1,7 @@
 
 <?php
 	// Exit if accessed directly
-	if ( ! defined( 'ABSPATH' ) ) 
+	if ( ! defined( 'ABSPATH' ) )
 	{
 		exit;
 	}
@@ -51,7 +51,7 @@
 	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/store-add-logo-modal.php" ); ?>
 	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/store-add-gps-modal.php" ); ?>
 	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/store-commission-modal.php" ); ?>
+	<?php include_once( TP_PLUGIN_PATH . "/includes/view/modal/store-ispartner-modal.php" ); ?>
 
 
 	<div id="jquery-overlay" class="modal-backdrop fade show tp-display-hide" style="z-index: 9999;"></div>
-	

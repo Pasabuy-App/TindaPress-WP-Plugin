@@ -57,6 +57,9 @@
             str.ID,
             str.ctid AS `catid`,
             str.address AS `add_id`,
+            IF(( SELECT rev.child_val FROM tp_revisions rev WHERE rev.parent_id = str.ID AND  rev.date_created = ( SELECT MAX(date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores'  ) AND child_key ='isPartner' )is null ,
+            'false', IF( ( SELECT rev.child_val FROM tp_revisions rev WHERE rev.parent_id = str.ID AND  rev.date_created = ( SELECT MAX(date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores'  ) AND child_key ='isPartner' ) = 'false', 'false', 'true'  )) AS `partner`,
+
             CONCAT(( SELECT rev.child_val FROM tp_revisions rev WHERE rev.parent_id = str.ID AND  rev.date_created = ( SELECT MAX(date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores'  ) AND child_key ='commission' ), '%') AS comm,
             ( SELECT rev.child_val FROM tp_revisions rev WHERE rev.ID = cat.title  AND rev.date_created = (SELECT MAX(tp_rev.date_created) FROM tp_revisions tp_rev WHERE ID = rev.ID  AND revs_type ='categories'   )  ) as cat_name,
             ( SELECT rev.child_val FROM tp_revisions rev WHERE rev.id = str.title AND  rev.date_created = ( SELECT MAX(date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores' )  ) AS title,
@@ -79,6 +82,7 @@
             INNER JOIN dv_address `add` ON str.address = `add`.ID
             INNER JOIN tp_categories cat ON cat.ID = str.ctid
             ";
+
             isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL  ;
             isset($_POST['catid']) ? $ctd = $_POST['catid'] : $ctd = NULL  ;
             isset($_POST['stid']) ? $std = $_POST['stid'] : $std = NULL  ;
@@ -87,7 +91,6 @@
             $status = $sts == '0' || $sts == NULL ? NULL : ($sts == '2'&& $sts !== '0'? '0':'1');
             $catid = $ctd == '0'? NULL: $catid = $ctd;
             $stid = $std == "0" ? NULL: $stid = $std;
-
             // Status condition
             if(isset($_POST['status'])){
                 if($status != NULL){
@@ -101,14 +104,22 @@
                 if ($catid != NULL && $catid != '0') {
 
                     if ($status !== NULL ) {
-
-                        $sql .= " AND `str`.ctid = $catid ";
+                        if ($catid === "all" ) {
+                            $sql .= " AND NOT str.ctid IN ('2','1','9') ";
+                        }
+                        else{
+                            $sql .= " AND `str`.ctid = $catid ";
+                        }
 
                     }else{
-
-                        $sql .= " WHERE `str`.ctid = $catid ";
-
+                        if ($catid === "all" ) {
+                            $sql .= " WHERE NOT str.ctid IN ('2','1','9') ";
+                        }
+                        else{
+                            $sql .= " WHERE `str`.ctid = $catid ";
+                        }
                     }
+
                 }
             }
 
@@ -154,6 +165,7 @@
             // return $sql;
             // Execute query
 			$sql .= " ORDER BY str.ID DESC LIMIT $limit ";
+
             $result = $wpdb->get_results($sql);
 
             // Step4 : Check if no result
@@ -165,6 +177,7 @@
             }else{
 
                 foreach ($result as $key => $value) {
+
 
                     if($value->avatar == null || $value->avatar == 'None' ){
                         $value->avatar =  TP_PLUGIN_URL . "assets/images/default-store.png" ;
@@ -182,7 +195,13 @@
                         $value->long = "" ;
                     }
 
+                    /* if ($catid === null) {
+                        if ($value->catid  == 1 || $value->catid  == 2 ) {
+                            unset($result[$key]);
+                        }
+                    } */
                 }
+
                 // Step5 : Return Result
                 return array(
                     "status" => "success",
