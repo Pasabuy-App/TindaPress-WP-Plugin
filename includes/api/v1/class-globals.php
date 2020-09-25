@@ -93,7 +93,8 @@
              $access = array_column($get_access, 'access');
 
             //Check if user has permitted role access or one of our staff
-            if ( !in_array($role , $access, true) || DV_Globals::check_roles('editor') === true || DV_Globals::check_roles('contributor') === true || DV_Globals::check_roles('administrator') === true || DV_Globals::check_roles('Author') === true ) {
+            if ( !in_array($role , $access, true) || DV_Globals::check_roles('editor') === true
+            || DV_Globals::check_roles('contributor') === true || DV_Globals::check_roles('administrator') === true || DV_Globals::check_roles('Author') === true ) {
                 return true;
             }
             return false;

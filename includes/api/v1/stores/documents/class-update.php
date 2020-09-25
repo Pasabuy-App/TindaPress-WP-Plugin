@@ -1,24 +1,24 @@
 <?php
 	// Exit if accessed directly
-	if ( ! defined( 'ABSPATH' ) ) 
+	if ( ! defined( 'ABSPATH' ) )
 	{
 		exit;
 	}
 
-	/** 
+	/**
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
 	class TP_Update_Documents {
 
         public static function listen($request){
-            return rest_ensure_response( 
+            return rest_ensure_response(
                 TP_Update_Documents::insert_document($request)
             );
         }
-                                                        
+
         public static function insert_document($request){
-            
+
             global $wpdb;
 
             // Step 1: Check if prerequisites plugin are missing
@@ -29,7 +29,7 @@
                     "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
-           
+
             // Step 2: Validate user
             if (DV_Verification::is_verified() == false) {
                 return array(
@@ -39,19 +39,19 @@
             }
 
             // Step 3: Sanitize if all variables at POST
-            if ( !isset($_POST['doc_type']) 
-                || !isset($_POST['stid'])  
+            if ( !isset($_POST['doc_type'])
+                || !isset($_POST['stid'])
                 || !isset($_POST['doc_id']) ) {
 				return array(
 					"status" => "unknown",
 					"message" => "Please contact your administrator. Request unknown!",
                 );
-                
+
             }
 
-            // Step 4: Check if all variables is not empty 
-            if ( empty($_POST['doc_type']) 
-                || empty($_POST['stid']) 
+            // Step 4: Check if all variables is not empty
+            if ( empty($_POST['doc_type'])
+                || empty($_POST['stid'])
                 || empty($_POST['doc_id'])) {
                 return array(
                     "status" => "failed",
@@ -62,8 +62,8 @@
             // Declare variables
             $tp_docs = TP_DOCU_TABLE;
             $doc_fields = DOCS_FIELDS;
-            $table_revs = TP_REVISIONS_TABLE;  
-            $revs_fields = TP_REVISION_FIELDS;        
+            $table_revs = TP_REVISIONS_TABLE;
+            $revs_fields = TP_REVISION_FIELDS;
             $wpid = $_POST['wpid'];
             $doc_type = $_POST['doc_type'];
             $stid = $_POST['stid'];
@@ -81,8 +81,15 @@
 
             // Step 6: Start Query
             $wpdb->query("START TRANSACTION");
+            $files = $request->get_file_params();
 
-            $result = DV_Globals::upload_image( $request); // upload image
+            if ( !isset($files['img'])) {
+				return  array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Request Unknown!",
+                );
+            }
+            $result = DV_Globals::upload_image( $request, $files); // upload image
             $doc_prev = substr($result['data'], 45); // get /year/month/filename to save in database
 
             $insert = $wpdb->query("INSERT INTO $table_revs $revs_fields VALUES ('documents', $doc_id, 'preview', '$doc_prev', '$wpid', '$date_created' ) ");

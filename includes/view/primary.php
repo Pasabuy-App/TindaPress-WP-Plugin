@@ -1,7 +1,7 @@
 
 <?php
 	// Exit if accessed directly
-	if ( ! defined( 'ABSPATH' ) ) 
+	if ( ! defined( 'ABSPATH' ) )
 	{
 		exit;
 	}
@@ -12,10 +12,10 @@
     */
 
     #region Initilized new admin menu for this plugin including submenus.
-        function tindapress_init_admin_menu() 
+        function tindapress_init_admin_menu()
         {
             // Add new menu to the admin page.
-            add_menu_page(TP_CUSTOM, TP_CUSTOM, 'edit_posts', TP_MENU_STARTED, 
+            add_menu_page(TP_CUSTOM, TP_CUSTOM, 'edit_posts', TP_MENU_STARTED,
                 'tindapress_gettingstarted_page_callback', TP_PLUGIN_URL . '/icon.png', 4 );
 
             add_submenu_page(TP_MENU_STARTED, 'TP Getting Started', 'Getting Started',
@@ -56,12 +56,12 @@
         function tindapress_product_browser_page_callback()
         {
             include_once( TP_PLUGIN_PATH . '/includes/view/menu/product-browser.php' );
-        }    
-        
+        }
+
         function tindapress_variant_browser_page_callback()
         {
             include_once( TP_PLUGIN_PATH . '/includes/view/menu/variant-browser.php' );
-        } 
+        }
 
         function tindapress_setting_page_callback()
         {

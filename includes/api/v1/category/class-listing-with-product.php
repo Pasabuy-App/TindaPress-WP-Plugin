@@ -139,7 +139,6 @@
             $results =  $wpdb->get_results($sql);
             foreach ($results as $key => $value) {
                 $value->products = TP_Globals::get_product($value->ID,$value->stid);
-
             }
 
             return array(
