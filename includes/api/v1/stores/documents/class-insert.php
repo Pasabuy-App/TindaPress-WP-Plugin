@@ -31,12 +31,12 @@
             }
 
             // Step 2: Validate user
-            /* if (DV_Verification::is_verified() == false) {
+            if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
                         "message" => "Please contact your administrator. Verification Issues!",
                 );
-            } */
+            } 
 
             // Step 3: Sanitize if all variables at POST
             if ( !isset($_POST['doc_type']) || !isset($_POST['stid']) ) {
@@ -104,7 +104,7 @@
             }
 
             $result = DV_Globals::upload_image( $request,$files ); // upload image
-            $doc_prev = substr($result['data'], 45); // get /year/month/filename to save in database
+            $doc_prev = $result['data']; // get /year/month/filename to save in database
             $child_key = array( //stored in array
                 'preview'   =>$doc_prev,
                 'status'    =>'1'

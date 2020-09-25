@@ -13,15 +13,15 @@
     class TP_Product_Insert {
 
         //REST API Call
-        public static function listen(){
+        public static function listen($request){
 
             return rest_ensure_response(
-                TP_Product_Insert:: insert_product()
+                TP_Product_Insert:: insert_product($request)
             );
         }
 
         //QA Done 2020-08-12 10:45 am
-        public static function insert_product(){
+        public static function insert_product($request){
 
             // 2nd Initial QA 2020-08-24 6:09 PM - Miguel
 
@@ -58,7 +58,7 @@
                || !isset($_POST["title"])     || !isset($_POST["short_info"])
                || !isset($_POST["long_info"]) || !isset($_POST["sku"])
                || !isset($_POST["price"])     || !isset($_POST["weight"])
-               || !isset($_POST["dimension"]) || !isset($_POST["preview"])) {
+               || !isset($_POST["dimension"]) ){
 				return array(
 					"status" => "unknown",
 					"message" => "Please contact your administrator. Request unknown!",
@@ -74,11 +74,10 @@
                 || empty($_POST["sku"])
                 || empty($_POST["price"])
                 || empty($_POST["weight"])
-                || empty($_POST["dimension"])
-                || empty($_POST["preview"])) {
+                || empty($_POST["dimension"])) {
 				return array(
 					"status" => "unknown",
-					"message" => "Required fields cannot be empty!",
+					"message" => "Required fields cannot be emptys!",
                 );
             }
 
@@ -155,14 +154,26 @@
 
             // End of category validation
 
-
             // Step 8: Start mysql transaction
             $wpdb->query("START TRANSACTION");
+            
+            $product_prev = "None";
+            $files = $request->get_file_params();
+
+            if ( isset($files['img'])) {
+				$results = DV_Globals::upload_image( $request,$files ); 
+                $product_prev = $results['data']; 
+                if (!$results){
+                    return array(
+                        "status" => "failed",
+                        "message" => "An error occured while submitting data to database.");
+                }
+            }
 
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'title', '{$user["title"]}', '{$user["created_by"]}', '$date')");
                 $title = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'preview', '{$user["preview"]}', '{$user["created_by"]}', '$date')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'preview', '$product_prev', '{$user["created_by"]}', '$date')");
                 $preview = $wpdb->insert_id;
 
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'short_info', '{$user["short_info"]}', '{$user["created_by"]}', '$date')");
@@ -235,7 +246,7 @@
             $cur_user['price']      = $_POST["price"];
             $cur_user['weight']     = $_POST["weight"];
             $cur_user['dimension']  = $_POST["dimension"];
-            $cur_user['preview']    =  $_POST["preview"] == "None"? null :$_POST["preview"];
+            //$cur_user['preview']    =  $_POST["preview"] == "None"? null :$_POST["preview"];
 
             return  $cur_user;
         }
