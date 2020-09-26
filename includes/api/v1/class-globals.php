@@ -67,33 +67,49 @@
 
             if ($store_id == 0) {
                 //Check if personnel is part of the store
-                 $personnels = $wpdb->get_row("SELECT `wpid`, `roid`
-                    FROM `tp_personnels`
-                    WHERE `wpid` = $wpid");
+                 $personnels = $wpdb->get_row("SELECT
+                        ac.access
+                    FROM
+                        tp_personnels p
+                    INNER JOIN tp_roles rs ON  rs.ID = p.roid
+                    INNER JOIN tp_roles_meta rsm ON  rsm.roid = rs.ID
+                    INNER JOIN tp_access ac ON ac.ID = rsm.access
+                    WHERE
+                        wpid = '$wpid'
+                        AND p.status = 'active'");
             }else{
                 //Check if personnel is part of the store
-                $personnels = $wpdb->get_row("SELECT `wpid`, `roid`
-                    FROM `tp_personnels`
-                    WHERE `stid` = $store_id
-                    AND `wpid` = $wpid");
+
+                $personnels = $wpdb->get_row("SELECT
+                        ac.access
+                    FROM
+                        tp_personnels p
+                    INNER JOIN tp_roles rs ON  rs.ID = p.roid
+                    INNER JOIN tp_roles_meta rsm ON  rsm.roid = rs.ID
+                    INNER JOIN tp_access ac ON ac.ID = rsm.access
+                    WHERE
+                        `stid` = $store_id
+                        AND `wpid` = $wpid
+                        AND p.status = 'active'");
+
             }
 
             if (!$personnels) {
                 return false;
             }
 
-            $role_id = $personnels->roid;
+            //$role_id = $personnels->roid;
 
             //Get all access from that role_id
-            $get_access = $wpdb->get_results("SELECT rm.access
+           /*  $get_access = $wpdb->get_results("SELECT rm.access
                 FROM `tp_roles` r
                     LEFT JOIN tp_roles_meta rm ON rm.roid = r.ID
-                WHERE r.id = $role_id");
+                WHERE r.id = $role_id"); */
 
-             $access = array_column($get_access, 'access');
+            // $access = array_column($personnels, 'access');
 
             //Check if user has permitted role access or one of our staff
-            if ( !in_array($role , $access, true) || DV_Globals::check_roles('editor') === true
+            if ( !in_array($role ,$personnels, true) || DV_Globals::check_roles('editor') === true
             || DV_Globals::check_roles('contributor') === true || DV_Globals::check_roles('administrator') === true || DV_Globals::check_roles('Author') === true ) {
                 return true;
             }
