@@ -124,17 +124,16 @@
             // Uncomment for debugging
             //return $sql;
 
-            $limit ='12';
+            $limit = 12;
 
             if( isset($_POST['lid']) ){
 				// Step 4: Validate parameter
-                if (empty($_POST['lid']) ) {
-                    return array(
-                        "status" => "failed",
-                        "message" => "Required fields cannot be empty.",
-                    );
-                }
-
+                // if (empty($_POST['lid']) ) {
+                //     return array(
+                //         "status" => "failed",
+                //         "message" => "Required fields cannot be empty.",
+                //     );
+                // }
 
                 $lastid = $_POST['lid'];
                 $offset = 12 + $lastid;
