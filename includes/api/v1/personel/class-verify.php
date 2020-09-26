@@ -61,7 +61,7 @@
                         "store_name" => $get_name->title,
                         "roid" => $personel->roid,
                     "logo" =>  $get_logo->logo == null? TP_PLUGIN_URL . "assets/images/default-store.png":($get_logo->logo == "None"? TP_PLUGIN_URL . "assets/images/default-store.png":$get_logo->logo),
-                    "banner" => $get_banner->banner == null? TP_PLUGIN_URL . "assets/images/default-store.png":($get_banner->banner == "None"? TP_PLUGIN_URL . "assets/images/default-store.png":$get_banner->banner)
+                    "banner" => $get_banner->banner == null? TP_PLUGIN_URL . "assets/images/default-banner.png":($get_banner->banner == "None"? TP_PLUGIN_URL . "assets/images/default-banner.png":$get_banner->banner)
                     )
                 );
             }
