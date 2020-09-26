@@ -27,6 +27,7 @@
         // Personel Classes
         require plugin_dir_path(__FILE__) . '/v1/personel/class-insert-role.php';
         require plugin_dir_path(__FILE__) . '/v1/personel/class-insert-role-access.php';
+        require plugin_dir_path(__FILE__) . '/v1/personel/class-verify.php';
 
         //Stores Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/class-insert.php';
@@ -92,7 +93,7 @@
     {
 
         /*
-         * PRODUCT RESTAPI
+         * PERSONNEL RESTAPI
         */
             register_rest_route( 'tindapress/v1/personel/role', 'create', array(
                 'methods' => 'POST',
@@ -102,6 +103,11 @@
             register_rest_route( 'tindapress/v1/personel/role/create', 'access', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Personel_Create_Role_Meta','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/personel/role', 'verify', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Verify_Store_Personel','listen'),
             ));
 
         /*
