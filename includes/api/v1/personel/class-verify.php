@@ -50,6 +50,7 @@
                 return array( "status" => "failed" );
             }else{
 
+                $get_name = $wpdb->get_row("SELECT (SELECT child_val FROM tp_revisions WHERE ID = st.title AND revs_type = 'stores' AND parent_id =  $personel->stid) as title, ID FROM tp_stores st WHERE ID = $personel->stid");
                 $get_logo = $wpdb->get_row("SELECT (SELECT child_val FROM tp_revisions WHERE ID = st.logo AND revs_type = 'stores' AND parent_id =  $personel->stid) as logo, ID FROM tp_stores st WHERE ID = $personel->stid");
                 $get_banner = $wpdb->get_row("SELECT (SELECT child_val FROM tp_revisions WHERE ID = st.banner AND revs_type = 'stores' AND parent_id =  $personel->stid) as banner FROM tp_stores st WHERE ID = $personel->stid");
                 // TP_PLUGIN_URL . "assets/images/default-store.png"
@@ -57,7 +58,8 @@
                     "status" => "success",
                     "data" => array(
                         "stid" => $personel->stid,
-                    "roid" => $personel->roid,
+                        "store_name" => $get_name->title,
+                        "roid" => $personel->roid,
                     "logo" =>  $get_logo->logo == null? TP_PLUGIN_URL . "assets/images/default-store.png":($get_logo->logo == "None"? TP_PLUGIN_URL . "assets/images/default-store.png":$get_logo->logo),
                     "banner" => $get_banner->banner == null? TP_PLUGIN_URL . "assets/images/default-store.png":($get_banner->banner == "None"? TP_PLUGIN_URL . "assets/images/default-store.png":$get_banner->banner)
                     )
