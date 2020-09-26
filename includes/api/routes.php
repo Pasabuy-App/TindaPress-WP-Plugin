@@ -28,6 +28,10 @@
         require plugin_dir_path(__FILE__) . '/v1/personel/class-insert-role.php';
         require plugin_dir_path(__FILE__) . '/v1/personel/class-insert-role-access.php';
         require plugin_dir_path(__FILE__) . '/v1/personel/class-verify.php';
+        require plugin_dir_path(__FILE__) . '/v1/personel/class-listing-access.php';
+        require plugin_dir_path(__FILE__) . '/v1/personel/class-insert-personnel.php';
+        require plugin_dir_path(__FILE__) . '/v1/personel/class-delete-personnel.php';
+        require plugin_dir_path(__FILE__) . '/v1/personel/class-activate-personnel.php';
 
         //Stores Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/class-insert.php';
@@ -110,6 +114,25 @@
                 'callback' => array('TP_Verify_Store_Personel','listen'),
             ));
 
+            register_rest_route( 'tindapress/v1/personel/role/access', 'list', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Listing_Access','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/personel', 'insert', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Insert_Personnel','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/personel', 'activate', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Activate_Personnel','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/personel', 'delete', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Delete_Personnel','listen'),
+            ));
         /*
          * PRODUCT RESTAPI
         */

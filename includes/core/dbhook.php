@@ -149,7 +149,7 @@
 				$sql .= "`pincode` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'User store access.', ";
 				$sql .= "`status` enum('inactive','active') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'inactive' COMMENT 'If personal is actively working in this store.', ";
 				$sql .= "`created_by` bigint(20) NOT NULL DEFAULT 0 COMMENT 'The user who added this personnel.', ";
-				$sql .= "`date_created` datetime(0) NULL DEFAULT NULL COMMENT 'The date this personnel entry is created.', ";
+				$sql .= "`date_created` datetime(0) NULL DEFAULT current_timestamp() COMMENT 'The date this personnel entry is created.', ";
 				$sql .= "PRIMARY KEY (`ID`) ";
 				$sql .= ") ENGINE = InnoDB; ";
 			$result = $wpdb->get_results($sql);
