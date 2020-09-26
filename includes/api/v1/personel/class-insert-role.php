@@ -48,14 +48,14 @@
                 );
             }
 
-            if (!isset($_POST['stid']) || !isset($_POST['title']) || !isset($_POST['info']) ) {
+            if ( !isset($_POST['title']) || !isset($_POST['info']) ) {
                 return array(
                     "status" => "unknown",
                     "message" => "Please contact your administrator. Request unknown"
                 );
             }
 
-            if (empty($_POST['stid']) || empty($_POST['title']) || empty($_POST['info']) ) {
+            if ( empty($_POST['title']) || empty($_POST['info']) ) {
                 return array(
                     "status" => "failed",
                     "message" => "Required fields cannot be empty."
@@ -67,39 +67,10 @@
 
             $wpdb->query("START TRANSACTION");
 
-            // Verifying Store
-                $get_store = $wpdb->get_row("SELECT
-                    tp_str.ID,
-                    ( SELECT tp_rev.child_val FROM $table_revisions tp_rev WHERE ID = tp_str.status ) AS `status`
-                    FROM
-                        $table_store tp_str
-                    INNER JOIN
-                        $table_revisions tp_rev ON tp_rev.ID = tp_str.`status`
-                    WHERE tp_str.ID = '{$user["store_id"]}'
-                ");
-
-                // Check if no rows found
-                if ( !$get_store ) {
-                    return rest_ensure_response(
-                        array(
-                            "status" => "failed",
-                            "message" => "This store does not exists.",
-                        )
-                    );
-                }
-
-                // Check if status = 0
-                if ( $get_store->status == 0 ) {
-                    return array(
-                        "status" => "failed",
-                        "message" => "This store is currently deactivated.",
-                    );
-                }
-            // End verifying Store
 
             // Insert data to tp_role
             $role = $wpdb->query(
-                $wpdb->prepare("INSERT INTO $table_role (wpid, stid, created_by) VALUES ( %d, %d, %d ) ", $user['user_id'], $user['store_id'], $user['user_id'] )
+                $wpdb->prepare("INSERT INTO $table_role ( created_by) VALUES ( %d ) ", $user['user_id'] )
             ); $role_id = $wpdb->insert_id;
 
             // role title
@@ -140,7 +111,6 @@
             $curl_user['user_id'] = $_POST['wpid'];
             $curl_user['title'] = $_POST['title'];
             $curl_user['info'] = $_POST['info'];
-            $curl_user['store_id'] = $_POST['stid'];
             return $curl_user;
         }
     }
