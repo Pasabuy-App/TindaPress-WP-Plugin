@@ -45,24 +45,14 @@
             $personel = $wpdb->get_row("SELECT * FROM tp_personnels WHERE wpid = '$wpid'");
 
             if(empty($personel)){
-                return array( "status" => "failed" );
-            }else if ($personel->status == 'inactive') {
-                return array( "status" => "failed" );
-            }else{
-
-                $get_name = $wpdb->get_row("SELECT (SELECT child_val FROM tp_revisions WHERE ID = st.title AND revs_type = 'stores' AND parent_id =  $personel->stid) as title, ID FROM tp_stores st WHERE ID = $personel->stid");
-                $get_logo = $wpdb->get_row("SELECT (SELECT child_val FROM tp_revisions WHERE ID = st.logo AND revs_type = 'stores' AND parent_id =  $personel->stid) as logo, ID FROM tp_stores st WHERE ID = $personel->stid");
-                $get_banner = $wpdb->get_row("SELECT (SELECT child_val FROM tp_revisions WHERE ID = st.banner AND revs_type = 'stores' AND parent_id =  $personel->stid) as banner FROM tp_stores st WHERE ID = $personel->stid");
-                // TP_PLUGIN_URL . "assets/images/default-store.png"
                 return array(
-                    "status" => "success",
-                    "data" => array(
-                        "stid" => $personel->stid,
-                        "store_name" => $get_name->title,
-                        "roid" => $personel->roid,
-                    "logo" =>  $get_logo->logo == null? TP_PLUGIN_URL . "assets/images/default-store.png":($get_logo->logo == "None"? TP_PLUGIN_URL . "assets/images/default-store.png":$get_logo->logo),
-                    "banner" => $get_banner->banner == null? TP_PLUGIN_URL . "assets/images/default-banner.png":($get_banner->banner == "None"? TP_PLUGIN_URL . "assets/images/default-banner.png":$get_banner->banner)
-                    )
+                    "status" => "failed",
+                    "message" => "This personnel does not exists."
+                );
+            }else if ($personel->status == 'inactive') {
+                return array(
+                    "status" => "failed",
+                    "message" => "This personnel is currently inactive."
                 );
             }
         }
