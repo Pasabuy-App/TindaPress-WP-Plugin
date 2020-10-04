@@ -84,11 +84,21 @@
             if (isset($_POST['catid'])) {
                 
                 if ($store_id != NULL && $category_id != NULL) {
-                    $sql .= " AND cat.ID = '$category_id' ";
+                    if ($category_id === "all" ) {
+                        $sql .= " AND cat.ID NOT IN ('2','1','9') ";
+                    }
+                    else{
+                        $sql .= " AND cat.ID = '$category_id' ";
+                    }
 
                 }else{
                     if (!empty($category_id) ) {
-                        $sql .= " WHERE cat.ID = '$category_id' ";
+                        if ($category_id === "all" ) {
+                            $sql .= " WHERE cat.ID NOT IN ('2','1','9') ";
+                        }
+                        else{
+                            $sql .= " WHERE cat.ID = '$category_id' ";
+                        }
                     }
 
                 }
