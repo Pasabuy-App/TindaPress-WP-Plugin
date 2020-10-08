@@ -55,7 +55,7 @@
             } */
 
             // Step 2: Sanitize Request
-            if (!isset($_POST['lat']) || !isset($_POST['long']) ) {
+            if (!isset($_POST['lat']) || !isset($_POST['long']) || !isset($_POST['type'])) {
                 return array(
                     "status" => "unknown",
                     "message" => "Please contact your administrator. Request unknown!",
@@ -63,10 +63,17 @@
             }
 
             // Step 2: Sanitize Request
-            if (empty($_POST['lat']) || empty($_POST['long']) ) {
+            if (empty($_POST['lat']) || empty($_POST['long']) || empty($_POST['type']) ) {
                 return array(
                     "status" => "failed",
                     "message" => "Required fileds cannot be empty.",
+                );
+            }
+
+            if ($_POST['type'] != "close" && $_POST['type'] != "open" && $_POST['type'] != "all" ) {
+                return array(
+                    "status" => "failed",
+                    "message" => "Invalid value of type.",
                 );
             }
 
@@ -104,8 +111,6 @@
                 $store_id = $value->ID;
                 $get_date_close = $wpdb->get_row("SELECT date_close FROM mp_operations WHERE stid = '$store_id'");
 
-
-
                 if (!empty($get_date_close) ) {
 
                     $origin = new DateTime($get_date_close->date_close);
@@ -114,16 +119,29 @@
                     $interval = $origin->diff($target);
                     $smp = $interval->format('%R%a days');
 
-                    if ($smp <= 0) {
-                       //unset($results[$key]);
-                       array_splice($results, $key, $key);
+
+                    switch ($_POST['type']) {
+                        case 'close':
+                            if ($smp >= 0) {
+                                //unset($results[$key]);
+                                array_splice($results, $key, $key);
+                            }
+                            break;
+
+                        case 'open':
+                            if ($smp <= 0) {
+                                //unset($results[$key]);
+                                array_splice($results, $key, $key);
+                            }
+                            break;
                     }
+
                 }
-
-                $get_distance = TP_Globals::GetDistance($lat, $long, $value->store_lat, $value->store_long, 'Km' );
-
-                if ($get_distance > 6) {
-                    array_splice($results, $key, $key);
+                if ($value->store_lat != null && $value->store_long != null) {
+                    $get_distance = TP_Globals::GetDistance($lat, $long, $value->store_lat, $value->store_long, 'Km' );
+                    if ($get_distance > 6) {
+                        array_splice($results, $key, $key);
+                    }
                 }
             }
 
@@ -134,11 +152,5 @@
                 "data" => $results
             );
         }
-
-        public static function set($results,$key){
-
-        }
-
-
 
     }
