@@ -12,3 +12,4 @@
 
 
     include_once ( TP_PLUGIN_PATH . '/includes/source/common/access.php' );
+    include_once ( TP_PLUGIN_PATH . '/includes/source/common/config.php' );
