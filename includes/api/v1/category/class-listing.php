@@ -48,6 +48,7 @@
             $sql = "SELECT
                     cat.ID,
                     cat.types,
+                    (SELECT child_val FROM $table_revisions WHERE revs_type = 'categories' AND cat.ID = parent_id AND child_key = 'avatar' ) as `avatar`,
                 IF  (
                     cat.`types` = 'store',
                     ( SELECT COUNT( ctid ) FROM $table_store WHERE ctid = cat.ID ),
