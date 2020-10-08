@@ -47,12 +47,12 @@
             }
 
             // Step 2: Validate user
-           /*  if (DV_Verification::is_verified() == false) {
+            if (DV_Verification::is_verified() == false) {
                 return array(
                     "status" => "unknown",
                     "message" => "Please contact your administrator. Verification issues!",
                 );
-            } */
+            }
 
             // Step 2: Sanitize Request
             if (!isset($_POST['lat']) || !isset($_POST['long']) || !isset($_POST['type'])) {
@@ -114,11 +114,10 @@
                 if (!empty($get_date_close) ) {
 
                     $origin = new DateTime($get_date_close->date_close);
-                    $target = new DateTime('2020-10-08 05:59:17');
+                    $target = new DateTime($date);
 
                     $interval = $origin->diff($target);
                     $smp = $interval->format('%R%a days');
-
 
                     switch ($_POST['type']) {
                         case 'close':
@@ -144,7 +143,6 @@
                     }
                 }
             }
-
 
             // Step 5: Return results
             return array(
