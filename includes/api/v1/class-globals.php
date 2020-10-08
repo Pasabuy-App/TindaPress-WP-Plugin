@@ -67,7 +67,7 @@
 
             if ($store_id == 0) {
                 //Check if personnel is part of the store
-                 $personnels = $wpdb->get_row("SELECT
+                $personnels = $wpdb->get_results("SELECT
                         ac.access
                     FROM
                         tp_personnels p
@@ -80,7 +80,7 @@
             }else{
                 //Check if personnel is part of the store
 
-                $personnels = $wpdb->get_row("SELECT
+                $personnels = $wpdb->get_results("SELECT
                         ac.access
                     FROM
                         tp_personnels p
@@ -94,7 +94,7 @@
 
             }
 
-            if (!$personnels) {
+            if (!$personnels || empty($personnels)) {
                 return false;
             }
 
@@ -109,7 +109,7 @@
             // $access = array_column($personnels, 'access');
 
             //Check if user has permitted role access or one of our staff
-            if ( !in_array($role ,$personnels, true) || DV_Globals::check_roles('editor') === true
+            if ( !in_array($role , $personnels, true) || DV_Globals::check_roles('editor') === true
             || DV_Globals::check_roles('contributor') === true || DV_Globals::check_roles('administrator') === true || DV_Globals::check_roles('Author') === true ) {
                 return true;
             }

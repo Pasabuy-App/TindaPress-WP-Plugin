@@ -41,6 +41,7 @@
                     "status" => "unknown",
                     "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
+                
             }
 
             // Step2 : Check if wpid and snky is valid
