@@ -34,6 +34,7 @@
 		$tbl_access_data = TP_ACCESS_VALUE;
 		$tbl_wishlist = TP_WISHLIST_TABLE;
 
+
 		$wpdb->query("START TRANSACTION");
 
 		//Database table creation for stores
@@ -89,11 +90,11 @@
 			$sql = "CREATE TABLE `".$tbl_roles_meta."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
 				$sql .= "`hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
-				$sql .= "`roid` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Role ID', ";
-				$sql .= "`status` tinyint(5) NOT NULL DEFAULT '0' COMMENT 'Role ID', ";
-				$sql .= "`acsid` bigint(20)  NOT NULL DEFAULT '0' COMMENT 'Access ID .', ";
-				$sql .= "`date_created` datetime DEFAULT current_timestamp() COMMENT 'The date this role meta created.', ";
-				$sql .= "PRIMARY KEY (`ID`) ";
+				$sql .= " `roid` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Role ID', ";
+				$sql .= " `status` tinyint(5) NOT NULL DEFAULT '0' COMMENT 'Role ID', ";
+				$sql .= " `acsid` bigint(20)  NOT NULL DEFAULT '0' COMMENT 'Access ID .', ";
+				$sql .= " `date_created` datetime DEFAULT current_timestamp() COMMENT 'The date this role meta created.', ";
+				$sql .= " PRIMARY KEY (`ID`) ";
 				$sql .= ") ENGINE = InnoDB; ";
 			$result = $wpdb->get_results($sql);
 
@@ -113,6 +114,11 @@
 				$sql .= "PRIMARY KEY (`ID`) ";
 				$sql .= ") ENGINE = InnoDB; ";
 			$result = $wpdb->get_results($sql);
+
+			$conf_list_value = TP_CONFIGS_DATA;
+			$rev_fields = TP_REVISION_FIELDS;
+
+			$wpdb->query("INSERT INTO `".$tbl_revisions."` $rev_fields VALUES $conf_list_value");
 		}
 
 		//Database table creation for products
@@ -160,14 +166,16 @@
 			$sql = "CREATE TABLE `".$tbl_configs."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
 				$sql .= "`hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
-				$sql .= "`config_desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Config Description', ";
+				$sql .= "`title` varchar(255)  NOT NULL COMMENT 'Config Title', ";
+				$sql .= "`info` varchar(255)  NOT NULL COMMENT 'Config Information', ";
 				$sql .= "`config_key` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Config KEY', ";
 				$sql .= "`config_value` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Config VALUES', ";
 				$sql .= "PRIMARY KEY (`ID`) ";
 				$sql .= ") ENGINE = InnoDB; ";
 			$result = $wpdb->get_results($sql);
-
-			// $wpdb->query("INSERT INTO `".$tbl_configs."` $conf_fields VALUES $conf_list");
+			$conf_fields  = TP_CONFIGS_FIELDS;
+			$conf_list = TP_CONFIGS_VALUE;
+			$wpdb->query("INSERT INTO `".$tbl_configs."` ($conf_fields) VALUES $conf_list");
 		}
 
 		//Database table creation for plugin_config

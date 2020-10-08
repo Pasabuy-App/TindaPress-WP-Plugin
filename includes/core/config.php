@@ -26,6 +26,9 @@
 
 	//Configs config
 	define('TP_CONFIGS_TABLE', TP_PREFIX.'configs');
+	define('TP_CONFIGS_FIELDS', '`title`, `info`, `config_key`, `config_value`');
+ 	define('TP_CONFIGS_VALUE', $tp_config_vals);
+ 	define('TP_CONFIGS_DATA', $tp_config_value);
 
 	//Documents config
 	define('TP_DOCU_TABLE', TP_PREFIX.'documents');
