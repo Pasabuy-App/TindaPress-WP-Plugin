@@ -32,6 +32,7 @@
         require plugin_dir_path(__FILE__) . '/v1/personel/class-insert-personnel.php';
         require plugin_dir_path(__FILE__) . '/v1/personel/class-delete-personnel.php';
         require plugin_dir_path(__FILE__) . '/v1/personel/class-activate-personnel.php';
+        require plugin_dir_path(__FILE__) . '/v1/personel/class-assigned-store-list.php';
 
         //Stores Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/class-insert.php';
@@ -100,6 +101,13 @@
         /*
          * PERSONNEL RESTAPI
         */
+
+
+            register_rest_route( 'tindapress/v1/personel/store', 'list', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Assigned_Store_List','listen'),
+            ));
+
             register_rest_route( 'tindapress/v1/personel/role', 'create', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Personel_Create_Role','listen'),
