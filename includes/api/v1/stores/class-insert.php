@@ -34,6 +34,7 @@
             $dv_rev_table       = DV_REVS_TABLE;
             $table_address      = DV_ADDRESS_TABLE;
             $table_category     = TP_CATEGORIES_TABLE;
+
             // Step1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
