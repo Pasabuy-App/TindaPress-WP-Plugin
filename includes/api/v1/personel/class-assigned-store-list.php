@@ -46,9 +46,10 @@
             $status = $_POST['status'];
 
             $sql = "SELECT p.hash_id AS personnel_id, p.stid AS ID,
-                    (SELECT child_val FROM tp_revisions WHERE ID = (SELECT title FROM tp_stores WHERE ID = p.stid)) AS store_name,
-                    (SELECT child_val FROM tp_revisions WHERE ID = (SELECT logo FROM tp_stores WHERE ID = p.stid)) AS store_logo,
-                    (SELECT child_val FROM tp_revisions WHERE ID = (SELECT banner FROM tp_stores WHERE ID = p.stid)) AS store_banner,
+                    (SELECT child_val FROM tp_revisions WHERE ID = (SELECT title FROM tp_stores WHERE ID = p.stid)) AS title,
+                    (SELECT child_val FROM tp_revisions WHERE ID = (SELECT short_info FROM tp_stores WHERE ID = p.stid)) AS short_info,
+                    (SELECT child_val FROM tp_revisions WHERE ID = (SELECT logo FROM tp_stores WHERE ID = p.stid)) AS avatar,
+                    (SELECT child_val FROM tp_revisions WHERE ID = (SELECT banner FROM tp_stores WHERE ID = p.stid)) AS banner,
                     (SELECT hash_id FROM tp_roles WHERE ID = p.roid) as role_id,
                     (SELECT
                         (SELECT child_val FROM tp_revisions WHERE ID = r.title  AND revs_type = 'roles' )
@@ -72,7 +73,7 @@
             //     (SELECT child_val FROM tp_revisions WHERE ID = (SELECT logo FROM tp_stores WHERE ID = p.stid)) AS avatar,
             //     (SELECT child_val FROM tp_revisions WHERE ID = (SELECT banner FROM tp_stores WHERE ID = p.stid)) AS banner,
             //     (SELECT child_val FROM tp_revisions WHERE ID = (SELECT MAX(ID) FROM tp_revisions WHERE parent_id = p.roid AND child_key = 'title')) as position,
-                
+
             //     p.status,
             //     p.pincode
             // FROM

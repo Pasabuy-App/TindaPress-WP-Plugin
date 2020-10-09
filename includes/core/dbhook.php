@@ -258,6 +258,8 @@
 			$result = $wpdb->get_results($sql);
 		}
 
+
+
 		/**
 		 * Mysql Views
 		*/

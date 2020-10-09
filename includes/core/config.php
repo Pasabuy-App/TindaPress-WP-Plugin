@@ -47,6 +47,11 @@
 	//Personnels Config
 	define('TP_PERSONNELS_TABLE', TP_PREFIX.'personnels');
 
+	//Products Featured store
+	define('TP_FEATURED_STORE_TABLE', TP_PREFIX.'products');
+	define('TP_FEATURED_STORE_FIELDS', '`type`, `stid`, `logo`, `banner`, `created_by`');
+
+
 	//Products Config
 	define('TP_PRODUCT_TABLE', TP_PREFIX.'products');
 	define('TP_PRODUCT_FIELDS', '(stid, ctid, title, preview, short_info, long_info, status, sku, price,  weight,  dimension , created_by, date_created)');
