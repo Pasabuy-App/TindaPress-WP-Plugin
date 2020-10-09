@@ -91,7 +91,6 @@
                     if (!empty($category_id) ) {
                         $sql .= " WHERE cat.ID = '$category_id' ";
                     }
-
                 }
             }
 

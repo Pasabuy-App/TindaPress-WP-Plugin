@@ -26,7 +26,7 @@
             $curl_user['created_by'] = $_POST['wpid'];
             $curl_user['store_id'] = $_POST['stid'];
             $curl_user['pincode'] = $_POST['pincode'];
-            $curl_user['role_id'] = $_POST['roid'];
+            // $curl_user['role_id'] = $_POST['roid'];
             return $curl_user;
         }
 
@@ -56,15 +56,17 @@
                 );
 
             }
-
-            if (!isset($_POST['roid']) || !isset($_POST['stid']) || !isset($_POST['pincode']) ||  !isset($_POST['user_id'])) {
+            /**
+             * @param roid reserved for second wave
+            */
+            if ( !isset($_POST['stid']) || !isset($_POST['pincode']) ||  !isset($_POST['user_id'])) {
                 return array(
                     "status" => "unknown",
                     "message" => "Please contact your administrator. Request unknown!"
                 );
             }
 
-            if (empty($_POST['roid']) || empty($_POST['stid']) || empty($_POST['pincode']) ||  empty($_POST['user_id']) ) {
+            if ( empty($_POST['stid']) || empty($_POST['pincode']) ||  empty($_POST['user_id']) ) {
                 return array(
                     "status" => "unknown",
                     "message" => "Please contact your administrator. Request unknown!"
@@ -117,7 +119,7 @@
                 }
             // End verifying Store
 
-            $check_role = $wpdb->get_row("SELECT
+          /*   $check_role = $wpdb->get_row("SELECT
                 (SELECT
                     child_val
                 FROM
@@ -141,7 +143,7 @@
                     "status" => "failed",
                     "message" => "This role is currently inactive."
                 );
-            }
+            } */
 
 
             $check_personnel = $wpdb->get_results("SELECT * FROM tp_personnels WHERE wpid = '{$user["user_id"]}'");
@@ -154,7 +156,7 @@
             }
 
             $wpdb->query("START TRANSACTION");
-                $insert_personnel = $wpdb->query($wpdb->prepare("INSERT INTO tp_personnels (`stid`, `wpid`, `roid`, `pincode`, `status`, `created_by`) VALUES (%d, %d, %d, %d, '%s', %d)", $user['store_id'], $user['user_id'], $user['role_id'], $user['pincode'], 'active', $user['created_by']  ));
+                $insert_personnel = $wpdb->query($wpdb->prepare("INSERT INTO tp_personnels (`stid`, `wpid`,`pincode`, `status`, `created_by`) VALUES (%d, %d, %d, '%s', %d)", $user['store_id'], $user['user_id'], $user['pincode'], 'active', $user['created_by']  ));
                 $insert_personnel_id = $wpdb->insert_id;
 
                 $wpdb->query("UPDATE tp_personnels SET hash_id = sha2($insert_personnel_id, 256) WHERE ID = $insert_personnel_id ");

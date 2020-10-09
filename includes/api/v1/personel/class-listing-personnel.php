@@ -34,50 +34,77 @@
             }
 
             // Step2 : Check if wpid and snky is valid
-            /* if (DV_Verification::is_verified() == false) {
+            if (DV_Verification::is_verified() == false) {
                 return array(
                     "status" => "unknown",
                     "message" => "Please contact your administrator. Verification Issues!",
                 );
-            } */
-
-            if (!isset($_POST['roid'])) {
-                return array(
-                    "status" => "unknown",
-                    "message" => "Please contact your administrator. Request unknown!",
-                );
             }
 
-            if (empty($_POST['roid'])) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Required fileds cannot be empty.",
-                );
+            /**
+             * @param status = active, inactive
+             * @param user_id = wpid of user
+             * @param stid = personels of store
+             * @param plid = personel id
+             */
+
+            isset($_POST['status'])? $status = $_POST['status'] : ((isset($_POST['status']) && $_POST['status'] != null)? $status = $_POST['status'] : $status = null);
+
+            isset($_POST['user_id'])?  $user_id = $_POST['user_id'] : ((isset($_POST['user_id']) && $_POST['user_id'] != null)? $user_id = $_POST['user_id'] : $user_id = null);
+
+            isset($_POST['stid'])? $stid = $_POST['stid'] : ((isset($_POST['stid']) && $_POST['stid'] != null)? $stid = $_POST['stid'] : $stid = null);
+
+            isset($_POST['plid'])?  $plid = $_POST['plid'] : ((isset($_POST['plid']) && $_POST['plid'] != null)? $plid = $_POST['plid'] : $plid = null);
+
+            $sql = "SELECT
+                `hash_id` as ID,
+                `stid`,
+                `wpid`,
+                `status`,
+                `date_created`
+            FROM
+                tp_personnels
+            ";
+
+            if ($status != null) {
+                if ($status != "active" && $status != "inactive") {
+                    return array(
+                        "status" => "failed",
+                        "message" => "Invalid value of status."
+                    );
+                }
+                $sql .= " WHERE `status` = '$status' ";
             }
 
-            $roid = $_POST['roid'];
-
-            $access_id = $wpdb->get_results("SELECT * FROM tp_roles_meta WHERE roid = '$roid'");
-            if (empty($access_id)) {
-                return array(
-                    "status" => "failed",
-                    "message" => "This role id does not exists."
-                );
+            if ($user_id != null) {
+                if ($status != null) {
+                    $sql .= " AND wpid = '$user_id' ";
+                }else{
+                    $sql .= " WHERE wpid = '$user_id' ";
+                }
             }
 
-            $access = array();
-            $access_value = array();
-
-            for ($i=0; $i < COUNT($access_id) ; $i++) {
-                $id = $access_id[$i]->access;
-                $access[] = $wpdb->get_row("SELECT `access` FROM tp_access WHERE ID = '$id' ");
+            if ($stid != null) {
+                if ($status != null || $user_id != null) {
+                    $sql .= " AND stid = '$stid' ";
+                }else{
+                    $sql .= " WHERE stid = '$stid' ";
+                }
             }
-           /*  foreach ($access as $key => $value) {
-                $access_value[]["access"] = $value->access;
-            } */
+
+            if ($plid != null) {
+                if ($status != null || $user_id != null || $stid != null) {
+                    $sql .= " AND hash_id = '$plid' ";
+                }else{
+                    $sql .= " WHERE hash_id = '$plid' ";
+                }
+            }
+
+            $get_data = $wpdb->get_results($sql);
+
             return array(
                 "status" => "success",
-                "data" =>  $access
+                "message" => $get_data
             );
         }
     }

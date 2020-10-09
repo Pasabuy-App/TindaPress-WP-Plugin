@@ -60,7 +60,7 @@
             //         p.pincode
             //     FROM
             //         tp_personnels p
-            //     WHERE
+            //     WHERE`
             //         wpid = '$wpid'
             //     ";
             $sql = "SELECT
@@ -72,7 +72,7 @@
                 (SELECT child_val FROM tp_revisions WHERE ID = (SELECT logo FROM tp_stores WHERE ID = p.stid)) AS avatar,
                 (SELECT child_val FROM tp_revisions WHERE ID = (SELECT banner FROM tp_stores WHERE ID = p.stid)) AS banner,
                 (SELECT child_val FROM tp_revisions WHERE ID = (SELECT MAX(ID) FROM tp_revisions WHERE parent_id = p.roid AND child_key = 'title')) as position,
-                
+
                 p.status,
                 p.pincode
             FROM
