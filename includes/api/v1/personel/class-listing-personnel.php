@@ -105,7 +105,7 @@
 
             return array(
                 "status" => "success",
-                "message" => $get_data
+                "data" => $get_data
             );
         }
     }

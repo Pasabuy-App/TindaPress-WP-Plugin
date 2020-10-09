@@ -22,6 +22,7 @@
 
         public static function catch_post(){
             $curl_user = array();
+            $curl_user['stid'] = $_POST['stid'];
             $curl_user['user_id'] = $_POST['user_id'];
             $curl_user['created_by'] = $_POST['wpid'];
             return $curl_user;
@@ -56,15 +57,17 @@
                 );
             }
 
-            $check_personnel = $wpdb->get_results("SELECT * FROM tp_personnels WHERE wpid = '{$user["user_id"]}'");
+            $user = self::catch_post();
+            
+            $check_personnel = $wpdb->get_row("SELECT * FROM tp_personnels WHERE wpid = '{$user["user_id"]}' AND stid = '{$user["stid"]}'");
 
-            if (!$check_personnel) {
+            if (!$check_personnel || $check_personnel->status === 'inactive') {
                 return array(
                     "status" => "failed",
                     "message" => "This personnel does not exists."
                 );
             }
-
+            //return $check_personnel;
             if ($check_personnel->status == 'inactive') {
                 return array(
                     "status" => "failed",
@@ -72,7 +75,6 @@
                 );
             }
 
-            $user = self::catch_post();
             $update = $wpdb->query("UPDATE tp_personnels SET `status` = 'inactive' WHERE wpid = {$user["user_id"]}");
 
             if ($update == false) {
@@ -83,7 +85,7 @@
             }else{
                 return array(
                     "status" => "success",
-                    "message" => "Data has been added successfully."
+                    "message" => "Data has been deleted successfully."
                 );
             }
         }

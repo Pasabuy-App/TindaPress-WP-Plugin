@@ -45,41 +45,41 @@
             $wpid = $_POST['wpid'];
             $status = $_POST['status'];
 
-            // $sql = "SELECT
-            //         hash_id as ID,
-            //         (SELECT child_val FROM tp_revisions WHERE ID = (SELECT title FROM tp_stores WHERE ID = p.stid)) AS store_name,
-            //         (SELECT child_val FROM tp_revisions WHERE ID = (SELECT logo FROM tp_stores WHERE ID = p.stid)) AS store_logo,
-            //         (SELECT child_val FROM tp_revisions WHERE ID = (SELECT banner FROM tp_stores WHERE ID = p.stid)) AS store_banner,
-            //         (SELECT hash_id FROM tp_roles WHERE ID = p.roid) as role_id,
-            //         (SELECT
-            //             (SELECT child_val FROM tp_revisions WHERE ID = r.title  AND revs_type = 'roles' )
-            //         FROM
-            //                 tp_roles r
-            //         WHERE ID = p.roid) as role_title,
-            //         p.status,
-            //         p.pincode
-            //     FROM
-            //         tp_personnels p
-            //     WHERE`
-            //         wpid = '$wpid'
-            //     ";
-            $sql = "SELECT
-                #p.ID,
-                p.hash_id AS personnel_id,
-                                    p.stid AS ID,
-                                    p.roid,
-                (SELECT child_val FROM tp_revisions WHERE ID = (SELECT title FROM tp_stores WHERE ID = p.stid)) AS title,
-                (SELECT child_val FROM tp_revisions WHERE ID = (SELECT logo FROM tp_stores WHERE ID = p.stid)) AS avatar,
-                (SELECT child_val FROM tp_revisions WHERE ID = (SELECT banner FROM tp_stores WHERE ID = p.stid)) AS banner,
-                (SELECT child_val FROM tp_revisions WHERE ID = (SELECT MAX(ID) FROM tp_revisions WHERE parent_id = p.roid AND child_key = 'title')) as position,
+            $sql = "SELECT p.hash_id AS personnel_id, p.stid AS ID,
+                    (SELECT child_val FROM tp_revisions WHERE ID = (SELECT title FROM tp_stores WHERE ID = p.stid)) AS store_name,
+                    (SELECT child_val FROM tp_revisions WHERE ID = (SELECT logo FROM tp_stores WHERE ID = p.stid)) AS store_logo,
+                    (SELECT child_val FROM tp_revisions WHERE ID = (SELECT banner FROM tp_stores WHERE ID = p.stid)) AS store_banner,
+                    (SELECT hash_id FROM tp_roles WHERE ID = p.roid) as role_id,
+                    (SELECT
+                        (SELECT child_val FROM tp_revisions WHERE ID = r.title  AND revs_type = 'roles' )
+                    FROM
+                            tp_roles r
+                    WHERE ID = p.roid) as role_title,
+                    p.status,
+                    p.pincode
+                FROM
+                    tp_personnels p
+                WHERE
+                    wpid = '$wpid'
+                ";
 
-                p.status,
-                p.pincode
-            FROM
-                tp_personnels p
-                                    INNER JOIN tp_roles AS r ON p.roid = r.ID
-            WHERE
-                p.wpid = '$wpid'";
+            // $sql = "SELECT
+            //     #p.ID,
+            //     p.hash_id AS personnel_id,
+            //                         p.stid AS ID,
+            //                         p.roid,
+            //     (SELECT child_val FROM tp_revisions WHERE ID = (SELECT title FROM tp_stores WHERE ID = p.stid)) AS title,
+            //     (SELECT child_val FROM tp_revisions WHERE ID = (SELECT logo FROM tp_stores WHERE ID = p.stid)) AS avatar,
+            //     (SELECT child_val FROM tp_revisions WHERE ID = (SELECT banner FROM tp_stores WHERE ID = p.stid)) AS banner,
+            //     (SELECT child_val FROM tp_revisions WHERE ID = (SELECT MAX(ID) FROM tp_revisions WHERE parent_id = p.roid AND child_key = 'title')) as position,
+                
+            //     p.status,
+            //     p.pincode
+            // FROM
+            //     tp_personnels p
+            //                         INNER JOIN tp_roles AS r ON p.roid = r.ID
+            // WHERE
+            //     p.wpid = '$wpid'";
 
             if (isset($_POST['status'])) {
                 if ($_POST['status'] != null) {
