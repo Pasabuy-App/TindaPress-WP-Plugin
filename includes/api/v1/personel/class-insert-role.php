@@ -48,20 +48,22 @@
                 );
             }
 
-            if ( !isset($_POST['title']) || !isset($_POST['info']) ) {
+            if ( !isset($_POST['title']) || !isset($_POST['info']) || !isset($_POST['stid']) || !isset($_POST['user_id']) ) {
                 return array(
                     "status" => "unknown",
                     "message" => "Please contact your administrator. Request unknown"
                 );
             }
 
-            if ( empty($_POST['title']) || empty($_POST['info']) ) {
+            if ( empty($_POST['title']) || empty($_POST['info']) || empty($_POST['stid']) || empty($_POST['user_id']) ) {
                 return array(
                     "status" => "failed",
                     "message" => "Required fields cannot be empty."
                 );
             }
 
+            // TODO : Validate user_id in wp_users and stid in tp_stores
+            
             // Get post listener
             $user = self::catch_post();
 
@@ -70,24 +72,24 @@
 
             // Insert data to tp_role
             $role = $wpdb->query(
-                $wpdb->prepare("INSERT INTO $table_role ( created_by) VALUES ( %d ) ", $user['user_id'] )
+                $wpdb->prepare("INSERT INTO $table_role ( wpid, stid, created_by, date_created) VALUES ( %d, %d, %d, '%s' ) ", $user['wpid'], $user['store_id'],$user['user_id'], $date )
             ); $role_id = $wpdb->insert_id;
 
             // role title
             $title = $wpdb->query(
-                $wpdb->prepare("INSERT INTO $table_revisions (revs_type, parent_id, child_key , child_val, created_by, date_created ) VALUES ( '%s', %d, '%s', '%s' %d, '%s'  ) ",
+                $wpdb->prepare("INSERT INTO $table_revisions (revs_type, parent_id, child_key , child_val, created_by, date_created ) VALUES ( '%s', %d, '%s', '%s', %d, '%s'  ) ",
                 'roles', $role_id, 'title', $user['title'], $user['user_id'], $date )
             );
 
             // role info
             $info = $wpdb->query(
-                $wpdb->prepare("INSERT INTO $table_revisions (revs_type, parent_id, child_key , child_val, created_by, date_created ) VALUES ( '%s', %d, '%s', '%s' %d, '%s'  ) ",
+                $wpdb->prepare("INSERT INTO $table_revisions (revs_type, parent_id, child_key , child_val, created_by, date_created ) VALUES ( '%s', %d, '%s', '%s', %d, '%s'  ) ",
                 'roles', $role_id, 'info', $user['info'], $user['user_id'], $date )
             );
 
             // role status
             $info = $wpdb->query(
-                $wpdb->prepare("INSERT INTO $table_revisions (revs_type, parent_id, child_key , child_val, created_by, date_created ) VALUES ( '%s', %d, '%s', '%s' %d, '%s'  ) ",
+                $wpdb->prepare("INSERT INTO $table_revisions (revs_type, parent_id, child_key , child_val, created_by, date_created ) VALUES ( '%s', %d, '%s', '%s', %d, '%s'  ) ",
                 'roles', $role_id, 'status', '1', $user['user_id'], $date )
             );
 
@@ -98,7 +100,7 @@
                     "message" => "An error occured while submitting data to server."
                 );
             }else{
-                $wpdd->query("COMMIT");
+                $wpdb->query("COMMIT");
                 return array(
                     "status" => "success",
                     "message" => "Data has been added successfully."
@@ -108,6 +110,8 @@
 
         public static function catch_post(){
             $curl_user = array();
+            $curl_user['wpid'] = $_POST['user_id'];
+            $curl_user['store_id'] = $_POST['stid'];
             $curl_user['user_id'] = $_POST['wpid'];
             $curl_user['title'] = $_POST['title'];
             $curl_user['info'] = $_POST['info'];
