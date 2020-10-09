@@ -48,6 +48,8 @@
             $sql = "SELECT
                     cat.ID,
                     cat.types,
+                    cat.parent,
+                    cat.groups,
                     (SELECT child_val FROM $table_revisions WHERE revs_type = 'categories' AND cat.ID = parent_id AND child_key = 'avatar' ) as `avatar`,
                 IF  (
                     cat.`types` = 'store',
@@ -57,7 +59,8 @@
                     ( SELECT rev.child_val FROM $table_revisions rev WHERE `revs_type` = 'categories' AND ID = cat.title ) AS title,
                     ( SELECT rev.child_val FROM $table_revisions rev WHERE `revs_type` = 'categories' AND ID = cat.info ) AS info,
                 IF
-                    ( rev.child_val = 1, 'Active', 'Inactive' ) AS `status`
+                    ( rev.child_val = 1, 'Active', 'Inactive' ) AS `status`,
+                    null as categories
                 FROM
                     $table_categories cat
                     INNER JOIN $table_revisions rev ON rev.ID = cat.`status` ";
@@ -85,6 +88,7 @@
             if (isset($_POST['catid'])) {
 
                 if ($store_id != NULL && $category_id != NULL) {
+
                     if ($category_id === "all" ) {
                         $sql .= " AND cat.ID NOT IN ('2','1','9') ";
                     }
@@ -101,7 +105,6 @@
                             $sql .= " WHERE cat.ID = '$category_id' ";
                         }
                     }
-
                 }
             }
 
@@ -126,7 +129,7 @@
 
                 if ($type != NULL) {
 
-                    if (  $type != 'product' && $type != 'store' && $type != 'tags' && $type != 'robinson') {
+                    if (  $type != 'product' && $type != 'store' && $type != 'tags' && $type != 'branch') {
                         return array(
                             "status" => "failed",
                             "message" => "Invalid type of category.",
@@ -142,11 +145,35 @@
                 }
             }
 
-            // Uncoment for debugging
-            // return $sql;
 
             // Execute mysql query
             $results =  $wpdb->get_results($sql);
+
+            foreach ($results as $key => $value) {
+                if ($value->parent != "0" && $value->groups == "robinson" && $value->types == "branch") {
+
+                    $value->categories =$smp = $wpdb->get_results("SELECT
+                        cat.ID,
+                        cat.types,
+                        cat.parent,
+                        cat.groups,
+                        (SELECT child_val FROM tp_revisions WHERE revs_type = 'categories' AND cat.ID = parent_id AND child_key = 'avatar' ) as `avatar`,
+                    IF  (
+                        cat.`types` = 'store',
+                        ( SELECT COUNT( ctid ) FROM tp_stores WHERE ctid = cat.ID ),
+                        ( SELECT COUNT( ctid ) FROM tp_products WHERE ctid = cat.ID )
+                        ) AS `total`,
+                        ( SELECT rev.child_val FROM tp_revisions rev WHERE `revs_type` = 'categories' AND ID = cat.title ) AS title,
+                        ( SELECT rev.child_val FROM tp_revisions rev WHERE `revs_type` = 'categories' AND ID = cat.info ) AS info,
+                    IF
+                        ( rev.child_val = 1, 'Active', 'Inactive' ) AS `status`
+                    FROM
+                        tp_categories cat
+                        INNER JOIN tp_revisions rev ON rev.ID = cat.`status`
+
+                    WHERE parent = 223 AND types = 'branch' AND groups = 'robinson'");
+                }
+            }
 
             return array(
                 "status" => "success",
