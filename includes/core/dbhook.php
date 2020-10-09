@@ -256,6 +256,24 @@
 			$result = $wpdb->get_results($sql);
 		}
 
+		/**
+		 * Mysql Views
+		*/
+
+		//Database table view for store
+		if($wpdb->get_var( "SHOW VIEWS LIKE '$tbl_wishlist'" ) != $tbl_wishlist) {
+			$sql = "CREATE TABLE `".$tbl_wishlist."` (";
+				$sql .= " `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= " `hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
+				$sql .= " `product_id` bigint(20) DEFAULT NULL, ";
+				$sql .= " `status` tinyint(2) NOT NULL, ";
+				$sql .= " `created_by` bigint(20) NOT NULL, ";
+				$sql .= " `date_created` datetime DEFAULT current_timestamp() COMMENT 'The date this wishlist created.', ";
+				$sql .= "PRIMARY KEY (`ID`) ";
+				$sql .= ") ENGINE = InnoDB; ";
+			$result = $wpdb->get_results($sql);
+		}
+
 		$wpdb->query("COMMIT");
 
     }

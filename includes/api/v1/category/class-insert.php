@@ -43,12 +43,12 @@
             }
 
 			// Step 2: Validate user
-			/* if (DV_Verification::is_verified() == false) {
+			if (DV_Verification::is_verified() == false) {
                 return array(
                     "status" => "unknown",
                     "message" => "Please contact your administrator. Verification issues!",
                 );
-            } */
+            }
 
             //Check if user has roles_access of can_add_category or either contributor or editor
            $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_add_category' );
