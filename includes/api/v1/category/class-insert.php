@@ -77,14 +77,14 @@
             }
 
             // Step 5: Check if types value is valid
-            if ( !($_POST['types'] === 'store') && !($_POST['types'] === 'product') && !($_POST['types'] === 'tags') && !($_POST['types'] === 'robinson') ) {
+            if ( !($_POST['types'] === 'store') && !($_POST['types'] === 'product') && !($_POST['types'] === 'tags') && !($_POST['types'] === 'branch') ) {
                 return array(
                     "status" => "failed",
                     "message" => "Category must be product or store only.",
                 );
             }
 
-            if ( ($_POST['types'] == 'store')  || ($_POST['types'] == 'tags') || ($_POST['types'] == 'robinson') ) {
+            if ( ($_POST['types'] == 'store')  || ($_POST['types'] == 'tags') ) {
                 if ( !isset($_POST['stid'])) {
                     return array(
                         "status" => "failed",
@@ -100,6 +100,13 @@
                 }
             }
 
+            if($_POST['types'] == "branch"){
+                $groups = "robinson";
+            }else{
+                $groups = "inhouse";
+            }
+
+
             $title = $_POST['title'];
 
             $info = $_POST['info'];
@@ -113,7 +120,8 @@
             $wpdb->query("START TRANSACTION");
 
                 // Condition for Robinson Category Child
-                if (isset($_POST['pid']) && $_POST['pid'] != "0" && $_POST['pid'] != null && $_POST['types'] == 'robinson') {
+                if (isset($_POST['pid']) && $_POST['pid'] != "0" && $_POST['pid'] != null && $_POST['types'] == 'branch') {
+
                     if ($_POST['pid'] != null) {
                         $pid = $_POST['pid'];
 
@@ -139,10 +147,11 @@
                             $store_id = (int)$_POST["stid"];
                         }
 
-                        $wpdb->query("INSERT INTO $table_categories (stid, title, info, `status`, types, created_by, date_created, parent ) VALUES ('$store_id', '$title_id', '$info_id', '$status_id','$types', $wpid, '$date', '$pid')");
+                        $wpdb->query("INSERT INTO $table_categories (stid, title, info, `status`, types, created_by, date_created, parent, `groups` ) VALUES ('$store_id', '$title_id', '$info_id', '$status_id','$types', $wpid, '$date', '$pid', 'robinson')");
                         $parent_id = $wpdb->insert_id;
 
                         $result = $wpdb->query("UPDATE $table_revs SET `parent_id` = $parent_id WHERE ID IN ($title_id, $info_id, $status_id) ");
+                        $wpdb->query("UPDATE $table_categories SET `hash_id` = sha2($parent_id, 256) WHERE ID = $parent_id ");
 
                     }
 
@@ -162,10 +171,11 @@
                         $store_id = (int)$_POST["stid"];
                     }
 
-                    $wpdb->query("INSERT INTO $table_categories $categories_fields VALUES ('$store_id', '$title_id', '$info_id', '$status_id','$types', $wpid, '$date')");
+                    $wpdb->query("INSERT INTO $table_categories (stid, title, info, `status`, types, created_by, date_created, `groups` )  VALUES ('$store_id', '$title_id', '$info_id', '$status_id','$types', $wpid, '$date', '$groups')");
                     $parent_id = $wpdb->insert_id;
 
                     $result = $wpdb->query("UPDATE $table_revs SET `parent_id` = $parent_id WHERE ID IN ($title_id, $info_id, $status_id) ");
+                    $wpdb->query("UPDATE $table_categories SET `hash_id` = sha2($parent_id, 256) WHERE ID = $parent_id ");
                 }
 
 

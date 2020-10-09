@@ -73,12 +73,13 @@
 		//Database table creation for roles
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_roles'" ) != $tbl_roles) {
 			$sql = "CREATE TABLE `".$tbl_roles."` (";
-				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
-				$sql .= "`hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
-				$sql .= "`wpid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User id who have access.', ";
-				$sql .= "`stid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Store id this roles belong.', ";
-				$sql .= "`created_by` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User who created this role.', ";
-				$sql .= "`date_created` datetime(0) NULL DEFAULT NULL COMMENT 'The date this roles created.', ";
+				$sql .= " `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= " `hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
+				$sql .= " `title` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User id who have access.', ";
+				$sql .= " `info` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Store id this roles belong.', ";
+				$sql .= " `stid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Store id this roles belong.', ";
+				$sql .= " `created_by` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User who created this role.', ";
+				$sql .= " `date_created` datetime(0) NULL DEFAULT NULL COMMENT 'The date this roles created.', ";
 				$sql .= "PRIMARY KEY (`ID`) ";
 				$sql .= ") ENGINE = InnoDB; ";
 			$result = $wpdb->get_results($sql);
@@ -203,7 +204,8 @@
 				$sql .= "`status` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Status of the category with revision id.', ";
 				$sql .= "`name` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Global = 1 , local = 0', ";
 				$sql .= "`parent` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Parent if value is more than 0', ";
-				$sql .= "`types` enum('none','product','store', 'tags','robinson') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'none' COMMENT 'Type of category with revision id.', ";
+				$sql .= " `types` enum('none','product','store','tags','branch') CHARACTER SET utf8mb4 NOT NULL DEFAULT 'none' COMMENT 'Type of category with revision id.', ";
+				$sql .= "  `groups` enum('inhouse','robinson') NOT NULL COMMENT 'Groups of category either inhouse or robinson', ";
 				$sql .= "`stid` bigint(20) NOT NULL COMMENT 'Store ID',";
 				$sql .= "`created_by` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User created this category with revision id.', ";
 				$sql .= "`date_created` datetime(0) NULL DEFAULT NULL COMMENT 'The date this category is created.', ";
@@ -260,19 +262,7 @@
 		 * Mysql Views
 		*/
 
-		//Database table view for store
-		if($wpdb->get_var( "SHOW VIEWS LIKE '$tbl_wishlist'" ) != $tbl_wishlist) {
-			$sql = "CREATE TABLE `".$tbl_wishlist."` (";
-				$sql .= " `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
-				$sql .= " `hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
-				$sql .= " `product_id` bigint(20) DEFAULT NULL, ";
-				$sql .= " `status` tinyint(2) NOT NULL, ";
-				$sql .= " `created_by` bigint(20) NOT NULL, ";
-				$sql .= " `date_created` datetime DEFAULT current_timestamp() COMMENT 'The date this wishlist created.', ";
-				$sql .= "PRIMARY KEY (`ID`) ";
-				$sql .= ") ENGINE = InnoDB; ";
-			$result = $wpdb->get_results($sql);
-		}
+
 
 		$wpdb->query("COMMIT");
 
