@@ -10,7 +10,7 @@
         * @version 0.1.0
 	*/
 
-    class TP_Delete_Personnel {
+    class TP_Update_Personnel {
 
         //REST API Call
         public static function listen(){
@@ -83,7 +83,7 @@
                     }
                 }
 
-                if (isset($_POST['roid'])) {
+               /*  if (isset($_POST['roid'])) {
 
                     if ($_POST['roid'] !== null) {
 
@@ -135,7 +135,7 @@
 
 
                 }
-
+ */
             $wpdb->query("COMMIT");
             return array(
                 "status" => "success",
