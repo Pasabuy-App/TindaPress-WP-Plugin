@@ -93,6 +93,7 @@
             }
 
             if ($plid != null) {
+
                 if ($status != null || $user_id != null || $stid != null) {
                     $sql .= " AND hash_id = '$plid' ";
                 }else{
