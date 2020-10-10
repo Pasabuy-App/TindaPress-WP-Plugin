@@ -33,6 +33,7 @@
 		$tbl_access_fields = TP_ACCESS_TABLE_FIELDS;
 		$tbl_access_data = TP_ACCESS_VALUE;
 		$tbl_wishlist = TP_WISHLIST_TABLE;
+		$tbl_featured_store = TP_FEATURED_STORE_TABLE;
 
 
 		$wpdb->query("START TRANSACTION");
@@ -258,7 +259,20 @@
 			$result = $wpdb->get_results($sql);
 		}
 
-
+		//Database table creation for wishlist
+		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_featured_store'" ) != $tbl_featured_store) {
+			$sql = "CREATE TABLE `".$tbl_featured_store."` (";
+				$sql .= "  `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= "  `type` enum('food','store','market') NOT NULL, ";
+				$sql .= "  `stid` bigint(20) NOT NULL ";
+				$sql .= "  `logo` varchar(255) NOT NULL, ";
+				$sql .= "  `banner` varchar(255) NOT NULL, ";
+				$sql .= "  `created_by` bigint(20) NOT NULL, ";
+				$sql .= "  `date_created` datetime DEFAULT current_timestamp() COMMENT 'The date and time created this wishlist.', ";
+				$sql .= "PRIMARY KEY (`ID`) ";
+				$sql .= ") ENGINE = InnoDB; ";
+			$result = $wpdb->get_results($sql);
+		}
 
 		/**
 		 * Mysql Views

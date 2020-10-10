@@ -52,6 +52,9 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/class-update-partner.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-store-info.php';
 
+        // Featured Store Classes
+        require plugin_dir_path(__FILE__) . '/v1/stores/featured/class-featured-store.php';
+
         // Document Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-delete.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-insert.php';
@@ -99,6 +102,12 @@
 	// Init check if USocketNet successfully request from wapi.
     function tindapress_route()
     {
+
+
+            register_rest_route( 'tindapress/v1/store/featured', 'insert', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Featured_Store','listen'),
+            ));
 
         /*
          * PERSONNEL RESTAPI

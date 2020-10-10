@@ -149,7 +149,7 @@
             // Execute mysql query
             $results =  $wpdb->get_results($sql);
 
-            foreach ($results as $key => $value) {
+           /*  foreach ($results as $key => $value) {
                 if ($value->parent != "0" && $value->groups == "robinson" && $value->types == "branch") {
 
                     $value->categories =$smp = $wpdb->get_results("SELECT
@@ -173,7 +173,7 @@
 
                     WHERE parent = 223 AND types = 'branch' AND groups = 'robinson'");
                 }
-            }
+            } */
 
             return array(
                 "status" => "success",
