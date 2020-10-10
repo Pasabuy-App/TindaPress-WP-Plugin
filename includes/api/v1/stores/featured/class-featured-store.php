@@ -23,14 +23,51 @@
         public static function catch_post(){
             $curl_user = array();
             $curl_user['store_id'] = $_POST['stid'];
+            $curl_user['type'] = $_POST['type'];
             return $curl_user;
         }
 
         public static function list_open($request){
-
             global $wpdb;
 
             $files = $request->get_file_params();
+
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                );
+            }
+
+            if (DV_Verification::is_verified() == false) {
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification Issues!",
+                );
+            }
+
+            if (!isset($_POST['stid']) || !isset($_POST['type'])) {
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Request unknown!"
+                );
+            }
+
+
+            if (empty($_POST['stid']) || empty($_POST['type'])) {
+                return array(
+                    "status" => "failed",
+                    "message" => "Required fields cannot be empty."
+                );
+            }
+
+            if($_POST['type'] != "food" && $_POST['type'] != "store" && $_POST['type'] != "market"){
+                return array(
+                    "status" => "failed",
+                    "message" => "Invalid value of type."
+                );
+            }
 
             $user = self::catch_post();
 
@@ -52,16 +89,85 @@
                     "message" => "This store is currently inactive.",
                 );
             }
+            $wpdb->query("START TRANSACTION");
 
-            if (isset($_POST)) {
-                # code...
+            $result = $wpdb->query($wpdb->prepare("INSERT INTO tp_featured_store (`type`, `stid`, `created_by`) VALUES ('%s', %d, %d)", $user['type'], $user['store_id'], $_POST['wpid'] ));
+
+
+            $featured_id = $wpdb->insert_id;
+
+            if (isset($files['logo'])) {
+
+                if (!empty($files['logo'])) {
+                    $smp1 = array(
+                        "img" => $files['logo']
+                    );
+
+                    $logo = DV_Globals::upload_image( $request, $smp1);
+
+                    if ($logo['status'] != 'success') {
+                        return array(
+                            "status" => $logo['status'],
+                            "message" => $logo['message']
+                        );
+                    }
+
+                    $update_logo = $wpdb->query("UPDATE tp_featured_store SET logo = '{$logo["data"]}' WHERE ID = '$featured_id'");
+
+                    if ($update_logo == false) {
+                        $wpdb->query("ROLLBACK");
+                        return array(
+                            "status" => "failed",
+                            "message" => "An error occured while submiting data to server."
+                        );
+                    }
+                }
             }
 
 
+            if (isset($files['banner'])) {
 
+                if (!empty($files['banner'])) {
 
-            $wpdb->query("INSERT INTO tp_featured_store (`type`, `stid`, `logo`,`banner`, `created_by`) VALUES ('food', '2', 'None', 'Burce Banner', '1')");
+                    $smp2 = array(
+                        "img" => $files['banner']
+                    );
+                    $banner = DV_Globals::upload_image( $request, $smp2);
 
-            $result = DV_Globals::upload_image( $request, $files);
+                    if ($banner['status'] != 'success') {
+                        return array(
+                            "status" => $banner['status'],
+                            "message" => $banner['message']
+                        );
+                    }
+
+                    $update_banner = $wpdb->query("UPDATE tp_featured_store SET banner = '{$banner["data"]}' WHERE ID = '$featured_id'");
+
+                    if ($update_banner == false) {
+                        $wpdb->query("ROLLBACK");
+
+                        return array(
+                            "status" => "failed",
+                            "message" => "An error occured while submiting data to server."
+                        );
+                    }
+                }
+            }
+
+            if ($result == false) {
+                $wpdb->query("ROLLBACK");
+                return array(
+                    "status" => "failed",
+                    "message" => "An error occured while submiting data to server."
+                );
+
+            }else{
+                $wpdb->query("COMMIT");
+
+                return array(
+                    "status" => "success",
+                    "message" => "Data has been added successfully."
+                );
+            }
         }
     }

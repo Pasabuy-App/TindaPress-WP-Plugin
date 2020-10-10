@@ -36,13 +36,13 @@
             }
 
 			// Step 2: Validate user
-			if (DV_Verification::is_verified() == false) {
+		/* 	if (DV_Verification::is_verified() == false) {
                 return array(
                     "status" => "unknown",
                     "message" => "Please contact your administrator. verification issues!",
                 );
 
-            }
+            } */
 
             // Concatination query for category
             $sql = "SELECT
@@ -145,7 +145,7 @@
                 }
             }
 
-
+            return $sql;
             // Execute mysql query
             $results =  $wpdb->get_results($sql);
 
