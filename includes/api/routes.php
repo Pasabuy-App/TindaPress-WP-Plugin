@@ -54,6 +54,7 @@
 
         // Featured Store Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/featured/class-insert.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/featured/class-listing.php';
 
         // Document Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-delete.php';
@@ -107,6 +108,11 @@
             register_rest_route( 'tindapress/v1/store/featured', 'insert', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Featured_Store_Insert','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/store/featured', 'list', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Featured_Store_Listing','listen'),
             ));
 
         /*

@@ -32,61 +32,51 @@
 
             $files = $request->get_file_params();
 
-            // $plugin = TP_Globals::verify_prerequisites();
-            // if ($plugin !== true) {
-            //     return array(
-            //         "status" => "unknown",
-            //         "message" => "Please contact your administrator. ".$plugin." plugin missing!",
-            //     );
-            // }
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                );
+            }
 
-            // if (DV_Verification::is_verified() == false) {
-            //     return array(
-            //         "status" => "unknown",
-            //         "message" => "Please contact your administrator. Verification Issues!",
-            //     );
-            // }
+            if (DV_Verification::is_verified() == false) {
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification Issues!",
+                );
+            }
 
-            // if (!isset($_POST['stid']) || !isset($_POST['type'])) {
-            //     return array(
-            //         "status" => "unknown",
-            //         "message" => "Please contact your administrator. Request unknown!"
-            //     );
-            // }
+            if (!isset($_POST['stid']) || !isset($_POST['type'])) {
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Request unknown!"
+                );
+            }
 
+            if (empty($_POST['stid']) || empty($_POST['type'])) {
+                return array(
+                    "status" => "failed",
+                    "message" => "Required fields cannot be empty."
+                );
+            }
 
-            // if (empty($_POST['stid']) || empty($_POST['type'])) {
-            //     return array(
-            //         "status" => "failed",
-            //         "message" => "Required fields cannot be empty."
-            //     );
-            // }
-
-            // if($_POST['type'] != "food" && $_POST['type'] != "store" && $_POST['type'] != "market"){
-            //     return array(
-            //         "status" => "failed",
-            //         "message" => "Invalid value of type."
-            //     );
-            // }
-
+            if($_POST['type'] != "food" && $_POST['type'] != "store" && $_POST['type'] != "market"){
+                return array(
+                    "status" => "failed",
+                    "message" => "Invalid value of type."
+                );
+            }
 
             // Check featured store
             $status = 'inactive';
 
-            $check_table = $wpdb->get_results("SELECT `status` FROM tp_featured_store ");
+            $check_table = $wpdb->get_row("SELECT COUNT(`status`) as `status` FROM tp_featured_store WHERE `status`= 'active' ");
 
-
-            if (!empty($check_table)) {
-                $var = array();
-                foreach ($check_table as $key => $value) {
-                    $value->status == "active"? $smp = COUNT($value->status):$smp;
-
-                }
+            if($check_table->status != 5){
+                $status = 'active';
             }
-            return $smp;
 
-
-return;
             $user = self::catch_post();
 
             // Step 5: Check if store exists
@@ -109,7 +99,7 @@ return;
             }
             $wpdb->query("START TRANSACTION");
 
-            $result = $wpdb->query($wpdb->prepare("INSERT INTO tp_featured_store (`type`, `stid`, `created_by`) VALUES ('%s', %d, %d)", $user['type'], $user['store_id'], $_POST['wpid'] ));
+            $result = $wpdb->query($wpdb->prepare("INSERT INTO tp_featured_store (`type`, `stid`, `created_by`, `status`) VALUES ('%s', %d, %d, '%s')", $user['type'], $user['store_id'], $_POST['wpid'], $status ));
 
 
             $featured_id = $wpdb->insert_id;
