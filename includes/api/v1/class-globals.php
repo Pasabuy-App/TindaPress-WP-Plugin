@@ -298,5 +298,41 @@
                 $distance = $distance * 1.609344;
             }
             return (round($distance,2));
-          }
+        }
+
+
+        public static function seen_store($wpid, $fid){
+            global $wpdb;
+
+            $table_seen_store = TP_FEATURED_STORE__SEEN_TABLE;
+            $table_seen_store_fields = TP_FEATURED_STORE__SEEN_FIELDS;
+
+
+            // Start query
+            $wpdb->query("START TRANSACTION");
+            $data = array();
+            $get_seen_post = $wpdb->get_results("SELECT * FROM $table_seen_store WHERE `fid` = '$fid' ");
+
+            if (!$get_seen_post) {
+                $result = $wpdb->query("INSERT INTO $table_seen_store ($table_seen_store_fields) VALUES ('$wpid', '$fid')");
+
+            }else{
+
+                foreach ($get_seen_post as $key => $value) {
+                    if ($value->wpid == $wpid) {
+                        return false;
+                    }
+                }
+                $result = $wpdb->query("INSERT INTO $table_seen_store ($table_seen_store_fields) VALUES ('$wpid', '$fid')");
+            }
+
+            if ($result == false) {
+                $wpdb->query("ROLLBACK");
+                return 'error';
+            }else{
+                $wpdb->query("COMMIT");
+                return true;
+            }
+
+        }
     }

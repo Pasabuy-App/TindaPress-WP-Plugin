@@ -34,7 +34,7 @@
 		$tbl_access_data = TP_ACCESS_VALUE;
 		$tbl_wishlist = TP_WISHLIST_TABLE;
 		$tbl_featured_store = TP_FEATURED_STORE_TABLE;
-
+		$tbl_featured_store_seen = TP_FEATURED_STORE__SEEN_TABLE;
 
 		$wpdb->query("START TRANSACTION");
 
@@ -269,6 +269,17 @@
 				$sql .= "  `banner` varchar(255) NOT NULL, ";
 				$sql .= "  `created_by` bigint(20) NOT NULL, ";
 				$sql .= "  `status` enum('active','inactive') NOT NULL, ";
+				$sql .= "  `date_created` datetime DEFAULT current_timestamp() COMMENT 'The date and time created this wishlist.', ";
+				$sql .= "PRIMARY KEY (`ID`) ";
+				$sql .= ") ENGINE = InnoDB; ";
+			$result = $wpdb->get_results($sql);
+		}
+
+		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_featured_store_seen'" ) != $tbl_featured_store_seen) {
+			$sql = "CREATE TABLE `".$tbl_featured_store_seen."` (";
+				$sql .= "  `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= "  `fid` bigint(20) NOT NULL, ";
+				$sql .= "  `wpid` bigint(20) NOT NULL, ";
 				$sql .= "  `date_created` datetime DEFAULT current_timestamp() COMMENT 'The date and time created this wishlist.', ";
 				$sql .= "PRIMARY KEY (`ID`) ";
 				$sql .= ") ENGINE = InnoDB; ";

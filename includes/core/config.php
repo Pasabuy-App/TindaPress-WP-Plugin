@@ -48,9 +48,11 @@
 	define('TP_PERSONNELS_TABLE', TP_PREFIX.'personnels');
 
 	//Products Featured store
-	define('TP_FEATURED_STORE_TABLE', TP_PREFIX.'products');
+	define('TP_FEATURED_STORE_TABLE', TP_PREFIX.'featured_store');
 	define('TP_FEATURED_STORE_FIELDS', '`type`, `stid`, `logo`, `banner`, `created_by`');
 
+	define('TP_FEATURED_STORE__SEEN_TABLE', TP_PREFIX.'featured_store_seen');
+	define('TP_FEATURED_STORE__SEEN_FIELDS', 'wpid, fid');
 
 	//Products Config
 	define('TP_PRODUCT_TABLE', TP_PREFIX.'products');

@@ -20,13 +20,6 @@
             );
         }
 
-        public static function catch_post(){
-            $curl_user = array();
-            $curl_user['store_id'] = $_POST['stid'];
-            $curl_user['type'] = $_POST['type'];
-            return $curl_user;
-        }
-
         public static function list_open(){
             global $wpdb;
 
@@ -62,9 +55,23 @@
                 FROM
                     tp_featured_store WHERE status = 'active'";
 
+
+            $data = $wpdb->get_results($sql);
+            foreach ($data as $key => $value) {
+                $seen = TP_Globals::seen_store($_POST['wpid'], $value->ID );
+                if($seen == 'error'){
+                    return array(
+                        "status" => "failed",
+                        "message" => "Please contact your administrator. Seen error"
+                    );
+                }
+            }
+
+
+
             return array(
                 "status" => "success",
-                "data" =>  $wpdb->get_results($sql)
+                "data" => $data
             );
         }
     }
