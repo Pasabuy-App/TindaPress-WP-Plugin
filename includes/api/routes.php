@@ -56,6 +56,10 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/featured/class-insert.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/featured/class-listing.php';
 
+        // Store Schedule
+        require plugin_dir_path(__FILE__) . '/v1/stores/schedule/class-insert.php';
+
+
         // Document Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-delete.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-insert.php';
@@ -104,6 +108,18 @@
     function tindapress_route()
     {
 
+        /*
+         * SCHEDULE STORE RESTAPI
+        */
+            register_rest_route( 'tindapress/v1/store/schedule', 'insert', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Store_Schedule_Insert','listen'),
+            ));
+
+
+        /*
+         * FEATURED STORE RESTAPI
+        */
 
             register_rest_route( 'tindapress/v1/store/featured', 'insert', array(
                 'methods' => 'POST',
