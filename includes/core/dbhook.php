@@ -264,7 +264,7 @@
 			$sql = "CREATE TABLE `".$tbl_featured_store."` (";
 				$sql .= "  `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
 				$sql .= "  `type` enum('food','store','market') NOT NULL, ";
-				$sql .= "  `stid` bigint(20) NOT NULL ";
+				$sql .= "  `stid` bigint(20) NOT NULL, ";
 				$sql .= "  `logo` varchar(255) NOT NULL, ";
 				$sql .= "  `banner` varchar(255) NOT NULL, ";
 				$sql .= "  `created_by` bigint(20) NOT NULL, ";
