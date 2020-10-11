@@ -268,6 +268,7 @@
 				$sql .= "  `logo` varchar(255) NOT NULL, ";
 				$sql .= "  `banner` varchar(255) NOT NULL, ";
 				$sql .= "  `created_by` bigint(20) NOT NULL, ";
+				$sql .= "  `status` enum('active','inactive') NOT NULL, ";
 				$sql .= "  `date_created` datetime DEFAULT current_timestamp() COMMENT 'The date and time created this wishlist.', ";
 				$sql .= "PRIMARY KEY (`ID`) ";
 				$sql .= ") ENGINE = InnoDB; ";

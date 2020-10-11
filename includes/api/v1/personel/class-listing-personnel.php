@@ -60,6 +60,8 @@
                 `hash_id` as ID,
                 `stid`,
                 `wpid`,
+                null as avatar,
+                null as `dname`,
                 `status`,
                 `date_created`
             FROM
@@ -102,6 +104,14 @@
             }
 
             $get_data = $wpdb->get_results($sql);
+
+            foreach ($get_data as $key => $value) {
+                $wp_user = get_user_by("ID", $value->wpid);
+
+                $value->avatar = $wp_user->avatar != null? $wp_user->avatar: $wp_user->avatar= TP_PLUGIN_URL. "assets/images/default-avatar.png" ;
+
+                $value->dname = $wp_user->display_name;
+            }
 
             return array(
                 "status" => "success",
