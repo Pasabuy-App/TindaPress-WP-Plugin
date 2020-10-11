@@ -54,6 +54,10 @@
 	define('TP_FEATURED_STORE__SEEN_TABLE', TP_PREFIX.'featured_store_seen');
 	define('TP_FEATURED_STORE__SEEN_FIELDS', 'wpid, fid');
 
+	// Schedule Config
+	define('TP_SCHEDULE', TP_PREFIX.'schedule');
+
+
 	//Products Config
 	define('TP_PRODUCT_TABLE', TP_PREFIX.'products');
 	define('TP_PRODUCT_FIELDS', '(stid, ctid, title, preview, short_info, long_info, status, sku, price,  weight,  dimension , created_by, date_created)');

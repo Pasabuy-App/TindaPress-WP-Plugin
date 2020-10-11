@@ -48,15 +48,16 @@
                     ID,
                     type,
                     stid,
-                    IF(logo is null OR logo = '' , '$logo', logo) as logo,
+                    ( SELECT rev.child_val FROM tp_revisions rev WHERE rev.id = (SELECT title FROM tp_stores WHERE ID = p.stid) AND  rev.date_created = ( SELECT MAX(date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores' )  ) AS title,
+                    IF(logo is null OR logo = '' , '$logo', logo) as avatar,
                     IF(banner is null OR banner = '' , '$banner', banner) as banner,
                     status,
                     date_created
                 FROM
-                    tp_featured_store WHERE status = 'active'";
-
+                    tp_featured_store p WHERE status = 'active'";
 
             $data = $wpdb->get_results($sql);
+
             foreach ($data as $key => $value) {
                if (!empty($data)) {
                     $seen = TP_Globals::seen_store($_POST['wpid'], $value->ID );
@@ -68,8 +69,6 @@
                     }
                }
             }
-
-
 
             return array(
                 "status" => "success",

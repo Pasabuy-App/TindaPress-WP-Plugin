@@ -35,6 +35,7 @@
 		$tbl_wishlist = TP_WISHLIST_TABLE;
 		$tbl_featured_store = TP_FEATURED_STORE_TABLE;
 		$tbl_featured_store_seen = TP_FEATURED_STORE__SEEN_TABLE;
+		$tbl_schedule = TP_SCHEDULE;
 
 		$wpdb->query("START TRANSACTION");
 
@@ -280,6 +281,17 @@
 				$sql .= "  `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
 				$sql .= "  `fid` bigint(20) NOT NULL, ";
 				$sql .= "  `wpid` bigint(20) NOT NULL, ";
+				$sql .= "  `date_created` datetime DEFAULT current_timestamp() COMMENT 'The date and time created this wishlist.', ";
+				$sql .= "PRIMARY KEY (`ID`) ";
+				$sql .= ") ENGINE = InnoDB; ";
+			$result = $wpdb->get_results($sql);
+		}
+
+		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_schedule'" ) != $tbl_schedule) {
+			$sql = "CREATE TABLE `".$tbl_schedule."` (";
+				$sql .= "  `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= "  `stid` bigint(20) NOT NULL, ";
+				$sql .= "  `schedule` varchar(255) NOT NULL, ";
 				$sql .= "  `date_created` datetime DEFAULT current_timestamp() COMMENT 'The date and time created this wishlist.', ";
 				$sql .= "PRIMARY KEY (`ID`) ";
 				$sql .= ") ENGINE = InnoDB; ";
