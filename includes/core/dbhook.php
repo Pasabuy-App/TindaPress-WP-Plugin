@@ -289,10 +289,17 @@
 
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_schedule'" ) != $tbl_schedule) {
 			$sql = "CREATE TABLE `".$tbl_schedule."` (";
-				$sql .= "  `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= "  `ID`   bigint(20) NOT NULL AUTO_INCREMENT, ";
 				$sql .= "  `stid` bigint(20) NOT NULL, ";
-				$sql .= "  `schedule` varchar(255) NOT NULL, ";
-				$sql .= "  `date_created` datetime DEFAULT current_timestamp() COMMENT 'The date and time created this wishlist.', ";
+				$sql .= "  `mon`  tinyint(2) NOT NULL, ";
+				$sql .= "  `tues` tinyint(2) NOT NULL, ";
+				$sql .= "  `wed`  tinyint(2) NOT NULL, ";
+				$sql .= "  `thur` tinyint(2) NOT NULL, ";
+				$sql .= "  `fri`  tinyint(2) NOT NULL, ";
+				$sql .= "  `sat`  tinyint(2) NOT NULL, ";
+				$sql .= "  `sun`  tinyint(2) NOT NULL, ";
+				$sql .= "  `created_by` bigint(20) NOT NULL, ";
+				$sql .= "  `date_created` datetime DEFAULT current_timestamp() COMMENT 'The date and time created this schedule.', ";
 				$sql .= "PRIMARY KEY (`ID`) ";
 				$sql .= ") ENGINE = InnoDB; ";
 			$result = $wpdb->get_results($sql);

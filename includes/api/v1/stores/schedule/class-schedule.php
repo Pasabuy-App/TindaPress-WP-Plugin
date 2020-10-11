@@ -9,7 +9,7 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
-    class TP_Store_Schedule {
+    class TP_Store_Schedule_Insert {
 
         public static function listen(){
             return rest_ensure_response(
@@ -21,6 +21,7 @@
 
             // 2nd Initial QA 2020-08-24 10:57 PM - Miguel
             global $wpdb;
+
 
             
         }

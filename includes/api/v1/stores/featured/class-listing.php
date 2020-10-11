@@ -41,8 +41,8 @@
 
             }
 
-            $logo = TP_PLUGIN_URL . "assets/default-avatar.png";
-            $banner = TP_PLUGIN_URL . "assets/default-banner.png";
+            $logo = TP_PLUGIN_URL . "assets/images/default-avatar.png";
+            $banner = TP_PLUGIN_URL . "assets/images/default-banner.png";
 
             $sql = "SELECT
                     ID,
