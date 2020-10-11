@@ -298,6 +298,8 @@
 				$sql .= "  `fri`  tinyint(2) NOT NULL, ";
 				$sql .= "  `sat`  tinyint(2) NOT NULL, ";
 				$sql .= "  `sun`  tinyint(2) NOT NULL, ";
+				$sql .= "  `open` time NOT NULL, ";
+				$sql .= "  `close` time NOT NULL, ";
 				$sql .= "  `created_by` bigint(20) NOT NULL, ";
 				$sql .= "  `date_created` datetime DEFAULT current_timestamp() COMMENT 'The date and time created this schedule.', ";
 				$sql .= "PRIMARY KEY (`ID`) ";

@@ -27,6 +27,8 @@
             $curl_user['fri'] = $_POST['fri'];
             $curl_user['sat'] = $_POST['sat'];
             $curl_user['sun'] = $_POST['sun'];
+            $curl_user['open'] = $_POST['open'];
+            $curl_user['close'] = $_POST['close'];
             $curl_user['wpid'] = $_POST['wpid'];
             return $curl_user;
         }
@@ -47,6 +49,8 @@
                 || !isset($_POST['thur'])
                 || !isset($_POST['fri'])
                 || !isset($_POST['sat'])
+                || !isset($_POST['close'])
+                || !isset($_POST['open'])
                 || !isset($_POST['sun']) ) {
                 return array(
                     "status" => "unknown",
@@ -109,6 +113,8 @@
                     '{$user['fri']}',
                     '{$user['sat']}',
                     '{$user['sun']}',
+                    '{$user['open']}',
+                    '{$user['close']}',
                     '{$user['wpid']}'
                     ) ");
 

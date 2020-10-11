@@ -56,7 +56,7 @@
 
 	// Schedule Config
 	define('TP_SCHEDULE', TP_PREFIX.'schedule');
-	define('TP_SCHEDULE_FILEDS', 'stid, mon, tues, wed, thur, fri, sat, sun, created_by');
+	define('TP_SCHEDULE_FILEDS', 'stid, mon, tues, wed, thur, fri, sat, sun, open, close, created_by');
 
 
 	//Products Config
