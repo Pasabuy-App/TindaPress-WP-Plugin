@@ -58,13 +58,15 @@
 
             $data = $wpdb->get_results($sql);
             foreach ($data as $key => $value) {
-                $seen = TP_Globals::seen_store($_POST['wpid'], $value->ID );
-                if($seen == 'error'){
-                    return array(
-                        "status" => "failed",
-                        "message" => "Please contact your administrator. Seen error"
-                    );
-                }
+               if (!empty($data)) {
+                    $seen = TP_Globals::seen_store($_POST['wpid'], $value->ID );
+                    if($seen == 'error'){
+                        return array(
+                            "status" => "failed",
+                            "message" => "Please contact your administrator. Seen error"
+                        );
+                    }
+               }
             }
 
 
