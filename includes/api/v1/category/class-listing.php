@@ -145,7 +145,7 @@
                 }
             }
 
-            return $sql;
+
             // Execute mysql query
             $results =  $wpdb->get_results($sql);
 
