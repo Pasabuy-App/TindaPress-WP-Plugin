@@ -70,6 +70,7 @@
         //Settings Classes
         require plugin_dir_path(__FILE__) . '/v1/settings/class-banner.php';
         require plugin_dir_path(__FILE__) . '/v1/settings/class-logo.php';
+        require plugin_dir_path(__FILE__) . '/v1/settings/class-search.php';
 
         //Category Classes
         require plugin_dir_path(__FILE__) . '/v1/category/class-delete.php';
@@ -107,6 +108,10 @@
 	// Init check if USocketNet successfully request from wapi.
     function tindapress_route()
     {
+            register_rest_route( 'tindapress/v1/settings', 'search', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Search','listen'),
+            ));
 
         /*
          * SCHEDULE STORE RESTAPI

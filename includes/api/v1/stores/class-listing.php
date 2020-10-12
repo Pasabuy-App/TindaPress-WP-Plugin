@@ -18,7 +18,9 @@
         }
 
         public static function list_open(){
+            $time = time();
 
+            return  date('r', $time);
 
 
             // 2nd Initial QA 2020-08-24 10:49 PM - Miguel
@@ -50,12 +52,12 @@
             }
 
             // Step2 : Check if wpid and snky is valid
-           /*  if (DV_Verification::is_verified() == false) {
+            if (DV_Verification::is_verified() == false) {
                 return array(
                         "status" => "unknown",
                         "message" => "Please contact your administrator. Verification Issues!",
                 );
-            } */
+            }
 
             // Step3 : Query
             $sql ="SELECT
