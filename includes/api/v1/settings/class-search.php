@@ -60,8 +60,7 @@
                 FROM
                     $tbl_store sv
                 WHERE
-                    title LIKE '%$search%' OR city LIKE '%$search%'
-            ");
+                    title LIKE '%$search%' OR city LIKE '%$search%'");
 
             $product_query = $wpdb->get_results(
                 "SELECT

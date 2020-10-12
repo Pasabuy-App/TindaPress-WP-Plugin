@@ -138,9 +138,12 @@
                 $lastid = $_POST['lid'];
                 $offset = 12 + $lastid;
 				$limit = "7 OFFSET ".$offset;
+            }elseif (isset($_POST['lid']) || empty($_POST['lid'])) {
+			    $sql .= " ORDER BY tp_prod.ID DESC LIMIT $limit ";
+            }else{
+			    $sql .= " ORDER BY tp_prod.ID DESC ";
             }
 
-			$sql .= " ORDER BY tp_prod.ID DESC LIMIT $limit ";
             // Execute query
             $results =  $wpdb->get_results($sql);
 

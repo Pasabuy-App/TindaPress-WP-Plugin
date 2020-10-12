@@ -82,8 +82,9 @@
 				$sql .= " `title` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User id who have access.', ";
 				$sql .= " `info` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Store id this roles belong.', ";
 				$sql .= " `stid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Store id this roles belong.', ";
+				$sql .= " `status` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Status of role.', ";
 				$sql .= " `created_by` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User who created this role.', ";
-				$sql .= " `date_created` datetime(0) NULL DEFAULT NULL COMMENT 'The date this roles created.', ";
+				$sql .= " `date_created` datetime(0) NULL DEFAULT current_timestamp() COMMENT 'The date this roles created.', ";
 				$sql .= "PRIMARY KEY (`ID`) ";
 				$sql .= ") ENGINE = InnoDB; ";
 			$result = $wpdb->get_results($sql);

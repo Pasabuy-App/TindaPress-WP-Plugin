@@ -300,7 +300,6 @@
             return (round($distance,2));
         }
 
-
         public static function seen_store($wpid, $fid){
             global $wpdb;
 

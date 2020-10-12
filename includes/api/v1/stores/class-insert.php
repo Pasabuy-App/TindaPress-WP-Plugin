@@ -34,6 +34,7 @@
             $dv_rev_table       = DV_REVS_TABLE;
             $table_address      = DV_ADDRESS_TABLE;
             $table_category     = TP_CATEGORIES_TABLE;
+            $table_role = TP_ROLES_TABLE;
 
             // Step1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -68,21 +69,21 @@
                 );
             }
 
-        // Step4 : Sanitize all variable is empty
-            if ( empty($_POST["title"])
-                || empty($_POST["logo"])
-                || empty($_POST["banner"])
-                || empty($_POST["st"])
-                || empty($_POST["co"])
-                || empty($_POST["pv"])
-                || empty($_POST["ct"])
-                || empty($_POST["bg"])
-                ) {
-                return array(
-                    "status" => "unknown",
-                    "message" => "Required fields cannot be empty.",
-                );
-            }
+            // Step4 : Sanitize all variable is empty
+                if ( empty($_POST["title"])
+                    || empty($_POST["logo"])
+                    || empty($_POST["banner"])
+                    || empty($_POST["st"])
+                    || empty($_POST["co"])
+                    || empty($_POST["pv"])
+                    || empty($_POST["ct"])
+                    || empty($_POST["bg"])
+                    ) {
+                    return array(
+                        "status" => "unknown",
+                        "message" => "Required fields cannot be empty.",
+                    );
+                }
 
             //Country input validation
                 // Step 2 : Check if country passed is in integer format.
@@ -239,13 +240,13 @@
             // End of category validation
 
             // Step5 : Validate permission
-            $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_add_store' );
+            /* $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_add_store' );
             if ($permission == true) {
                 return array(
                     "status" => "failed",
                     "message" => "Current user has no access in manipulation of data.",
                 );
-            }
+            } */
 
             $date_created = TP_Globals::date_stamp();
             $user = TP_Insert_Store::catch_post();
@@ -360,11 +361,38 @@
                 // Update store for address column
                 $result = $wpdb->query("UPDATE $table_store SET `address` = $address_id WHERE ID = $store_id ");
 
+
+                // Create Role
+                  // Insert data to tp_role
+                    $role = $wpdb->query(
+                        $wpdb->prepare("INSERT INTO $table_role ( stid, created_by) VALUES ( %d, %d) ", $store_id, $user['created_by'] )
+                    ); $role_id = $wpdb->insert_id;
+
+                    // role title
+                    $role_title = $wpdb->query(
+                        $wpdb->prepare("INSERT INTO $table_tp_revs (revs_type, parent_id, child_key , child_val, created_by, date_created ) VALUES ( '%s', %d, '%s', '%s', %d, '%s'  ) ",
+                        'roles', $role_id, 'title', 'administrator', $user['created_by'], $date_created )
+                    ); $role_title_id = $wpdb->insert_id;
+
+                    // role info
+                    $role_info = $wpdb->query(
+                        $wpdb->prepare("INSERT INTO $table_tp_revs (revs_type, parent_id, child_key , child_val, created_by, date_created ) VALUES ( '%s', %d, '%s', '%s', %d, '%s'  ) ",
+                        'roles', $role_id, 'info', 'Can access all feature in Mobile POS', $user['created_by'], $date_created )
+                    ); $role_info_id = $wpdb->insert_id;
+
+                    // role status
+                    $role_status = $wpdb->query(
+                        $wpdb->prepare("INSERT INTO $table_tp_revs (revs_type, parent_id, child_key , child_val, created_by, date_created ) VALUES ( '%s', %d, '%s', '%s', %d, '%s'  ) ",
+                        'roles', $role_id, 'status', '1', $user['created_by'], $date_created )
+                    ); $role_status_id = $wpdb->insert_id;
+
+                    $wpdb->query("UPDATE $table_role SET hash_id = sha2($role_id, 256), title = '$role_title_id', info = '$role_info_id', `status` = $role_status_id WHERE  ID = $role_id ");
+
             // Step8 : Check if failed
-            if ( $title < 1 || $short_info < 1 || $long_info < 1 || $logo < 1 || $banner < 1 || $status < 1 || $store_id < 1 || $result_update_tp_rev_store < 1 ||
-                 $result_update_tp_rev_store < 1 ||
-                $status < 1 || $street < 1 || $brgy < 1 || $city < 1 || $province < 1 || $country < 1 || $address_id < 1 ||
-                $result_update_dv_rev_address < 1 || $result < 1 || $store_id < 1
+            if ( $title == false || $short_info == false || $long_info == false || $logo == false || $banner == false || $status == false || $store_id == false || $result_update_tp_rev_store == false ||
+                 $result_update_tp_rev_store == false ||
+                $status == false || $street == false || $brgy == false || $city == false || $province == false || $country == false || $address_id == false ||
+                $result_update_dv_rev_address == false || $result == false || $store_id == false || $role == false || $role_title == false || $role_info == false || $role_status == false
                ) {
                 $wpdb->query("ROLLBACK");
                 return array(

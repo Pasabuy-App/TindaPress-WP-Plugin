@@ -18,10 +18,6 @@
         }
 
         public static function list_open(){
-            $time = time();
-
-            return  date('r', $time);
-
 
             // 2nd Initial QA 2020-08-24 10:49 PM - Miguel
             global $wpdb;
@@ -143,6 +139,7 @@
 
             $limit ='12';
 
+
             if( isset($_POST['lid']) ){
 				// Step 4: Validate parameter
                 if (empty($_POST['lid']) ) {
@@ -162,11 +159,15 @@
 				$sql .= " AND str.ID < $lastid ";
 				$limit = 7;
 
+            }else if(empty($_POST['lid']) || isset($_POST['lid'])){
+                $sql .= " ORDER BY str.ID DESC ";
+
+            }else{
+                $sql .= " ORDER BY str.ID DESC LIMIT $limit ";
+
             }
 
-            // return $sql;
             // Execute query
-			$sql .= " ORDER BY str.ID DESC LIMIT $limit ";
 
             $result = $wpdb->get_results($sql);
 
@@ -196,50 +197,50 @@
                         $value->long = "" ;
                     }
 
-                    $get_sched = $wpdb->get_results("SELECT * FROM $table_schedule WHERE stid = '$value->ID'  ");
+                    // $get_sched = $wpdb->get_results("SELECT * FROM $table_schedule WHERE stid = '$value->ID'  ");
 
-                    if (!empty($get_sched)) {
+                    // if (!empty($get_sched)) {
 
-                        for ($i = 0 ; $i < count($get_sched) ; $i++) {
-                            switch ($status) {
-                                case 'Mon':
-                                    if($get_sched[$i]->mon == 0){
-                                        array_splice($result, $key, $key);
-                                    }
-                                    break;
-                                case 'Tue':
-                                    if($get_sched[$i]->tues == 0){
-                                        array_splice($result, $key, $key);
-                                    }
-                                    break;
-                                case 'Wed':
-                                    if($get_sched[$i]->wed == 0){
-                                        array_splice($result, $key, $key);
-                                    }
-                                    break;
-                                case 'Thu':
-                                    if($get_sched[$i]->thur == 0){
-                                        array_splice($result, $key, $key);
-                                    }
-                                    break;
-                                case 'Fri':
-                                    if($get_sched[$i]->fri == 0){
-                                        array_splice($result, $key, $key);
-                                    }
-                                    break;
-                                case 'Sat':
-                                    if($get_sched[$i]->sat == 0){
-                                        array_splice($result, $key, $key);
-                                    }
-                                    break;
-                                case 'Sun':
-                                    if($get_sched[$i]->sun == 0){
-                                     return   array_splice($result, $key, $key);
-                                    }
-                                    break;
-                            }
-                        }
-                    }
+                    //     for ($i = 0 ; $i < count($get_sched) ; $i++) {
+                    //         switch ($status) {
+                    //             case 'Mon':
+                    //                 if($get_sched[$i]->mon == 0){
+                    //                     array_splice($result, $key, $key);
+                    //                 }
+                    //                 break;
+                    //             case 'Tue':
+                    //                 if($get_sched[$i]->tues == 0){
+                    //                     array_splice($result, $key, $key);
+                    //                 }
+                    //                 break;
+                    //             case 'Wed':
+                    //                 if($get_sched[$i]->wed == 0){
+                    //                     array_splice($result, $key, $key);
+                    //                 }
+                    //                 break;
+                    //             case 'Thu':
+                    //                 if($get_sched[$i]->thur == 0){
+                    //                     array_splice($result, $key, $key);
+                    //                 }
+                    //                 break;
+                    //             case 'Fri':
+                    //                 if($get_sched[$i]->fri == 0){
+                    //                     array_splice($result, $key, $key);
+                    //                 }
+                    //                 break;
+                    //             case 'Sat':
+                    //                 if($get_sched[$i]->sat == 0){
+                    //                     array_splice($result, $key, $key);
+                    //                 }
+                    //                 break;
+                    //             case 'Sun':
+                    //                 if($get_sched[$i]->sun == 0){
+                    //                  return   array_splice($result, $key, $key);
+                    //                 }
+                    //                 break;
+                    //         }
+                    //     }
+                    // }
                 }
 
                 // Step5 : Return Result

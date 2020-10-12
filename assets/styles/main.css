@@ -21,6 +21,7 @@
 .tp-welcome-header p {
     color: #4d4d4d;
     font-size: 15px;
+
 }
 
 .tp-panel-body {
@@ -119,7 +120,7 @@ button[disabled] {
     opacity: 0.49;
 }
 
-.ui-selectmenu-menu .ui-menu { 
+.ui-selectmenu-menu .ui-menu {
     max-height: 200px;
 }
 
