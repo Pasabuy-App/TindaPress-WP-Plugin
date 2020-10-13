@@ -51,6 +51,7 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/class-listing-byCategory.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-update-partner.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-store-info.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-store-navigation.php';
 
         // Featured Store Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/featured/class-insert.php';
@@ -108,10 +109,15 @@
 	// Init check if USocketNet successfully request from wapi.
     function tindapress_route()
     {
+
+
+
+
             register_rest_route( 'tindapress/v1/settings', 'search', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Search','listen'),
             ));
+
 
         /*
          * SCHEDULE STORE RESTAPI
@@ -268,6 +274,12 @@
         /*
          * STORE RESTAPI
         */
+
+            register_rest_route( 'tindapress/v1/store', 'navigation', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Store_Navigation','listen'),
+            ));
+
             register_rest_route( 'tindapress/v1/stores', 'info', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Store_Info','listen'),

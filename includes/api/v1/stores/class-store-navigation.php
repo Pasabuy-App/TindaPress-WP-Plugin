@@ -22,10 +22,28 @@
             // 2nd Initial QA 2020-08-24 10:57 PM - Miguel
             global $wpdb;
 
-            $data = $wpdb->query("SELECT * FROM ");
+            $data = $wpdb->get_results("SELECT * FROM tp_stores_view ");
+            $results = array();
+            for ($i=0; $i < count($data) ; $i++) {
+                $results[] =
+                array(
+                    "geometry" => array(
+                    "type" => "Point",
+                    "coordinates"=> [$data[$i]->lat,$data[$i]->long]
+                ),
 
-            return array(
-                
-            );
+                "type" => "Feature",
+                "properties" => array(
+                    "avatar" => $data[$i]->avatar,
+                    "banner" => $data[$i]->banner,
+                    "category"=> $data[$i]->cat_name,
+                    "hours"=> "10am - 6pm",
+                    "description"=> $data[$i]->long_info,
+                    "name"=> $data[$i]->title,
+                    "phone"=> $data[$i]->phone,
+                    "storeid"=> $data[$i]->ID
+                ));
+            }
+            return $results;
         }
     }
