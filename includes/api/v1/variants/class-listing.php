@@ -39,12 +39,12 @@
             }
 
             // Step2 : Check if wpid and snky is valid
-            // if (DV_Verification::is_verified() == false) {
-            //     return array(
-            //         "status" => "unknown",
-            //         "message" => "Please contact your administrator. Verification Issues!",
-            //     );
-            // }
+            if (DV_Verification::is_verified() == false) {
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification Issues!",
+                );
+            }
 
             isset($_POST['pdid']) ? $pdid = $_POST['pdid'] : $pdid = NULL;
             isset($_POST['pid']) ? $pid = $_POST['pid'] : $pid = NULL;
@@ -62,11 +62,11 @@
                 var.ID,
                 var.pdid,
                 ( SELECT child_val FROM $table_revs rev WHERE  rev.parent_id = var.ID AND rev.child_key = 'name' AND rev.revs_type = 'variants' AND rev.ID = ( SELECT MAX(ID) FROM $table_revs WHERE  parent_id = rev.parent_id AND revs_type ='variants' AND child_key = 'name'  ) ) as `name`,
-                ( SELECT child_val FROM $table_revs rev WHERE  rev.parent_id = var.ID AND rev.child_key = 'info' AND rev.revs_type = 'variants' AND rev.ID = ( SELECT MAX(ID) FROM $table_revs WHERE  parent_id = rev.parent_id AND revs_type ='variants' AND rev.child_key = 'info'  ) ) as `info`,
+                IF ( ( SELECT child_val FROM $table_revs rev WHERE  rev.parent_id = var.ID AND rev.child_key = 'info' AND rev.revs_type = 'variants' AND rev.ID = ( SELECT MAX(ID) FROM $table_revs WHERE  parent_id = rev.parent_id AND revs_type ='variants' AND child_key = 'info'  ) ) is null, 'NONE', ( SELECT child_val FROM $table_revs rev WHERE  rev.parent_id = var.ID AND rev.child_key = 'info' AND rev.revs_type = 'variants' AND rev.ID = ( SELECT MAX(ID) FROM $table_revs WHERE  parent_id = rev.parent_id AND revs_type ='variants' AND child_key = 'info'  ) ) )as `info`,
                 IF( ( SELECT child_val FROM $table_revs rev WHERE  rev.parent_id = var.ID AND rev.child_key = 'baseprice' AND rev.revs_type = 'variants'  AND rev.ID = ( SELECT MAX(ID) FROM $table_revs WHERE  parent_id = rev.parent_id AND revs_type ='variants' AND child_key = 'baseprice'   ) ) = 1, 'Yes', 'No') as `base`,
 
-                    IF( ( SELECT child_val FROM $table_revs rev WHERE  rev.parent_id = var.ID AND rev.child_key = 'status' AND rev.revs_type = 'variants'  AND rev.ID = ( SELECT MAX(ID) FROM $table_revs WHERE  parent_id = rev.parent_id AND revs_type ='variants' AND child_key = 'status'   ) ) = 1 , 'Active','Inactive') AS `status`,
-                    null as options
+                    IF( ( SELECT child_val FROM $table_revs rev WHERE  rev.parent_id = var.ID AND rev.child_key = 'status' AND rev.revs_type = 'variants'  AND rev.ID = ( SELECT MAX(ID) FROM $table_revs WHERE  parent_id = rev.parent_id AND revs_type ='variants' AND child_key = 'status'   ) ) = 1 , 'Active','Inactive') AS `status`
+                    #null as options
                 FROM
                     $table_variants var
                     INNER JOIN $table_revs rev ON rev.parent_id = var.ID
@@ -83,15 +83,15 @@
                 }
             }
 
-            if (isset($_POST['status'])) {
-                if ($status != NULL) {
-                    $sql .= " AND rev.child_val = '$status' ";
-                }
-            }
-
             if (isset($_POST['vrid'])) {
                 if ($variants_id != NULL) {
                     $sql .= " AND var.ID = '$variants_id' ";
+                }
+            }
+
+            if (isset($_POST['status'])) {
+                if ($status != NULL) {
+                    $sql .= " AND ( SELECT child_val FROM $table_revs rev WHERE  rev.parent_id = var.ID AND rev.child_key = 'status' AND rev.revs_type = 'variants'  AND rev.ID = ( SELECT MAX(ID) FROM $table_revs WHERE  parent_id = rev.parent_id AND revs_type ='variants' AND child_key = 'status'   ) ) = '$status' ";
                 }
             }
 
@@ -101,10 +101,11 @@
 
                 $parent = $value->ID;
                 $option = $wpdb->get_results("SELECT
-                        rev.ID,
+                        var.ID,
                         rev.child_val as 'name',
                         (SELECT child_val FROM $table_revs rev WHERE parent_id = var.ID AND child_key = 'price' AND revs_type ='variants'  AND ID = ( SELECT MAX(ID) FROM $table_revs WHERE  parent_id = rev.parent_id AND revs_type ='variants' AND child_key = 'price'  ) ) as `price`,
-                        (SELECT child_val FROM $table_revs rev WHERE parent_id = var.ID AND child_key = 'info' AND revs_type ='variants'  AND ID = ( SELECT MAX(ID) FROM $table_revs WHERE parent_id = rev.parent_id  ) ) as `info`,
+                        IF ( (SELECT child_val FROM $table_revs rev WHERE parent_id = var.ID AND child_key = 'info' AND revs_type ='variants'  AND ID = ( SELECT MAX(ID) FROM $table_revs WHERE  parent_id = rev.parent_id AND revs_type ='variants' AND child_key = 'info'  ) ) is null, 'None', (SELECT child_val FROM $table_revs rev WHERE parent_id = var.ID AND child_key = 'info' AND revs_type ='variants'  AND ID = ( SELECT MAX(ID) FROM $table_revs WHERE  parent_id = rev.parent_id AND revs_type ='variants' AND child_key = 'info'  ) ) ) as `info`,
+                        #(SELECT child_val FROM $table_revs rev WHERE parent_id = var.ID AND child_key = 'info' AND revs_type ='variants'  AND ID = ( SELECT MAX(ID) FROM $table_revs WHERE parent_id = rev.parent_id  ) ) as `info`,
                         IF( ( SELECT child_val FROM $table_revs rev WHERE parent_id = var.ID AND child_key = 'status' AND revs_type ='variants' AND ID = ( SELECT MAX(ID) FROM $table_revs WHERE child_key ='status' AND revs_type ='variants' AND parent_id = rev.parent_id  ) ) = 1, 'Active', 'Inactive' ) as `status`
                     FROM
                         $table_revs rev

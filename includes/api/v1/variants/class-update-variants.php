@@ -45,21 +45,32 @@
                     "message" => "Please contact your administrator. Request unknown!",
                 );
             }
-            if ( isset($_POST['base'])  && isset($_POST['price']) ){
-                return array(
-                    "status" => "failed",
-                    "message" => "Please select base or price.",
-                );
+            
+            // if ( isset($_POST['base'])  && isset($_POST['price']) ){
+            //     return array(
+            //         "status" => "failed",
+            //         "message" => "Please select base or price.",
+            //     );
+            // }
+
+            if ( isset($_POST['base']) ){
+                if ($_POST['base'] !== '1' && $_POST['base'] !== '0' ) {
+                    return array(
+                        "status" => "failed",
+                        "message" => "Invalid value of base price.",
+                    );
+                }
             }
 
-
-            if ($_POST['base'] !== '1' && $_POST['base'] !== '0' ) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Invalid value of base price.",
-                );
+            if ( isset($_POST['price']) ){
+                if (!is_numeric($_POST['price']) ) {
+                    return array(
+                        "status" => "failed",
+                        "message" => "Invalid value of price.",
+                    );
+                }
             }
-
+            
             // Step 4: Sanitize if variable is empty
             if ( empty($_POST['pdid']) || empty($_POST['vid']) || empty($_POST['name']) ) {
                 return array(
@@ -92,6 +103,7 @@
             AND rev.revs_type = 'variants'
             AND child_key = 'status'
             ");
+
             if (!$get_parent){ // Check if null
                 return array(
                     "status" => "failed",
@@ -106,15 +118,16 @@
                 );
             }
             if ( isset($_POST['base']) ){ // If the post base is set
-                if ( !($get_parent->parent_id === '0') ) {
+                if ( !($get_parent->parent_id !== '0') ) {
                     return array(
                         "status" => "failed",
-                        "message" => "The variant id is not a variant."
+                        "message" => "This is an option not a variant."
                     );
                 }
                 $ckbp = 'baseprice';// Name of Variant and base price
                 $cvbp = $_POST['base'];
             }
+
             if ( isset($_POST['price']) ){// If the post price is set
                 if ( ($get_parent->parent_id === '0') ) {
                     return array(
