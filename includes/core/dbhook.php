@@ -294,13 +294,7 @@
 			$sql = "CREATE TABLE `".$tbl_schedule."` (";
 				$sql .= "  `ID`   bigint(20) NOT NULL AUTO_INCREMENT, ";
 				$sql .= "  `stid` bigint(20) NOT NULL, ";
-				$sql .= "  `mon`  tinyint(2) NOT NULL, ";
-				$sql .= "  `tues` tinyint(2) NOT NULL, ";
-				$sql .= "  `wed`  tinyint(2) NOT NULL, ";
-				$sql .= "  `thur` tinyint(2) NOT NULL, ";
-				$sql .= "  `fri`  tinyint(2) NOT NULL, ";
-				$sql .= "  `sat`  tinyint(2) NOT NULL, ";
-				$sql .= "  `sun`  tinyint(2) NOT NULL, ";
+				$sql .= "  `type`  enum('mon','tue', 'wed', 'thu', 'fri', 'sat', 'sun') NOT NULL, ";
 				$sql .= "  `open` time NOT NULL, ";
 				$sql .= "  `close` time NOT NULL, ";
 				$sql .= "  `created_by` bigint(20) NOT NULL, ";

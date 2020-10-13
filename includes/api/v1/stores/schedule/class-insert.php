@@ -20,13 +20,7 @@
         public static function catch_post(){
             $curl_user = array();
             $curl_user['stid'] = $_POST['stid'];
-            $curl_user['mon'] = $_POST['mon'];
-            $curl_user['tues'] = $_POST['tues'];
-            $curl_user['wed'] = $_POST['wed'];
-            $curl_user['thur'] = $_POST['thur'];
-            $curl_user['fri'] = $_POST['fri'];
-            $curl_user['sat'] = $_POST['sat'];
-            $curl_user['sun'] = $_POST['sun'];
+            $curl_user['type'] = $_POST['type'];
             $curl_user['open'] = $_POST['open'];
             $curl_user['close'] = $_POST['close'];
             $curl_user['wpid'] = $_POST['wpid'];
@@ -41,33 +35,43 @@
             $table_schedule = TP_SCHEDULE;
             $table_schedule_fields = TP_SCHEDULE_FILEDS;
 
+            // Step 1: Check if prerequisites plugin are missing
+            $plugin = TP_Globals::verify_prerequisites();
+            if ($plugin !== true) {
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                );
+            }
+
+            // Step 2: Validate user
+            if (DV_Verification::is_verified() == false) {
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification Issues!",
+                );
+            }
+
             if (!isset($_POST['stid'])
-                || !isset($_POST['mon'])
-                || !isset($_POST['tues'])
-                || !isset($_POST['tues'])
-                || !isset($_POST['wed'])
-                || !isset($_POST['thur'])
-                || !isset($_POST['fri'])
-                || !isset($_POST['sat'])
+                || !isset($_POST['type'])
                 || !isset($_POST['close'])
-                || !isset($_POST['open'])
-                || !isset($_POST['sun']) ) {
+                || !isset($_POST['open'])) {
                 return array(
                     "status" => "unknown",
                     "message" => "Please contact your administrator. Request unknown!"
                 );
             }
 
-            if ($_POST['mon'] != "1" && $_POST['mon']   != "0"
-            || $_POST['tues'] != "1" && $_POST['tues']  != "0"
-            || $_POST['wed']  != "1" && $_POST['wed']    != "0"
-            || $_POST['thur'] != "1" && $_POST['thur']  != "0"
-            || $_POST['fri']  != "1" && $_POST['fri']    != "0"
-            || $_POST['sat']  != "1" && $_POST['sat']    != "0"
-            || $_POST['sun']  != "1" && $_POST['sun']    != "0" ) {
+            if ($_POST['type'] != "mon"
+                && $_POST['type'] != "tue"
+                && $_POST['type']  != "wed"
+                && $_POST['type'] != "thu"
+                && $_POST['type']  != "fri"
+                && $_POST['type']  != "sat"
+                && $_POST['type']  != "sun"  ) {
                 return array(
                     "status" => "failed",
-                    "message" => "Required fields value must be 1 or 0 only."
+                    "message" => "Invalid value of type."
                 );
             }
 
@@ -101,34 +105,19 @@
                 );
             }
 
-            $data = $wpdb->query("INSERT INTO
-                $table_schedule
-                    ($table_schedule_fields)
-                VALUES
-                    ('{$user['stid']}',
-                    '{$user['mon']}',
-                    '{$user['tues']}',
-                    '{$user['wed']}',
-                    '{$user['thur']}',
-                    '{$user['fri']}',
-                    '{$user['sat']}',
-                    '{$user['sun']}',
-                    '{$user['open']}',
-                    '{$user['close']}',
-                    '{$user['wpid']}'
-                    ) ");
+            $data = $wpdb->query("INSERT INTO $table_schedule ($table_schedule_fields) VALUES ('{$user["stid"]}', '{$user["type"]}', '{$user["open"]}', '{$user["close"]}', '{$user["wpid"]}') ");
 
             if ($data == false) {
                 return array(
                     "status" => "failed",
                     "message" => "An error occured while submitting data to server."
                 );
+
             }else{
                 return array(
                     "status" => "success",
                     "message" => "Data has been added successfully."
                 );
             }
-
         }
     }
