@@ -134,6 +134,22 @@
                     }
                 }
             }
+
+            if (isset($_POST['group'])) {
+                if (!empty($_POST['group'])) {
+                    if ($_POST['group'] != "inhouse" && $_POST['group'] != 'robinson') {
+
+                        if ( $status == NULL && empty($status) && $catid == NULL && empty($catid) &&  $stid == NULL && empty($stid) ) {
+                            $sql .= "  WHERE str.ctid IN((SELECT ID FROM `tp_categories` WHERE groups = 'robinson' AND parent = (SELECT ID FROM tp_categories WHERE types = 'branch' )))";
+
+                        } else {
+                            $sql .= "  AND str.ctid IN((SELECT ID FROM `tp_categories` WHERE groups = 'robinson' AND parent = (SELECT ID FROM tp_categories WHERE types = 'branch' )))";
+                        }
+                    }
+                }
+            }
+
+
             // Uncomment for debugging
 
             $limit ='12';
@@ -166,8 +182,6 @@
 
             }
 
-            // Execute query
-
             $result = $wpdb->get_results($sql);
 
             // Step4 : Check if no result
@@ -195,24 +209,6 @@
                     if($value->long == null || $value->long == 'None' ){
                         $value->long = "" ;
                     }
-
-                    // $get_sched = $wpdb->get_results("SELECT * FROM $table_schedule WHERE stid = '$value->ID'  ");
-
-                    // $day  = date('D', $time);
-
-                    // // if (!empty($get_sched)) {
-
-                    // //     for ($i = 0 ; $i < count($get_sched) ; $i++) {
-                    // //         switch ($day) {
-                    // //             case 'Mon':
-                    // //                 if(  $get_sched[$i]->type == "mon"){
-                    // //                     array_splice($result, $key, $key);
-                    // //                 }
-                    // //                 break;
-
-                    // //         }
-                    // //     }
-                    // // }
 
                 }
 
