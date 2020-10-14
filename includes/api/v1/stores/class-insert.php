@@ -355,7 +355,6 @@
                 //Update revision table for saving the parent_id(address_id)
                 $result_update_dv_rev_address =  $wpdb->query("UPDATE $dv_rev_table SET `parent_id` = {$address_id} WHERE ID IN ($status, $street, $brgy, $city, $province, $country)");
 
-
                 // End of store address.
 
                 // Update store for address column

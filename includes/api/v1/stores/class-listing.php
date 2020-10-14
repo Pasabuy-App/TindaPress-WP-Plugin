@@ -18,7 +18,6 @@
         }
 
         public static function list_open(){
-
             // 2nd Initial QA 2020-08-24 10:49 PM - Miguel
             global $wpdb;
 
@@ -36,7 +35,6 @@
             $table_dv_revisions = DV_REVS_TABLE;
             $time = time();
             $table_schedule = TP_SCHEDULE;
-            $status  = date('D', $time);
 
             // Step1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -48,12 +46,12 @@
             }
 
             // Step2 : Check if wpid and snky is valid
-            // if (DV_Verification::is_verified() == false) {
-            //     return array(
-            //             "status" => "unknown",
-            //             "message" => "Please contact your administrator. Verification Issues!",
-            //     );
-            // }
+            if (DV_Verification::is_verified() == false) {
+                return array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. Verification Issues!",
+                );
+            }
 
             // Step3 : Query
             $sql ="SELECT
@@ -93,6 +91,7 @@
             $status = $sts == '0' || $sts == NULL ? NULL : ($sts == '2'&& $sts !== '0'? '0':'1');
             $catid = $ctd == '0'? NULL: $catid = $ctd;
             $stid = $std == "0" ? NULL: $stid = $std;
+
             // Status condition
             if(isset($_POST['status'])){
                 if($status != NULL){
@@ -139,7 +138,6 @@
 
             $limit ='12';
 
-
             if( isset($_POST['lid']) ){
 				// Step 4: Validate parameter
                 if (empty($_POST['lid']) ) {
@@ -148,6 +146,7 @@
                         "message" => "Required fields cannot be empty.",
                     );
                 }
+
 				if ( !is_numeric($_POST["lid"])) {
 					return array(
 						"status" => "failed",
@@ -199,48 +198,22 @@
 
                     // $get_sched = $wpdb->get_results("SELECT * FROM $table_schedule WHERE stid = '$value->ID'  ");
 
-                    // if (!empty($get_sched)) {
+                    // $day  = date('D', $time);
 
-                    //     for ($i = 0 ; $i < count($get_sched) ; $i++) {
-                    //         switch ($status) {
-                    //             case 'Mon':
-                    //                 if($get_sched[$i]->mon == 0){
-                    //                     array_splice($result, $key, $key);
-                    //                 }
-                    //                 break;
-                    //             case 'Tue':
-                    //                 if($get_sched[$i]->tues == 0){
-                    //                     array_splice($result, $key, $key);
-                    //                 }
-                    //                 break;
-                    //             case 'Wed':
-                    //                 if($get_sched[$i]->wed == 0){
-                    //                     array_splice($result, $key, $key);
-                    //                 }
-                    //                 break;
-                    //             case 'Thu':
-                    //                 if($get_sched[$i]->thur == 0){
-                    //                     array_splice($result, $key, $key);
-                    //                 }
-                    //                 break;
-                    //             case 'Fri':
-                    //                 if($get_sched[$i]->fri == 0){
-                    //                     array_splice($result, $key, $key);
-                    //                 }
-                    //                 break;
-                    //             case 'Sat':
-                    //                 if($get_sched[$i]->sat == 0){
-                    //                     array_splice($result, $key, $key);
-                    //                 }
-                    //                 break;
-                    //             case 'Sun':
-                    //                 if($get_sched[$i]->sun == 0){
-                    //                  return   array_splice($result, $key, $key);
-                    //                 }
-                    //                 break;
-                    //         }
-                    //     }
-                    // }
+                    // // if (!empty($get_sched)) {
+
+                    // //     for ($i = 0 ; $i < count($get_sched) ; $i++) {
+                    // //         switch ($day) {
+                    // //             case 'Mon':
+                    // //                 if(  $get_sched[$i]->type == "mon"){
+                    // //                     array_splice($result, $key, $key);
+                    // //                 }
+                    // //                 break;
+
+                    // //         }
+                    // //     }
+                    // // }
+
                 }
 
                 // Step5 : Return Result
