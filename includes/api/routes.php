@@ -58,6 +58,7 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/featured/class-listing.php';
 
         // Store Schedule
+        require plugin_dir_path(__FILE__) . '/v1/stores/schedule/class-update.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/schedule/class-insert.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/schedule/class-listing.php';
 

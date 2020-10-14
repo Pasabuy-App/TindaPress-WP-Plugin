@@ -54,7 +54,6 @@
             }
 
             if (!isset($_POST['stid'])
-                || !isset($_POST['type'])
                 || !isset($_POST['close'])
                 || !isset($_POST['open'])) {
                 return array(
@@ -78,15 +77,6 @@
 
             $user = self::catch_post();
 
-            $check_store = $wpdb->get_row("SELECT ID FROM $table_schedule WHERE stid = '{$user['stid']}' ");
-
-            if (!empty($check_store)) {
-                return array(
-                    "status" => "failed",
-                    "message" => "This store is already have an schedule."
-                );
-            }
-
             // Step 5: Check if store exists
                 $store_data = $wpdb->get_row("SELECT child_val as stats FROM tp_revisions WHERE ID = (SELECT `status` FROM tp_stores WHERE ID = '{$user["stid"]}')");
 
@@ -107,24 +97,24 @@
                 }
             $wpdb->query("START TRANSACTION");
 
-            if (isset($_POST['type'])) {
-                if (!empty($_POST['type'])) {
-                    $type = $wpdb->query("UPDATE $table_schedule SET `type` = '{$user["type"]}' WHERE ID = '{$user["sid"]}' ");
-                    if ($type == false) {
-                        $wpdb->query("ROLLBACK");
-                        return array(
-                            "status" => "failed",
-                            "message" => "An error occured while submitting data to server."
-                        );
+            // if (isset($_POST['type'])) {
+            //     if (!empty($_POST['type'])) {
+            //         $type = $wpdb->query("UPDATE $table_schedule SET `type` = '{$user["type"]}' WHERE ID = '{$user["sid"]}' ");
+            //         if ($type == false) {
+            //             $wpdb->query("ROLLBACK");
+            //             return array(
+            //                 "status" => "failed",
+            //                 "message" => "An error occuawdawdred while submitting data to server."
+            //             );
 
-                    }
-                }
-            }
+            //         }
+            //     }
+            // }
 
 
             if (isset($_POST['open'])) {
                 if (!empty($_POST['open'])) {
-                    $open = $wpdb->query("UPDATE $table_schedule SET `open` = '{$user["open"]}' WHERE ID = '{$user["sid"]}' ");
+                    $open = $wpdb->query("UPDATE $table_schedule SET `open` = '{$user["open"]}' WHERE stid = '{$user["stid"]}' AND `type` = '{$user["type"]}'  ");
                     if ($open == false) {
                         $wpdb->query("ROLLBACK");
                         return array(
@@ -138,7 +128,7 @@
 
             if (isset($_POST['close'])) {
                 if (!empty($_POST['close'])) {
-                    $close = $wpdb->query("UPDATE $table_schedule SET `close` = '{$user["open"]}' WHERE ID = '{$user["sid"]}' ");
+                    $close = $wpdb->query("UPDATE $table_schedule SET `close` = '{$user["close"]}' WHERE stid = '{$user["stid"]}' AND `type` = '{$user["type"]}'  ");
 
                     if ($close == false) {
                         $wpdb->query("ROLLBACK");
