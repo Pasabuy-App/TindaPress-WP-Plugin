@@ -91,10 +91,10 @@
                 if ($store_id != NULL && $category_id != NULL) {
 
                     if ($category_id === "all" ) {
-                        $sql .= " AND cat.ID NOT IN ('2','1','9') ";
+                        $sql .= " AND cat.ID NOT IN ('2','1','9')  AND cat.groups = 'inhouse' ";
                     }
                     else if ($category_id === "robinson" ) {
-                        $sql .= " AND cat.ID NOT IN ('2','1','9')  AND  cat.parent != 0 ";
+                        $sql .= " AND cat.ID NOT IN ('2','1','9')   AND  cat.groups = 'robinson'";
                     }
                     else{
                         $sql .= " AND cat.ID = '$category_id' ";
@@ -103,10 +103,10 @@
                 }else{
                     if (!empty($category_id) ) {
                         if ($category_id === "all" ) {
-                            $sql .= " WHERE cat.ID NOT IN ('2','1','9') ";
+                            $sql .= " WHERE cat.ID NOT IN ('2','1','9') AND cat.groups = 'inhouse' ";
                         }
                         else if ($category_id === "robinson" ) {
-                            $sql .= " WHERE cat.ID NOT IN ('2','1','9') AND  cat.parent != 0 ";
+                            $sql .= " WHERE cat.ID NOT IN ('2','1','9') AND  cat.groups = 'robinson'  ";
                         }
                         else{
                             $sql .= " WHERE cat.ID = '$category_id' ";
