@@ -84,7 +84,7 @@
                 );
             }
 
-            if ( ($_POST['types'] == 'store')  || ($_POST['types'] == 'tags') ) {
+            if ( ($_POST['types'] == 'product')  || ($_POST['types'] == 'tags') ) {
                 if ( !isset($_POST['stid'])) {
                     return array(
                         "status" => "failed",
@@ -120,12 +120,12 @@
             $wpdb->query("START TRANSACTION");
 
                 // Condition for Robinson Category Child
-                if (isset($_POST['pid']) && $_POST['pid'] != "0" && $_POST['pid'] != null && $_POST['types'] == 'branch') {
+                if (isset($_POST['pid']) && $_POST['pid'] != "0" && $_POST['pid'] != null ) {
 
                     if ($_POST['pid'] != null) {
                         $pid = $_POST['pid'];
 
-                        $check_parent = $wpdb->get_row("SELECT * FROM $table_categories WHERE ID = '$pid' AND types = '$types'");
+                        $check_parent = $wpdb->get_row("SELECT * FROM $table_categories WHERE ID = '$pid' ");
                         if (empty($check_parent)) {
                             return array(
                                 "status" => "failed",

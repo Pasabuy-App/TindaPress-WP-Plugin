@@ -13,7 +13,7 @@
 
         public static function listen(){
             return rest_ensure_response(
-                self:: list_type()
+                TP_Category_Listing:: list_type()
             );
         }
 
@@ -60,7 +60,8 @@
                     ( SELECT rev.child_val FROM $table_revisions rev WHERE `revs_type` = 'categories' AND ID = cat.title ) AS title,
                     ( SELECT rev.child_val FROM $table_revisions rev WHERE `revs_type` = 'categories' AND ID = cat.info ) AS info,
                 IF
-                    ( rev.child_val = 1, 'Active', 'Inactive' ) AS `status`
+                    ( rev.child_val = 1, 'Active', 'Inactive' ) AS `status`,
+                    'None' as categories
                 FROM
                     $table_categories cat
                     INNER JOIN $table_revisions rev ON rev.ID = cat.`status` ";
@@ -90,10 +91,10 @@
                 if ($store_id != NULL && $category_id != NULL) {
 
                     if ($category_id === "all" ) {
-                        $sql .= " AND cat.ID NOT IN ('2','1','9') ";
+                        $sql .= " AND cat.ID NOT IN ('2','1','9')  AND cat.groups = 'inhouse' ";
                     }
                     else if ($category_id === "robinson" ) {
-                        $sql .= " AND cat.ID NOT IN ('2','1','9')  AND  cat.parent != 0 ";
+                        $sql .= " AND cat.ID NOT IN ('2','1','9')   AND  cat.groups = 'robinson'";
                     }
                     else{
                         $sql .= " AND cat.ID = '$category_id' ";
@@ -102,10 +103,10 @@
                 }else{
                     if (!empty($category_id) ) {
                         if ($category_id === "all" ) {
-                            $sql .= " WHERE cat.ID NOT IN ('2','1','9') ";
+                            $sql .= " WHERE cat.ID NOT IN ('2','1','9') AND cat.groups = 'inhouse' ";
                         }
                         else if ($category_id === "robinson" ) {
-                            $sql .= " WHERE cat.ID NOT IN ('2','1','9') AND  cat.parent != 0 ";
+                            $sql .= " WHERE cat.ID NOT IN ('2','1','9') AND  cat.groups = 'robinson'  ";
                         }
                         else{
                             $sql .= " WHERE cat.ID = '$category_id' ";
@@ -150,7 +151,7 @@
                     }
                 }
             }
-
+            
             if (isset($_POST['pid'])) {
                 if (!empty($_POST['pid'])) {
 
