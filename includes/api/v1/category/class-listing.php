@@ -13,7 +13,7 @@
 
         public static function listen(){
             return rest_ensure_response(
-                TP_Category_Listing:: list_type()
+                self:: list_type()
             );
         }
 
@@ -151,7 +151,7 @@
                     }
                 }
             }
-            
+
             if (isset($_POST['pid'])) {
                 if (!empty($_POST['pid'])) {
 
@@ -169,32 +169,6 @@
 
             // Execute mysql query
             $results =  $wpdb->get_results($sql);
-
-           /*  foreach ($results as $key => $value) {
-                if ($value->parent != "0" && $value->groups == "robinson" && $value->types == "branch") {
-
-                    $value->categories =$smp = $wpdb->get_results("SELECT
-                        cat.ID,
-                        cat.types,
-                        cat.parent,
-                        cat.groups,
-                        (SELECT child_val FROM tp_revisions WHERE revs_type = 'categories' AND cat.ID = parent_id AND child_key = 'avatar' ) as `avatar`,
-                    IF  (
-                        cat.`types` = 'store',
-                        ( SELECT COUNT( ctid ) FROM tp_stores WHERE ctid = cat.ID ),
-                        ( SELECT COUNT( ctid ) FROM tp_products WHERE ctid = cat.ID )
-                        ) AS `total`,
-                        ( SELECT rev.child_val FROM tp_revisions rev WHERE `revs_type` = 'categories' AND ID = cat.title ) AS title,
-                        ( SELECT rev.child_val FROM tp_revisions rev WHERE `revs_type` = 'categories' AND ID = cat.info ) AS info,
-                    IF
-                        ( rev.child_val = 1, 'Active', 'Inactive' ) AS `status`
-                    FROM
-                        tp_categories cat
-                        INNER JOIN tp_revisions rev ON rev.ID = cat.`status`
-
-                    WHERE parent = 223 AND types = 'branch' AND groups = 'robinson'");
-                }
-            } */
 
             return array(
                 "status" => "success",
