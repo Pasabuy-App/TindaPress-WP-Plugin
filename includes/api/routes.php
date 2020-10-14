@@ -59,6 +59,7 @@
 
         // Store Schedule
         require plugin_dir_path(__FILE__) . '/v1/stores/schedule/class-insert.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/schedule/class-listing.php';
 
 
         // Document Classes
@@ -111,9 +112,6 @@
     function tindapress_route()
     {
 
-
-
-
             register_rest_route( 'tindapress/v1/settings', 'search', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Search','listen'),
@@ -128,6 +126,15 @@
                 'callback' => array('TP_Store_Schedule_Insert','listen'),
             ));
 
+            register_rest_route( 'tindapress/v1/store/schedule', 'list', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Store_Schedule_Listing','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/store/schedule', 'update', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Store_Schedule_Update','listen'),
+            ));
 
         /*
          * FEATURED STORE RESTAPI
