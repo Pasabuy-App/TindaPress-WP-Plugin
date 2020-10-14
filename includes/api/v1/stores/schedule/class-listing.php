@@ -17,12 +17,6 @@
             );
         }
 
-        public static function catch_post(){
-            $curl_user = array();
-
-            return $curl_user;
-        }
-
         public static function list_open(){
 
             // 2nd Initial QA 2020-08-24 10:57 PM - Miguel
@@ -45,11 +39,13 @@
                 );
             }
 
-            $data = $wpdb->get_results("SELECT * FROM $table_schedule WHERE stid = 1");
+            $stid = $_POST['stid'];
+
+            $data = $wpdb->get_results("SELECT * FROM $table_schedule WHERE stid = '$stid' ");
 
             return array(
                 "status" => "sucess",
-                "message" => $data
+                "data" => $data
             );
         }
     }
