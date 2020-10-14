@@ -65,7 +65,7 @@
             if ($_POST['type'] != "mon"
                 && $_POST['type'] != "tue"
                 && $_POST['type']  != "wed"
-                && $_POST['type'] != "thu"
+                && $_POST['type']  != "thu"
                 && $_POST['type']  != "fri"
                 && $_POST['type']  != "sat"
                 && $_POST['type']  != "sun"  ) {
@@ -77,7 +77,7 @@
 
             $user = self::catch_post();
 
-            $check_store = $wpdb->get_row("SELECT ID FROM $table_schedule WHERE stid = '{$user['stid']}' ");
+            $check_store = $wpdb->get_row("SELECT ID FROM $table_schedule WHERE stid = '{$user['stid']}' AND `type` = '{$user['type']}'   ");
 
             if (!empty($check_store)) {
                 return array(
