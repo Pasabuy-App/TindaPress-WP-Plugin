@@ -386,7 +386,7 @@
                         'roles', $role_id, 'status', '1', $user['created_by'], $date_created )
                     ); $role_status_id = $wpdb->insert_id;
 
-                    $wpdb->query("UPDATE $table_role SET hash_id = sha2($role_id, 256), title = '$role_title_id', info = '$role_info_id', `status` = $role_status_id WHERE  ID = $role_id ");
+                    $wpdb->query("UPDATE $table_role SET `hash_id` = sha2($role_id, 256), `title` = '$role_title_id', `info` = '$role_info_id', `status` = $role_status_id WHERE  ID = '$role_id' ");
 
             // Step8 : Check if failed
             if ( $title == false || $short_info == false || $long_info == false || $logo == false || $banner == false || $status == false || $store_id == false || $result_update_tp_rev_store == false ||

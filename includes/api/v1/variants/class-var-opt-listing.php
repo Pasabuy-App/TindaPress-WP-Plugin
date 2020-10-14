@@ -73,6 +73,8 @@
                 var.ID,
                 var.pdid,
                 (SELECT child_val FROM tp_revisions WHERE ID = (SELECT MAX(ID) FROM tp_revisions WHERE revs_type = 'variants' AND child_key = 'name' AND parent_id = var.ID)) as name,
+                IF ( (SELECT child_val FROM tp_revisions WHERE ID = (SELECT MAX(ID) FROM tp_revisions WHERE revs_type = 'variants' AND child_key = 'price' AND parent_id = var.ID)) IS NULL, '0',
+                (SELECT child_val FROM tp_revisions WHERE ID = (SELECT MAX(ID) FROM tp_revisions WHERE revs_type = 'variants' AND child_key = 'price' AND parent_id = var.ID)) ) as price,
                 IF ((SELECT child_val FROM tp_revisions WHERE ID = (SELECT MAX(ID) FROM tp_revisions WHERE revs_type = 'variants' AND child_key = 'info' AND parent_id = var.ID)) is null, 'None', (SELECT child_val FROM tp_revisions WHERE ID = (SELECT MAX(ID) FROM tp_revisions WHERE revs_type = 'variants' AND child_key = 'info' AND parent_id = var.ID)) ) as info,
                 IF ((SELECT child_val FROM tp_revisions WHERE ID = (SELECT MAX(ID) FROM tp_revisions WHERE revs_type = 'variants' AND child_key = 'baseprice' AND parent_id = var.ID)) = 1, 'Yes', 'No') as baseprice,
                 IF ((SELECT child_val FROM tp_revisions WHERE ID = (SELECT MAX(ID) FROM tp_revisions WHERE revs_type = 'variants' AND child_key = 'status' AND parent_id = var.ID)) = 1, 'Active', 'Inactive' ) as status,
