@@ -44,7 +44,7 @@
             $data = $wpdb->get_results("SELECT * FROM $table_schedule WHERE stid = '$stid' ");
 
             return array(
-                "status" => "sucess",
+                "status" => "success",
                 "data" => $data
             );
         }

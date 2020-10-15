@@ -106,7 +106,10 @@
 
                     if ($status !== NULL ) {
                         if ($catid === "all" ) {
-                            $sql .= " AND NOT str.ctid IN ('2','1','9') ";
+                            $sql .= " AND str.ctid NOT IN ('2','1','9') AND cat.groups = 'inhouse'";
+                        }
+                        else if ($catid === "robinson" ) {
+                            $sql .= " AND cat.ID NOT IN ('2','1','9')  AND  cat.groups = 'robinson'";
                         }
                         else{
                             $sql .= " AND `str`.ctid = $catid ";
@@ -114,7 +117,10 @@
 
                     }else{
                         if ($catid === "all" ) {
-                            $sql .= " WHERE NOT str.ctid IN ('2','1','9') ";
+                            $sql .= " WHERE str.ctid NOT IN ('2','1','9') AND cat.groups = 'inhouse' ";
+                        }
+                        else if ($catid === "robinson" ) {
+                            $sql .= " WHERE cat.ID NOT IN ('2','1','9')   AND  cat.groups = 'robinson' ";
                         }
                         else{
                             $sql .= " WHERE `str`.ctid = $catid ";
@@ -182,6 +188,7 @@
 
             }
 
+            //return $sql;
             $result = $wpdb->get_results($sql);
 
             // Step4 : Check if no result
