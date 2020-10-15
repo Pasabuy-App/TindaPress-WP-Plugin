@@ -61,12 +61,12 @@
             foreach ($data as $key => $value) {
                if (!empty($data)) {
                     $seen = TP_Globals::seen_store($_POST['wpid'], $value->ID );
-                    if($seen == 'error'){
+                    /* if($seen == 'error'){
                         return array(
                             "status" => "failed",
                             "message" => "Please contact your administrator. Seen error"
                         );
-                    }
+                    } */
                }
             }
 
