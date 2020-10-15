@@ -26,6 +26,15 @@
 
         // Personel Classes
         require plugin_dir_path(__FILE__) . '/v1/personel/class-insert-role.php';
+        require plugin_dir_path(__FILE__) . '/v1/personel/class-insert-role-access.php';
+        require plugin_dir_path(__FILE__) . '/v1/personel/class-verify.php';
+        require plugin_dir_path(__FILE__) . '/v1/personel/class-listing-access.php';
+        require plugin_dir_path(__FILE__) . '/v1/personel/class-insert-personnel.php';
+        require plugin_dir_path(__FILE__) . '/v1/personel/class-delete-personnel.php';
+        require plugin_dir_path(__FILE__) . '/v1/personel/class-activate-personnel.php';
+        require plugin_dir_path(__FILE__) . '/v1/personel/class-assigned-store-list.php';
+        require plugin_dir_path(__FILE__) . '/v1/personel/class-listing-personnel.php';
+        require plugin_dir_path(__FILE__) . '/v1/personel/class-update-personnel.php';
 
         //Stores Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/class-insert.php';
@@ -39,6 +48,20 @@
         require plugin_dir_path(__FILE__) . '/v1/stores/class-activate.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-store-nearme.php';
         require plugin_dir_path(__FILE__) . '/v1/stores/class-update-commision.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-listing-byCategory.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-update-partner.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-store-info.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/class-store-navigation.php';
+
+        // Featured Store Classes
+        require plugin_dir_path(__FILE__) . '/v1/stores/featured/class-insert.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/featured/class-listing.php';
+
+        // Store Schedule
+        require plugin_dir_path(__FILE__) . '/v1/stores/schedule/class-update.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/schedule/class-insert.php';
+        require plugin_dir_path(__FILE__) . '/v1/stores/schedule/class-listing.php';
+
 
         // Document Classes
         require plugin_dir_path(__FILE__) . '/v1/stores/documents/class-delete.php';
@@ -50,6 +73,7 @@
         //Settings Classes
         require plugin_dir_path(__FILE__) . '/v1/settings/class-banner.php';
         require plugin_dir_path(__FILE__) . '/v1/settings/class-logo.php';
+        require plugin_dir_path(__FILE__) . '/v1/settings/class-search.php';
 
         //Category Classes
         require plugin_dir_path(__FILE__) . '/v1/category/class-delete.php';
@@ -58,6 +82,7 @@
         require plugin_dir_path(__FILE__) . '/v1/category/class-update.php';
         require plugin_dir_path(__FILE__) . '/v1/category/class-activate.php';
         require plugin_dir_path(__FILE__) . '/v1/category/class-listing.php';
+        require plugin_dir_path(__FILE__) . '/v1/category/class-listing-with-product.php';
 
         // Address Folder
         require plugin_dir_path(__FILE__) . '/v1/stores/address/class-insert.php';
@@ -79,6 +104,7 @@
         require plugin_dir_path(__FILE__) . '/v1/variants/class-delete-variants.php';
         require plugin_dir_path(__FILE__) . '/v1/variants/class-activate-variants.php';
         require plugin_dir_path(__FILE__) . '/v1/variants/class-listing.php';
+        require plugin_dir_path(__FILE__) . '/v1/variants/class-var-opt-listing.php';
 
         //Global Classes
         require plugin_dir_path(__FILE__) . '/v1/class-globals.php';
@@ -87,14 +113,97 @@
     function tindapress_route()
     {
 
+            register_rest_route( 'tindapress/v1/settings', 'search', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Search','listen'),
+            ));
+
+
         /*
-         * PRODUCT RESTAPI
+         * SCHEDULE STORE RESTAPI
         */
+            register_rest_route( 'tindapress/v1/store/schedule', 'insert', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Store_Schedule_Insert','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/store/schedule', 'list', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Store_Schedule_Listing','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/store/schedule', 'update', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Store_Schedule_Update','listen'),
+            ));
+
+        /*
+         * FEATURED STORE RESTAPI
+        */
+
+            register_rest_route( 'tindapress/v1/store/featured', 'insert', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Featured_Store_Insert','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/store/featured', 'list', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Featured_Store_Listing','listen'),
+            ));
+
+        /*
+         * PERSONNEL RESTAPI
+        */
+
+            register_rest_route( 'tindapress/v1/personel', 'update', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Update_Personnel','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/personel', 'list', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Listing_Personnel','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/personel/store', 'list', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Assigned_Store_List','listen'),
+            ));
+
             register_rest_route( 'tindapress/v1/personel/role', 'create', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Personel_Create_Role','listen'),
             ));
 
+            register_rest_route( 'tindapress/v1/personel/role/create', 'access', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Personel_Create_Role_Meta','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/personel/role', 'verify', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Verify_Store_Personel','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/personel/role/access', 'list', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Listing_Access','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/personel', 'insert', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Insert_Personnel','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/personel', 'activate', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Activate_Personnel','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/personel', 'delete', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Delete_Personnel','listen'),
+            ));
         /*
          * PRODUCT RESTAPI
         */
@@ -174,6 +283,27 @@
         /*
          * STORE RESTAPI
         */
+
+            register_rest_route( 'tindapress/v1/store', 'navigation', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Store_Navigation','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/stores', 'info', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Store_Info','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/stores', 'partner', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Update_Partner','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/stores/list', 'category', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Store_Listing_By_Category','listen'),
+            ));
+
             register_rest_route( 'tindapress/v1/stores', 'comm', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Update_Commision','listen'),
@@ -291,6 +421,11 @@
          * CATEGORIES RESTAPI
         */
 
+            register_rest_route( 'tindapress/v1/category/list', 'product', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Category_Listing_With_Product','listen'),
+            ));
+
             register_rest_route( 'tindapress/v1/category', 'insert', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Category_Insert','listen'),
@@ -351,6 +486,11 @@
             register_rest_route( 'tindapress/v1/variants', 'activate', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Activate_Variants','listen'),
+            ));
+
+            register_rest_route( 'tindapress/v1/variants/options', 'list', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Var_Opt_List','listen'),
             ));
 
             //Pending

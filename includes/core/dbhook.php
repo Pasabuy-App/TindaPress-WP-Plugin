@@ -33,6 +33,11 @@
 		$tbl_access_fields = TP_ACCESS_TABLE_FIELDS;
 		$tbl_access_data = TP_ACCESS_VALUE;
 		$tbl_wishlist = TP_WISHLIST_TABLE;
+		$tbl_featured_store = TP_FEATURED_STORE_TABLE;
+		$tbl_featured_store_seen = TP_FEATURED_STORE__SEEN_TABLE;
+		$tbl_schedule = TP_SCHEDULE;
+		$tbl_stores_view = TP_STORES_VIEW;
+		$tbl_products_view = TP_PRODUCTS_VIEW;
 
 		$wpdb->query("START TRANSACTION");
 
@@ -72,12 +77,14 @@
 		//Database table creation for roles
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_roles'" ) != $tbl_roles) {
 			$sql = "CREATE TABLE `".$tbl_roles."` (";
-				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
-				$sql .= "`hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
-				$sql .= "`wpid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User id who have access.', ";
-				$sql .= "`stid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Store id this roles belong.', ";
-				$sql .= "`created_by` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User who created this role.', ";
-				$sql .= "`date_created` datetime(0) NULL DEFAULT NULL COMMENT 'The date this roles created.', ";
+				$sql .= " `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= " `hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
+				$sql .= " `title` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User id who have access.', ";
+				$sql .= " `info` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Store id this roles belong.', ";
+				$sql .= " `stid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Store id this roles belong.', ";
+				$sql .= " `status` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Status of role.', ";
+				$sql .= " `created_by` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User who created this role.', ";
+				$sql .= " `date_created` datetime(0) NULL DEFAULT current_timestamp() COMMENT 'The date this roles created.', ";
 				$sql .= "PRIMARY KEY (`ID`) ";
 				$sql .= ") ENGINE = InnoDB; ";
 			$result = $wpdb->get_results($sql);
@@ -89,10 +96,11 @@
 			$sql = "CREATE TABLE `".$tbl_roles_meta."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
 				$sql .= "`hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
-				$sql .= "`roid` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Role ID', ";
-				$sql .= "`acsid` bigint(20)  NOT NULL DEFAULT '0' COMMENT 'Access ID .', ";
-				$sql .= "`date_created` datetime DEFAULT current_timestamp() COMMENT 'The date this role meta created.', ";
-				$sql .= "PRIMARY KEY (`ID`) ";
+				$sql .= " `roid` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Role ID', ";
+				$sql .= " `status` tinyint(5) NOT NULL DEFAULT '0' COMMENT 'Role ID', ";
+				$sql .= " `acsid` bigint(20)  NOT NULL DEFAULT '0' COMMENT 'Access ID .', ";
+				$sql .= " `date_created` datetime DEFAULT current_timestamp() COMMENT 'The date this role meta created.', ";
+				$sql .= " PRIMARY KEY (`ID`) ";
 				$sql .= ") ENGINE = InnoDB; ";
 			$result = $wpdb->get_results($sql);
 
@@ -112,6 +120,11 @@
 				$sql .= "PRIMARY KEY (`ID`) ";
 				$sql .= ") ENGINE = InnoDB; ";
 			$result = $wpdb->get_results($sql);
+
+			$conf_list_value = TP_CONFIGS_DATA;
+			$rev_fields = TP_REVISION_FIELDS;
+
+			$wpdb->query("INSERT INTO `".$tbl_revisions."` $rev_fields VALUES $conf_list_value");
 		}
 
 		//Database table creation for products
@@ -148,7 +161,7 @@
 				$sql .= "`pincode` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'User store access.', ";
 				$sql .= "`status` enum('inactive','active') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'inactive' COMMENT 'If personal is actively working in this store.', ";
 				$sql .= "`created_by` bigint(20) NOT NULL DEFAULT 0 COMMENT 'The user who added this personnel.', ";
-				$sql .= "`date_created` datetime(0) NULL DEFAULT NULL COMMENT 'The date this personnel entry is created.', ";
+				$sql .= "`date_created` datetime(0) NULL DEFAULT current_timestamp() COMMENT 'The date this personnel entry is created.', ";
 				$sql .= "PRIMARY KEY (`ID`) ";
 				$sql .= ") ENGINE = InnoDB; ";
 			$result = $wpdb->get_results($sql);
@@ -159,14 +172,16 @@
 			$sql = "CREATE TABLE `".$tbl_configs."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
 				$sql .= "`hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
-				$sql .= "`config_desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Config Description', ";
+				$sql .= "`title` varchar(255)  NOT NULL COMMENT 'Config Title', ";
+				$sql .= "`info` varchar(255)  NOT NULL COMMENT 'Config Information', ";
 				$sql .= "`config_key` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Config KEY', ";
 				$sql .= "`config_value` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Config VALUES', ";
 				$sql .= "PRIMARY KEY (`ID`) ";
 				$sql .= ") ENGINE = InnoDB; ";
 			$result = $wpdb->get_results($sql);
-
-			// $wpdb->query("INSERT INTO `".$tbl_configs."` $conf_fields VALUES $conf_list");
+			$conf_fields  = TP_CONFIGS_FIELDS;
+			$conf_list = TP_CONFIGS_VALUE;
+			$wpdb->query("INSERT INTO `".$tbl_configs."` ($conf_fields) VALUES $conf_list");
 		}
 
 		//Database table creation for plugin_config
@@ -194,7 +209,8 @@
 				$sql .= "`status` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Status of the category with revision id.', ";
 				$sql .= "`name` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Global = 1 , local = 0', ";
 				$sql .= "`parent` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Parent if value is more than 0', ";
-				$sql .= "`types` enum('none','product','store', 'tags') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'none' COMMENT 'Type of category with revision id.', ";
+				$sql .= " `types` enum('none','product','store','tags','branch') CHARACTER SET utf8mb4 NOT NULL DEFAULT 'none' COMMENT 'Type of category with revision id.', ";
+				$sql .= "  `groups` enum('inhouse','robinson') NOT NULL COMMENT 'Groups of category either inhouse or robinson', ";
 				$sql .= "`stid` bigint(20) NOT NULL COMMENT 'Store ID',";
 				$sql .= "`created_by` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User created this category with revision id.', ";
 				$sql .= "`date_created` datetime(0) NULL DEFAULT NULL COMMENT 'The date this category is created.', ";
@@ -246,6 +262,110 @@
 				$sql .= ") ENGINE = InnoDB; ";
 			$result = $wpdb->get_results($sql);
 		}
+
+		//Database table creation for wishlist
+		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_featured_store'" ) != $tbl_featured_store) {
+			$sql = "CREATE TABLE `".$tbl_featured_store."` (";
+				$sql .= "  `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= "  `type` enum('food','store','market') NOT NULL, ";
+				$sql .= "  `stid` bigint(20) NOT NULL, ";
+				$sql .= "  `logo` varchar(255) NOT NULL, ";
+				$sql .= "  `banner` varchar(255) NOT NULL, ";
+				$sql .= "  `created_by` bigint(20) NOT NULL, ";
+				$sql .= "  `status` enum('active','inactive') NOT NULL, ";
+				$sql .= "  `date_created` datetime DEFAULT current_timestamp() COMMENT 'The date and time created this wishlist.', ";
+				$sql .= "PRIMARY KEY (`ID`) ";
+				$sql .= ") ENGINE = InnoDB; ";
+			$result = $wpdb->get_results($sql);
+		}
+
+		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_featured_store_seen'" ) != $tbl_featured_store_seen) {
+			$sql = "CREATE TABLE `".$tbl_featured_store_seen."` (";
+				$sql .= "  `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= "  `fid` bigint(20) NOT NULL, ";
+				$sql .= "  `wpid` bigint(20) NOT NULL, ";
+				$sql .= "  `date_created` datetime DEFAULT current_timestamp() COMMENT 'The date and time created this wishlist.', ";
+				$sql .= "PRIMARY KEY (`ID`) ";
+				$sql .= ") ENGINE = InnoDB; ";
+			$result = $wpdb->get_results($sql);
+		}
+
+		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_schedule'" ) != $tbl_schedule) {
+			$sql = "CREATE TABLE `".$tbl_schedule."` (";
+				$sql .= "  `ID`   bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= "  `stid` bigint(20) NOT NULL, ";
+				$sql .= "  `type`  enum('mon','tue', 'wed', 'thu', 'fri', 'sat', 'sun') NOT NULL, ";
+				$sql .= "  `open` time NOT NULL, ";
+				$sql .= "  `close` time NOT NULL, ";
+				$sql .= "  `created_by` bigint(20) NOT NULL, ";
+				$sql .= "  `date_created` datetime DEFAULT current_timestamp() COMMENT 'The date and time created this schedule.', ";
+				$sql .= "PRIMARY KEY (`ID`) ";
+				$sql .= ") ENGINE = InnoDB; ";
+			$result = $wpdb->get_results($sql);
+		}
+
+		/**
+		 * Mysql Views
+		*/
+			// Store View
+			if($wpdb->get_var( "SHOW CREATE VIEW $tbl_stores_view" ) != $tbl_stores_view) {
+				$sql = "CREATE ALGORITHM=UNDEFINED  VIEW  `".$tbl_stores_view."` AS SELECT";
+					$sql .= "   str.ID,
+					str.ctid AS `catid`,
+					str.address AS `add_id`,
+					IF(( SELECT rev.child_val FROM tp_revisions rev WHERE rev.parent_id = str.ID AND  rev.date_created = ( SELECT MAX(date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores'  ) AND child_key ='isPartner' )is null ,
+					'false', IF( ( SELECT rev.child_val FROM tp_revisions rev WHERE rev.parent_id = str.ID AND  rev.date_created = ( SELECT MAX(date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores'  ) AND child_key ='isPartner' ) = 'false', 'false', 'true'  )) AS `partner`,
+					CONCAT(( SELECT rev.child_val FROM tp_revisions rev WHERE rev.parent_id = str.ID AND  rev.date_created = ( SELECT MAX(date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores'  ) AND child_key ='commission' ), '%') AS comm,
+					( SELECT rev.child_val FROM tp_revisions rev WHERE rev.ID = cat.title  AND rev.date_created = (SELECT MAX(tp_rev.date_created) FROM tp_revisions tp_rev WHERE ID = rev.ID  AND revs_type ='categories'   )  ) as cat_name,
+					( SELECT rev.child_val FROM tp_revisions rev WHERE rev.id = str.title AND  rev.date_created = ( SELECT MAX(date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores' )  ) AS title,
+					( SELECT rev.child_val FROM tp_revisions rev WHERE rev.id = str.short_info AND  rev.date_created = ( SELECT MAX(date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores' ) ) AS short_info,
+					( SELECT rev.child_val FROM tp_revisions rev WHERE rev.id = str.long_info AND  rev.date_created = ( SELECT MAX(date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores' ) ) AS long_info,
+					( SELECT rev.child_val FROM tp_revisions rev WHERE rev.id = str.logo AND  rev.date_created = ( SELECT MAX(date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores' ) ) AS avatar,
+					( SELECT rev.child_val FROM tp_revisions rev WHERE rev.id = str.banner AND  rev.date_created = ( SELECT MAX(date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores' ) ) AS banner,
+					IF ( ( SELECT rev.child_val FROM tp_revisions rev WHERE rev.id = str.`status` AND date_created = (SELECT MAX(tp_rev.date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND tp_rev.child_key = 'status')   ) = 1, 'Active', 'Inactive' ) AS `status`,
+					( SELECT dv_rev.child_val FROM dv_revisions  dv_rev WHERE dv_rev.ID = `add`.street AND dv_rev.date_created = (SELECT MAX(date_created)  FROM dv_revisions WHERE ID = dv_rev.ID AND revs_type ='address')   ) AS street,
+					( SELECT brgy_name FROM dv_geo_brgys WHERE ID = ( SELECT dv_rev.child_val FROM dv_revisions dv_rev WHERE dv_rev.id = `add`.brgy  AND dv_rev.date_created = (SELECT MAX(date_created)  FROM dv_revisions WHERE ID = dv_rev.ID AND revs_type ='address') ) ) AS brgy,
+					( SELECT city_name FROM dv_geo_cities WHERE city_code = ( SELECT dv_rev.child_val FROM dv_revisions dv_rev WHERE dv_rev.id = `add`.city  AND dv_rev.date_created = (SELECT MAX(date_created)  FROM dv_revisions WHERE ID = dv_rev.ID AND revs_type ='address')  ) ) AS city,
+					( SELECT prov_name FROM dv_geo_provinces WHERE prov_code = ( SELECT dv_rev.child_val FROM dv_revisions dv_rev WHERE dv_rev.id = `add`.province AND dv_rev.date_created = (SELECT MAX(date_created)  FROM dv_revisions WHERE ID = dv_rev.ID AND revs_type ='address')  ) ) AS province,
+					( SELECT country_name FROM dv_geo_countries WHERE id = ( SELECT dv_rev.child_val FROM dv_revisions dv_rev WHERE dv_rev.id = `add`.country  AND dv_rev.date_created = (SELECT MAX(date_created)  FROM dv_revisions WHERE ID = dv_rev.ID AND revs_type ='address')  ) ) AS country,
+					( SELECT dv_rev.child_val FROM dv_revisions  dv_rev WHERE dv_rev.ID = `add`.latitude AND dv_rev.date_created = (SELECT MAX(date_created)  FROM dv_revisions WHERE ID = dv_rev.ID AND revs_type ='address') AND child_key ='latitude' AND revs_type ='address'  ) AS `lat`,
+					( SELECT dv_rev.child_val FROM dv_revisions  dv_rev WHERE dv_rev.ID = `add`.longitude AND dv_rev.date_created = (SELECT MAX(date_created)  FROM dv_revisions WHERE ID = dv_rev.ID AND revs_type ='address') AND child_key ='longitude' AND revs_type ='address'  ) AS `long`,
+					( SELECT child_val FROM dv_revisions WHERE ID = ( SELECT revs FROM dv_contacts WHERE types = 'phone' AND stid = str.ID LIMIT 1 ) LIMIT 1 ) AS phone,
+					( SELECT child_val FROM dv_revisions WHERE ID = ( SELECT revs FROM dv_contacts  WHERE types = 'email' AND stid = str.ID LIMIT 1 ) LIMIT 1 ) AS email
+				FROM
+					tp_stores str
+					INNER JOIN dv_address `add` ON str.address = `add`.ID
+					INNER JOIN tp_categories cat ON cat.ID = str.ctid ";
+				$result = $wpdb->get_results($sql);
+			}
+
+			// Store View
+			if($wpdb->get_var( "SHOW CREATE VIEW $tbl_products_view" ) != $tbl_products_view) {
+				$sql = "CREATE ALGORITHM=UNDEFINED  VIEW  `".$tbl_products_view."` AS SELECT";
+					$sql .= "    tp_prod.ID,
+					tp_prod.stid,
+					tp_prod.ctid AS catid,
+					( SELECT COUNT(pdid) FROM tp_variants WHERE pdid = tp_prod.ID AND parent_id = 0 ) as `total`,
+					( SELECT tp_rev.child_val FROM tp_revisions tp_rev WHERE ID = ( SELECT `title` FROM tp_stores WHERE ID = tp_prod.stid ) AND revs_type = 'stores' AND child_key ='title' AND tp_rev.ID = (SELECT MAX(ID) FROM tp_revisions WHERE ID = tp_rev.ID )  ) AS `store_name`,
+					( SELECT tp_rev.child_val FROM tp_revisions tp_rev WHERE ID = c.title AND revs_type = 'categories' AND child_key ='title' AND tp_rev.ID = (SELECT MAX(ID) FROM tp_revisions WHERE ID = tp_rev.ID ) ) AS `cat_name`,
+					( SELECT tp_rev.child_val FROM tp_revisions tp_rev WHERE tp_rev.ID = tp_prod.title  AND revs_type = 'products' AND child_key ='title' AND tp_rev.ID = (SELECT MAX(ID) FROM tp_revisions WHERE ID = tp_rev.ID )  ) AS product_name,
+					( SELECT tp_rev.child_val FROM tp_revisions tp_rev WHERE ID = tp_prod.short_info  AND revs_type = 'products' AND child_key ='short_info' AND tp_rev.ID = (SELECT MAX(ID) FROM tp_revisions WHERE ID = tp_rev.ID ) ) AS `short_info`,
+					( SELECT tp_rev.child_val FROM tp_revisions tp_rev WHERE ID = tp_prod.long_info AND revs_type = 'products' AND child_key ='long_info' AND tp_rev.ID = (SELECT MAX(ID) FROM tp_revisions WHERE ID = tp_rev.ID )  ) AS `long_info`,
+					( SELECT tp_rev.child_val FROM tp_revisions tp_rev WHERE ID = tp_prod.sku   AND revs_type = 'products' AND child_key ='sku' AND tp_rev.ID = (SELECT MAX(ID) FROM tp_revisions WHERE ID = tp_rev.ID ) ) AS `sku`,
+					( SELECT tp_rev.child_val FROM tp_revisions tp_rev WHERE ID = tp_prod.price AND revs_type = 'products' AND child_key ='price' AND tp_rev.ID = (SELECT MAX(ID) FROM tp_revisions WHERE ID = tp_rev.ID )  ) AS `price`,
+					( SELECT tp_rev.child_val FROM tp_revisions tp_rev WHERE ID = tp_prod.weight AND revs_type = 'products' AND child_key ='weight' AND tp_rev.ID = (SELECT MAX(ID) FROM tp_revisions WHERE ID = tp_rev.ID )  ) AS `weight`,
+					( SELECT tp_rev.child_val FROM tp_revisions tp_rev WHERE ID = tp_prod.preview AND revs_type = 'products' AND child_key ='preview' AND tp_rev.ID = (SELECT MAX(ID) FROM tp_revisions WHERE ID = tp_rev.ID )  ) AS `preview`,
+					( SELECT tp_rev.child_val FROM tp_revisions tp_rev WHERE ID = tp_prod.dimension AND revs_type = 'products' AND child_key ='dimension' AND tp_rev.ID = (SELECT MAX(ID) FROM tp_revisions WHERE ID = tp_rev.ID ) ) AS `dimension`,
+
+					IF  ( ( SELECT tp_rev.child_val FROM tp_revisions tp_rev WHERE ID = tp_prod.`status` AND revs_type = 'products' AND child_key = 'status' AND tp_rev.ID = ( SELECT MAX(ID) FROM tp_revisions WHERE ID = tp_rev.ID )  ) = 1, 'Active', 'Inactive' ) AS `status`,
+					null as discount
+				FROM
+					tp_products tp_prod
+					INNER JOIN tp_revisions tp_rev ON tp_rev.ID = tp_prod.title
+					INNER JOIN tp_categories c ON c.ID = tp_prod.ctid  ";
+				$result = $wpdb->get_results($sql);
+			}
+
 
 		$wpdb->query("COMMIT");
 

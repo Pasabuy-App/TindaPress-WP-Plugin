@@ -19,6 +19,11 @@
 	define('TP_UIHOST', 'http://localhost/wordpress/');
 	define('TP_FULLMODE', true);
 
+	// Views
+	define('TP_STORES_VIEW', TP_PREFIX.'stores_view');
+	define('TP_PRODUCTS_VIEW', TP_PREFIX.'products_view');
+
+
 	//Categories config
 	define('TP_CATEGORIES_TABLE', TP_PREFIX.'categories');
 	define('TP_CATEGORIES_GROUP_TABLE', TP_PREFIX.'categories_group');
@@ -26,6 +31,9 @@
 
 	//Configs config
 	define('TP_CONFIGS_TABLE', TP_PREFIX.'configs');
+	define('TP_CONFIGS_FIELDS', '`title`, `info`, `config_key`, `config_value`');
+ 	define('TP_CONFIGS_VALUE', $tp_config_vals);
+ 	define('TP_CONFIGS_DATA', $tp_config_value);
 
 	//Documents config
 	define('TP_DOCU_TABLE', TP_PREFIX.'documents');
@@ -44,6 +52,18 @@
 	//Personnels Config
 	define('TP_PERSONNELS_TABLE', TP_PREFIX.'personnels');
 
+	//Products Featured store
+	define('TP_FEATURED_STORE_TABLE', TP_PREFIX.'featured_store');
+	define('TP_FEATURED_STORE_FIELDS', '`type`, `stid`, `logo`, `banner`, `created_by`');
+
+	define('TP_FEATURED_STORE__SEEN_TABLE', TP_PREFIX.'featured_store_seen');
+	define('TP_FEATURED_STORE__SEEN_FIELDS', 'wpid, fid');
+
+	// Schedule Config
+	define('TP_SCHEDULE', TP_PREFIX.'schedule');
+	define('TP_SCHEDULE_FILEDS', 'stid, type, open, close, created_by');
+
+
 	//Products Config
 	define('TP_PRODUCT_TABLE', TP_PREFIX.'products');
 	define('TP_PRODUCT_FIELDS', '(stid, ctid, title, preview, short_info, long_info, status, sku, price,  weight,  dimension , created_by, date_created)');
@@ -58,7 +78,7 @@
 	define('TP_WISHLIST_FIELDS','`product_id`, `status`, `created_by`');
 
 	define('TP_ACCESS_TABLE', TP_PREFIX.'access');
-
+	define('TP_ACCESS_VALUE', $tp_access_val);
 
 	//Roles Config
 	define('TP_ROLES_TABLE', TP_PREFIX.'roles');

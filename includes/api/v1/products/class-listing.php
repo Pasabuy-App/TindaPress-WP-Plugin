@@ -124,21 +124,53 @@
             // Uncomment for debugging
             //return $sql;
 
+            $limit = 12;
+
+            if( isset($_POST['lid']) ){
+				// Step 4: Validate parameter
+                // if (empty($_POST['lid']) ) {
+                //     return array(
+                //         "status" => "failed",
+                //         "message" => "Required fields cannot be empty.",
+                //     );
+                // }
+
+                $lastid = $_POST['lid'];
+                $offset = 12 + $lastid;
+				$limit = "7 OFFSET ".$offset;
+            }elseif (isset($_POST['lid']) || empty($_POST['lid'])) {
+			    $sql .= " ORDER BY tp_prod.ID DESC LIMIT $limit ";
+            }else{
+			    $sql .= " ORDER BY tp_prod.ID DESC ";
+            }
+
             // Execute query
             $results =  $wpdb->get_results($sql);
 
             foreach ($results as $key => $value) {
 
-                if($value->preview == null && $value->preview == 'None' ){
+                if($value->preview == null || $value->preview == 'None' ){
                     $value->preview =  TP_PLUGIN_URL . "assets/images/default-product.png" ;
                 }
 
-                $value->discount =  $wpdb->get_row("SELECT
-                (SELECT child_val  FROM tp_revisions rev  WHERE child_key = 'discount_name'  AND revs_type = 'products'  AND parent_id = '$value->ID' 	AND ID = ( SELECT max(ID) FROM tp_revisions WHERE child_key = 'discount_name' AND parent_id = '$value->ID' AND revs_type = 'products' ) ) as  `name`,
+                $get_discount =  $wpdb->get_row("SELECT
+                (SELECT child_val  FROM tp_revisions rev  WHERE child_key = 'discount_name'  AND revs_type = 'products'  AND parent_id = '$value->ID' 	AND ID = ( SELECT max(ID) FROM tp_revisions WHERE child_key = 'discount_name' AND parent_id = '$value->ID' AND revs_type = 'products' )) as  `name`,
                 (SELECT child_val  FROM tp_revisions rev  WHERE child_key = 'discount_value'  AND revs_type = 'products'  AND parent_id = '$value->ID' 	AND ID = ( SELECT max(ID) FROM tp_revisions WHERE child_key = 'discount_value' AND parent_id = '$value->ID' AND revs_type = 'products' )) as  `value`,
                 (SELECT child_val  FROM tp_revisions rev  WHERE child_key = 'discount_expiry'  AND revs_type = 'products'  AND parent_id = '$value->ID' 	AND ID = ( SELECT max(ID) FROM tp_revisions WHERE child_key = 'discount_expiry' AND parent_id = '$value->ID' AND revs_type = 'products' )) as  `expiry`,
                 IF ( (SELECT child_val  FROM tp_revisions rev  WHERE child_key = 'discount_status'  AND revs_type = 'products'  AND parent_id = '$value->ID' 	AND ID = ( SELECT max(ID) FROM tp_revisions WHERE child_key = 'discount_status' AND parent_id = '$value->ID' AND revs_type = 'products' )) = 1 , 'Active', 'Inactive') as  `status`
                 ");
+                if ($get_discount->name == null) {
+                    $get_discount->name = '';
+                }
+                if ($get_discount->value == null) {
+                    $get_discount->value = '';
+                }
+
+                if ($get_discount->expiry == null) {
+                    $get_discount->expiry = '';
+                }
+
+                $value->discount = $get_discount;
 
             }
 

@@ -9,15 +9,16 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
-    class TP_Store_Listing {
+    class TP_Store_Listing_By_Category {
 
         public static function listen(){
             return rest_ensure_response(
-                TP_Store_Listing:: list_open()
+                self:: list_open()
             );
         }
 
         public static function list_open(){
+
             // 2nd Initial QA 2020-08-24 10:49 PM - Miguel
             global $wpdb;
 
@@ -33,23 +34,21 @@
             $table_category = TP_CATEGORIES_TABLE;
             $table_contacts = DV_CONTACTS_TABLE;
             $table_dv_revisions = DV_REVS_TABLE;
-            $time = time();
-            $table_schedule = TP_SCHEDULE;
 
             // Step1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. ".$plugin." plugin missing!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
 
             // Step2 : Check if wpid and snky is valid
             if (DV_Verification::is_verified() == false) {
                 return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification Issues!",
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification Issues!",
                 );
             }
 
@@ -58,8 +57,6 @@
                 str.ID,
                 str.ctid AS `catid`,
                 str.address AS `add_id`,
-                IF(( SELECT rev.child_val FROM tp_revisions rev WHERE rev.parent_id = str.ID AND  rev.date_created = ( SELECT MAX(date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores'  ) AND child_key ='isPartner' )is null ,
-                'false', IF( ( SELECT rev.child_val FROM tp_revisions rev WHERE rev.parent_id = str.ID AND  rev.date_created = ( SELECT MAX(date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores'  ) AND child_key ='isPartner' ) = 'false', 'false', 'true'  )) AS `partner`,
                 CONCAT(( SELECT rev.child_val FROM tp_revisions rev WHERE rev.parent_id = str.ID AND  rev.date_created = ( SELECT MAX(date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores'  ) AND child_key ='commission' ), '%') AS comm,
                 ( SELECT rev.child_val FROM tp_revisions rev WHERE rev.ID = cat.title  AND rev.date_created = (SELECT MAX(tp_rev.date_created) FROM tp_revisions tp_rev WHERE ID = rev.ID  AND revs_type ='categories'   )  ) as cat_name,
                 ( SELECT rev.child_val FROM tp_revisions rev WHERE rev.id = str.title AND  rev.date_created = ( SELECT MAX(date_created) FROM tp_revisions tp_rev WHERE tp_rev.ID = rev.ID AND revs_type = 'stores' )  ) AS title,
@@ -86,11 +83,13 @@
             isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL  ;
             isset($_POST['catid']) ? $ctd = $_POST['catid'] : $ctd = NULL  ;
             isset($_POST['stid']) ? $std = $_POST['stid'] : $std = NULL  ;
+            isset($_POST['type']) ? $type = $_POST['type'] : $type = NULL  ;
 
             // Ternary condition for isset value
             $status = $sts == '0' || $sts == NULL ? NULL : ($sts == '2'&& $sts !== '0'? '0':'1');
             $catid = $ctd == '0'? NULL: $catid = $ctd;
             $stid = $std == "0" ? NULL: $stid = $std;
+
 
             // Status condition
             if(isset($_POST['status'])){
@@ -105,57 +104,31 @@
                 if ($catid != NULL && $catid != '0') {
 
                     if ($status !== NULL ) {
-                        if ($catid === "all" ) {
-                            $sql .= " AND str.ctid NOT IN ('2','1','9') AND cat.groups = 'inhouse'";
-                        }
-                        else if ($catid === "robinson" ) {
-                            $sql .= " AND cat.ID NOT IN ('2','1','9')  AND  cat.groups = 'robinson'";
-                        }
-                        else{
-                            $sql .= " AND `str`.ctid = $catid ";
-                        }
+
+                        $sql .= " AND `str`.ctid = $catid ";
 
                     }else{
-                        if ($catid === "all" ) {
-                            $sql .= " WHERE str.ctid NOT IN ('2','1','9') AND cat.groups = 'inhouse' ";
-                        }
-                        else if ($catid === "robinson" ) {
-                            $sql .= " WHERE cat.ID NOT IN ('2','1','9')   AND  cat.groups = 'robinson' ";
-                        }
-                        else{
-                            $sql .= " WHERE `str`.ctid = $catid ";
-                        }
-                    }
 
+                        $sql .= " WHERE `str`.ctid = $catid ";
+
+                    }
                 }
             }
 
             // Store ID Condition
             if (isset($_POST['stid'])) {
                 if ($stid != 0 ) {
+
                     if ( $status == NULL && empty($status) && $catid == NULL && empty($catid) ) {
                         $sql .= " WHERE `str`.ID = '$stid' ";
+
                     } else {
                         $sql .= " AND `str`.ID = '$stid' ";
+
                     }
+
                 }
             }
-
-            if (isset($_POST['group'])) {
-                if (!empty($_POST['group'])) {
-                    if ($_POST['group'] != "inhouse" && $_POST['group'] != 'robinson') {
-
-                        if ( $status == NULL && empty($status) && $catid == NULL && empty($catid) &&  $stid == NULL && empty($stid) ) {
-                            $sql .= "  WHERE str.ctid IN((SELECT ID FROM `tp_categories` WHERE groups = 'robinson' AND parent = (SELECT ID FROM tp_categories WHERE types = 'branch' )))";
-
-                        } else {
-                            $sql .= "  AND str.ctid IN((SELECT ID FROM `tp_categories` WHERE groups = 'robinson' AND parent = (SELECT ID FROM tp_categories WHERE types = 'branch' )))";
-                        }
-                    }
-                }
-            }
-
-
             // Uncomment for debugging
 
             $limit ='12';
@@ -168,7 +141,6 @@
                         "message" => "Required fields cannot be empty.",
                     );
                 }
-
 				if ( !is_numeric($_POST["lid"])) {
 					return array(
 						"status" => "failed",
@@ -180,15 +152,11 @@
 				$sql .= " AND str.ID < $lastid ";
 				$limit = 7;
 
-            }else if(empty($_POST['lid']) || isset($_POST['lid'])){
-                $sql .= " ORDER BY str.ID DESC ";
-
-            }else{
-                $sql .= " ORDER BY str.ID DESC LIMIT $limit ";
-
             }
 
-            //return $sql;
+            // return $sql;
+            // Execute query
+			$sql .= " ORDER BY str.ID DESC LIMIT $limit ";
             $result = $wpdb->get_results($sql);
 
             // Step4 : Check if no result
@@ -200,6 +168,7 @@
             }else{
 
                 foreach ($result as $key => $value) {
+
 
                     if($value->avatar == null || $value->avatar == 'None' ){
                         $value->avatar =  TP_PLUGIN_URL . "assets/images/default-store.png" ;
@@ -217,6 +186,40 @@
                         $value->long = "" ;
                     }
 
+
+                    if (isset($_POST['type'])) {
+                        if ($type !== null) {
+                            if ($type !== 'groceryhub' && $type !== 'storehub' && $type !== 'foodhub'  ) {
+                                # code...
+                            }
+
+                            switch ($type) {
+                                case 'groceryhub':
+                                        if ($value->catid  != '2' ) {
+                                            unset($result[$key]);
+                                        }
+                                    break;
+
+                                case 'storehub':
+                                            if ($value->catid  == '1' || $value->catid  == '2' ) {
+                                                unset($result[$key]);
+                                            }
+                                    break;
+
+                                case 'foodhub':
+                                    if ($value->catid  != '1'  ) {
+                                        unset($result[$key]);
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+
+                    /* if ($catid === null) {
+                        if ($value->catid  == 1 || $value->catid  == 2 ) {
+                            unset($result[$key]);
+                        }
+                    } */
                 }
 
                 // Step5 : Return Result

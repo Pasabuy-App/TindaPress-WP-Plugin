@@ -1,7 +1,7 @@
 
 <?php
 	// Exit if accessed directly
-	if ( ! defined( 'ABSPATH' ) ) 
+	if ( ! defined( 'ABSPATH' ) )
 	{
 		exit;
 	}
@@ -26,7 +26,7 @@
 
                 <div class="modal-body">
                     <form id="gps-app-form">
-                        
+
                         <div class="form-group">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -43,10 +43,10 @@
                                 <input required type="number" step = "any"  class="form-control" id="long" aria-label="Default" aria-describedby="inputGroup-sizing-default">
                             </div>
                         </div>
-                        
+
                         <div class="form-group">
                             <div class="alert alert-dark tp-center-item" role="alert">
-                                <strong>NOTE:</strong> Before we submit your request a dialog confirmation will appear 
+                                <strong>NOTE:</strong> Before we submit your request a dialog confirmation will appear
                                 to ask for your permission to complete the task.
                             </div>
                         </div>
@@ -58,6 +58,8 @@
                             <p id="confirm-content-gps"></p>
                         </div>
                     </form>
+                    <!-- <button id="add-gps-app-btn" type="submit" data-toggle="modal" data-target="#AddGpsLocation" class="btn btn-warning" style="width:100% ;"> -  <i class="fas fa-map-marker-alt"></i> Locate GPS - </button> -->
+
                 </div>
 
                 <div class="modal-footer">

@@ -49,6 +49,7 @@
             IF
                 ( (SELECT child_val FROM tp_revisions WHERE  ID =  doc.`status`) = 1, 'Active', 'Inactive' ) AS `status`,
                 doc.doctype,
+                IF (doc.approved_by = 0, 'Pending', 'Approved') AS approved,
                 doc.date_created 
             FROM
                 tp_documents doc

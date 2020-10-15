@@ -22,19 +22,18 @@
 
     #region WP Recommendation - Prevent direct initilization of the plugin.
     if ( !defined( 'ABSPATH' ) ) { exit; } // Exit if accessed directly
-    
-    if ( ! function_exists( 'is_plugin_active' ) ) 
+
+    if ( ! function_exists( 'is_plugin_active' ) )
     {
         require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
     }
-    
+
     #endregion
 
     define("TP_PLUGIN_PATH", plugin_dir_path( __FILE__ ) );
     define("TP_PLUGIN_URL", plugin_dir_url( __FILE__ ) );
 
     //Important config files and plugin updates.
-    // include_once ( TP_PLUGIN_PATH . '/includes/source/config.php' );
     include_once ( TP_PLUGIN_PATH . '/includes/core/source.php' );
     include_once ( TP_PLUGIN_PATH . '/includes/core/config.php' );
     include_once ( TP_PLUGIN_PATH . '/includes/core/update.php' );

@@ -9,11 +9,11 @@
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
-    class TP_Category_Listing {
+    class TP_Category_Listing_With_Product {
 
         public static function listen(){
             return rest_ensure_response(
-                TP_Category_Listing:: list_type()
+                self:: list_type()
             );
         }
 
@@ -48,10 +48,7 @@
             $sql = "SELECT
                     cat.ID,
                     cat.types,
-                    cat.parent,
-                    cat.groups,
-                    IF ((SELECT child_val FROM $table_revisions WHERE revs_type = 'categories' AND cat.ID = parent_id AND child_key = 'avatar' ) is null, 'None',
-                    (SELECT child_val FROM $table_revisions WHERE revs_type = 'categories' AND cat.ID = parent_id AND child_key = 'avatar' ) ) as `avatar`,
+                    cat.stid as stid,
                 IF  (
                     cat.`types` = 'store',
                     ( SELECT COUNT( ctid ) FROM $table_store WHERE ctid = cat.ID ),
@@ -59,9 +56,8 @@
                     ) AS `total`,
                     ( SELECT rev.child_val FROM $table_revisions rev WHERE `revs_type` = 'categories' AND ID = cat.title ) AS title,
                     ( SELECT rev.child_val FROM $table_revisions rev WHERE `revs_type` = 'categories' AND ID = cat.info ) AS info,
-                IF
-                    ( rev.child_val = 1, 'Active', 'Inactive' ) AS `status`,
-                    'None' as categories
+                IF  ( rev.child_val = 1, 'Active', 'Inactive' ) AS `status`,
+                    null as products
                 FROM
                     $table_categories cat
                     INNER JOIN $table_revisions rev ON rev.ID = cat.`status` ";
@@ -75,7 +71,7 @@
             // Ternary for value of varables
             $store_id    = $std  == '0' ? NULL: $store_id    = $std;
             $category_id = $cat  == '0' ? NULL: $category_id = $cat;
-            $type        = $typ  == '0' ? NULL: ($typ == '1'? $type = 'store': ($typ == '2'? $type = 'product' : ($typ == '3'? $type = 'branch': $type = 'tags' ))  );
+            $type        = $typ  == '0' ? NULL: ($typ == '1'? $type = 'store': ($typ == '2'? $type = 'product' : $type = 'tags' ) );
             $status      = $sts  == '0' || $sts == NULL ? NULL : ($sts == '2' && $sts !== '0'? '0':'1');
 
             // Condition for store ID
@@ -89,28 +85,11 @@
             if (isset($_POST['catid'])) {
 
                 if ($store_id != NULL && $category_id != NULL) {
-
-                    if ($category_id === "all" ) {
-                        $sql .= " AND cat.ID NOT IN ('2','1','9')  AND cat.groups = 'inhouse' ";
-                    }
-                    else if ($category_id === "robinson" ) {
-                        $sql .= " AND cat.ID NOT IN ('2','1','9')   AND  cat.groups = 'robinson'";
-                    }
-                    else{
-                        $sql .= " AND cat.ID = '$category_id' ";
-                    }
+                    $sql .= " AND cat.ID = '$category_id' ";
 
                 }else{
                     if (!empty($category_id) ) {
-                        if ($category_id === "all" ) {
-                            $sql .= " WHERE cat.ID NOT IN ('2','1','9') AND cat.groups = 'inhouse' ";
-                        }
-                        else if ($category_id === "robinson" ) {
-                            $sql .= " WHERE cat.ID NOT IN ('2','1','9') AND  cat.groups = 'robinson'  ";
-                        }
-                        else{
-                            $sql .= " WHERE cat.ID = '$category_id' ";
-                        }
+                        $sql .= " WHERE cat.ID = '$category_id' ";
                     }
                 }
             }
@@ -136,7 +115,7 @@
 
                 if ($type != NULL) {
 
-                    if (  $type != 'product' && $type != 'store' && $type != 'tags' && $type != 'branch') {
+                    if (  $type != 'product' && $type != 'store' && $type != 'tags') {
                         return array(
                             "status" => "failed",
                             "message" => "Invalid type of category.",
@@ -151,24 +130,15 @@
                     }
                 }
             }
-            
-            if (isset($_POST['pid'])) {
-                if (!empty($_POST['pid'])) {
 
-                    $parent_id = $_POST['pid'];
-                    if ($type != NULL && $status != NULL || $store_id != NULL || $category_id != NULL   ) {
-                        $sql .= " AND cat.parent = '$parent_id'  ";
-                    }else{
-                        $sql .= " WHERE cat.parent = '$parent_id'  ";
-
-                    }
-                }
-            }
-
-            //return $sql;
+            // Uncoment for debugging
+            // return $sql;
 
             // Execute mysql query
             $results =  $wpdb->get_results($sql);
+            foreach ($results as $key => $value) {
+                $value->products = TP_Globals::get_product($value->ID,$value->stid);
+            }
 
             return array(
                 "status" => "success",

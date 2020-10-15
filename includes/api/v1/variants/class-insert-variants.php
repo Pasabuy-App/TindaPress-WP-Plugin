@@ -108,17 +108,19 @@
                 FROM
                     tp_variants var
                 INNER JOIN tp_revisions rev ON rev.parent_id = var.ID
-                    WHERE var.parent_id = 0 AND rev.child_key = 'baseprice' AND revs_type ='variants' AND var.pdid = '$product_id' AND rev.ID =  (SELECT MAX(ID) FROM tp_revisions rev WHERE parent_id = rev.parent_id AND revs_type = 'variants' AND child_key = 'baseprice' )
+                    WHERE var.parent_id = 0 AND rev.child_key = 'baseprice' AND revs_type ='variants' AND var.pdid = '$product_id' 
                 ");
 
             if (isset($_POST['base'])) {
     
-                for ($i=0; $i < count($validate_variant); $i++) { 
-                    if ($validate_variant[$i]->baseprice == $base_price) {
-                        return array(
-                            "status" => "failed",
-                            "message" => "Please deactivate the active base price first."
-                        );
+                if($_POST['base'] != 0){
+                    for ($i=0; $i < count($validate_variant); $i++) { 
+                        if ($validate_variant[$i]->baseprice == $base_price) {
+                            return array(
+                                "status" => "failed",
+                                "message" => "Please deactivate the active base price first."
+                            );
+                        }
                     }
                 }
             }
