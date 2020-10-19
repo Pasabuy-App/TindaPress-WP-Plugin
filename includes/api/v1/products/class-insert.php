@@ -116,14 +116,14 @@
             }
 
             // Step 7: Check if user has roles_access of can_activate_store or either contributor or editor
-            $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_add_products' );
+            // $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_add_products' );
 
-            if ($permission == true) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Current user has no access in adding products.",
-                );
-            }
+            // if ($permission == true) {
+            //     return array(
+            //         "status" => "failed",
+            //         "message" => "Current user has no access in adding products.",
+            //     );
+            // }
 
             // Validate Category
 
@@ -156,13 +156,13 @@
 
             // Step 8: Start mysql transaction
             $wpdb->query("START TRANSACTION");
-            
+
             $product_prev = "None";
             $files = $request->get_file_params();
 
             if ( isset($files['img'])) {
-				$results = DV_Globals::upload_image( $request,$files ); 
-                $product_prev = $results['data']; 
+				$results = DV_Globals::upload_image( $request,$files );
+                $product_prev = $results['data'];
                 if (!$results){
                     return array(
                         "status" => "failed",

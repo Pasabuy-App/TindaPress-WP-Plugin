@@ -242,12 +242,12 @@
 				$sql .= "`parent_id` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Parent id from this table 0 if this row is parent.', ";
 				$sql .= "`pdid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Product id from revision.', ";
 				$sql .= "`created_by` bigint(20) NOT NULL DEFAULT 0 COMMENT 'User who created this variant.', ";
+				$sql .= "`isRequired` enum('no', 'yes') NOT NULL DEFAULT 0 COMMENT 'If this variant is required or not.', ";
 				$sql .= "`date_created` datetime(0) NULL DEFAULT NULL COMMENT 'The date this variant is created.', ";
 				$sql .= "PRIMARY KEY (`ID`) ";
 				$sql .= ") ENGINE = InnoDB; ";
 			$result = $wpdb->get_results($sql);
 		}
-
 
 		//Database table creation for wishlist
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_wishlist'" ) != $tbl_wishlist) {
