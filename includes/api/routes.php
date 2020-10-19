@@ -105,6 +105,8 @@
         require plugin_dir_path(__FILE__) . '/v1/variants/class-activate-variants.php';
         require plugin_dir_path(__FILE__) . '/v1/variants/class-listing.php';
         require plugin_dir_path(__FILE__) . '/v1/variants/class-var-opt-listing.php';
+        require plugin_dir_path(__FILE__) . '/v1/variants/class-variant-options.php';
+
 
         //Global Classes
         require plugin_dir_path(__FILE__) . '/v1/class-globals.php';
@@ -475,6 +477,11 @@
         /*
          * VARIANTS RESTAPI
         */
+
+            register_rest_route( 'tindapress/v1/variants/option', 'list', array(
+                'methods' => 'POST',
+                'callback' => array('TP_List_Variants_With_Options','listen'),
+            ));
 
             register_rest_route( 'tindapress/v1/variants', 'insert', array(
                 'methods' => 'POST',
