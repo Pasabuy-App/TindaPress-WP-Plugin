@@ -126,22 +126,22 @@
 
             $limit = 12;
 
-            if( isset($_POST['lid']) ){
-				// Step 4: Validate parameter
-                // if (empty($_POST['lid']) ) {
-                //     return array(
-                //         "status" => "failed",
-                //         "message" => "Required fields cannot be empty.",
-                //     );
-                // }
+            if (!isset($_POST['lid'])) {
+                $sql .= " ORDER BY tp_prod.ID DESC ";
+
+            }else{
+
+			    $sql .= " ORDER BY tp_prod.ID DESC LIMIT $limit ";
+
+            }
+
+            if (isset($_POST['lid']) && !empty($_POST['lid'])) {
 
                 $lastid = $_POST['lid'];
                 $offset = 12 + $lastid;
-				$limit = "7 OFFSET ".$offset;
-            }elseif (isset($_POST['lid']) || empty($_POST['lid'])) {
+                $limit = "7 OFFSET ".$offset;
+
 			    $sql .= " ORDER BY tp_prod.ID DESC LIMIT $limit ";
-            }else{
-			    $sql .= " ORDER BY tp_prod.ID DESC ";
             }
 
             // Execute query

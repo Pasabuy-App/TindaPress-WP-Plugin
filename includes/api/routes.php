@@ -207,6 +207,14 @@
         /*
          * PRODUCT RESTAPI
         */
+
+
+
+            register_rest_route( 'tindapress/v1/products/variants', 'list', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Product_Variants','listen'),
+            ));
+
             register_rest_route( 'tindapress/v1/products', 'activate', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Product_Activate','listen'),
