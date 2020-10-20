@@ -20,7 +20,7 @@
         public static function list_open(){
 
             global $wpdb;
-            return "HAHAHA";
+            //return "HAHAHA";
             // declaring table names to variable
             $table_store = TP_STORES_TABLE;
             $table_revs = TP_REVISIONS_TABLE;
