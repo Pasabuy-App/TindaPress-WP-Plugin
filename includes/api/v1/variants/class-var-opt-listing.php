@@ -43,14 +43,14 @@
                 );
             }
 
-            if (!isset($_POST['pdid']) || !isset($_POST['pid'])) {
+            if (!isset($_POST['pdid']) ) {
                 return array(
 					"status" => "unknown",
 					"message" => "Please contact your administrator. Request unknown!",
                 );
             }
 
-            if (!is_numeric($_POST['pdid']) || !is_numeric($_POST['pid'])) {
+            if (!is_numeric($_POST['pdid']) ) {
                 return array(
 					"status" => "failed",
 					"message" => "Please contact your administrator. Invalid input of product id or parent id.",
@@ -62,7 +62,9 @@
 
             isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL;
             isset($_POST['vrid']) ? $vrid = $_POST['vrid'] : $vrid = NULL;
+            isset($_POST['pid']) ? $pid = $_POST['pid'] : $pid = NULL;
 
+            $parent_id = $pid  == '0' || $pid == NULL ? NULL: $parent_id = $pid;
             $status = $sts  == '0' || $sts == NULL ? NULL : ($sts == '2' && $sts !== '0'? '0':'1');
             $variants_id = $vrid  == '0' || $vrid == NULL ? NULL: $variants_id = $vrid;
 
@@ -81,8 +83,14 @@
                 (SELECT date_created FROM tp_revisions WHERE ID = (SELECT MAX(ID) FROM tp_revisions WHERE revs_type = 'variants' AND child_key = 'name' AND parent_id = var.ID)) as date_created
             FROM
                 tp_variants AS var 
-            WHERE var.pdid = $product_id AND var.parent_id = $parent_id 
+            WHERE var.pdid = $product_id 
             ";
+
+            if (isset($_POST['pid'])) { // parent_id, o for variants then variant id if options
+                if ($parent_id != NULL) {
+                    $sql .= " AND var.parent_id = '$parent_id' ";
+                }
+            }
 
             if (isset($_POST['vrid'])) { // option or variant details
                 if ($variants_id != NULL) {

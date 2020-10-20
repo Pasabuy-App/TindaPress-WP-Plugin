@@ -82,17 +82,43 @@
                 $parent = $value->ID;
                 $value->options = $wpdb->get_results("SELECT
                         var.ID,
-                        rev.child_val as 'name',
-                        (SELECT child_val FROM $table_revs rev WHERE parent_id = var.ID AND child_key = 'price' AND revs_type ='variants'  AND ID = ( SELECT MAX(ID) FROM $table_revs WHERE  parent_id = rev.parent_id AND revs_type ='variants' AND child_key = 'price'  ) ) as `price`,
-                        IF ( (SELECT child_val FROM $table_revs rev WHERE parent_id = var.ID AND child_key = 'info' AND revs_type ='variants'  AND ID = ( SELECT MAX(ID) FROM $table_revs WHERE  parent_id = rev.parent_id AND revs_type ='variants' AND child_key = 'info'  ) ) is null, 'None', (SELECT child_val FROM $table_revs rev WHERE parent_id = var.ID AND child_key = 'info' AND revs_type ='variants'  AND ID = ( SELECT MAX(ID) FROM $table_revs WHERE  parent_id = rev.parent_id AND revs_type ='variants' AND child_key = 'info'  ) ) ) as `info`,
-                        #(SELECT child_val FROM $table_revs rev WHERE parent_id = var.ID AND child_key = 'info' AND revs_type ='variants'  AND ID = ( SELECT MAX(ID) FROM $table_revs WHERE parent_id = rev.parent_id  ) ) as `info`,
+                        -- rev.child_val as 'name',
+
+                        (SELECT child_val FROM tp_revisions rev 
+                        WHERE 
+                            parent_id = var.ID
+                        AND child_key = 'name' 
+                        AND revs_type ='variants'  
+                        AND ID = (SELECT MAX(ID) FROM tp_revisions WHERE  parent_id = var.ID AND revs_type ='variants' AND child_key = 'name' ) ) as `name`,
+                        
+                        (SELECT child_val FROM tp_revisions rev 
+                        WHERE 
+                            parent_id = var.ID
+                        AND child_key = 'price' 
+                        AND revs_type ='variants'  
+                        AND ID = (SELECT MAX(ID) FROM tp_revisions WHERE  parent_id = var.ID AND revs_type ='variants' AND child_key = 'price' ) ) as `price`,
+
+                        IF ( (SELECT child_val FROM $table_revs rev 
+                        WHERE 
+                            parent_id = var.ID 
+                        AND child_key = 'info' 
+                        AND revs_type ='variants'  
+                        AND ID = ( SELECT MAX(ID) FROM $table_revs WHERE  parent_id = rev.parent_id AND revs_type ='variants' AND child_key = 'info'  ) ) is null,
+                            'None', 
+                            (SELECT child_val FROM $table_revs rev WHERE parent_id = var.ID AND child_key = 'info' AND revs_type ='variants'  AND ID = ( SELECT MAX(ID) FROM $table_revs WHERE  parent_id = rev.parent_id AND revs_type ='variants' AND child_key = 'info'  ) ) ) as `info`,
                         IF( ( SELECT child_val FROM $table_revs rev WHERE parent_id = var.ID AND child_key = 'status' AND revs_type ='variants' AND ID = ( SELECT MAX(ID) FROM $table_revs WHERE child_key ='status' AND revs_type ='variants' AND parent_id = rev.parent_id  ) ) = 1, 'Active', 'Inactive' ) as `status`
                     FROM
                         $table_revs rev
                         INNER JOIN $table_variants var ON var.parent_id = '$parent'
-                    WHERE   rev.revs_type = 'variants' AND child_key = 'name' AND rev.parent_id = var.ID
+                    WHERE rev.revs_type = 'variants' AND rev.parent_id = var.ID
+                        GROUP BY var.ID
                 ");
             }
-            return $_parent;
+
+            return array(
+                "status" => "success",
+                "data" => $_parent,
+            );
+            //return $_parent;
         }
     }
