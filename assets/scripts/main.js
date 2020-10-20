@@ -11,6 +11,7 @@ function copyFromId( elemId )
 function readURL(input) {
 
     var smp = jQuery('#type').val();
+
     switch (smp) {
         case 'none':
             alert("Please choose type of image in dropdown below.")
