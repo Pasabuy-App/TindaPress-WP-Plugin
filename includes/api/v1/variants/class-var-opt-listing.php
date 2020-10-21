@@ -58,15 +58,16 @@
             }
 
             $product_id = $_POST['pdid'];
+            $variants_id = $_POST['vrid'];
             $parent_id = $_POST['pid'];
 
             isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL;
-            isset($_POST['vrid']) ? $vrid = $_POST['vrid'] : $vrid = NULL;
-            isset($_POST['pid']) ? $pid = $_POST['pid'] : $pid = NULL;
+            //isset($_POST['vrid']) ? $vrid = $_POST['vrid'] : $vrid = NULL;
+            //isset($_POST['pid']) ? $pid = $_POST['pid'] : $pid = NULL;
 
-            $parent_id = $pid  == '0' || $pid == NULL ? NULL: $parent_id = $pid;
+            //$parent_id = $pid  == '0' || $pid == NULL ? NULL: $parent_id = $pid;
             $status = $sts  == '0' || $sts == NULL ? NULL : ($sts == '2' && $sts !== '0'? '0':'1');
-            $variants_id = $vrid  == '0' || $vrid == NULL ? NULL: $variants_id = $vrid;
+            //$variants_id = $vrid  == '0' || $vrid == NULL ? NULL: $variants_id = $vrid;
 
             // TODO : check product id and parent id
             // TODO : if variant id is set, check if a variant or an options
@@ -86,15 +87,25 @@
             WHERE var.pdid = $product_id 
             ";
 
-            if (isset($_POST['pid'])) { // parent_id, o for variants then variant id if options
-                if ($parent_id != NULL) {
-                    $sql .= " AND var.parent_id = '$parent_id' ";
+            if (isset($_POST['vrid']) ) { // option or variant details
+                if (!empty($_POST['vrid'])){
+                    if ($variants_id != NULL) {
+                        $sql .= " AND var.ID = '$variants_id' ";
+                    }
+                }
+                else{
+                    if (isset($_POST['pid'])) { // parent_id, o for variants then variant id if options
+                        if ($parent_id != NULL) {
+                            $sql .= " AND var.parent_id = '$parent_id' ";
+                        }
+                    }
                 }
             }
-
-            if (isset($_POST['vrid'])) { // option or variant details
-                if ($variants_id != NULL) {
-                    $sql .= " AND var.ID = '$variants_id' ";
+            else{
+                if (isset($_POST['pid'])) { // parent_id, o for variants then variant id if options
+                    if ($parent_id != NULL) {
+                        $sql .= " AND var.parent_id = '$parent_id' ";
+                    }
                 }
             }
 
@@ -105,6 +116,7 @@
             }
             
             $sql .= " ORDER BY var.ID DESC ";
+            //return $sql;
             $result = $wpdb->get_results($sql);
 
             return array(

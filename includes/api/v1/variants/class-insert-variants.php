@@ -103,13 +103,23 @@
 
             $wpdb->query("START TRANSACTION");
 
-            $validate_variant = $wpdb->get_results("SELECT
-                    child_val as `baseprice`
-                FROM
-                    tp_variants var
-                INNER JOIN tp_revisions rev ON rev.parent_id = var.ID
-                    WHERE var.parent_id = 0 AND rev.child_key = 'baseprice' AND revs_type ='variants' AND var.pdid = '$product_id'
-                ");
+            // $validate_variant = $wpdb->get_results("SELECT
+            //         child_val as `baseprice`
+            //     FROM
+            //         tp_variants var
+            //     INNER JOIN tp_revisions rev ON rev.parent_id = var.ID
+            //         WHERE var.parent_id = 0 AND rev.child_key = 'baseprice' AND revs_type ='variants' AND var.pdid = '$product_id'
+            //     ");
+            
+            $validate_variant = $wpdb->get_results("SELECT                                               
+                (SELECT child_val FROM tp_revisions WHERE ID = (SELECT MAX(ID) FROM tp_revisions WHERE revs_type = 'variants' AND child_key = 'baseprice' AND parent_id = var.ID)) as baseprice        
+                FROM               
+                tp_variants AS var             
+                WHERE var.pdid = '$product_id'         AND var.parent_id = '0'     
+                AND ( SELECT child_val FROM tp_revisions rev WHERE  rev.parent_id = var.ID AND rev.child_key = 'status' AND rev.revs_type = 'variants'  
+                AND rev.ID = ( SELECT MAX(ID) FROM tp_revisions WHERE  parent_id = rev.parent_id AND revs_type ='variants' AND child_key = 'status'   ) ) = '1'  
+                ORDER BY var.ID DESC
+            ");
 
             if (isset($_POST['base'])) {
 
