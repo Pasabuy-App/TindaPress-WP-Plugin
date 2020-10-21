@@ -86,6 +86,10 @@
                                 $('#imageResult').attr('src', data.avatar );
                             }
 
+                            if(data.banner != 'None') {
+                                $('#banner').attr('src', data.banner );
+                            }
+
                             if( !$('#stores-notification').hasClass('tp-display-hide') )
                             {
                                 $('#stores-notification').addClass('tp-display-hide');
@@ -155,11 +159,12 @@
 
                                         '<button type="button" class="btn btn-success btn-sm"' +
                                         ' data-toggle="modal" data-target="#AddLogo"' +
-                                        ' title="Click this to upload logo of the store."' +
+                                        ' title="Click this to upload logo / banner of the store."' +
                                         ' data-id="' + item.ID + '"' +
                                         ' data-status="' + item.status + '"' +
                                         ' data-logo="' + item.avatar + '"' +
-                                        ' >Logo</button>' +
+                                        ' data-banner="' + item.banner + '"' +
+                                        ' >Logo / Banner</button>' +
 
                                         '<button type="button" class="btn btn-primary btn-sm"' +
                                         ' data-toggle="modal" data-target="#AddGPS"' +
@@ -561,11 +566,21 @@
         // LISTEN FOR MODAL SHOW AND ATTACHED ID.
         $('#AddLogo').on('show.bs.modal', function(e) {
                 var data = e.relatedTarget.dataset;
+                // Show Logo
                 if ( (typeof null === data.logo && !null) || data.logo === 'None' || data.logo === null || !data.logo ) {
                     $('#imageResult').attr('src', '<?php echo TP_PLUGIN_URL . "/assets/images/default.jpg"; ?>' );
 
                 } else {
                     $('#imageResult').attr('src', data.logo );
+
+                }
+
+                // Show Banner
+                if ( (typeof null === data.banner && !null) || data.banner === 'None' || data.banner === null || !data.banner ) {
+                    $('#banner').attr('src', '<?php echo TP_PLUGIN_URL . "/assets/images/default-banner.jpg"; ?>' );
+
+                } else {
+                    $('#banner').attr('src', data.banner );
 
                 }
 
@@ -795,7 +810,7 @@
             postParam.append( "snky", "<?php echo wp_get_session_token(); ?>");
             postParam.append( "stid", $('#logo_store_id').val());
             postParam.append( "status", $('#edit_status').val());
-            postParam.append( "type", 'logo');
+            postParam.append( "type", $('#type').val());
             //postParam.append( "mkey", 'datavice');
 
             var postUrl = '<?= TP_UIHOST . "/wp-json/datavice/v1/process/upload"; ?>';
