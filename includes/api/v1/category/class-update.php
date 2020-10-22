@@ -53,14 +53,14 @@
             }
 
             //Check if user has roles_access of can_update_category or either contributor or editor
-            $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_update_category' );
+            // $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_update_category' );
             
-            if ($permission == true) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Current user has no access in editing category.",
-                );
-            }
+            // if ($permission == true) {
+            //     return array(
+            //         "status" => "failed",
+            //         "message" => "Current user has no access in editing category.",
+            //     );
+            // }
 
             // Step 3: Check if parameters are passed
             if (!isset($_POST["title"]) || !isset($_POST["info"]) || !isset($_POST["catid"])) {

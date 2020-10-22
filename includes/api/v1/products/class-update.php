@@ -83,14 +83,14 @@
            }
 
             // Step 5: Check if user has roles_access of can_activate_store or either contributor or editor
-            $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_update_products' );
+            // $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_update_products' );
             
-            if ($permission == true) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Current user has no access in editing products.",
-                );
-            }
+            // if ($permission == true) {
+            //     return array(
+            //         "status" => "failed",
+            //         "message" => "Current user has no access in editing products.",
+            //     );
+            // }
             
             // variables for query    
             $later      = TP_Globals::date_stamp();
