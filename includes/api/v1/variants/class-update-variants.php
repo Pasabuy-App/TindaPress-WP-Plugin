@@ -117,15 +117,16 @@
                     "message" => "This variant is already inactive."
                 );
             }
-            if ( isset($_POST['base']) ){ // If the post base is set
-                if ( !($get_parent->parent_id !== '0') ) {
+
+            if ( isset($_POST['baseprice']) ){ // If the post base is set
+                if ( !($get_parent->parent_id === '0') ) {
                     return array(
                         "status" => "failed",
                         "message" => "This is an option not a variant."
                     );
                 }
                 $ckbp = 'baseprice';// Name of Variant and base price
-                $cvbp = $_POST['base'];
+                $cvbp = $_POST['baseprice'];
             }
 
             if ( isset($_POST['price']) ){// If the post price is set

@@ -65,14 +65,14 @@
             }
 
             // Step 5: Check if user has roles_access of can_activate_store or either contributor or editor
-            $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_delete_products' );
+            // $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_delete_products' );
             
-            if ($permission == true) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Current user has no access in deleting products.",
-                );
-            }
+            // if ($permission == true) {
+            //     return array(
+            //         "status" => "failed",
+            //         "message" => "Current user has no access in deleting products.",
+            //     );
+            // }
 
             // variables
             $parentid = $_POST['pdid'];
