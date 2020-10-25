@@ -41,7 +41,7 @@
                     "status" => "unknown",
                     "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
-                
+
             }
 
             // Step2 : Check if wpid and snky is valid
@@ -79,7 +79,7 @@
                 ( SELECT dv_rev.child_val FROM $table_dv_revs as dv_rev WHERE ID = dv_add.street ) AS `street`,
                 ( SELECT brgy_name FROM $table_brgy WHERE ID = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.brgy ) ) AS brgy,
                 ( SELECT city_name FROM $table_city WHERE city_code = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.city ) ) AS city,
-                ( SELECT prov_name FROM $table_province WHERE prov_code = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.province ) ) AS province,
+                ( SELECT prov_name FROM $table_province WHERE prov_code = ( SELECT child_val FROM $table_dv_revs WHREE ID = dv_add.province ) ) AS province,
                 ( SELECT country_name FROM $table_country WHERE ID = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.country ) ) AS country
             FROM
                 $table_store tp_str
@@ -88,7 +88,10 @@
             INNER JOIN
                 $table_address dv_add ON tp_str.address = dv_add.ID
             WHERE
-                tp_rev.child_val REGEXP '^$value' OR ( SELECT city_name FROM dv_geo_cities WHERE city_code = ( SELECT child_val FROM tp_revisions WHERE ID = dv_add.city ) ) REGEXP '^$value';
+                tp_rev.child_val LIKE '%$value%'
+                OR  ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.short_info ) LIKE '%$value%'
+                OR ( SELECT city_name FROM $table_city WHERE city_code = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.city ) ) LIKE '%$value%'
+
             ");
 
             // Step7 : Return Result
