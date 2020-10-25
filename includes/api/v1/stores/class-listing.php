@@ -160,7 +160,7 @@
 
             $limit ='12';
 
-            if( isset($_POST['lid']) ){
+            if( isset($_POST['lid']) && !empty($_POST['lid'])  ){
 				// Step 4: Validate parameter
                 if (empty($_POST['lid']) ) {
                     return array(
@@ -180,11 +180,12 @@
 				$sql .= " AND str.ID < $lastid ";
 				$limit = 7;
 
-            }else if(empty($_POST['lid']) || isset($_POST['lid'])){
-                $sql .= " ORDER BY str.ID DESC ";
+            }else if(empty($_POST['lid']) && isset($_POST['lid'])){
+
+                $sql .= " ORDER BY str.ID DESC LIMIT $limit ";
 
             }else{
-                $sql .= " ORDER BY str.ID DESC LIMIT $limit ";
+                $sql .= " ORDER BY str.ID DESC ";
 
             }
 
