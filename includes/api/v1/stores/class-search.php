@@ -31,9 +31,6 @@
             $table_province = DV_PROVINCE_TABLE;
             $table_country = DV_COUNTRY_TABLE;
 
-            // declaring variable
-            $value = $_POST['search'];
-
             // Step1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
@@ -53,7 +50,7 @@
             }
 
             // Step3 : Sanitize request
-			if (!isset($_POST['search']) ) {
+			if (!isset($_POST['search']) || !isset($_POST['types']) ) {
 				return array(
 					"status" => "unknown",
 					"message" => "Please contact your administrator. Request unknown!",
@@ -61,16 +58,46 @@
             }
 
              // Step4 : Sanitize variable if empty
-			if (empty($_POST['search']) ) {
+			if (empty($_POST['search']) || empty($_POST['types']) ) {
 				return array(
 					"status" => "failed",
 					"message" => "Required fields cannot be empty.",
                 );
             }
 
+            if($_POST['types'] != "pasamall" &&  $_POST['types'] != "market" &&  $_POST['types'] != "food/drink"   &&  $_POST['types'] != "robinson"  ){
+                return array(
+					"status" => "failed",
+					"message" => "Invalid Value of type.",
+                );
+            }
+
+            // declaring variable
+            $value = $_POST['search'];
+            $catid = "";
+
+            switch ($_POST['types']) {
+                case 'food/drink':
+                    $catid = " AND tp_str.ctid = 1 ";
+                    break;
+                case 'pasamall':
+                    $catid = "  ";
+                    break;
+
+                case 'market':
+                    $catid = " AND tp_str.ctid = 2 ";
+                    break;
+
+                case 'robinson':
+                    $catid = " AND (SELECT groups FROM tp_categories WHERE ID = tp_str.ctid) = 'robinson' ";
+
+                    break;
+            }
+
             // Step5 : Query
-            $result = $wpdb->get_results("SELECT
+            $result = $wpdb->get_results( "SELECT
                 tp_str.ID,
+                tp_str.ctid,
                 tp_rev.child_val AS title,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.short_info ) AS `short_info`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.long_info ) AS `long_info`,
@@ -91,7 +118,7 @@
                 tp_rev.child_val LIKE '%$value%'
                 OR  ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.short_info ) LIKE '%$value%'
                 OR ( SELECT city_name FROM $table_city WHERE city_code = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.city ) ) LIKE '%$value%'
-            ");
+                $catid ");
 
             // Step7 : Return Result
             return array(
