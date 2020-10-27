@@ -194,6 +194,7 @@
 
 
 
+
                                     // '<button type="button" class="btn btn-success btn-sm"' +
                                     //     ' onclick="window.location.href = `<?php //echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT."&id="; ?>' + item.ID + '&name=' +item.title + '`;" ' +
                                     //     ' title="Click this to navigate to variant list of this project."' +
@@ -568,7 +569,7 @@
                 var data = e.relatedTarget.dataset;
                 // Show Logo
                 if ( (typeof null === data.logo && !null) || data.logo === 'None' || data.logo === null || !data.logo ) {
-                    $('#imageResult').attr('src', '<?php echo TP_PLUGIN_URL . "/assets/images/default.jpg"; ?>' );
+                    $('#imageResult').attr('src', '<?php echo TP_PLUGIN_URL . "/assets/images/default-avatar.png"; ?>' );
 
                 } else {
                     $('#imageResult').attr('src', data.logo );
@@ -577,7 +578,7 @@
 
                 // Show Banner
                 if ( (typeof null === data.banner && !null) || data.banner === 'None' || data.banner === null || !data.banner ) {
-                    $('#banner').attr('src', '<?php echo TP_PLUGIN_URL . "/assets/images/default-banner.jpg"; ?>' );
+                    $('#banner').attr('src', '<?php echo TP_PLUGIN_URL . "/assets/images/default-banner.png"; ?>' );
 
                 } else {
                     $('#banner').attr('src', data.banner );
@@ -679,19 +680,6 @@
                 });
         });
 
-        $('#PartnerModal').on('show.bs.modal', function(e) {
-                var data = e.relatedTarget.dataset;
-
-                $('#ispartner_store_id').val( data.id );
-                $('#edit_store_name_partner').val( data.title );
-
-                if (data.ispartner == null ) {
-                    $('#edit_partner').val('')
-                }else{
-                    $('#edit_partner').val( data.ispartner )
-                }
-
-        });
 
         $('#PartnerModal').on('hide.bs.modal', function(e) {
             if( typeof activeTimeout !== 'undefined' ) {

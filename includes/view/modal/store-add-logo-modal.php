@@ -31,12 +31,12 @@
                                     <div class="col-12">Note: You can upload one image at a time temporarly.</div>
                                     <div class="col-6">
                                         <label for="imageResult" style = "color:red;"> Logo </label>
-                                        <img id="imageResult"  src="<?php echo TP_PLUGIN_URL . "/assets/images/default-avatar.jpg"; ?>" class="img-fluid" alt="example placeholder">
+                                        <img id="imageResult"  src="<?php echo TP_PLUGIN_URL . "/assets/images/default-avatar.png"; ?>" class="img-fluid" alt="example placeholder">
                                     </div>
 
                                     <div class="col-6">
                                         <label for="banner"  style = "color:red;"> Banner </label>
-                                        <img id="banner"  src="<?php echo TP_PLUGIN_URL . "/assets/images/default-banner.jpg"; ?>" class="img-fluid" alt="example placeholder">
+                                        <img id="banner"  src="<?php echo TP_PLUGIN_URL . "/assets/images/default-banner.png"; ?>" class="img-fluid" alt="example placeholder">
                                     </div>
                                 </div>
                             </div>

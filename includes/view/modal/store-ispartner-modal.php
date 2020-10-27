@@ -11,6 +11,32 @@
     */
 ?>
 
+
+<div id="PartnerModal" class="modal fade"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" style="margin-top: 49px;">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title" style="text-align: center;">Add/Change Logo / Banner</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body">
+
+                </div>
+
+                <div class="modal-footer">
+                    <div id="LogoMessage" class="alert tp-fullwidth tp-center-item tp-display-hide" role="alert">
+                        <p id="LogoContent">A simple success alert—check it out!</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+</div>
+<!--
 <div id="PartnerModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="vertical-alignment-helper">
         <div class="modal-dialog vertical-align-center" style="margin-top: 49px;">
@@ -61,4 +87,4 @@
 
         </div>
     </div>
-</div>
+</div> -->

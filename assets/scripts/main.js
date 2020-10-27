@@ -10,7 +10,7 @@ function copyFromId( elemId )
 //Get file and pass it to html img
 function readURL(input) {
 
-    var smp = jQuery('#type').val();
+/*     var smp = jQuery('#type').val();
 
     switch (smp) {
         case 'none':
@@ -39,7 +39,7 @@ function readURL(input) {
             }
             break;
     }
-
+ */
 }
 
 function product_readURL(input) {
