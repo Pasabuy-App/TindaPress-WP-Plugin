@@ -16,7 +16,7 @@
 	//Defining Global Variables
 	define('TP_CUSTOM', 'eCommerce');
 	define('TP_PREFIX', 'tp_');
-	define('TP_UIHOST', 'http://localhost/wordpress/');
+	define('TP_UIHOST', 'https://10.12.91.198/');
 	define('TP_FULLMODE', true);
 
 	// Views

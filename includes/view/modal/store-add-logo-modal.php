@@ -31,12 +31,12 @@
                                     <div class="col-12">Note: You can upload one image at a time temporarly.</div>
                                     <div class="col-6">
                                         <label for="imageResult" style = "color:red;"> Logo </label>
-                                        <img id="imageResult"  src="<?php echo TP_PLUGIN_URL . "/assets/images/default-avatar.jpg"; ?>" class="img-fluid" alt="example placeholder">
+                                        <img id="imageResult"  src="<?php echo TP_PLUGIN_URL . "/assets/images/default-avatar.png"; ?>" class="img-fluid" alt="example placeholder">
                                     </div>
 
                                     <div class="col-6">
                                         <label for="banner"  style = "color:red;"> Banner </label>
-                                        <img id="banner"  src="<?php echo TP_PLUGIN_URL . "/assets/images/default-banner.jpg"; ?>" class="img-fluid" alt="example placeholder">
+                                        <img id="banner"  src="<?php echo TP_PLUGIN_URL . "/assets/images/default-banner.png"; ?>" class="img-fluid" alt="example placeholder">
                                     </div>
                                 </div>
                             </div>
@@ -59,15 +59,15 @@
                                 to ask for your permission to complete the task.
                             </div>
                         </div>
-                        <div class="tp-center-item">
 
+                        <div class="tp-center-item">
 
                             <div class="row">
                                 <div class="col-6">
-                                    <input id="logo_store_id" type="hidden" value="">
+                                    <input id="logo_store_id" type="hidden" value=""/>
                                     <button id="add-logo-app-btn" type="submit" class="btn btn-primary"> - Add Logo - </button>
                                 </div>
-                                <div class="col-6" style =" padding-right:50px; " required>
+                                <div class="col-6" style ="padding-right:50px; " required>
 
                                     <select class="custom-select" id="type">
                                         <option value = "none"selected>Choose logo / banner...</option>
@@ -76,10 +76,12 @@
                                     </select>
                                 </div>
                             </div>
+
                         </div>
                         <div class="btn-group">
-                        <div id="dialog-confirm-logo" title="Confirmation">
-                            <p id="confirm-content-logo"></p>
+                            <div id="dialog-confirm-logo" title="Confirmation">
+                                <p id="confirm-content-logo"></p>
+                            </div>
                         </div>
                     </form>
                 </div>

@@ -130,7 +130,7 @@
                     { "sTitle": "Country",   "mData": "country" },
                     {"sTitle": "Action", "mRender": function(data, type, item)
                         {
-
+                            console.log(item)
                             return '' +
 
                                 '<div class="btn-group" role="group" aria-label="Basic example">' +
@@ -142,6 +142,7 @@
                                         ' data-status="' + item.status + '"' +
                                         ' data-title="' + item.title + '"' +
                                         ' data-sinfo="' + item.short_info + '"' +
+                                        ' data-linfo="' + item.long_info + '"' +
                                         ' >Modify</button>' +
 
                                     '<button type="button" class="btn btn-secondary btn-sm appkey-' + item.ID + '"' +
@@ -191,6 +192,7 @@
                                         ' data-title="' + item.title + '"' +
                                         ' data-isPartner="' + item.partner + '"' +
                                         ' >Partner</button>' +
+
 
 
 
@@ -479,7 +481,8 @@
                 } else {
                     postUrl = '<?= TP_UIHOST . "/wp-json/tindapress/v1/stores/update"; ?>';
                     postParam.title = $('#edit_title').val();
-                    postParam.info = $('#edit_info').val();
+                    postParam.short_info = $('#edit_info').val();
+                    postParam.long_info = $('#edit_long_info').val();
                 }
 
                 // This will be handled by create-app.php.
@@ -544,6 +547,7 @@
                 $('#edit_id').val( data.id );
                 $('#edit_title').val( data.title );
                 $('#edit_info').val( data.sinfo );
+                $('#edit_long_info').val( data.linfo );
                 $('#edit_status').val( data.status == 'Active' ? 1 : 0 );
 
                 $('#delete-app-btn').removeClass('disabled');
@@ -568,7 +572,7 @@
                 var data = e.relatedTarget.dataset;
                 // Show Logo
                 if ( (typeof null === data.logo && !null) || data.logo === 'None' || data.logo === null || !data.logo ) {
-                    $('#imageResult').attr('src', '<?php echo TP_PLUGIN_URL . "/assets/images/default.jpg"; ?>' );
+                    $('#imageResult').attr('src', '<?php echo TP_PLUGIN_URL . "/assets/images/default-avatar.png"; ?>' );
 
                 } else {
                     $('#imageResult').attr('src', data.logo );
@@ -577,7 +581,7 @@
 
                 // Show Banner
                 if ( (typeof null === data.banner && !null) || data.banner === 'None' || data.banner === null || !data.banner ) {
-                    $('#banner').attr('src', '<?php echo TP_PLUGIN_URL . "/assets/images/default-banner.jpg"; ?>' );
+                    $('#banner').attr('src', '<?php echo TP_PLUGIN_URL . "/assets/images/default-banner.png"; ?>' );
 
                 } else {
                     $('#banner').attr('src', data.banner );
@@ -622,7 +626,7 @@
                 {
                     $('#GPSResponse').addClass('tp-display-hide');
                 }
-        });
+        });2
 
         $('#CommissionModal').on('show.bs.modal', function(e) {
                 var data = e.relatedTarget.dataset;
@@ -692,6 +696,7 @@
                 }
 
         });
+
 
         $('#PartnerModal').on('hide.bs.modal', function(e) {
             if( typeof activeTimeout !== 'undefined' ) {
