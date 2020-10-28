@@ -136,6 +136,9 @@
 			define('TP_PRODUCT_CATEGORY_v2', TP_PREFIX_v2.'products_categories');
 			define('TP_PRODUCT_CATEGORY_FIELDS_v2', ' `stid`, `title`, `info`, `created_by` ');
 
+			define('TP_PRODUCT_v2', TP_PREFIX_v2.'products');
+			define('TP_PRODUCT_FIELDS_v2', ' `stid`, `pcid`, `title`, `info`, `price`, `discount`,  `created_by` ');
+
 		// End
 
 

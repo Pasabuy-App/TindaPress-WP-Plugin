@@ -22,10 +22,12 @@
 
         public static function catch_post(){
             $curl_user = array();
+
             $curl_user['stid'] = $_POST["stid"];
             $curl_user['title'] = $_POST["title"];
             $curl_user['info'] = $_POST["info"];
             $curl_user['wpid'] = $_POST["wpid"];
+
             return $curl_user;
         }
 

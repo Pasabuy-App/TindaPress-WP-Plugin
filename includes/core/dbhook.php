@@ -50,6 +50,7 @@
 			$tbl_featured_store_seen_v2 = TP_FEATURED_STORES_SEEN_v2;
 			$tbl_store_cancelled_v2 = TP_STORES_CANCELLED_v2;
 			$tbl_product_category_v2 = TP_PRODUCT_CATEGORY_v2;
+			$tbl_product_v2 = TP_PRODUCT_v2;
 		// End
 		$wpdb->query("START TRANSACTION");
 
@@ -522,7 +523,7 @@
 				$result = $wpdb->get_results($sql);
 			}
 
-			//Database table creation for store cancelled
+			//Database table creation for product categories
 			if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_product_category_v2'" ) != $tbl_product_category_v2) {
 				$sql = "CREATE TABLE `".$tbl_product_category_v2."` (";
 					$sql .= " `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
@@ -530,6 +531,27 @@
 					$sql .= " `stid` varchar(100) NOT NULL COMMENT 'Store id.', ";
 					$sql .= " `title` varchar(255) NOT NULL COMMENT 'Title of this category.', ";
 					$sql .= " `info` varchar(255) NOT NULL COMMENT 'Info of this category.', ";
+					$sql .= " `status` enum('active', 'inactive') NOT NULL COMMENT 'Status of this cateogry.', ";
+					$sql .= " `created_by` bigint(20) NOT NULL COMMENT 'The user who seen this store.', ";
+					$sql .= " `date_created` datetime NULL DEFAULT current_timestamp() COMMENT 'Date created this store.', ";
+					$sql .= "PRIMARY KEY (`ID`) ";
+					$sql .= ") ENGINE = InnoDB; ";
+				$result = $wpdb->get_results($sql);
+			}
+
+			//Database table creation for product
+			if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_product_v2'" ) != $tbl_product_v2) {
+				$sql = "CREATE TABLE `".$tbl_product_v2."` (";
+					$sql .= " `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+					$sql .= " `hsid` varchar(255) NOT NULL COMMENT 'This column is used for table relation ship.', ";
+					$sql .= " `stid` varchar(100) NOT NULL COMMENT 'Store id.', ";
+					$sql .= " `pcid` varchar(100) NOT NULL COMMENT 'Store id.', ";
+					$sql .= " `title` varchar(255) NOT NULL COMMENT 'Title of this category.', ";
+					$sql .= " `info` varchar(255) NOT NULL COMMENT 'Info of this category.', ";
+					$sql .= " `avatar` varchar(255) NOT NULL COMMENT 'Info of this category.', ";
+					$sql .= " `banner` varchar(255) NOT NULL COMMENT 'Info of this category.', ";
+					$sql .= " `price` varchar(255) NOT NULL COMMENT 'Info of this category.', ";
+					$sql .= " `discount` varchar(255) NOT NULL COMMENT 'Info of this category.', ";
 					$sql .= " `status` enum('active', 'inactive') NOT NULL COMMENT 'Status of this cateogry.', ";
 					$sql .= " `created_by` bigint(20) NOT NULL COMMENT 'The user who seen this store.', ";
 					$sql .= " `date_created` datetime NULL DEFAULT current_timestamp() COMMENT 'Date created this store.', ";

@@ -130,6 +130,8 @@
         // End
 
         // Product V2
+        require plugin_dir_path(__FILE__) . '/v2/product/class-insert.php';
+
             // Categories
                 require plugin_dir_path(__FILE__) . '/v2/product/category/class-insert.php';
 
@@ -587,10 +589,17 @@
                             ));
 
                 // Products rest api's
-                    register_rest_route( 'tindapress/v2/product/category', 'insert', array(
+                    register_rest_route( 'tindapress/v2/product', 'insert', array(
                         'methods' => 'POST',
-                        'callback' => array('TP_Product_Category_Insert_v2','listen'),
+                        'callback' => array('TP_Product_Insert_v2','listen'),
                     ));
+
+                    // Category
+                            register_rest_route( 'tindapress/v2/product/category', 'insert', array(
+                                'methods' => 'POST',
+                                'callback' => array('TP_Product_Category_Insert_v2','listen'),
+                            ));
+
 
         /*
          * END
