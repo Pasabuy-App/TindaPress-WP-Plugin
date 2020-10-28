@@ -139,6 +139,11 @@
 			define('TP_PRODUCT_v2', TP_PREFIX_v2.'products');
 			define('TP_PRODUCT_FIELDS_v2', ' `stid`, `pcid`, `title`, `info`, `price`, `discount`,  `created_by` ');
 
+			define('TP_PRODUCT_VARIANTS_v2', TP_PREFIX_v2.'product_variants');
+			define('TP_PRODUCT_VARIANTS_FILEDS_v2', ' `pdid`, `title`, `info`, `price`, `required`, `created_by` ');
+
+
+
 		// End
 
 

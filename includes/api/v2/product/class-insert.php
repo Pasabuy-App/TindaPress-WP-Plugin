@@ -44,7 +44,7 @@
 
             $files = $request->get_file_params();
 
-             // Step 1: Check if prerequisites plugin are missing
+            // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(

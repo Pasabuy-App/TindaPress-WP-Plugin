@@ -10,7 +10,7 @@
         * @version 0.2.0
 	*/
 
-    class TP_Product_Category_Insert_v2 {
+    class TP_Products_Category_Insert_v2 {
 
         //REST API Call
         public static function listen(){
@@ -79,7 +79,7 @@
                 );
             }
 
-            $import_data = $wpdb->query("INSERT INTO
+           $import_data = $wpdb->query("INSERT INTO
                 $tbl_product_category_v2
                     ($tbl_product_category_fields_v2)
                 values
@@ -95,7 +95,7 @@
                     "message" => "An error occured while submitting data to server"
                 );
             }else{
-                $wpdb->query("ROLLBACK");
+                $wpdb->query("COMMIT");
                 return array(
                     "status" => "success",
                     "message" => "Data has been added successfully"
