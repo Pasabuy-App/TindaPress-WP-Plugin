@@ -133,6 +133,9 @@
 			define('TP_STORES_CANCELLED_v2', TP_PREFIX_v2.'store_cancelled');
 			define('TP_STORES_CANCELLED_FIELDS_v2', ' `stid`, `comments`, `executed_by` ');
 
+			define('TP_PRODUCT_CATEGORY_v2', TP_PREFIX_v2.'products_categories');
+			define('TP_PRODUCT_CATEGORY_FIELDS_v2', ' `stid`, `title`, `info`, `created_by` ');
+
 		// End
 
 
