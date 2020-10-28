@@ -47,6 +47,8 @@
 			$tbl_store_seen_v2 = TP_STORES_SEEN_v2;
 			$tbl_featured_store_groups_v2 = TP_FEATURED_STORES_GROUPS_v2;
 			$tbl_featied_store_v2 = TP_FEATURED_STORES_v2;
+			$tbl_featured_store_seen_v2 = TP_FEATURED_STORES_SEEN_v2;
+			$tbl_store_cancelled_v2 = TP_STORES_CANCELLED_v2;
 		// End
 		$wpdb->query("START TRANSACTION");
 
@@ -485,6 +487,35 @@
 					$sql .= " `banner` varchar(255) NOT NULL COMMENT 'Banner of this store.', ";
 					$sql .= " `status` enum('active', 'inactive') NOT NULL COMMENT 'Status of this featured store .', ";
 					$sql .= " `created_by` bigint(20) NOT NULL COMMENT 'The user who create this featured store groups.', ";
+					$sql .= " `date_created` datetime NULL DEFAULT current_timestamp() COMMENT 'Date created this store.', ";
+					$sql .= "PRIMARY KEY (`ID`) ";
+					$sql .= ") ENGINE = InnoDB; ";
+				$result = $wpdb->get_results($sql);
+			}
+
+			//Database table creation for featured store seen
+			if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_featured_store_seen_v2'" ) != $tbl_featured_store_seen_v2) {
+				$sql = "CREATE TABLE `".$tbl_featured_store_seen_v2."` (";
+					$sql .= " `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+					$sql .= " `hsid` varchar(255) NOT NULL COMMENT 'This column is used for table relation ship.', ";
+					$sql .= " `ftid` varchar(100) NOT NULL COMMENT 'Featured store id.', ";
+					$sql .= " `wpid` bigint(20) NOT NULL COMMENT 'The user who seen this store.', ";
+					$sql .= " `date_created` datetime NULL DEFAULT current_timestamp() COMMENT 'Date created this store.', ";
+					$sql .= "PRIMARY KEY (`ID`) ";
+					$sql .= ") ENGINE = InnoDB; ";
+				$result = $wpdb->get_results($sql);
+			}
+
+			//Database table creation for store cancelled
+			if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_store_cancelled_v2'" ) != $tbl_store_cancelled_v2) {
+				$sql = "CREATE TABLE `".$tbl_store_cancelled_v2."` (";
+					$sql .= " `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+					$sql .= " `hsid` varchar(255) NOT NULL COMMENT 'This column is used for table relation ship.', ";
+					$sql .= " `stid` varchar(100) NOT NULL COMMENT 'Featured store id.', ";
+					$sql .= " `status` enum('active', 'inactive') NOT NULL COMMENT 'Featured store id.', ";
+					$sql .= " `comments` varchar(255) NOT NULL COMMENT 'Featured store id.', ";
+					$sql .= " `activated` enum('true', 'false') NOT NULL COMMENT 'Featured store id.', ";
+					$sql .= " `executed_by` bigint(20) NOT NULL COMMENT 'The user who seen this store.', ";
 					$sql .= " `date_created` datetime NULL DEFAULT current_timestamp() COMMENT 'Date created this store.', ";
 					$sql .= "PRIMARY KEY (`ID`) ";
 					$sql .= ") ENGINE = InnoDB; ";

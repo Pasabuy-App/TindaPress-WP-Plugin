@@ -40,8 +40,7 @@
 
             $files = $request->get_file_params();
 
-
-              // Step 1: Check if prerequisites plugin are missing
+            // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals_v2::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
@@ -64,6 +63,7 @@
                     "message" => "Please contact your administrator. Request Unknown!",
                 );
             }
+
             $user = self::catch_post();
 
             $validate = TP_Globals_v2::check_listener($user);
