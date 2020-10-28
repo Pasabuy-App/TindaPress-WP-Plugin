@@ -683,19 +683,6 @@
                 });
         });
 
-        $('#PartnerModal').on('show.bs.modal', function(e) {
-                var data = e.relatedTarget.dataset;
-
-                $('#ispartner_store_id').val( data.id );
-                $('#edit_store_name_partner').val( data.title );
-
-                if (data.ispartner == null ) {
-                    $('#edit_partner').val('')
-                }else{
-                    $('#edit_partner').val( data.ispartner )
-                }
-
-        });
 
 
         $('#PartnerModal').on('hide.bs.modal', function(e) {
