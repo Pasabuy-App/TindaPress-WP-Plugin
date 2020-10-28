@@ -40,9 +40,10 @@
 		// End
 
 		// Table Declaration for Version two
+			$tbl_store_v2 = TP_STORES_v2;
 			$tbl_stores_category_v2 = TP_STORES_CATEGORIES_v2;
 			$tbl_store_docs_types_v2 = TP_STORE_DOCS_TYPES_v2;
-			$tbl_store_v2 = TP_STORES_v2;
+			$tbl_store_ratings_v2 = TP_STORES_RATINGS_v2;
 		// End
 		$wpdb->query("START TRANSACTION");
 
@@ -426,9 +427,22 @@
 				$result = $wpdb->get_results($sql);
 			}
 
+			//Database table creation for store
+			if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_store_ratings_v2'" ) != $tbl_store_ratings_v2) {
+				$sql = "CREATE TABLE `".$tbl_store_ratings_v2."` (";
+					$sql .= " `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+					$sql .= " `hsid` varchar(255) NOT NULL COMMENT 'This column is used for table relation ship.', ";
+					$sql .= " `stid` varchar(100) NOT NULL COMMENT 'Store id.', ";
+					$sql .= " `rates` tinyint(10) NOT NULL COMMENT 'Rates.', ";
+					$sql .= " `comments` varchar(150) NOT NULL COMMENT 'Comments for this store.', ";
+					$sql .= " `rated_by` bigint(20) NOT NULL COMMENT 'The one who rated this store.', ";
+					$sql .= " `date_created` datetime NULL DEFAULT current_timestamp() COMMENT 'Date created this store.', ";
+					$sql .= "PRIMARY KEY (`ID`) ";
+					$sql .= ") ENGINE = InnoDB; ";
+				$result = $wpdb->get_results($sql);
+			}
 
 		// END
-
 
 		$wpdb->query("COMMIT");
 

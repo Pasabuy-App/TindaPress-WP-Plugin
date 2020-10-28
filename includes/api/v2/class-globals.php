@@ -67,7 +67,14 @@
 
 		}
 
+        public static function verify_prerequisites(){
 
+            if(!class_exists('DV_Verification') ){
+                return 'DataVice';
+            }
+
+            return true;
+        }
 
         public static function upload_image($request, $files){
 			$data = array();

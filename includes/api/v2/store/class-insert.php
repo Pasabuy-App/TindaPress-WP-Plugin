@@ -41,7 +41,7 @@
             $files = $request->get_file_params();
 
             // Step 1: Check if prerequisites plugin are missing
-            $plugin = HP_Globals_v2::verify_prerequisites();
+            $plugin = TP_Globals_v2::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
                     "status" => "unknown",
@@ -66,7 +66,7 @@
 
             $user = self::catch_post();
 
-            $validate = HP_Globals_v2::check_listener($user);
+            $validate = TP_Globals_v2::check_listener($user);
             if ($validate !== true) {
                 return array(
                     "status" => "failed",
@@ -91,6 +91,7 @@
 
             $hsid = TP_Globals_v2::generating_pubkey($import_data_id, $tbl_store_v2, 'hsid', false, 15);
 
+            // Optional Upload for avatar and banner
             if (isset($files['avatar']) || isset($files['banner'])) {
 
                 if (empty($files['banner']['name'])) {
@@ -128,7 +129,6 @@
                     }
                 }
             }
-
 
             if ($import_data < 1) {
                 $wpdb->query("ROLLBACK");

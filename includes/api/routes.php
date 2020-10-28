@@ -117,6 +117,9 @@
             // Documents
                 require plugin_dir_path(__FILE__) . '/v2/store/documents/doc-types/class-insert.php';
 
+            // Rates
+                require plugin_dir_path(__FILE__) . '/v2/store/rates/class-insert.php';
+
             require plugin_dir_path(__FILE__) . '/v2/store/class-insert.php';
 
         // End
@@ -551,6 +554,12 @@
                     register_rest_route( 'tindapress/v2/store/document/type', 'insert', array(
                         'methods' => 'POST',
                         'callback' => array('TP_Store_Doc_type_Insert_v2','listen'),
+                    ));
+
+                // Rates
+                    register_rest_route( 'tindapress/v2/store/rates', 'insert', array(
+                        'methods' => 'POST',
+                        'callback' => array('TP_Store__Rates_Insert_v2','listen'),
                     ));
 
 

@@ -115,6 +115,8 @@
 			define('TP_STORE_DOCS_TYPES_v2', TP_PREFIX_v2.'store_doc_types');
 			define('TP_STORE_DOCS_TYPES_FIELDS_v2', ' `title`, `info`, `created_by`');
 
+			define('TP_STORES_RATINGS_v2', TP_PREFIX_v2.'store_rating_v2');
+			define('TP_STORES_RATINGS_FIELDS_v2', ' `stid`, `rates`, `comments`, `rated_by`');
 
 
 		// End
