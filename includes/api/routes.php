@@ -113,9 +113,11 @@
         // Version two file path
         // Store V2
             // Store Categories
-            require plugin_dir_path(__FILE__) . '/v2/store/category/class-insert.php';
+                require plugin_dir_path(__FILE__) . '/v2/store/category/class-insert.php';
             // Documents
-            require plugin_dir_path(__FILE__) . '/v2/store/documents/doc-types/class-insert.php';
+                require plugin_dir_path(__FILE__) . '/v2/store/documents/doc-types/class-insert.php';
+
+            require plugin_dir_path(__FILE__) . '/v2/store/class-insert.php';
 
         // End
 
@@ -535,16 +537,23 @@
         /*
          * STORE VERSION TWO RESTAPI
         */
-                //
-                register_rest_route( 'tindapress/v2/store/type', 'insert', array(
-                    'methods' => 'POST',
-                    'callback' => array('TP_Store_Category_Insert_v2','listen'),
-                ));
+            register_rest_route( 'tindapress/v2/store', 'insert', array(
+                'methods' => 'POST',
+                'callback' => array('TP_Store_Insert_v2','listen'),
+            ));
 
-                register_rest_route( 'tindapress/v2/store/document/type', 'insert', array(
-                    'methods' => 'POST',
-                    'callback' => array('TP_Store_Doc_type_Insert_v2','listen'),
-                ));
+                // Store category
+                    register_rest_route( 'tindapress/v2/store/type', 'insert', array(
+                        'methods' => 'POST',
+                        'callback' => array('TP_Store_Category_Insert_v2','listen'),
+                    ));
+                // Documents
+                    register_rest_route( 'tindapress/v2/store/document/type', 'insert', array(
+                        'methods' => 'POST',
+                        'callback' => array('TP_Store_Doc_type_Insert_v2','listen'),
+                    ));
+
+
         /*
          * END
         */

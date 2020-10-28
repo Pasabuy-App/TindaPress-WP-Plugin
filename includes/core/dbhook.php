@@ -41,7 +41,8 @@
 
 		// Table Declaration for Version two
 			$tbl_stores_category_v2 = TP_STORES_CATEGORIES_v2;
-			$tbl_store_docs_types = TP_STORE_DOCS_TYPES_v2;
+			$tbl_store_docs_types_v2 = TP_STORE_DOCS_TYPES_v2;
+			$tbl_store_v2 = TP_STORES_v2;
 		// End
 		$wpdb->query("START TRANSACTION");
 
@@ -391,9 +392,9 @@
 				$result = $wpdb->get_results($sql);
 			}
 
-			//Database table creation for store
-			if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_store_docs_types'" ) != $tbl_store_docs_types) {
-				$sql = "CREATE TABLE `".$tbl_store_docs_types."` (";
+			//Database table creation for store document types
+			if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_store_docs_types_v2'" ) != $tbl_store_docs_types_v2) {
+				$sql = "CREATE TABLE `".$tbl_store_docs_types_v2."` (";
 					$sql .= " `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
 					$sql .= " `hsid` varchar(255) NOT NULL COMMENT 'This column is used for table relation ship.', ";
 					$sql .= " `title` varchar(100) NOT NULL COMMENT 'Title of this document type.', ";
@@ -401,6 +402,25 @@
 					$sql .= " `status` enum('active', 'inactive') NOT NULL  COMMENT 'Status of this store categories.', ";
 					$sql .= " `created_by` bigint(20) NOT NULL  COMMENT 'The one who created this store categories.', ";
 					$sql .= " `date_created` datetime NULL DEFAULT current_timestamp() COMMENT 'Date created this store categories.', ";
+					$sql .= "PRIMARY KEY (`ID`) ";
+					$sql .= ") ENGINE = InnoDB; ";
+				$result = $wpdb->get_results($sql);
+			}
+
+			//Database table creation for store
+			if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_store_v2'" ) != $tbl_store_v2) {
+				$sql = "CREATE TABLE `".$tbl_store_v2."` (";
+					$sql .= " `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+					$sql .= " `hsid` varchar(255) NOT NULL COMMENT 'This column is used for table relation ship.', ";
+					$sql .= " `scid` varchar(100) NOT NULL COMMENT 'Store category id.', ";
+					$sql .= " `title` varchar(150) NOT NULL COMMENT 'Title of this store.', ";
+					$sql .= " `info` varchar(150) NOT NULL COMMENT 'Info of this store.', ";
+					$sql .= " `avatar` varchar(150) NOT NULL COMMENT 'Logo of this store.', ";
+					$sql .= " `banner` varchar(150) NOT NULL COMMENT 'Banner of this store.', ";
+					$sql .= " `adid` varchar(150) NOT NULL COMMENT 'Address id of this store.', ";
+					$sql .= " `status` enum('active', 'inactive') NOT NULL  COMMENT 'Status of this store.', ";
+					$sql .= " `created_by` bigint(20) NOT NULL  COMMENT 'The one who created this store.', ";
+					$sql .= " `date_created` datetime NULL DEFAULT current_timestamp() COMMENT 'Date created this store.', ";
 					$sql .= "PRIMARY KEY (`ID`) ";
 					$sql .= ") ENGINE = InnoDB; ";
 				$result = $wpdb->get_results($sql);
