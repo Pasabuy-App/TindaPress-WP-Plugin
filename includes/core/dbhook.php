@@ -41,6 +41,7 @@
 
 		// Table Declaration for Version two
 			$tbl_stores_category_v2 = TP_STORES_CATEGORIES_v2;
+			$tbl_store_docs_types = TP_STORE_DOCS_TYPES_v2;
 		// End
 		$wpdb->query("START TRANSACTION");
 
@@ -391,14 +392,12 @@
 			}
 
 			//Database table creation for store
-			if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_stores_category_v2'" ) != $tbl_stores_category_v2) {
-				$sql = "CREATE TABLE `".$tbl_stores_category_v2."` (";
+			if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_store_docs_types'" ) != $tbl_store_docs_types) {
+				$sql = "CREATE TABLE `".$tbl_store_docs_types."` (";
 					$sql .= " `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
 					$sql .= " `hsid` varchar(255) NOT NULL COMMENT 'This column is used for table relation ship.', ";
-					$sql .= " `title` varchar(100) NOT NULL COMMENT 'Title of this store categories.', ";
+					$sql .= " `title` varchar(100) NOT NULL COMMENT 'Title of this document type.', ";
 					$sql .= " `info` varchar(150) NOT NULL COMMENT 'Info of this store categories.', ";
-					$sql .= " `avatar` varchar(255) NOT NULL COMMENT 'Logo of this store categories.', ";
-					$sql .= " `parent` bigint(20) NOT NULL COMMENT 'Parent of this store category.', ";
 					$sql .= " `status` enum('active', 'inactive') NOT NULL  COMMENT 'Status of this store categories.', ";
 					$sql .= " `created_by` bigint(20) NOT NULL  COMMENT 'The one who created this store categories.', ";
 					$sql .= " `date_created` datetime NULL DEFAULT current_timestamp() COMMENT 'Date created this store categories.', ";

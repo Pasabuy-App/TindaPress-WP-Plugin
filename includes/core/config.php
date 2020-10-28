@@ -109,6 +109,10 @@
 			define('TP_STORES_CATEGORIES_v2', TP_PREFIX_v2.'stores_categories');
 			define('TP_STORES_CATEGORIES_FIELDS_v2', ' `title`, `info`, `avatar`, `created_by`');
 
+			define('TP_STORE_DOCS_TYPES_v2', TP_PREFIX_v2.'store_doc_types');
+			define('TP_STORE_DOCS_TYPES_FIELDS_v2', ' `title`, `info`, `created_by`');
+
+
 
 		// End
 

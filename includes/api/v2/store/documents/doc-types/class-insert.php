@@ -10,7 +10,7 @@
         * @version 0.2.0
 	*/
 
-    class TP_Store_Category_Insert_v2 {
+    class TP_Store_Doc_type_Insert_v2 {
 
         //REST API Call
         public static function listen($request){
@@ -31,10 +31,10 @@
         public static function listen_open($request){
 
             global $wpdb;
-            $table_store_categories = TP_STORES_CATEGORIES_v2;
-            $table_store_categories_field = TP_STORES_CATEGORIES_FIELDS_v2;
+            $tbl_store_doc_types = TP_STORE_DOCS_TYPES_v2;
+            $tbl_store_doc_types_field = TP_STORE_DOCS_TYPES_FIELDS_v2;
 
-             // Step 1: Check if prerequisites plugin are missing
+            // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
@@ -68,9 +68,7 @@
                 );
             }
 
-            $files = $request->get_file_params();
-
-            $check_category = $wpdb->get_row("SELECT `status` FROM $table_store_categories WHERE title LIKE '%{$user["title"]}%' AND `status` = 'active' ");
+            $check_category = $wpdb->get_row("SELECT `status` FROM $tbl_store_doc_types WHERE title LIKE '%{$user["title"]}%' AND `status` = 'active' ");
             if (!empty($check_category)) {
                 return array(
                     "status" => "failed",
@@ -78,16 +76,14 @@
                 );
             }
 
-            $result = DV_Globals::upload_image( $request, $files ); // upload image
-
             $import_data = $wpdb->query("INSERT INTO
-                $table_store_categories
-                    ($table_store_categories_field)
+                $tbl_store_doc_types
+                    ($tbl_store_doc_types_field)
                 VALUES
-                ( '{$user["title"]}', '{$user["info"]}', '{$result["data"]}', '{$user["wpid"]}') ");
+                    ( '{$user["title"]}', '{$user["info"]}',  '{$user["wpid"]}') ");
             $import_data_id = $wpdb->insert_id;
 
-            $hsid = TP_Globals_v2::generating_pubkey($import_data_id, $table_store_categories, 'hsid', false, 64);
+            $hsid = TP_Globals_v2::generating_pubkey($import_data_id, $tbl_store_doc_types, 'hsid', false, 64);
 
             if ($import_data < 1) {
                 $wpdb->query("ROLLBACK");
@@ -102,7 +98,6 @@
                     "status" => "success",
                     "message" => "Data has been added successfully"
                 );
-
             }
         }
     }
