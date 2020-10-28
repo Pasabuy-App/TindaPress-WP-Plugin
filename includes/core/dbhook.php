@@ -44,6 +44,9 @@
 			$tbl_stores_category_v2 = TP_STORES_CATEGORIES_v2;
 			$tbl_store_docs_types_v2 = TP_STORE_DOCS_TYPES_v2;
 			$tbl_store_ratings_v2 = TP_STORES_RATINGS_v2;
+			$tbl_store_seen_v2 = TP_STORES_SEEN_v2;
+			$tbl_featured_store_groups_v2 = TP_FEATURED_STORES_GROUPS_v2;
+			$tbl_featied_store_v2 = TP_FEATURED_STORES_v2;
 		// End
 		$wpdb->query("START TRANSACTION");
 
@@ -436,6 +439,52 @@
 					$sql .= " `rates` tinyint(10) NOT NULL COMMENT 'Rates.', ";
 					$sql .= " `comments` varchar(150) NOT NULL COMMENT 'Comments for this store.', ";
 					$sql .= " `rated_by` bigint(20) NOT NULL COMMENT 'The one who rated this store.', ";
+					$sql .= " `date_created` datetime NULL DEFAULT current_timestamp() COMMENT 'Date created this store.', ";
+					$sql .= "PRIMARY KEY (`ID`) ";
+					$sql .= ") ENGINE = InnoDB; ";
+				$result = $wpdb->get_results($sql);
+			}
+
+			//Database table creation for store seen
+			if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_store_seen_v2'" ) != $tbl_store_seen_v2) {
+				$sql = "CREATE TABLE `".$tbl_store_seen_v2."` (";
+					$sql .= " `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+					$sql .= " `hsid` varchar(255) NOT NULL COMMENT 'This column is used for table relation ship.', ";
+					$sql .= " `stid` varchar(100) NOT NULL COMMENT '	 id.', ";
+					$sql .= " `wpid` bigint(20) NOT NULL COMMENT 'The user who seen this store.', ";
+					$sql .= " `date_created` datetime NULL DEFAULT current_timestamp() COMMENT 'Date created this store.', ";
+					$sql .= "PRIMARY KEY (`ID`) ";
+					$sql .= ") ENGINE = InnoDB; ";
+				$result = $wpdb->get_results($sql);
+			}
+
+			//Database table creation for store featured store groups
+			if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_featured_store_groups_v2'" ) != $tbl_featured_store_groups_v2) {
+				$sql = "CREATE TABLE `".$tbl_featured_store_groups_v2."` (";
+					$sql .= " `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+					$sql .= " `hsid` varchar(255) NOT NULL COMMENT 'This column is used for table relation ship.', ";
+					$sql .= " `title` varchar(100) NOT NULL COMMENT 'title of this featured store groups.', ";
+					$sql .= " `info` varchar(255) NOT NULL COMMENT 'Info of this store.', ";
+					$sql .= " `status` enum('active', 'inactive') NOT NULL COMMENT 'Status of this featured store .', ";
+					$sql .= " `created_by` bigint(20) NOT NULL COMMENT 'The user who create this featured store groups.', ";
+					$sql .= " `date_created` datetime NULL DEFAULT current_timestamp() COMMENT 'Date created this store.', ";
+					$sql .= "PRIMARY KEY (`ID`) ";
+					$sql .= ") ENGINE = InnoDB; ";
+				$result = $wpdb->get_results($sql);
+			}
+
+
+			//Database table creation for featured store
+			if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_featied_store_v2'" ) != $tbl_featied_store_v2) {
+				$sql = "CREATE TABLE `".$tbl_featied_store_v2."` (";
+					$sql .= " `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+					$sql .= " `hsid` varchar(255) NOT NULL COMMENT 'This column is used for table relation ship.', ";
+					$sql .= " `stid` varchar(150) NOT NULL COMMENT 'Store ID of this featured store groups.', ";
+					$sql .= " `groups` varchar(100) NOT NULL COMMENT 'Groups of this featured store .', ";
+					$sql .= " `avatar` varchar(255) NOT NULL COMMENT 'Avatar of this store.', ";
+					$sql .= " `banner` varchar(255) NOT NULL COMMENT 'Banner of this store.', ";
+					$sql .= " `status` enum('active', 'inactive') NOT NULL COMMENT 'Status of this featured store .', ";
+					$sql .= " `created_by` bigint(20) NOT NULL COMMENT 'The user who create this featured store groups.', ";
 					$sql .= " `date_created` datetime NULL DEFAULT current_timestamp() COMMENT 'Date created this store.', ";
 					$sql .= "PRIMARY KEY (`ID`) ";
 					$sql .= ") ENGINE = InnoDB; ";

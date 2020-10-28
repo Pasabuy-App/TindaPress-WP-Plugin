@@ -118,6 +118,14 @@
 			define('TP_STORES_RATINGS_v2', TP_PREFIX_v2.'store_rating_v2');
 			define('TP_STORES_RATINGS_FIELDS_v2', ' `stid`, `rates`, `comments`, `rated_by`');
 
+			define('TP_STORES_SEEN_v2', TP_PREFIX_v2.'stores_seen');
+			define('TP_STORES_SEEN_FIELDS_v2', ' `stid`, `wpid`');
+
+			define('TP_FEATURED_STORES_GROUPS_v2', TP_PREFIX_v2.'featured_store_group');
+			define('TP_FEATURED_STORES_GROUPS_FIELDS_v2', ' `title`, `info`,`created_by` ');
+
+			define('TP_FEATURED_STORES_v2', TP_PREFIX_v2.'featured_store');
+			define('TP_FEATURED_STORES_FIELDS_v2', ' `stid`, `groups`, `created_by` ');
 
 		// End
 

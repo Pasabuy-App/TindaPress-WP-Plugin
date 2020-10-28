@@ -119,6 +119,11 @@
 
             // Rates
                 require plugin_dir_path(__FILE__) . '/v2/store/rates/class-insert.php';
+            // Featured
+                // Groups
+                    require plugin_dir_path(__FILE__) . '/v2/store/featured/groups/class-insert.php';
+
+                require plugin_dir_path(__FILE__) . '/v2/store/featured/class-insert.php';
 
             require plugin_dir_path(__FILE__) . '/v2/store/class-insert.php';
 
@@ -559,7 +564,18 @@
                 // Rates
                     register_rest_route( 'tindapress/v2/store/rates', 'insert', array(
                         'methods' => 'POST',
-                        'callback' => array('TP_Store__Rates_Insert_v2','listen'),
+                        'callback' => array('TP_Store_Rates_Insert_v2','listen'),
+                    ));
+                // Featured
+
+                    // Groups
+                        register_rest_route( 'tindapress/v2/store/featured/groups', 'insert', array(
+                            'methods' => 'POST',
+                            'callback' => array('TP_Featured_Store_Groups_Insert_v2','listen'),
+                        ));
+                    register_rest_route( 'tindapress/v2/store/featured', 'insert', array(
+                        'methods' => 'POST',
+                        'callback' => array('TP_Featured_Store_Insert_v2','listen'),
                     ));
 
 
