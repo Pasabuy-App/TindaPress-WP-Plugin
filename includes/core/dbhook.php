@@ -55,6 +55,7 @@
 			$tbl_product_ratings_v2 = TP_PRODUCT_RATING_v2;
 			$tbl_featured_product_v2 = TP_FEATURED_PRODUCT_v2;
 			$tbl_featured_product_seen_v2 = TP_FEATURED_PRODUCT_SEEN_v2;
+			$tbl_store_category_groups = TP_STORE_CATEGORY_GROUPS_v2;
 		// End
 		$wpdb->query("START TRANSACTION");
 
@@ -395,6 +396,7 @@
 					$sql .= " `title` varchar(100) NOT NULL COMMENT 'Title of this store categories.', ";
 					$sql .= " `info` varchar(150) NOT NULL COMMENT 'Info of this store categories.', ";
 					$sql .= " `avatar` varchar(255) NOT NULL COMMENT 'Logo of this store categories.', ";
+					$sql .= " `groups` varchar(150) NOT NULL  COMMENT 'Store category groups id.', ";
 					$sql .= " `status` enum('active', 'inactive') NOT NULL  COMMENT 'Status of this store categories.', ";
 					$sql .= " `created_by` bigint(20) NOT NULL  COMMENT 'The one who created this store categories.', ";
 					$sql .= " `date_created` datetime NULL DEFAULT current_timestamp() COMMENT 'Date created this store categories.', ";
@@ -601,6 +603,43 @@
 					$sql .= " `hsid` varchar(255) NOT NULL COMMENT 'This column is used for table relation ship.', ";
 					$sql .= " `pfid` varchar(150) NOT NULL COMMENT 'Featured product id.', ";
 					$sql .= " `wpid` bigint(20) NOT NULL COMMENT 'The user who seen this product.', ";
+					$sql .= " `date_created` datetime NULL DEFAULT current_timestamp() COMMENT 'Date created this variants.', ";
+					$sql .= "PRIMARY KEY (`ID`) ";
+					$sql .= ") ENGINE = InnoDB; ";
+				$result = $wpdb->get_results($sql);
+			}
+
+			//Database table creation for store category
+			if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_store_category_groups'" ) != $tbl_store_category_groups) {
+				$sql = "CREATE TABLE `".$tbl_store_category_groups."` (";
+					$sql .= " `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+					$sql .= " `hsid` varchar(255) NOT NULL COMMENT 'This column is used for table relation ship.', ";
+					$sql .= " `title` varchar(150) NOT NULL COMMENT 'Store category group title.', ";
+					$sql .= " `info` varchar(255) NOT NULL COMMENT 'Store category group info.', ";
+					$sql .= " `status` enum('active', 'inactive') NOT NULL COMMENT 'Status of this category groups.', ";
+					$sql .= " `created_by` bigint(20) NOT NULL COMMENT 'The user who creates this category groups.', ";
+					$sql .= " `date_created` datetime NULL DEFAULT current_timestamp() COMMENT 'Date created this variants.', ";
+					$sql .= "PRIMARY KEY (`ID`) ";
+					$sql .= ") ENGINE = InnoDB; ";
+				$result = $wpdb->get_results($sql);
+			}
+
+			//Database table creation for store category
+			if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_product_v2'" ) != $tbl_product_v2) {
+				$sql = "CREATE TABLE `".$tbl_product_v2."` (";
+					$sql .= " `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+					$sql .= " `hsid` varchar(255) NOT NULL COMMENT 'This column is used for table relation ship.', ";
+					$sql .= " `stid` varchar(100) NOT NULL COMMENT 'Store id.', ";
+					$sql .= " `pcid` varchar(100) NOT NULL COMMENT 'Store id.', ";
+					$sql .= " `title` varchar(255) NOT NULL COMMENT 'Title of this category.', ";
+					$sql .= " `info` varchar(255) NOT NULL COMMENT 'Info of this category.', ";
+					$sql .= " `avatar` varchar(255) NOT NULL COMMENT 'Info of this category.', ";
+					$sql .= " `banner` varchar(255) NOT NULL COMMENT 'Info of this category.', ";
+					$sql .= " `price` varchar(255) NOT NULL COMMENT 'Info of this category.', ";
+					$sql .= " `discount` varchar(255) NOT NULL COMMENT 'Info of this category.', ";
+					$sql .= " `inventory` enum('false', 'true') NOT NULL COMMENT 'Status of this category groups.', ";
+					$sql .= " `status` enum('active', 'inactive') NOT NULL COMMENT 'Status of this category groups.', ";
+					$sql .= " `created_by` bigint(20) NOT NULL COMMENT 'The user who creates this category groups.', ";
 					$sql .= " `date_created` datetime NULL DEFAULT current_timestamp() COMMENT 'Date created this variants.', ";
 					$sql .= "PRIMARY KEY (`ID`) ";
 					$sql .= ") ENGINE = InnoDB; ";

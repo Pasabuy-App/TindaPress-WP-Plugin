@@ -26,6 +26,8 @@
             isset($_POST['stid']) && !empty($_POST['stid'])? $curl_user['stid'] =  $_POST['stid'] :  $curl_user['stid'] = null ;
             isset($_POST['title']) && !empty($_POST['title'])? $curl_user['title'] =  $_POST['title'] :  $curl_user['title'] = null ;
             isset($_POST['scid']) && !empty($_POST['scid'])? $curl_user['scid'] =  $_POST['scid'] :  $curl_user['scid'] = null ;
+            isset($_POST['type']) && !empty($_POST['type'])? $curl_user['type'] =  $_POST['type'] :  $curl_user['type'] = null ;
+
             return $curl_user;
         }
 
@@ -36,6 +38,7 @@
             $tbl_store_category = TP_STORES_CATEGORIES_v2;
             $tbl_address_view = DV_ADDRESS_VIEW;
             $tbl_operation = MP_OPERATIONS_v2;
+            $tbl_store_category_groups = TP_STORES_CATEGORY_GROUPS_v2;
 
              // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -53,6 +56,8 @@
                     "message" => "Please contact your administrator. Verification Issues!",
                 );
             }
+
+            $user = self::catch_post();
 
             $sql = "SELECT
                 ID,
@@ -73,25 +78,44 @@
                 created_by,
                 date_created
             FROM
-                $tbl_store ";
+                $tbl_store
+            WHERE
+                id IN ( SELECT MAX( id ) FROM $tbl_store GROUP BY title ) ";
 
             if($user["stid"] != null){
                 $sql .= " WHERE hsid = '{$user["stid"]}' ";
             }
 
             if($user["title"] != null){
-                if ($user["stid"] != null) {
-                    $sql .= " AND title LIKE '%{$user["title"]}%' ";
-                }else{
-                    $sql .= " WHERE title LIKE '%{$user["title"]}%' ";
-                }
+                $sql .= " AND title LIKE '%{$user["title"]}%' ";
             }
 
             if ($user['scid'] != null) {
-                if ($user["stid"] != null || $user["title"] != null) {
-                    $sql .= " AND scid = '{$user["scid"]}' ";
-                }else{
-                    $sql .= " WHERE scid = '{$user["scid"]}' ";
+                $sql .= " AND scid = '{$user["scid"]}' ";
+            }
+
+            if ($user['type'] != null) {
+
+                if ($user['type'] != "robinson" && $user['type'] != "food/drinks" && $user['type'] != "market" && $user['type'] != "pasamall") {
+                    return array(
+                        "status" => "failed",
+                        "message" => "Invalid type value of type.",
+                    );
+                }
+
+                switch ($user['type']) {
+                    case 'robinson':
+                        $sql .= " AND scid = (SELECT hsid FROM $tbl_store_category WHERE groups =  (SELECT hsid FROM $tbl_store_category_groups WHERE title LIKE  '%robinson%' ) )";
+                        break;
+                    case 'food/drinks':
+                        $sql .= " AND scid = (SELECT hsid FROM $tbl_store_category WHERE groups =  (SELECT hsid FROM $tbl_store_category_groups WHERE title LIKE  '%food/drinks%' ) )";
+                        break;
+                    case 'market':
+                        $sql .= " AND scid = (SELECT hsid FROM $tbl_store_category WHERE groups =  (SELECT hsid FROM $tbl_store_category_groups WHERE title LIKE  '%market%' ) )";
+                        break;
+                    case 'pasamall':
+                        $sql .= " AND scid = (SELECT hsid FROM $tbl_store_category WHERE groups =  (SELECT hsid FROM $tbl_store_category_groups WHERE title LIKE  '%pasamall%' ) )";
+                        break;
                 }
             }
 
@@ -111,8 +135,6 @@
                         $value->city = $get_store_address->city;
                         $value->province = $get_store_address->province;
                         $value->country = $get_store_address->country;
-
-
                     // End
                 }
             // End

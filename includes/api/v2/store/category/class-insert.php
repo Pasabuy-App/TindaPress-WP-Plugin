@@ -25,6 +25,7 @@
             $curl_user['title'] = $_POST["title"];
             $curl_user['info'] = $_POST["info"];
             $curl_user['wpid'] = $_POST["wpid"];
+            isset($_POST['groups']) && !empty($_POST['groups'])? $curl_user['groups'] =  $_POST['groups'] :  $curl_user['groups'] = null ;
             return $curl_user;
         }
 
@@ -33,8 +34,9 @@
             global $wpdb;
             $table_store_categories = TP_STORES_CATEGORIES_v2;
             $table_store_categories_field = TP_STORES_CATEGORIES_FIELDS_v2;
+            $table_store_categories_groups = TP_STORES_CATEGORY_GROUPS_v2;
 
-             // Step 1: Check if prerequisites plugin are missing
+            // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
@@ -60,7 +62,7 @@
 
             $user = self::catch_post();
 
-            $validate = HP_Globals_v2::check_listener($user);
+            $validate = TP_Globals_v2::check_listener($user);
             if ($validate !== true) {
                 return array(
                     "status" => "failed",
@@ -70,7 +72,17 @@
 
             $files = $request->get_file_params();
 
-            $check_category = $wpdb->get_row("SELECT `status` FROM $table_store_categories WHERE title LIKE '%{$user["title"]}%' AND `status` = 'active' ");
+             // Check of category group exits
+                $check_category_groups = $wpdb->get_row("SELECT `status` FROM $table_store_categories_groups WHERE hsid = '{$user["groups"]}' AND `status` = 'active' ");
+                if (empty($check_category_groups)) {
+                    return array(
+                        "status" => "failed",
+                        "message" => "This Store category group does not exists.",
+                    );
+                }
+            // End
+
+            $check_category = $wpdb->get_row("SELECT `status` FROM $table_store_categories WHERE title LIKE '%{$user["title"]}%' AND `status` = 'active' AND groups = '{$user["groups"]}' ");
             if (!empty($check_category)) {
                 return array(
                     "status" => "failed",
@@ -84,10 +96,11 @@
                 $table_store_categories
                     ($table_store_categories_field)
                 VALUES
-                ( '{$user["title"]}', '{$user["info"]}', '{$result["data"]}', '{$user["wpid"]}') ");
+                ( '{$user["title"]}', '{$user["info"]}', '{$result["groups"]}',  '{$result["data"]}', '{$user["wpid"]}') ");
             $import_data_id = $wpdb->insert_id;
 
             $hsid = TP_Globals_v2::generating_pubkey($import_data_id, $table_store_categories, 'hsid', false, 64);
+
 
             if ($import_data < 1) {
                 $wpdb->query("ROLLBACK");

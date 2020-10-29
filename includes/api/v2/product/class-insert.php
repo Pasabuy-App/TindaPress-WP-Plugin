@@ -29,6 +29,7 @@
             $curl_user['title'] = $_POST["title"];
             $curl_user['info'] = $_POST["info"];
             $curl_user['discount'] = $_POST["discount"];
+            $curl_user['inventory'] = $_POST["inventory"];
             $curl_user['wpid'] = $_POST["wpid"];
 
             return $curl_user;
@@ -79,6 +80,13 @@
                 );
             }
 
+            if ($_POST['inventory'] != "true" && $_POST['inventory'] != "false") {
+                return array(
+                    "status" => "failed",
+                    "message" => "Invalid value of inventory."
+                );
+            }
+
             // Check if store exists
                 $check_store = $wpdb->get_row("SELECT ID FROM $tbl_store WHERE hsid = '{$user["store_id"]}' AND `status` = 'active'");
                 if (empty($check_store)) {
@@ -113,7 +121,7 @@
                 $tbl_product
                     ($tbl_product_filed)
                 VALUES
-                    ( '{$user["store_id"]}', '{$user["pcid"]}', '{$user["title"]}', '{$user["info"]}', '{$user["price"]}', '{$user["discount"]}',  '{$user["wpid"]}' ) ");
+                    ( '{$user["store_id"]}', '{$user["pcid"]}', '{$user["title"]}', '{$user["info"]}', '{$user["price"]}', '{$user["discount"]}',  '{$user["inventory"]}', '{$user["wpid"]}' ) ");
             $import_data_id = $wpdb->insert_id;
 
             // Optional Upload for avatar and banner
