@@ -52,6 +52,7 @@
 			$tbl_product_category_v2 = TP_PRODUCT_CATEGORY_v2;
 			$tbl_product_v2 = TP_PRODUCT_v2;
 			$tbl_product_varints_v2 = TP_PRODUCT_VARIANTS_v2;
+			$tbl_product_ratings_v2 = TP_PRODUCT_RATING_v2;
 		// End
 		$wpdb->query("START TRANSACTION");
 
@@ -553,6 +554,22 @@
 					$sql .= " `parents` varchar(255) NOT NULL COMMENT 'Parent of this variant.', ";
 					$sql .= " `status` enum('active', 'inactive') NOT NULL COMMENT 'Status of this variants.', ";
 					$sql .= " `created_by` bigint(20) NOT NULL COMMENT 'The user who seen this store.', ";
+					$sql .= " `date_created` datetime NULL DEFAULT current_timestamp() COMMENT 'Date created this variants.', ";
+					$sql .= "PRIMARY KEY (`ID`) ";
+					$sql .= ") ENGINE = InnoDB; ";
+				$result = $wpdb->get_results($sql);
+			}
+
+
+			//Database table creation for product
+			if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_product_ratings_v2'" ) != $tbl_product_ratings_v2) {
+				$sql = "CREATE TABLE `".$tbl_product_ratings_v2."` (";
+					$sql .= " `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+					$sql .= " `hsid` varchar(255) NOT NULL COMMENT 'This column is used for table relation ship.', ";
+					$sql .= " `pdid` varchar(100) NOT NULL COMMENT 'Product id.', ";
+					$sql .= " `rates` tinyint(10) NOT NULL COMMENT 'Rates.', ";
+					$sql .= " `comments` varchar(255) NOT NULL COMMENT 'Comments for this product rating', ";
+					$sql .= " `rated_by` bigint(20) NOT NULL COMMENT 'The user who seen this store.', ";
 					$sql .= " `date_created` datetime NULL DEFAULT current_timestamp() COMMENT 'Date created this variants.', ";
 					$sql .= "PRIMARY KEY (`ID`) ";
 					$sql .= ") ENGINE = InnoDB; ";

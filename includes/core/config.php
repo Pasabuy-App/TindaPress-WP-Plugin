@@ -115,7 +115,7 @@
 			define('TP_STORE_DOCS_TYPES_v2', TP_PREFIX_v2.'store_doc_types');
 			define('TP_STORE_DOCS_TYPES_FIELDS_v2', ' `title`, `info`, `created_by`');
 
-			define('TP_STORES_RATINGS_v2', TP_PREFIX_v2.'store_rating_v2');
+			define('TP_STORES_RATINGS_v2', TP_PREFIX_v2.'store_rating');
 			define('TP_STORES_RATINGS_FIELDS_v2', ' `stid`, `rates`, `comments`, `rated_by`');
 
 			define('TP_STORES_SEEN_v2', TP_PREFIX_v2.'stores_seen');
@@ -141,6 +141,9 @@
 
 			define('TP_PRODUCT_VARIANTS_v2', TP_PREFIX_v2.'product_variants');
 			define('TP_PRODUCT_VARIANTS_FILEDS_v2', ' `pdid`, `title`, `info`, `price`, `required`, `created_by` ');
+
+			define('TP_PRODUCT_RATING_v2', TP_PREFIX_v2.'products_ratings');
+			define('TP_PRODUCT_RATING_FIELDS_v2', ' `pdid`, `rates`, `comments`, `rated_by` ');
 
 
 

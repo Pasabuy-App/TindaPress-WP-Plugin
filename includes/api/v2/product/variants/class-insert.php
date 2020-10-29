@@ -29,6 +29,7 @@
             $curl_user['price'] = $_POST["price"];
             $curl_user['required'] = $_POST["required"];
             $curl_user['wpid'] = $_POST["wpid"];
+            isset($_POST['pid']) && !empty($_POST['pid'])? $curl_user['pid'] =  $_POST['pid'] :  $curl_user['pid'] = null ;
 
             return $curl_user;
         }
@@ -91,6 +92,18 @@
                 }
             // End
 
+            // Verify parent id
+                if ($user["pid"] != null) {
+                    $check_variant = $wpdb->get_row("SELECT ID FROM $tbl_variants WHERE hsid = '{$user["pdid"]}' ");
+                    if (empty($check_variant)) {
+                        return array(
+                            "status" => "failed",
+                            "message" => "This product does not exists."
+                        );
+                    }
+                }
+            // End
+
             // Check if variants exists
                 $check_variants = $wpdb->get_row("SELECT title FROM $tbl_variants WHERE title LIKE '%{$user["title"]}%' AND `status` = 'active'  ");
                 if (!empty($check_variants)) {
@@ -107,6 +120,18 @@
                 VALUES
                     ('{$user["pdid"]}', '{$user["title"]}', '{$user["info"]}', '{$user["price"]}', '{$user["required"]}', '{$user["wpid"]}' ) ");
             $import_data_id = $wpdb->insert_id;
+
+            // Update variant parent column of variant is option
+            if ($user["pid"] != null) {
+                $update_parent = $wpdb->query("UPDATE $tbl_variants SET parent = '{$user["pid"]}' WHERE ID = '$import_data_id' ");
+
+                if ($update_parent < 1) {
+                    return array(
+                        "status" => "failed",
+                        "message" => "An error occured while submitting data to server."
+                    );
+                }
+            }
 
             $hsid = TP_Globals_v2::generating_pubkey($import_data_id, $tbl_variants, 'hsid', false, 64);
 
