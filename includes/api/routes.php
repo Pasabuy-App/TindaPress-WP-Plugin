@@ -126,18 +126,21 @@
                 require plugin_dir_path(__FILE__) . '/v2/store/featured/class-insert.php';
 
             require plugin_dir_path(__FILE__) . '/v2/store/class-insert.php';
+            require plugin_dir_path(__FILE__) . '/v2/store/class-listing.php';
 
         // End
 
         // Product V2
-        require plugin_dir_path(__FILE__) . '/v2/product/class-insert.php';
+            require plugin_dir_path(__FILE__) . '/v2/product/class-insert.php';
 
-            // Categories
-                require plugin_dir_path(__FILE__) . '/v2/product/category/class-insert.php';
-            // Variants
-                require plugin_dir_path(__FILE__) . '/v2/product/variants/class-insert.php';
-            // Ratings
-                require plugin_dir_path(__FILE__) . '/v2/product/rates/class-insert.php';
+                // Categories
+                    require plugin_dir_path(__FILE__) . '/v2/product/category/class-insert.php';
+                // Variants
+                    require plugin_dir_path(__FILE__) . '/v2/product/variants/class-insert.php';
+                // Ratings
+                    require plugin_dir_path(__FILE__) . '/v2/product/rates/class-insert.php';
+                // Featured
+                    require plugin_dir_path(__FILE__) . '/v2/product/featured/class-insert.php';
 
         // END
         //Global Classes
@@ -558,6 +561,11 @@
         */
                 // Store Rest api's
 
+                    register_rest_route( 'tindapress/v2/store', 'list', array(
+                        'methods' => 'POST',
+                        'callback' => array('TP_Store_Listing_v2','listen'),
+                    ));
+
                     register_rest_route( 'tindapress/v2/store', 'insert', array(
                         'methods' => 'POST',
                         'callback' => array('TP_Store_Insert_v2','listen'),
@@ -613,6 +621,11 @@
                         register_rest_route( 'tindapress/v2/product/rates', 'insert', array(
                             'methods' => 'POST',
                             'callback' => array('TP_Products_Ratings_Insert_v2','listen'),
+                        ));
+                    // Variants
+                        register_rest_route( 'tindapress/v2/product/featured', 'insert', array(
+                            'methods' => 'POST',
+                            'callback' => array('TP_Featured_Products_Insert_v2','listen'),
                         ));
 
         /*

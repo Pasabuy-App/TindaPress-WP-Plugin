@@ -53,6 +53,8 @@
 			$tbl_product_v2 = TP_PRODUCT_v2;
 			$tbl_product_varints_v2 = TP_PRODUCT_VARIANTS_v2;
 			$tbl_product_ratings_v2 = TP_PRODUCT_RATING_v2;
+			$tbl_featured_product_v2 = TP_FEATURED_PRODUCT_v2;
+			$tbl_featured_product_seen_v2 = TP_FEATURED_PRODUCT_SEEN_v2;
 		// End
 		$wpdb->query("START TRANSACTION");
 
@@ -576,6 +578,34 @@
 				$result = $wpdb->get_results($sql);
 			}
 
+			//Database table creation for product
+			if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_featured_product_v2'" ) != $tbl_featured_product_v2) {
+				$sql = "CREATE TABLE `".$tbl_featured_product_v2."` (";
+					$sql .= " `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+					$sql .= " `hsid` varchar(255) NOT NULL COMMENT 'This column is used for table relation ship.', ";
+					$sql .= " `stid` varchar(150) NOT NULL COMMENT 'Store id.', ";
+					$sql .= " `pdid` varchar(150) NOT NULL COMMENT 'Product ID.', ";
+					$sql .= " `avatar` varchar(255) NOT NULL COMMENT 'Avatar of this featured product', ";
+					$sql .= " `status` enum('active', 'inactive') NOT NULL COMMENT 'Status of this featured product.', ";
+					$sql .= " `created_by` bigint(20) NOT NULL COMMENT 'The user who seen this store.', ";
+					$sql .= " `date_created` datetime NULL DEFAULT current_timestamp() COMMENT 'Date created this variants.', ";
+					$sql .= "PRIMARY KEY (`ID`) ";
+					$sql .= ") ENGINE = InnoDB; ";
+				$result = $wpdb->get_results($sql);
+			}
+
+			//Database table creation for product
+			if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_featured_product_seen_v2'" ) != $tbl_featured_product_seen_v2) {
+				$sql = "CREATE TABLE `".$tbl_featured_product_seen_v2."` (";
+					$sql .= " `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+					$sql .= " `hsid` varchar(255) NOT NULL COMMENT 'This column is used for table relation ship.', ";
+					$sql .= " `pfid` varchar(150) NOT NULL COMMENT 'Featured product id.', ";
+					$sql .= " `wpid` bigint(20) NOT NULL COMMENT 'The user who seen this product.', ";
+					$sql .= " `date_created` datetime NULL DEFAULT current_timestamp() COMMENT 'Date created this variants.', ";
+					$sql .= "PRIMARY KEY (`ID`) ";
+					$sql .= ") ENGINE = InnoDB; ";
+				$result = $wpdb->get_results($sql);
+			}
 
 		// END
 

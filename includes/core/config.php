@@ -145,6 +145,11 @@
 			define('TP_PRODUCT_RATING_v2', TP_PREFIX_v2.'products_ratings');
 			define('TP_PRODUCT_RATING_FIELDS_v2', ' `pdid`, `rates`, `comments`, `rated_by` ');
 
+			define('TP_FEATURED_PRODUCT_v2', TP_PREFIX_v2.'featured_products');
+			define('TP_FEATURED_PRODUCT_FIELDS_v2', ' `stid`, `pdid`, `created_by` ');
+
+			define('TP_FEATURED_PRODUCT_SEEN_v2', TP_PREFIX_v2.'featured_products_seen');
+			define('TP_FEATURED_PRODUCT_SEEN_FIELDS_v2', ' `pfid`, `wpid` ');
 
 
 		// End
