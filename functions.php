@@ -43,7 +43,7 @@
 
     if(TP_UIHOST != site_url() || TP_FULLMODE == true) {
         // include_once ( TP_PLUGIN_PATH . '/includes/view/primary.php' );
-        include_once ( TP_PLUGIN_PATH . '/includes/view/primary.php' );
+        // include_once ( TP_PLUGIN_PATH . '/includes/view/primary.php' );
         //Includes assets if page is defined.
         include_once ( TP_PLUGIN_PATH . '/includes/core/assets.php' );
     }
