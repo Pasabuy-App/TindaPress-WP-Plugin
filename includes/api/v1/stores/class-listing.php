@@ -46,12 +46,12 @@
             }
 
             // Step2 : Check if wpid and snky is valid
-            if (DV_Verification::is_verified() == false) {
-                return array(
-                        "status" => "unknown",
-                        "message" => "Please contact your administrator. Verification Issues!",
-                );
-            }
+            // if (DV_Verification::is_verified() == false) {
+            //     return array(
+            //             "status" => "unknown",
+            //             "message" => "Please contact your administrator. Verification Issues!",
+            //     );
+            // }
 
             // Step3 : Query
             $sql ="SELECT
@@ -91,6 +91,7 @@
                 INNER JOIN dv_address `add` ON str.address = `add`.ID
                 INNER JOIN tp_categories cat ON cat.ID = str.ctid
             ";
+
 
             isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL  ;
             isset($_POST['catid']) ? $ctd = $_POST['catid'] : $ctd = NULL  ;

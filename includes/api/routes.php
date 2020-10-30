@@ -114,6 +114,7 @@
         // Store V2
             // Store Categories
                 require plugin_dir_path(__FILE__) . '/v2/store/category/class-insert.php';
+                require plugin_dir_path(__FILE__) . '/v2/store/category/class-listing.php';
                 // Groups
                     require plugin_dir_path(__FILE__) . '/v2/store/category/groups/class-insert.php';
 
@@ -135,15 +136,19 @@
 
         // Product V2
             require plugin_dir_path(__FILE__) . '/v2/product/class-insert.php';
+            require plugin_dir_path(__FILE__) . '/v2/product/class-listing.php';
 
                 // Categories
                     require plugin_dir_path(__FILE__) . '/v2/product/category/class-insert.php';
+                    require plugin_dir_path(__FILE__) . '/v2/product/category/class-listing.php';
                 // Variants
                     require plugin_dir_path(__FILE__) . '/v2/product/variants/class-insert.php';
+                    require plugin_dir_path(__FILE__) . '/v2/product/variants/class-listing.php';
                 // Ratings
                     require plugin_dir_path(__FILE__) . '/v2/product/rates/class-insert.php';
                 // Featured
                     require plugin_dir_path(__FILE__) . '/v2/product/featured/class-insert.php';
+                    require plugin_dir_path(__FILE__) . '/v2/product/featured/class-listing.php';
 
         // END
         //Global Classes
@@ -580,11 +585,17 @@
                                 'callback' => array('TP_Store_Category_Insert_v2','listen'),
                             ));
 
+                            register_rest_route( 'tindapress/v2/store/category', 'list', array(
+                                'methods' => 'POST',
+                                'callback' => array('TP_Store_Category_Listing_v2','listen'),
+                            ));
+
                             // Groups
                                 register_rest_route( 'tindapress/v2/store/category/groups', 'insert', array(
                                     'methods' => 'POST',
                                     'callback' => array('TP_Store_Category_Group_Insert_v2','listen'),
                                 ));
+
                         // Documents
                             register_rest_route( 'tindapress/v2/store/document/type', 'insert', array(
                                 'methods' => 'POST',
@@ -604,15 +615,20 @@
                                     'callback' => array('TP_Featured_Store_Groups_Insert_v2','listen'),
                                 ));
 
-                            register_rest_route( 'tindapress/v2/store/featured', 'insert', array(
-                                'methods' => 'POST',
-                                'callback' => array('TP_Featured_Store_Insert_v2','listen'),
-                            ));
+                                register_rest_route( 'tindapress/v2/store/featured', 'insert', array(
+                                    'methods' => 'POST',
+                                    'callback' => array('TP_Featured_Store_Insert_v2','listen'),
+                                ));
 
                 // Products rest api's
                     register_rest_route( 'tindapress/v2/product', 'insert', array(
                         'methods' => 'POST',
                         'callback' => array('TP_Product_Insert_v2','listen'),
+                    ));
+
+                    register_rest_route( 'tindapress/v2/product', 'list', array(
+                        'methods' => 'POST',
+                        'callback' => array('TP_Product_Listing_v2','listen'),
                     ));
 
                     // Category
@@ -621,20 +637,34 @@
                             'callback' => array('TP_Products_Category_Insert_v2','listen'),
                         ));
 
+                        register_rest_route( 'tindapress/v2/product/category', 'list', array(
+                            'methods' => 'POST',
+                            'callback' => array('TP_Product_Category_Listing_v2','listen'),
+                        ));
+
                     // Variants
                         register_rest_route( 'tindapress/v2/product/variant', 'insert', array(
                             'methods' => 'POST',
                             'callback' => array('TP_Product_Variants_Insert_v2','listen'),
                         ));
-                    // Variants
+                        register_rest_route( 'tindapress/v2/product/variant', 'list', array(
+                            'methods' => 'POST',
+                            'callback' => array('TP_Product_Variant_Listing_v2','listen'),
+                        ));
+                    // Rates
                         register_rest_route( 'tindapress/v2/product/rates', 'insert', array(
                             'methods' => 'POST',
                             'callback' => array('TP_Products_Ratings_Insert_v2','listen'),
                         ));
-                    // Variants
+                    // Featured
                         register_rest_route( 'tindapress/v2/product/featured', 'insert', array(
                             'methods' => 'POST',
                             'callback' => array('TP_Featured_Products_Insert_v2','listen'),
+                        ));
+
+                        register_rest_route( 'tindapress/v2/product/featured', 'list', array(
+                            'methods' => 'POST',
+                            'callback' => array('TP_Product_Featued_Listing_v2','listen'),
                         ));
 
         /*

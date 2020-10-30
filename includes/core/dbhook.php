@@ -55,7 +55,7 @@
 			$tbl_product_ratings_v2 = TP_PRODUCT_RATING_v2;
 			$tbl_featured_product_v2 = TP_FEATURED_PRODUCT_v2;
 			$tbl_featured_product_seen_v2 = TP_FEATURED_PRODUCT_SEEN_v2;
-			$tbl_store_category_groups = TP_STORE_CATEGORY_GROUPS_v2;
+			$tbl_store_category_groups = TP_STORES_CATEGORY_GROUPS_v2;
 		// End
 		$wpdb->query("START TRANSACTION");
 

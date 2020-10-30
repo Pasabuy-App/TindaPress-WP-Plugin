@@ -39,6 +39,7 @@
             $tbl_address_view = DV_ADDRESS_VIEW;
             $tbl_operation = MP_OPERATIONS_v2;
             $tbl_store_category_groups = TP_STORES_CATEGORY_GROUPS_v2;
+            $tbl_rate = TP_STORES_RATINGS_v2;
 
              // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -68,6 +69,7 @@
                 info,
                 avatar,
                 banner,
+                null as rates,
                 adid,
                 null as street,
                 null as brgy,
@@ -136,6 +138,10 @@
                         $value->province = $get_store_address->province;
                         $value->country = $get_store_address->country;
                     // End
+                    $get_rates = $wpdb->get_row("SELECT hsid as ID, stid, AVG(rates) as rates FROM $tbl_rate WHERE stid = '$value->hsid' ");
+                    if (!empty($get_rates)) {
+                        $value->rates = $get_rates->rates;
+                    }
                 }
             // End
 

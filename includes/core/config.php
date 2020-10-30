@@ -17,7 +17,7 @@
 
 			//Defining Global Variables
 			define('TP_CUSTOM', 'eCommerce');
-			define('TP_PREFIX', 'tp_');
+			define('TP_PREFIX', 'tp_v1_');
 			define('TP_UIHOST', 'http://localhost/wordpress/');
 			define('TP_FULLMODE', true);
 
@@ -104,7 +104,7 @@
 		// End
 
 		// Config declaration for version two
-			define('TP_PREFIX_v2', 'tp_v2_');
+			define('TP_PREFIX_v2', 'tp_');
 
 			define('TP_STORES_v2', TP_PREFIX_v2.'stores');
 			define('TP_STORES_FIELDS_v2', ' `scid`, `title`, `info`, `adid`, `created_by`');

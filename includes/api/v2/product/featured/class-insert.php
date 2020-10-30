@@ -24,8 +24,7 @@
             $curl_user = array();
 
             $curl_user['store_id'] = $_POST["stid"];
-            $curl_user['title'] = $_POST["title"];
-            $curl_user['info'] = $_POST["info"];
+            $curl_user['pdid'] = $_POST["pdid"];
             $curl_user['wpid'] = $_POST["wpid"];
 
             return $curl_user;
@@ -34,11 +33,13 @@
         public static function listen_open($request){
 
             global $wpdb;
+            $tbl_store = TP_STORES_v2;
+            $tbl_product = TP_PRODUCT_v2;
             $tbl_featured_product = TP_FEATURED_PRODUCT_v2;
             $tbl_featured_product_filed = TP_FEATURED_PRODUCT_FIELDS_v2;
             $files = $request->get_file_params();
 
-            if (!isset($_POST['pdid']) || !isset($_POST['stid']) || !isset($_POST['avatar'])) {
+            if (!isset($_POST['pdid']) || !isset($_POST['stid']) ) {
                 return array(
                     "status" => "unknown",
                     "message" => "Please contact your admininstrator. Request unknown!"
@@ -66,9 +67,19 @@
                 }
             // End
 
-             // Check if product exists
-                $check_product = $wpdb->get_row("SELECT `status` FROM $tbl_featured_product WHERE pdid = '{$user["pdid"]}' AND `status` = 'active' AND stid = '{$user["store_id"]}' ");
-                if (!empty($check_product)) {
+            // Check if product exists
+                $check_product = $wpdb->get_row("SELECT `status` FROM $tbl_product WHERE hsid = '{$user["pdid"]}' AND `status` = 'active' AND stid = '{$user["store_id"]}' ");
+                if (empty($check_product)) {
+                    return array(
+                        "status" => "failed",
+                        "message" => "This product is does not exists.",
+                    );
+                }
+            // End
+
+             // Check if featured product exists
+                $check_product_featured = $wpdb->get_row("SELECT `status` FROM $tbl_featured_product WHERE pdid = '{$user["pdid"]}' AND `status` = 'active' AND stid = '{$user["store_id"]}' ");
+                if (!empty($check_product_featured)) {
                     return array(
                         "status" => "failed",
                         "message" => "This product is already exists.",
@@ -104,7 +115,7 @@
                 }
 
                 if (!empty($files['avatar']['name'])) {
-                    $avatar = $wpdb->query("UPDATE $tbl_product SET `avatar` =  '{$image["data"][0]["avatar"]}' WHERE ID = '$import_data_id' ");
+                    $avatar = $wpdb->query("UPDATE $tbl_featured_product SET `avatar` =  '{$image["data"][0]["avatar"]}' WHERE ID = '$import_data_id' ");
                     if ($avatar < 1) {
                         return array(
                             "status" => "failed",
