@@ -46,12 +46,12 @@
             }
 
             // Step 2: Validate user
-            if (DV_Verification::is_verified() == false) {
-                return array(
-                    "status" => "unknown",
-                    "message" => "Please contact your administrator. Verification Issues!",
-                );
-            }
+            // if (DV_Verification::is_verified() == false) {
+            //     return array(
+            //         "status" => "unknown",
+            //         "message" => "Please contact your administrator. Verification Issues!",
+            //     );
+            // }
 
             $user = self::catch_post();
 
@@ -85,7 +85,7 @@
 
             return array(
                 "status" => "success",
-                "message" => $data
+                "data" => $data
             );
         }
     }

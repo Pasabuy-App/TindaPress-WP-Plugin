@@ -137,10 +137,13 @@
         // Product V2
             require plugin_dir_path(__FILE__) . '/v2/product/class-insert.php';
             require plugin_dir_path(__FILE__) . '/v2/product/class-listing.php';
+            require plugin_dir_path(__FILE__) . '/v2/product/class-update.php';
+            require plugin_dir_path(__FILE__) . '/v2/product/class-delete.php';
 
                 // Categories
                     require plugin_dir_path(__FILE__) . '/v2/product/category/class-insert.php';
                     require plugin_dir_path(__FILE__) . '/v2/product/category/class-listing.php';
+                    require plugin_dir_path(__FILE__) . '/v2/product/category/class-update.php';
                 // Variants
                     require plugin_dir_path(__FILE__) . '/v2/product/variants/class-insert.php';
                     require plugin_dir_path(__FILE__) . '/v2/product/variants/class-listing.php';
@@ -641,6 +644,16 @@
                         'callback' => array('TP_Product_Listing_v2','listen'),
                     ));
 
+                    register_rest_route( 'tindapress/v2/product', 'update', array(
+                        'methods' => 'POST',
+                        'callback' => array('TP_Product_Update_v2','listen'),
+                    ));
+
+                    register_rest_route( 'tindapress/v2/product', 'delete', array(
+                        'methods' => 'POST',
+                        'callback' => array('TP_Product_Delete_v2','listen'),
+                    ));
+
                     // Category
                         register_rest_route( 'tindapress/v2/product/category', 'insert', array(
                             'methods' => 'POST',
@@ -650,6 +663,11 @@
                         register_rest_route( 'tindapress/v2/product/category', 'list', array(
                             'methods' => 'POST',
                             'callback' => array('TP_Product_Category_Listing_v2','listen'),
+                        ));
+
+                        register_rest_route( 'tindapress/v2/product/category', 'update', array(
+                            'methods' => 'POST',
+                            'callback' => array('TP_Product_Category_Update_v2','listen'),
                         ));
 
                     // Variants

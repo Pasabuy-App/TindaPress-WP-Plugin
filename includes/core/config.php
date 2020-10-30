@@ -17,7 +17,7 @@
 
 			//Defining Global Variables
 			define('TP_CUSTOM', 'eCommerce');
-			define('TP_PREFIX', 'tp_v1_');
+			define('TP_PREFIX', 'tp_');
 			define('TP_UIHOST', 'http://localhost/wordpress/');
 			define('TP_FULLMODE', true);
 
@@ -80,6 +80,7 @@
 
 			define('TP_ACCESS_TABLE', TP_PREFIX.'access');
 			define('TP_ACCESS_VALUE', $tp_access_val);
+			define('TP_ACCESS_TABLE_FIELDS', 'access');
 
 			//Roles Config
 			define('TP_ROLES_TABLE', TP_PREFIX.'roles');
