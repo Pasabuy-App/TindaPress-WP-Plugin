@@ -199,6 +199,7 @@
                 return array(
                     "status" => "success",
                     "message" => "Data has been added successfully!",
+                    "data" => $parent_id
                 );
             }
         }
