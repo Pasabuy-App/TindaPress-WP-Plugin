@@ -1,19 +1,19 @@
 <?php
 	// Exit if accessed directly
-	if ( ! defined( 'ABSPATH' ) ) 
+	if ( ! defined( 'ABSPATH' ) )
 	{
 		exit;
 	}
 
-	/** 
+	/**
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
     class TP_Logo_update{
-       
+
         // image upload
         public static function listen(WP_REST_Request $request) {
-            
+
             // 2nd Initial QA 2020-08-24 6:58 PM - Miguel
             global $wpdb;
             $later = TP_Globals::date_stamp();
@@ -35,7 +35,7 @@
                     "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
-            
+
             // Step2 : Check if wpid and snky is valid
             if (DV_Verification::is_verified() == false) {
                 return array(
@@ -43,9 +43,9 @@
                     "message" => "Please contact your administrator. Verification Issues!",
                 );
             }
-           
+
             $files = $request->get_file_params();
-            
+
             // Step3 : Sanitize all Request
             if ( !isset($files['img']) || !isset($_POST['stid'])) {
 				return array(
@@ -69,10 +69,10 @@
                     "message" => "Required fields cannot be empty.",
                 );
             }
-            
+
             // Step5 : Validation of store
             $get_store = $wpdb->get_row("SELECT ID FROM $table_store  WHERE ID = $stid  ");
-                
+
              if ( !$get_store ) {
                 return array(
                     "status" => "error",
@@ -87,7 +87,7 @@
 					"message" => "Please select an image.",
 				);
             }
-            
+
             //Get the directory of uploading folder
             $target_dir = wp_upload_dir();
 
@@ -110,9 +110,9 @@
             $uploadOk = 1;
 
             $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
-            
+
             $check = getimagesize($files['img']['tmp_name']);
-            
+
             if($check !== false) {
                 $uploadOk = 1;
             } else {
@@ -153,7 +153,7 @@
 					"status" => "error",
 					"message" => "An error occured while submitting data to the server.",
                 );
-                
+
             } else {
 
                 $var = $target_dir['path'];
@@ -169,7 +169,7 @@
                     return array(
                         "status" => "success",
                         "message" => "Data has been updated successfully.",
-                    );  
+                    );
 
                 } else {
 

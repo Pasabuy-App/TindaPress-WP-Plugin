@@ -1,27 +1,27 @@
 <?php
 	// Exit if accessed directly
-	if ( ! defined( 'ABSPATH' ) ) 
+	if ( ! defined( 'ABSPATH' ) )
 	{
 		exit;
 	}
 
-	/** 
+	/**
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
 
     class TP_Product_Insert {
-        
+
         //REST API Call
-        public static function listen(){
-            
-            return rest_ensure_response( 
-                TP_Product_Insert:: insert_product()
+        public static function listen($request){
+
+            return rest_ensure_response(
+                TP_Product_Insert:: insert_product($request)
             );
         }
-        
+
         //QA Done 2020-08-12 10:45 am
-        public static function insert_product(){
+        public static function insert_product($request){
 
             // 2nd Initial QA 2020-08-24 6:09 PM - Miguel
 
@@ -35,7 +35,7 @@
             $table_store            = TP_STORES_TABLE;
             $date = TP_Globals::date_stamp();
             $revs_type = "products";
-            
+
             // Step 1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
@@ -54,11 +54,11 @@
             }
 
             // Step 3 : Validate all Request
-            if (  !isset($_POST["catid"])      || !isset($_POST["stid"]) 
-               || !isset($_POST["title"])     || !isset($_POST["short_info"]) 
-               || !isset($_POST["long_info"]) || !isset($_POST["sku"]) 
-               || !isset($_POST["price"])     || !isset($_POST["weight"]) 
-               || !isset($_POST["dimension"]) || !isset($_POST["preview"])) {
+            if (  !isset($_POST["catid"])      || !isset($_POST["stid"])
+               || !isset($_POST["title"])     || !isset($_POST["short_info"])
+               || !isset($_POST["long_info"]) || !isset($_POST["sku"])
+               || !isset($_POST["price"])     || !isset($_POST["weight"])
+               || !isset($_POST["dimension"]) ){
 				return array(
 					"status" => "unknown",
 					"message" => "Please contact your administrator. Request unknown!",
@@ -66,41 +66,40 @@
             }
 
             // Step 4 : Check if all variable is not empty
-            if (empty($_POST["catid"]) 
-                || empty($_POST["stid"]) 
-                || empty($_POST["title"]) 
-                || empty($_POST["short_info"]) 
-                || empty($_POST["long_info"]) 
-                || empty($_POST["sku"]) 
-                || empty($_POST["price"]) 
-                || empty($_POST["weight"]) 
-                || empty($_POST["dimension"]) 
-                || empty($_POST["preview"])) {
+            if (empty($_POST["catid"])
+                || empty($_POST["stid"])
+                || empty($_POST["title"])
+                || empty($_POST["short_info"])
+                || empty($_POST["long_info"])
+                || empty($_POST["sku"])
+                || empty($_POST["price"])
+                || empty($_POST["weight"])
+                || empty($_POST["dimension"])) {
 				return array(
 					"status" => "unknown",
-					"message" => "Required fields cannot be empty!",
+					"message" => "Required fields cannot be emptys!",
                 );
             }
 
             // Step 5: Catch all post request
             $user = TP_Product_Insert::catch_post();
-  
+
             $store_id = $user['stid'];
-            
+
             // Step 6: Get store and status
             $get_store = $wpdb->get_row("SELECT
                     tp_str.ID,
                     ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.status ) AS `status`
                 FROM
                     $table_store tp_str
-                INNER JOIN 
-                    $table_revs tp_rev ON tp_rev.ID = tp_str.`status` 
+                INNER JOIN
+                    $table_revs tp_rev ON tp_rev.ID = tp_str.`status`
                 WHERE tp_str.ID = $store_id
             ");
-            
+
             // Check if no rows found
             if ( !$get_store ) {
-                return rest_ensure_response( 
+                return rest_ensure_response(
                     array(
                         "status" => "failed",
                         "message" => "This store does not exists.",
@@ -115,19 +114,19 @@
                     "message" => "This store is currently deactivated.",
                 );
             }
-       
+
             // Step 7: Check if user has roles_access of can_activate_store or either contributor or editor
-            $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_add_products' );
-            
-            if ($permission == true) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Current user has no access in adding products.",
-                );
-            }
+            // $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_add_products' );
+
+            // if ($permission == true) {
+            //     return array(
+            //         "status" => "failed",
+            //         "message" => "Current user has no access in adding products.",
+            //     );
+            // }
 
             // Validate Category
-               
+
                 if (!is_numeric($_POST['catid'])) {
                     return array(
                         "status" => "failed",
@@ -145,24 +144,36 @@
                         "message" => "This category does not exists",
                     );
                 }
-                
+
                 if ($check_category->child_val == 0) {
                     return array(
                         "status" => "failed",
                         "message" => "This category is currently inactive",
                     );
                 }
-                
+
             // End of category validation
 
-        
             // Step 8: Start mysql transaction
             $wpdb->query("START TRANSACTION");
+
+            $product_prev = "None";
+            $files = $request->get_file_params();
+
+            if ( isset($files['img'])) {
+				$results = DV_Globals::upload_image( $request,$files );
+                $product_prev = $results['data'];
+                if (!$results){
+                    return array(
+                        "status" => "failed",
+                        "message" => "An error occured while submitting data to database.");
+                }
+            }
 
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'title', '{$user["title"]}', '{$user["created_by"]}', '$date')");
                 $title = $wpdb->insert_id;
 
-                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'preview', '{$user["preview"]}', '{$user["created_by"]}', '$date')");
+                $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'preview', '$product_prev', '{$user["created_by"]}', '$date')");
                 $preview = $wpdb->insert_id;
 
                 $wpdb->query("INSERT INTO $table_revs $table_revs_fields  VALUES ('$revs_type', '0', 'short_info', '{$user["short_info"]}', '{$user["created_by"]}', '$date')");
@@ -195,7 +206,7 @@
                     "message" => "An error occured while submitting data to database.",
                 );
             }
-            
+
             // Insert Product
             $wpdb->query("INSERT INTO $table_product $table_product_fields VALUES ('{$user["stid"]}', '{$user["catid"]}', '$title', '$preview', '$short_info', '$long_info', '$status', '$sku', '$price', '$weight', '$dimension', '{$user["created_by"]}', '$date')");
             $product_id = $wpdb->insert_id;
@@ -220,11 +231,11 @@
             }
         }
 
-        // Catch Post 
+        // Catch Post
         public static function catch_post()
         {
             $cur_user = array();
-               
+
             $cur_user['created_by'] = $_POST["wpid"];
             $cur_user['catid']      = $_POST["catid"];
             $cur_user['stid']       = $_POST["stid"];
@@ -235,8 +246,8 @@
             $cur_user['price']      = $_POST["price"];
             $cur_user['weight']     = $_POST["weight"];
             $cur_user['dimension']  = $_POST["dimension"];
-            $cur_user['preview']    = $_POST["preview"];
-  
+            //$cur_user['preview']    =  $_POST["preview"] == "None"? null :$_POST["preview"];
+
             return  $cur_user;
         }
     }

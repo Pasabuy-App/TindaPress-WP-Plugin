@@ -1,26 +1,26 @@
 <?php
 	// Exit if accessed directly
-	if ( ! defined( 'ABSPATH' ) ) 
+	if ( ! defined( 'ABSPATH' ) )
 	{
 		exit;
 	}
 
-	/** 
+	/**
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
     class TP_SearchStore {
 
         public static function listen(){
-            return rest_ensure_response( 
-                TP_SearchStore:: list_open()
+            return rest_ensure_response(
+                self:: list_open()
             );
         }
 
         public static function list_open(){
 
             global $wpdb;
-
+            //return "HAHAHA";
             // declaring table names to variable
             $table_store = TP_STORES_TABLE;
             $table_revs = TP_REVISIONS_TABLE;
@@ -30,9 +30,6 @@
             $table_city = DV_CITY_TABLE;
             $table_province = DV_PROVINCE_TABLE;
             $table_country = DV_COUNTRY_TABLE;
-            
-            // declaring variable
-            $value = $_POST['search'];
 
             // Step1 : Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -41,8 +38,9 @@
                     "status" => "unknown",
                     "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
+
             }
-            
+
             // Step2 : Check if wpid and snky is valid
             if (DV_Verification::is_verified() == false) {
                 return array(
@@ -52,7 +50,7 @@
             }
 
             // Step3 : Sanitize request
-			if (!isset($_POST['search']) ) {
+			if (!isset($_POST['search']) || !isset($_POST['types']) ) {
 				return array(
 					"status" => "unknown",
 					"message" => "Please contact your administrator. Request unknown!",
@@ -60,16 +58,46 @@
             }
 
              // Step4 : Sanitize variable if empty
-			if (empty($_POST['search']) ) {
+			if (empty($_POST['search']) || empty($_POST['types']) ) {
 				return array(
 					"status" => "failed",
 					"message" => "Required fields cannot be empty.",
                 );
             }
 
+            if($_POST['types'] != "pasamall" &&  $_POST['types'] != "market" &&  $_POST['types'] != "food/drink"   &&  $_POST['types'] != "robinson"  ){
+                return array(
+					"status" => "failed",
+					"message" => "Invalid Value of type.",
+                );
+            }
+
+            // declaring variable
+            $value = $_POST['search'];
+            $catid = "";
+
+            switch ($_POST['types']) {
+                case 'food/drink':
+                    $catid = " AND tp_str.ctid = 1 ";
+                    break;
+                case 'pasamall':
+                    $catid = "  ";
+                    break;
+
+                case 'market':
+                    $catid = " AND tp_str.ctid = 2 ";
+                    break;
+
+                case 'robinson':
+                    $catid = " AND (SELECT groups FROM tp_categories WHERE ID = tp_str.ctid) = 'robinson' ";
+
+                    break;
+            }
+
             // Step5 : Query
-            $result = $wpdb->get_results("SELECT
+            $result = $wpdb->get_results( "SELECT
                 tp_str.ID,
+                tp_str.ctid,
                 tp_rev.child_val AS title,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.short_info ) AS `short_info`,
                 ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.long_info ) AS `long_info`,
@@ -79,18 +107,20 @@
                 ( SELECT brgy_name FROM $table_brgy WHERE ID = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.brgy ) ) AS brgy,
                 ( SELECT city_name FROM $table_city WHERE city_code = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.city ) ) AS city,
                 ( SELECT prov_name FROM $table_province WHERE prov_code = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.province ) ) AS province,
-                ( SELECT country_name FROM $table_country WHERE ID = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.country ) ) AS country 
+                ( SELECT country_name FROM $table_country WHERE ID = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.country ) ) AS country
             FROM
                 $table_store tp_str
-            INNER JOIN 
-                $table_revs tp_rev ON tp_rev.ID = tp_str.title 
-            INNER JOIN 
-                $table_address dv_add ON tp_str.address = dv_add.ID	
+            INNER JOIN
+                $table_revs tp_rev ON tp_rev.ID = tp_str.title
+            INNER JOIN
+                $table_address dv_add ON tp_str.address = dv_add.ID
             WHERE
-                tp_rev.child_val REGEXP '^$value';
-            ");
+                tp_rev.child_val LIKE '%$value%'
+                OR  ( SELECT tp_rev.child_val FROM $table_revs tp_rev WHERE ID = tp_str.short_info ) LIKE '%$value%'
+                OR ( SELECT city_name FROM $table_city WHERE city_code = ( SELECT child_val FROM $table_dv_revs WHERE ID = dv_add.city ) ) LIKE '%$value%'
+                $catid ");
 
-            // Step7 : Return Result 
+            // Step7 : Return Result
             return array(
                 "status" => "success",
                 "data" => $result

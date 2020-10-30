@@ -1,17 +1,17 @@
 <?php
 	// Exit if accessed directly
-	if ( ! defined( 'ABSPATH' ) ) 
+	if ( ! defined( 'ABSPATH' ) )
 	{
 		exit;
 	}
 
-	/** 
+	/**
         * @package tindapress-wp-plugin
         * @version 0.1.0
 	*/
     class TP_Product_Listing {
         public static function listen(){
-            return rest_ensure_response( 
+            return rest_ensure_response(
                 TP_Product_Listing:: list_type()
             );
         }
@@ -33,17 +33,17 @@
                     "message" => "Please contact your administrator. ".$plugin." plugin missing!",
                 );
             }
-			
+
 			// Step 2: Validate user
 			if (DV_Verification::is_verified() == false) {
                 return array(
                     "status" => "unknown",
                     "message" => "Please contact your administrator. verification issues!",
                 );
-                
+
             }
 
-            // Start MYSQL Query 
+            // Start MYSQL Query
             $sql = "SELECT
                 tp_prod.ID,
                 tp_prod.stid,
@@ -59,7 +59,6 @@
                 ( SELECT tp_rev.child_val FROM $table_revisions tp_rev WHERE ID = tp_prod.weight AND revs_type = 'products' AND child_key ='weight' AND tp_rev.ID = (SELECT MAX(ID) FROM $table_revisions WHERE ID = tp_rev.ID )  ) AS `weight`,
                 ( SELECT tp_rev.child_val FROM $table_revisions tp_rev WHERE ID = tp_prod.preview AND revs_type = 'products' AND child_key ='preview' AND tp_rev.ID = (SELECT MAX(ID) FROM $table_revisions WHERE ID = tp_rev.ID )  ) AS `preview`,
                 ( SELECT tp_rev.child_val FROM $table_revisions tp_rev WHERE ID = tp_prod.dimension AND revs_type = 'products' AND child_key ='dimension' AND tp_rev.ID = (SELECT MAX(ID) FROM $table_revisions WHERE ID = tp_rev.ID ) ) AS `dimension`,
-                ( SELECT tp_rev.child_val FROM $table_revisions tp_rev WHERE ID = tp_prod.dimension AND revs_type = 'products' AND child_key ='dimension' AND tp_rev.ID = (SELECT MAX(ID) FROM $table_revisions WHERE ID = tp_rev.ID ) ) AS `dimension`,
                 IF  ( ( SELECT tp_rev.child_val FROM $table_revisions tp_rev WHERE ID = tp_prod.`status` AND revs_type = 'products' AND child_key = 'status' AND tp_rev.ID = ( SELECT MAX(ID) FROM $table_revisions WHERE ID = tp_rev.ID )  ) = 1, 'Active', 'Inactive' ) AS `status`,
                 null as discount
             FROM
@@ -67,7 +66,7 @@
                 INNER JOIN $table_revisions tp_rev ON tp_rev.ID = tp_prod.title
                 INNER JOIN $table_categories c ON c.ID = tp_prod.ctid  ";
 
-            // Ternary Condition for isset 
+            // Ternary Condition for isset
             isset($_POST['status']) ? $sts = $_POST['status'] : $sts = NULL  ;
             isset($_POST['stid'])   ? $std = $_POST['stid']   : $std = NULL  ;
             isset($_POST['catid'])  ? $ctd = $_POST['catid']  : $ctd = NULL  ;
@@ -83,7 +82,7 @@
             if($status != NULL){
 
                 $sql .= " WHERE   ( SELECT tp_rev.child_val FROM $table_revisions tp_rev WHERE ID = tp_prod.`status` AND revs_type = 'products' AND child_key = 'status' AND tp_rev.ID = ( SELECT MAX(ID) FROM $table_revisions WHERE ID = tp_rev.ID )  ) = $status";
-                
+
             }
 
             // Category filtering
@@ -100,10 +99,10 @@
             // Store ID filtering
             if ($stid != NULL && $stid != '0' ) {
                 if ($status !== NULL || $catid != '0') {
-                   
+
                     $sql .= " AND tp_prod.stid = $stid ";
                 }else{
-                    
+
                     $sql .= " WHERE tp_prod.stid = $stid ";
 
                 }
@@ -112,10 +111,10 @@
             // product filtering
             if ($pdid != NULL && $pdid != '0' ) {
                 if ($status !== NULL || $catid != '0' ||  $stid != '0') {
-                   
+
                     $sql .= " AND tp_prod.ID = $pdid ";
                 }else{
-                    
+
                     $sql .= " WHERE tp_prod.ID = $pdid ";
 
                 }
@@ -123,18 +122,54 @@
 
             // Uncomment for debugging
             //return $sql;
-            
+
+            $limit = 12;
+
+            if (!isset($_POST['lid'])) {
+                $sql .= " ORDER BY tp_prod.ID DESC ";
+
+            }else{
+
+			    $sql .= " ORDER BY tp_prod.ID DESC LIMIT $limit ";
+
+            }
+
+            if (isset($_POST['lid']) && !empty($_POST['lid'])) {
+
+                $lastid = $_POST['lid'];
+                $offset = 12 + $lastid;
+                $limit = "7 OFFSET ".$offset;
+
+			    $sql .= " ORDER BY tp_prod.ID DESC LIMIT $limit ";
+            }
+
             // Execute query
             $results =  $wpdb->get_results($sql);
-            
+
             foreach ($results as $key => $value) {
-                
-                $value->discount =  $wpdb->get_row("SELECT
-                (SELECT child_val  FROM tp_revisions rev  WHERE child_key = 'discount_name'  AND revs_type = 'products'  AND parent_id = '$value->ID' 	AND ID = ( SELECT max(ID) FROM tp_revisions WHERE child_key = 'discount_name' AND parent_id = '$value->ID' AND revs_type = 'products' ) ) as  `name`,
-                (SELECT child_val  FROM tp_revisions rev  WHERE child_key = 'discount_value'  AND revs_type = 'products'  AND parent_id = '$value->ID' 	AND ID = ( SELECT max(ID) FROM tp_revisions WHERE child_key = 'discount_value' AND parent_id = '$value->ID' AND revs_type = 'products' )) as  `value`, 
+
+                if($value->preview == null || $value->preview == 'None' ){
+                    $value->preview =  TP_PLUGIN_URL . "assets/images/default-product.png" ;
+                }
+
+                $get_discount =  $wpdb->get_row("SELECT
+                (SELECT child_val  FROM tp_revisions rev  WHERE child_key = 'discount_name'  AND revs_type = 'products'  AND parent_id = '$value->ID' 	AND ID = ( SELECT max(ID) FROM tp_revisions WHERE child_key = 'discount_name' AND parent_id = '$value->ID' AND revs_type = 'products' )) as  `name`,
+                (SELECT child_val  FROM tp_revisions rev  WHERE child_key = 'discount_value'  AND revs_type = 'products'  AND parent_id = '$value->ID' 	AND ID = ( SELECT max(ID) FROM tp_revisions WHERE child_key = 'discount_value' AND parent_id = '$value->ID' AND revs_type = 'products' )) as  `value`,
                 (SELECT child_val  FROM tp_revisions rev  WHERE child_key = 'discount_expiry'  AND revs_type = 'products'  AND parent_id = '$value->ID' 	AND ID = ( SELECT max(ID) FROM tp_revisions WHERE child_key = 'discount_expiry' AND parent_id = '$value->ID' AND revs_type = 'products' )) as  `expiry`,
-                IF ( (SELECT child_val  FROM tp_revisions rev  WHERE child_key = 'discount_status'  AND revs_type = 'products'  AND parent_id = '$value->ID' 	AND ID = ( SELECT max(ID) FROM tp_revisions WHERE child_key = 'discount_status' AND parent_id = '$value->ID' AND revs_type = 'products' )) = 1 , 'Active', 'Inactive') as  `status` 
+                IF ( (SELECT child_val  FROM tp_revisions rev  WHERE child_key = 'discount_status'  AND revs_type = 'products'  AND parent_id = '$value->ID' 	AND ID = ( SELECT max(ID) FROM tp_revisions WHERE child_key = 'discount_status' AND parent_id = '$value->ID' AND revs_type = 'products' )) = 1 , 'Active', 'Inactive') as  `status`
                 ");
+                if ($get_discount->name == null) {
+                    $get_discount->name = '';
+                }
+                if ($get_discount->value == null) {
+                    $get_discount->value = '';
+                }
+
+                if ($get_discount->expiry == null) {
+                    $get_discount->expiry = '';
+                }
+
+                $value->discount = $get_discount;
 
             }
 
@@ -159,9 +194,9 @@
             $curl_user['product_id'] = $_POST['pdid'];
             $curl_user['value'] = $_POST['value'];
             $curl_user['expiry'] = $_POST['exp'];
-            
+
             return $curl_user;
 
         }
-        
+
     }

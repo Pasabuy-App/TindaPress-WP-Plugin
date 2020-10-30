@@ -1,7 +1,7 @@
 
 <?php
 	// Exit if accessed directly
-	if ( ! defined( 'ABSPATH' ) ) 
+	if ( ! defined( 'ABSPATH' ) )
 	{
 		exit;
 	}
@@ -27,7 +27,7 @@
                     <form id="edit-app-form">
                         <div class="form-group">
                             <label for="edit_title">Name:</label>
-                            <input readonly type="text" class="form-control" id="edit_title" name="edit_title" placeholder="Public name of this Store.">
+                            <input  type="text" class="form-control" id="edit_title" name="edit_title" placeholder="Public name of this Store.">
                         </div>
                         <div class="form-group">
                             <label for="edit_status">Status:</label><br>
@@ -36,15 +36,26 @@
                                 <option selected="selected" value="0">Inactive</option>
                             </select>
                         </div>
+
+                        <div class="form-group">
+                            <label for="edit_info"> Short Information of Store:</label>
+                            <input  type="text" class="form-control" id="edit_info" name="edit_info" placeholder="Short information of Store.">
+                        </div>
+                        <div class="form-group">
+                            <label  for="edit_long_info"> Long Information of Store:</label>
+                            <textarea class="form-control" id="edit_long_info" name="edit_long_info" placeholder="Short information of Store."rows="4" cols="50">
+                            </textarea>
+                        </div>
                         <div class="form-group">
                             <div class="alert alert-dark tp-center-item" role="alert">
-                                <strong>NOTE:</strong> Before we submit your request a dialog confirmation will appear 
+                                <strong>NOTE:</strong> Before we submit your request a dialog confirmation will appear
                                 to ask for your permission to complete the task.
                             </div>
                         </div>
                         <div class="tp-center-item">
                             <input id="edit_id" type="hidden" value="">
-                            <button id="delete-app-btn" type="submit" class="btn btn-primary"> - UPDATE - </button>
+                            <button id="update-app-btn" type="submit" class="btn btn-primary"> - UPDATE - </button>
+                            <button id="delete-app-btn" type="submit" class="btn btn-danger"> - DELETE / ACTIVATE - </button>
                             <!-- <button id="update-app-btn" type="submit" class="btn btn-primary"> - UPDATE - </button> -->
                         </div>
                         <div id="dialog-confirm-edit" title="Confirmation">

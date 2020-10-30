@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-/** 
+/**
  * @package tindapress-wp-plugin
  * @version 0.1.0
  * This is the primary gateway of all the rest api request.
@@ -74,12 +74,12 @@ class TP_Globals
         if ($store_id == 0) {
             //Check if personnel is part of the store
             $personnels = $wpdb->get_row("SELECT `wpid`, `roid`
-                    FROM `tp_personnels` 
+                    FROM `tp_personnels`
                     WHERE `wpid` = $wpid");
         } else {
             //Check if personnel is part of the store
             $personnels = $wpdb->get_row("SELECT `wpid`, `roid`
-                    FROM `tp_personnels` 
+                    FROM `tp_personnels`
                     WHERE `stid` = $store_id
                     AND `wpid` = $wpid");
         }
@@ -90,9 +90,9 @@ class TP_Globals
 
         $role_id = $personnels->roid;
 
-        //Get all access from that role_id 
+        //Get all access from that role_id
         $get_access = $wpdb->get_results("SELECT rm.access
-                FROM `tp_roles` r 
+                FROM `tp_roles` r
                     LEFT JOIN tp_roles_meta rm ON rm.roid = r.ID
                 WHERE r.id = $role_id");
 
@@ -112,7 +112,7 @@ class TP_Globals
         $result = $wpdb->get_row("SELECT
                 (SELECT tzone_name FROM dv_geo_timezone WHERE country_code =   (SELECT country_code FROM dv_geo_countries WHERE ID =  (SELECT child_val FROM dv_revisions WHERE child_key = 'country' AND ID = dv_address.country  ))) as time_zone
             FROM
-                dv_address 
+                dv_address
             WHERE
                 wpid = $wpid");
 

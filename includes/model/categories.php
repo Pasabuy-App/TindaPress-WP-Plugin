@@ -1,7 +1,7 @@
 
 <?php
 	// Exit if accessed directly
-	if ( ! defined( 'ABSPATH' ) ) 
+	if ( ! defined( 'ABSPATH' ) )
 	{
 		exit;
 	}
@@ -13,7 +13,7 @@
 ?>
 
 <script type="text/javascript">
-    jQuery(document).ready( function ( $ ) 
+    jQuery(document).ready( function ( $ )
     {
         <?php if(isset($_GET['status'])) { ?>
             $("#set_status").val('<?php echo (int)$_GET['status'] > 2 ? 0 : $_GET['status']; ?>');
@@ -25,18 +25,18 @@
 
         $("#filter").click(() => {
             window.location.href = '<?php echo TP_Globals::wp_admin_url().TP_MENU_CATEGORY."&type="; ?>' + $('#set_type').val() + '&status=' + $('#set_status').val();
-        }); 
-        
+        });
+
         //THIS ARE ALL THE PUBLIC VARIABLES.
         var activeTimeout = 'undefined';
 
-        //#region Page = APPLICATION LIST 
+        //#region Page = APPLICATION LIST
             //GET THE REFERENCE OF THE CURRENT PAGE DATTABLES.
             var categoryTables = $('#categories-datatables');
 
             //SET INTERVAL DRAW UPDATE.
             loadingAppList( categoryTables );
-           
+
             //LOAD APPLIST WITH AJAX.
             var tptables = 'undefined';
 
@@ -65,10 +65,10 @@
                             postParam.type = <?= (int)$_GET['type'] ?>;
                         <?php } ?>
                     var postUrl = '<?php echo TP_UIHOST . "/wp-json/tindapress/v1/category/list"; ?>';
-                    
+
                     $.ajax({
                         dataType: 'json',
-                        type: 'POST', 
+                        type: 'POST',
                         data: postParam,
                         url: postUrl,
                         success : function( data )
@@ -84,7 +84,7 @@
                                 $('#stores-notification').addClass('tp-display-hide');
                             }
                         },
-                        error : function(jqXHR, textStatus, errorThrown) 
+                        error : function(jqXHR, textStatus, errorThrown)
                         {
                             //$('#apps-notification').text = "";
                             console.log("" + JSON.stringify(jqXHR) + " :: " + textStatus + " :: " + errorThrown);
@@ -107,8 +107,8 @@
                             { "sTitle": "STORES",   "mData": "total" },
                         <?php } else if( (int)$_GET['type'] == 2 ) { ?>
                             { "sTitle": "PRODUCTS",   "mData": "total" },
-                        <?php } ?> 
-                    <?php } ?> 
+                        <?php } ?>
+                    <?php } ?>
                     { "sTitle": "STATUS",   "mData": "status" },
                     {"sTitle": "Action", "mRender": function(data, type, item)
                         {
@@ -116,21 +116,21 @@
                                 if(item.types == 'store') {
                                         buttons += '<button type="button" class="btn btn-success btn-sm"' +
                                         ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_STORE."&catid="; ?>' + item.ID + '&catname=' +item.title + '`;" ' +
-                                        ' title="Click this to navigate to variant list of this project."' + 
+                                        ' title="Click this to navigate to variant list of this project."' +
                                         ' >&nbsp&nbsp&nbsp' + item.types.toUpperCase()+'S&nbsp&nbsp&nbsp</button>';
-                                } if(item.types == 'product') { 
+                                } if(item.types == 'product') {
                                     <?php if( isset($_GET['stid']) && isset($_GET['stname']) ) { ?>
                                         buttons += '<button type="button" class="btn btn-success btn-sm"' +
-                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT; ?>' + 
-                                        '&stid=' + '<?= $_GET['stid'] ?>' + '&stname=' +'<?= $_GET['stname'] ?>' + 
+                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT; ?>' +
+                                        '&stid=' + '<?= $_GET['stid'] ?>' + '&stname=' +'<?= $_GET['stname'] ?>' +
                                         '&catid=' +item.ID+ '&catname=' +item.title+ '`;" ' +
-                                        ' title="Click this to navigate to variant list of this project."' + 
+                                        ' title="Click this to navigate to variant list of this project."' +
                                         ' >' + item.types.toUpperCase()+'S</button>';
                                     <?php } else { ?>
                                         buttons += '<button type="button" class="btn btn-success btn-sm"' +
-                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT."&catid="; ?>' + item.ID + 
+                                        ' onclick="window.location.href = `<?php echo TP_Globals::wp_admin_url().TP_MENU_PRODUCT."&catid="; ?>' + item.ID +
                                         '&catname=' + item.title + '`;" ' +
-                                        ' title="Click this to navigate to variant list of this project."' + 
+                                        ' title="Click this to navigate to variant list of this project."' +
                                         ' >' + item.types.toUpperCase()+'S</button>';
                                     <?php } ?>
                                 } else {
@@ -188,7 +188,7 @@
                             action: function ( e, dt, node, config ) {
                                 loadingAppList( categoryTables );
                             }
-                        }, //'copy', 'csv', 'excel', 'pdf', 
+                        }, //'copy', 'csv', 'excel', 'pdf',
                         'print',
                     ],
                     responsive: true,
@@ -214,7 +214,7 @@
                         tptables.button( 1 ).disable();
                         tptables.button( 2 ).disable();
                     } );
-            }            
+            }
 
             //IMPLEMENT DATATABLES RESPONSIVENESS.
             if(typeof tptables !== 'undefined' && typeof tptables.on === 'function')
@@ -223,7 +223,7 @@
                     var count = columns.reduce( function (a,b) {
                         return b === false ? a+1 : a;
                     }, 0 );
-                
+
                     console.log( count +' column(s) are hidden' );
                 } );
             }
@@ -246,13 +246,13 @@
                         );
                     },
                     buttons: {
-                        "Confirm": function() 
+                        "Confirm": function()
                         {
                             confirmCreateProcess();
                             $('#jquery-overlay').addClass('tp-display-hide');
                             $( this ).dialog( "close" );
                         },
-                        Cancel: function() 
+                        Cancel: function()
                         {
                             $('#jquery-overlay').addClass('tp-display-hide');
                             $( this ).dialog( "close" );
@@ -281,7 +281,7 @@
                 // This will be handled by create-app.php.
                 $.ajax({
                     dataType: 'json',
-                    type: 'POST', 
+                    type: 'POST',
                     data: postParam,
                     url: '<?php echo TP_UIHOST . "/wp-json/tindapress/v1/category/insert"; ?>',
                     success : function( data )
@@ -358,20 +358,20 @@
                         );
                     },
                     buttons: {
-                    "Confirm": function() 
+                    "Confirm": function()
                     {
                         confirmEditProcess( clickedBtnId );
                         $('#jquery-overlay').addClass('tp-display-hide');
                         $( this ).dialog( "close" );
                     },
-                    Cancel: function() 
+                    Cancel: function()
                     {
                         $('#jquery-overlay').addClass('tp-display-hide');
                         $( this ).dialog( "close" );
                     }
                     }
                 });
-                
+
             });
 
             function confirmEditProcess( clickedBtnId )
@@ -385,7 +385,7 @@
                     postParam.snky = "<?php echo wp_get_session_token(); ?>";
                     postParam.catid = $('#edit_id').val();
                 var postUrl = '';
-                
+
                 if( clickedBtnId === 'delete-app-btn' ) {
                     postUrl = '<?= TP_UIHOST . "/wp-json/tindapress/v1/category/delete" ?>';
                 } else {
@@ -393,11 +393,11 @@
                     postParam.title = $('#edit_title').val();
                     postParam.info = $('#edit_info').val();
                 }
-              
+
                 // This will be handled by create-app.php.
                 $.ajax({
                     dataType: 'json',
-                    type: 'POST', 
+                    type: 'POST',
                     data: postParam,
                     url: postUrl,
                     success : function( data )
@@ -409,7 +409,7 @@
                             $('#delete-app-btn').removeClass('disabled');
                             $('#update-app-btn').removeClass('disabled');
                         }
-                        
+
                         $('#DFAMessage').addClass('alert-'+data.status);
                         $('#DFAMessage').removeClass('tp-display-hide');
                         $('#DFAMcontent').text( data.message );
@@ -443,12 +443,12 @@
 
             // LISTEN FOR MODAL SHOW AND ATTACHED ID.
             $('#EditAppOption').on('show.bs.modal', function(e) {
-                $('#edit_title').val( activeItem.title ); 
-                $('#edit_info').val( activeItem.info ); 
+                $('#edit_title').val( activeItem.title );
+                $('#edit_info').val( activeItem.info );
 
                 if(activeItem.status == 'Inactive') {
                     $('#delete-app-btn').addClass('disabled');
-                }   
+                }
 
                 $('#update-app-btn').removeClass('disabled');
             });

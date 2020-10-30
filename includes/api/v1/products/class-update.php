@@ -14,14 +14,14 @@
 
     class TP_Product_Update {
 
-        public static function listen(){
+        public static function listen($request){
             return rest_ensure_response( 
-                TP_Product_Update:: update_product()
+                TP_Product_Update:: update_product($request)
             );
         }
 
         //QA done 2020-08-12 11:01 am
-        public static function update_product(){
+        public static function update_product($request){
             
             // 2nd Initial QA 2020-08-24 6:49 PM - Miguel
             global $wpdb;
@@ -83,14 +83,14 @@
            }
 
             // Step 5: Check if user has roles_access of can_activate_store or either contributor or editor
-            $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_update_products' );
+            // $permission = TP_Globals::verify_role($_POST['wpid'], '0', 'can_update_products' );
             
-            if ($permission == true) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Current user has no access in editing products.",
-                );
-            }
+            // if ($permission == true) {
+            //     return array(
+            //         "status" => "failed",
+            //         "message" => "Current user has no access in editing products.",
+            //     );
+            // }
             
             // variables for query    
             $later      = TP_Globals::date_stamp();
@@ -163,14 +163,39 @@
                 }
             }
 
-            $data = array('title' => $_POST["title"],
-                          'short_info' => $_POST["short_info"],
-                          'long_info' => $_POST["long_info"],
-                          'sku' => $_POST["sku"],
-                          'price' => $_POST["price"],
-                          'weight' => $_POST["weight"],
-                          'dimension' => $_POST["dimension"],
-            );
+            $product_prev = "None";
+            $files = $request->get_file_params();
+
+            if ( isset($files['img'])) {
+				$results = DV_Globals::upload_image( $request,$files ); 
+                $product_prev = $results['data']; 
+                if (!$results){
+                    return array(
+                        "status" => "failed",
+                        "message" => "An error occured while submitting data to database.");
+                }
+            }
+            if ($product_prev === "None"){
+                $data = array('title' => $_POST["title"],
+                              'short_info' => $_POST["short_info"],
+                              'long_info' => $_POST["long_info"],
+                              'sku' => $_POST["sku"],
+                              'price' => $_POST["price"],
+                              'weight' => $_POST["weight"],
+                              'dimension' => $_POST["dimension"],
+                );
+            }
+            else{
+                $data = array('title' => $_POST["title"],
+                              'preview' => $product_prev,
+                              'short_info' => $_POST["short_info"],
+                              'long_info' => $_POST["long_info"],
+                              'sku' => $_POST["sku"],
+                              'price' => $_POST["price"],
+                              'weight' => $_POST["weight"],
+                              'dimension' => $_POST["dimension"],
+                );
+            }
 
             $where = array('id' => $user['pdid']); 
 
@@ -202,7 +227,6 @@
                 $cur_user['price']      = $_POST["price"];
                 $cur_user['weight']     = $_POST["weight"];
                 $cur_user['dimension']  = $_POST["dimension"];
-                $cur_user['preview']    = $_POST["preview"];
   
                 return  $cur_user;
         }

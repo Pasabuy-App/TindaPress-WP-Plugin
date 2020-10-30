@@ -44,7 +44,7 @@
                         <div class="form-group">
                             <label for="new_base">Base:</label><br>
                             <select class="form-control tp-max-width" id="new_base" name="new_base">
-                                <option selected="selected" value="0">Yes</option>
+                                <option selected="selected" value="1">Yes</option>
                                 <option value="0">No</option>
                             </select>
                         </div>
