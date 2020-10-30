@@ -37,6 +37,7 @@
             global $wpdb;
             $tbl_product = TP_PRODUCT_v2;
             $tbl_stores = TP_STORES_v2;
+            $tbl_product_rates = TP_PRODUCT_RATING_v2;
             $tbl_product_category = TP_PRODUCT_CATEGORY_v2;
 
             // Step 1: Check if prerequisites plugin are missing
@@ -67,12 +68,13 @@
                 IF(avatar is null, '', avatar) as avatar,
                 IF(banner is null, '', banner) as banner,
                 price,
+                ( SELECT  AVG(rates) as rates FROM $tbl_product_rates WHERE pdid = p.hsid ) as rates,
                 discount,
                 `status`,
                 inventory,
                 date_created
             FROM
-                $tbl_product
+                $tbl_product p
             WHERE
                 id IN ( SELECT MAX( id ) FROM $tbl_product GROUP BY title ) ";
 
