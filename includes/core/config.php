@@ -25,7 +25,6 @@
 			define('TP_STORES_VIEW', TP_PREFIX.'stores_view');
 			define('TP_PRODUCTS_VIEW', TP_PREFIX.'products_view');
 
-
 			//Categories config
 			define('TP_CATEGORIES_TABLE', TP_PREFIX.'categories');
 			define('TP_CATEGORIES_GROUP_TABLE', TP_PREFIX.'categories_group');
