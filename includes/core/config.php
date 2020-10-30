@@ -105,8 +105,9 @@
 		// Config declaration for version two
 			define('TP_PREFIX_v2', 'tp_v2_');
 
-			define('TP_STORES_v2', TP_PREFIX_v2.'stores_categories');
-			define('TP_STORES_FIELDS_v2', ' `title`, `info`, `avatar`, `parent`, `created_by`');
+			define('TP_STORES_CATEGORIES_v2', TP_PREFIX_v2.'stores_categories');
+			define('TP_STORES_CATEGORIES_FIELDS_v2', ' `title`, `info`, `avatar`, `created_by`');
+
 
 		// End
 

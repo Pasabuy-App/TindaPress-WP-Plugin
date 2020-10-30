@@ -40,7 +40,7 @@
 		// End
 
 		// Table Declaration for Version two
-			$tbl_stores_category_v2 = TP_STORES_v2;
+			$tbl_stores_category_v2 = TP_STORES_CATEGORIES_v2;
 		// End
 		$wpdb->query("START TRANSACTION");
 
@@ -373,17 +373,34 @@
 		// END
 
 		// Table query for Version two
-			//Database table creation for roles
+			//Database table creation for store category
 			if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_stores_category_v2'" ) != $tbl_stores_category_v2) {
 				$sql = "CREATE TABLE `".$tbl_stores_category_v2."` (";
 					$sql .= " `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
-					$sql .= " `hsid` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
-					$sql .= " `title` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Title of this store categories.', ";
-					$sql .= " `info` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Info of this store categories.', ";
-					$sql .= " `avatar` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Logo of this store categories.', ";
-					$sql .= " `parent` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Parent of this store category.', ";
-					$sql .= " `status` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Status of this store categories.', ";
-					$sql .= " `created_by` bigint(20) NOT NULL DEFAULT 0 COMMENT 'The one who created this store categories.', ";
+					$sql .= " `hsid` varchar(255) NOT NULL COMMENT 'This column is used for table relation ship.', ";
+					$sql .= " `title` varchar(100) NOT NULL COMMENT 'Title of this store categories.', ";
+					$sql .= " `info` varchar(150) NOT NULL COMMENT 'Info of this store categories.', ";
+					$sql .= " `avatar` varchar(255) NOT NULL COMMENT 'Logo of this store categories.', ";
+					$sql .= " `parent` bigint(20) NOT NULL COMMENT 'Parent of this store category.', ";
+					$sql .= " `status` enum('active', 'inactive') NOT NULL  COMMENT 'Status of this store categories.', ";
+					$sql .= " `created_by` bigint(20) NOT NULL  COMMENT 'The one who created this store categories.', ";
+					$sql .= " `date_created` datetime NULL DEFAULT current_timestamp() COMMENT 'Date created this store categories.', ";
+					$sql .= "PRIMARY KEY (`ID`) ";
+					$sql .= ") ENGINE = InnoDB; ";
+				$result = $wpdb->get_results($sql);
+			}
+
+			//Database table creation for store
+			if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_stores_category_v2'" ) != $tbl_stores_category_v2) {
+				$sql = "CREATE TABLE `".$tbl_stores_category_v2."` (";
+					$sql .= " `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+					$sql .= " `hsid` varchar(255) NOT NULL COMMENT 'This column is used for table relation ship.', ";
+					$sql .= " `title` varchar(100) NOT NULL COMMENT 'Title of this store categories.', ";
+					$sql .= " `info` varchar(150) NOT NULL COMMENT 'Info of this store categories.', ";
+					$sql .= " `avatar` varchar(255) NOT NULL COMMENT 'Logo of this store categories.', ";
+					$sql .= " `parent` bigint(20) NOT NULL COMMENT 'Parent of this store category.', ";
+					$sql .= " `status` enum('active', 'inactive') NOT NULL  COMMENT 'Status of this store categories.', ";
+					$sql .= " `created_by` bigint(20) NOT NULL  COMMENT 'The one who created this store categories.', ";
 					$sql .= " `date_created` datetime NULL DEFAULT current_timestamp() COMMENT 'Date created this store categories.', ";
 					$sql .= "PRIMARY KEY (`ID`) ";
 					$sql .= ") ENGINE = InnoDB; ";
