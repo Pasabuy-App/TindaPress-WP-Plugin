@@ -10,33 +10,34 @@
         * @version 0.2.0
 	*/
 
-    class TP_Store_Category_Insert_v2 {
+    class TP_Products_Category_Insert_v2 {
 
         //REST API Call
-        public static function listen($request){
+        public static function listen(){
 
             return rest_ensure_response(
-                self::listen_open($request)
+                self::listen_open()
             );
         }
 
         public static function catch_post(){
             $curl_user = array();
+
+            $curl_user['stid'] = $_POST["stid"];
             $curl_user['title'] = $_POST["title"];
             $curl_user['info'] = $_POST["info"];
             $curl_user['wpid'] = $_POST["wpid"];
-            isset($_POST['groups']) && !empty($_POST['groups'])? $curl_user['groups'] =  $_POST['groups'] :  $curl_user['groups'] = null ;
+
             return $curl_user;
         }
 
-        public static function listen_open($request){
+        public static function listen_open(){
 
             global $wpdb;
-            $table_store_categories = TP_STORES_CATEGORIES_v2;
-            $table_store_categories_field = TP_STORES_CATEGORIES_FIELDS_v2;
-            $table_store_categories_groups = TP_STORES_CATEGORY_GROUPS_v2;
+            $tbl_product_category_v2 = TP_PRODUCT_CATEGORY_v2;
+            $tbl_product_category_fields_v2 = TP_PRODUCT_CATEGORY_FIELDS_v2;
 
-            // Step 1: Check if prerequisites plugin are missing
+             // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
@@ -53,7 +54,7 @@
                 );
             }
 
-            if (!isset($_POST['title']) || !isset($_POST['info']) ) {
+            if (!isset($_POST['title']) || !isset($_POST['stid']) || !isset($_POST['info'])  ) {
                 return array(
                     "status" => "unknwon",
                     "message" => "Please contact your administrator. Request unknown!",
@@ -62,7 +63,7 @@
 
             $user = self::catch_post();
 
-            $validate = TP_Globals_v2::check_listener($user);
+            $validate = HP_Globals_v2::check_listener($user);
             if ($validate !== true) {
                 return array(
                     "status" => "failed",
@@ -70,19 +71,7 @@
                 );
             }
 
-            $files = $request->get_file_params();
-
-             // Check of category group exits
-                $check_category_groups = $wpdb->get_row("SELECT `status` FROM $table_store_categories_groups WHERE hsid = '{$user["groups"]}' AND `status` = 'active' ");
-                if (empty($check_category_groups)) {
-                    return array(
-                        "status" => "failed",
-                        "message" => "This Store category group does not exists.",
-                    );
-                }
-            // End
-
-            $check_category = $wpdb->get_row("SELECT `status` FROM $table_store_categories WHERE title LIKE '%{$user["title"]}%' AND `status` = 'active' AND groups = '{$user["groups"]}' ");
+            $check_category = $wpdb->get_row("SELECT `status` FROM $tbl_product_category_v2 WHERE title LIKE '%{$user["title"]}%' AND `status` = 'active' AND stid = '{$user["stid"]}' ");
             if (!empty($check_category)) {
                 return array(
                     "status" => "failed",
@@ -90,17 +79,14 @@
                 );
             }
 
-            $result = DV_Globals::upload_image( $request, $files ); // upload image
-
-            $import_data = $wpdb->query("INSERT INTO
-                $table_store_categories
-                    ($table_store_categories_field)
-                VALUES
-                ( '{$user["title"]}', '{$user["info"]}', '{$result["groups"]}',  '{$result["data"]}', '{$user["wpid"]}') ");
+           $import_data = $wpdb->query("INSERT INTO
+                $tbl_product_category_v2
+                    ($tbl_product_category_fields_v2)
+                values
+                    ('{$user["stid"]}', '{$user["title"]}', '{$user["info"]}', '{$user["wpid"]}' )");
             $import_data_id = $wpdb->insert_id;
 
-            $hsid = TP_Globals_v2::generating_pubkey($import_data_id, $table_store_categories, 'hsid', false, 64);
-
+            $hsid = TP_Globals_v2::generating_pubkey($import_data_id, $tbl_product_category_v2, 'hsid', false, 64);
 
             if ($import_data < 1) {
                 $wpdb->query("ROLLBACK");
@@ -108,14 +94,12 @@
                     "status" => "failed",
                     "message" => "An error occured while submitting data to server"
                 );
-
             }else{
-                $wpdb->query("ROLLBACK");
+                $wpdb->query("COMMIT");
                 return array(
                     "status" => "success",
                     "message" => "Data has been added successfully"
                 );
-
             }
         }
     }
