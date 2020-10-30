@@ -403,7 +403,8 @@
                 $wpdb->query("COMMIT");
                 return array(
                     "status" => "success",
-                    "message" => $store_id,
+                    "message" => "Data has been added successfully",
+                    "data" => $store_id,
                 );
             }
         }
