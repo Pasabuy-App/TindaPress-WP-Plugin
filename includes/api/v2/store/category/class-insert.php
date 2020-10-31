@@ -25,7 +25,6 @@
             $curl_user['title'] = $_POST["title"];
             $curl_user['info'] = $_POST["info"];
             $curl_user['wpid'] = $_POST["wpid"];
-            isset($_POST['groups']) && !empty($_POST['groups'])? $curl_user['groups'] =  $_POST['groups'] :  $curl_user['groups'] = null ;
             return $curl_user;
         }
 
@@ -35,6 +34,7 @@
             $table_store_categories = TP_STORES_CATEGORIES_v2;
             $table_store_categories_field = TP_STORES_CATEGORIES_FIELDS_v2;
             $table_store_categories_groups = TP_STORES_CATEGORY_GROUPS_v2;
+            $files = $request->get_file_params();
 
             // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -46,12 +46,12 @@
             }
 
             // Step 2: Validate user
-            if (DV_Verification::is_verified() == false) {
-                return array(
-                    "status" => "unknown",
-                    "message" => "Please contact your administrator. Verification Issues!",
-                );
-            }
+            // if (DV_Verification::is_verified() == false) {
+            //     return array(
+            //         "status" => "unknown",
+            //         "message" => "Please contact your administrator. Verification Issues!",
+            //     );
+            // }
 
             if (!isset($_POST['title']) || !isset($_POST['info']) ) {
                 return array(
@@ -62,6 +62,13 @@
 
             $user = self::catch_post();
 
+            if (empty($files['img']['name'])) {
+                return array(
+                    "status" => "failed",
+                    "message" => "Category avatar is required"
+                );
+            }
+
             $validate = TP_Globals_v2::check_listener($user);
             if ($validate !== true) {
                 return array(
@@ -69,17 +76,18 @@
                     "message" => "Required fileds cannot be empty "."'".ucfirst($validate)."'"."."
                 );
             }
+            isset($_POST['groups']) && !empty($_POST['groups'])? $user['groups'] =  $_POST['groups'] :  $user['groups'] = null ;
 
-            $files = $request->get_file_params();
-
-             // Check of category group exits
-                $check_category_groups = $wpdb->get_row("SELECT `status` FROM $table_store_categories_groups WHERE hsid = '{$user["groups"]}' AND `status` = 'active' ");
-                if (empty($check_category_groups)) {
-                    return array(
-                        "status" => "failed",
-                        "message" => "This Store category group does not exists.",
-                    );
-                }
+            // Check of category group exits
+               if ($user['groups'] != null) {
+                    $check_category_groups = $wpdb->get_row("SELECT `status` FROM $table_store_categories_groups WHERE hsid = '{$user["groups"]}' AND `status` = 'active' ");
+                    if (empty($check_category_groups)) {
+                        return array(
+                            "status" => "failed",
+                            "message" => "This Store category group does not exists.",
+                        );
+                    }
+               }
             // End
 
             $check_category = $wpdb->get_row("SELECT `status` FROM $table_store_categories WHERE title LIKE '%{$user["title"]}%' AND `status` = 'active' AND groups = '{$user["groups"]}' ");
@@ -96,7 +104,8 @@
                 $table_store_categories
                     ($table_store_categories_field)
                 VALUES
-                ( '{$user["title"]}', '{$user["info"]}', '{$result["groups"]}',  '{$result["data"]}', '{$user["wpid"]}') ");
+                #       `title`, `info`, `groups` `avatar`, `created_by`
+                ( '{$user["title"]}', '{$user["info"]}', '{$user["groups"]}',  '{$result["data"]}', '{$user["wpid"]}' ) ");
             $import_data_id = $wpdb->insert_id;
 
             $hsid = TP_Globals_v2::generating_pubkey($import_data_id, $table_store_categories, 'hsid', false, 64);

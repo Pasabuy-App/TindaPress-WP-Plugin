@@ -89,7 +89,7 @@
             if (empty($check_store)) {
                 return array(
                     "status" => "failed",
-                    "message" => "This Store does not exists. ",
+                    "message" => "This Store does not exists.",
                 );
             }
             // End

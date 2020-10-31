@@ -120,6 +120,7 @@
 
             // Documents
                 require plugin_dir_path(__FILE__) . '/v2/store/documents/doc-types/class-insert.php';
+                require plugin_dir_path(__FILE__) . '/v2/store/documents/class-listing.php';
 
             // Rates
                 require plugin_dir_path(__FILE__) . '/v2/store/rates/class-insert.php';
@@ -128,6 +129,7 @@
                     require plugin_dir_path(__FILE__) . '/v2/store/featured/groups/class-insert.php';
 
                 require plugin_dir_path(__FILE__) . '/v2/store/featured/class-insert.php';
+                require plugin_dir_path(__FILE__) . '/v2/store/featured/class-listing.php';
 
             require plugin_dir_path(__FILE__) . '/v2/store/class-insert.php';
             require plugin_dir_path(__FILE__) . '/v2/store/class-listing.php';
@@ -161,7 +163,6 @@
 	// Init check if USocketNet successfully request from wapi.
     function tindapress_route()
     {
-
             register_rest_route( 'tindapress/v1/products/wishlist', 'insert', array(
                 'methods' => 'POST',
                 'callback' => array('TP_Product_Wishlist','listen'),
@@ -615,6 +616,11 @@
                                 'callback' => array('TP_Store_Doc_type_Insert_v2','listen'),
                             ));
 
+                            register_rest_route( 'tindapress/v2/store/document', 'list', array(
+                                'methods' => 'POST',
+                                'callback' => array('TP_Store_Lisitng_Docs_v2','listen'),
+                            ));
+
                         // Rates
                             register_rest_route( 'tindapress/v2/store/rates', 'insert', array(
                                 'methods' => 'POST',
@@ -622,16 +628,23 @@
                             ));
                         // Featured
 
+                            register_rest_route( 'tindapress/v2/store/featured', 'list', array(
+                                'methods' => 'POST',
+                                'callback' => array('TP_Featured_Store_Listing_v2','listen'),
+                            ));
+
+                            register_rest_route( 'tindapress/v2/store/featured', 'insert', array(
+                                'methods' => 'POST',
+                                'callback' => array('TP_Featured_Store_Insert_v2','listen'),
+                            ));
+
                             // Groups
                                 register_rest_route( 'tindapress/v2/store/featured/groups', 'insert', array(
                                     'methods' => 'POST',
                                     'callback' => array('TP_Featured_Store_Groups_Insert_v2','listen'),
                                 ));
 
-                                register_rest_route( 'tindapress/v2/store/featured', 'insert', array(
-                                    'methods' => 'POST',
-                                    'callback' => array('TP_Featured_Store_Insert_v2','listen'),
-                                ));
+
 
                 // Products rest api's
                     register_rest_route( 'tindapress/v2/product', 'insert', array(

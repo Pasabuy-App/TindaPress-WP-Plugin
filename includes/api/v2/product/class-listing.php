@@ -23,6 +23,7 @@
         public static function catch_post(){
             $curl_user = array();
 
+            isset($_POST['stid']) && !empty($_POST['stid'])? $curl_user['stid'] =  $_POST['stid'] :  $curl_user['stid'] = null ;
             isset($_POST['ctid']) && !empty($_POST['ctid'])? $curl_user['ctid'] =  $_POST['ctid'] :  $curl_user['ctid'] = null ;
             isset($_POST['title']) && !empty($_POST['title'])? $curl_user['title'] =  $_POST['title'] :  $curl_user['title'] = null ;
             isset($_POST['ID']) && !empty($_POST['ID'])? $curl_user['ID'] =  $_POST['ID'] :  $curl_user['ID'] = null ;
@@ -89,6 +90,10 @@
 
             if ($user["ID"] != null) {
                 $sql .= " AND hsid = '{$user["ID"]}' ";
+            }
+
+            if ($user["stid"] != null) {
+                $sql .= " AND stid = '{$user["stid"]}' ";
             }
 
             if ($user["inventory"] != null) {
