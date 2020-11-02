@@ -79,7 +79,6 @@
             WHERE
                 id IN ( SELECT MAX( id ) FROM $tbl_product GROUP BY title ) ";
 
-
             if($user["ctid"] != null){
                 $sql .= " AND pcid = '{$user["ctid"]}' ";
             }
@@ -122,7 +121,7 @@
 
             return array(
                 "status" => "success",
-                "message" => $data
+                "data" => $data
             );
         }
     }

@@ -146,6 +146,7 @@
                     require plugin_dir_path(__FILE__) . '/v2/product/category/class-insert.php';
                     require plugin_dir_path(__FILE__) . '/v2/product/category/class-listing.php';
                     require plugin_dir_path(__FILE__) . '/v2/product/category/class-update.php';
+                    require plugin_dir_path(__FILE__) . '/v2/product/category/class-listing-with-product.php';
                 // Variants
                     require plugin_dir_path(__FILE__) . '/v2/product/variants/class-insert.php';
                     require plugin_dir_path(__FILE__) . '/v2/product/variants/class-listing.php';
@@ -681,6 +682,11 @@
                         register_rest_route( 'tindapress/v2/product/category', 'update', array(
                             'methods' => 'POST',
                             'callback' => array('TP_Product_Category_Update_v2','listen'),
+                        ));
+
+                        register_rest_route( 'tindapress/v2/product/category/list', 'product', array(
+                            'methods' => 'POST',
+                            'callback' => array('TP_Product_Category_Listing_Product_v2','listen'),
                         ));
 
                     // Variants

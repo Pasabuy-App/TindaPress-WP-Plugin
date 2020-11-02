@@ -10,7 +10,7 @@
         * @version 0.2.0
 	*/
 
-    class TP_Product_Category_Listing_v2 {
+    class TP_Product_Category_Listing_Product_v2 {
 
         //REST API Call
         public static function listen($request){
@@ -35,6 +35,7 @@
 
             global $wpdb;
             $tbl_product_category_v2 = TP_PRODUCT_CATEGORY_v2;
+            $tbl_product = TP_PRODUCT_v2;
 
             // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -46,12 +47,12 @@
             }
 
             // Step 2: Validate user
-            if (DV_Verification::is_verified() == false) {
-                return array(
-                    "status" => "unknown",
-                    "message" => "Please contact your administrator. Verification Issues!",
-                );
-            }
+            // if (DV_Verification::is_verified() == false) {
+            //     return array(
+            //         "status" => "unknown",
+            //         "message" => "Please contact your administrator. Verification Issues!",
+            //     );
+            // }
 
             $user = self::catch_post();
 
@@ -85,6 +86,9 @@
 
             $data = $wpdb->get_results($sql);
 
+            foreach ($data as $key => $value) {
+                $value->products = $wpdb->get_results("SELECT * FROM $tbl_product WHERE pcid = '$value->ID' ");
+            }
             return array(
                 "status" => "success",
                 "data" => $data

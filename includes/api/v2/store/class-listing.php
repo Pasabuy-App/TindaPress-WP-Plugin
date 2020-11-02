@@ -85,7 +85,7 @@
                 id IN ( SELECT MAX( id ) FROM $tbl_store GROUP BY title ) ";
 
             if($user["stid"] != null){
-                $sql .= " WHERE hsid = '{$user["stid"]}' ";
+                $sql .= " AND hsid = '{$user["stid"]}' ";
             }
 
             if($user["title"] != null){
@@ -107,16 +107,16 @@
 
                 switch ($user['type']) {
                     case 'robinson':
-                        $sql .= " AND scid = (SELECT hsid FROM $tbl_store_category WHERE groups =  (SELECT hsid FROM $tbl_store_category_groups WHERE title LIKE  '%robinson%' ) )";
+                        $sql .= " AND scid IN (SELECT hsid FROM $tbl_store_category WHERE groups =  (SELECT hsid FROM $tbl_store_category_groups WHERE title LIKE  '%robinson%' ) )";
                         break;
                     case 'food/drinks':
-                        $sql .= " AND scid = (SELECT hsid FROM $tbl_store_category WHERE groups =  (SELECT hsid FROM $tbl_store_category_groups WHERE title LIKE  '%food/drinks%' ) )";
+                        $sql .= " AND scid IN (SELECT hsid FROM $tbl_store_category WHERE groups =  (SELECT hsid FROM $tbl_store_category_groups WHERE title LIKE  '%food/drinks%' ) )";
                         break;
                     case 'market':
-                        $sql .= " AND scid = (SELECT hsid FROM $tbl_store_category WHERE groups =  (SELECT hsid FROM $tbl_store_category_groups WHERE title LIKE  '%market%' ) )";
+                        $sql .= " AND scid IN (SELECT hsid FROM $tbl_store_category WHERE groups =  (SELECT hsid FROM $tbl_store_category_groups WHERE title LIKE  '%market%' ) )";
                         break;
                     case 'pasamall':
-                        $sql .= " AND scid = (SELECT hsid FROM $tbl_store_category WHERE groups =  (SELECT hsid FROM $tbl_store_category_groups WHERE title LIKE  '%pasamall%' ) )";
+                        $sql .= " AND scid IN (SELECT hsid FROM $tbl_store_category WHERE groups =  (SELECT hsid FROM $tbl_store_category_groups WHERE title LIKE  '%pasamall%' ) )";
                         break;
                 }
             }

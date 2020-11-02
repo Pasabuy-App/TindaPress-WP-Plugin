@@ -27,7 +27,17 @@
             $tbl_store_categories = TP_STORES_CATEGORIES_v2;
             $tbl_product_categories = TP_PRODUCT_CATEGORY_v2;
 
-            $files = file_get_contents("C:/Users/migue/OneDrive/Desktop/final_variant_view.json");
+
+            $smp =0 ;
+            $_store = $wpdb->get_results("SELECT * FROM $tbl_stores");
+            foreach ($_store as $key => $value) {
+                $hsid = TP_Globals_v2::generating_pubkey($value->ID, $tbl_stores, 'hsid', false, 64);
+                $smp++;
+            }
+
+            return $smp;
+
+        /*     $files = file_get_contents("C:/Users/migue/OneDrive/Desktop/final_variant_option_view.json");
             $json_a = json_decode($files, true);
             $store = array();
             $product = array();
@@ -41,78 +51,118 @@
 
             foreach ($json_a['RECORDS'] as $key => $value) {
 
-                $get_product = $wpdb->get_row("SELECT hsid FROM $tbl_product WHERE ID = '{$value["pdid"]}' ");
-                $smp ++;
 
-                $value["status"] = lcfirst($value["preview"]);
-                $name = esc_sql($value["name"]);
+                $get_parent_variants = $wpdb->get_row("SELECT hsid, pdid, created_by FROM tp_v2_product_variants WHERE ID = '{$value["parent_id"]}' ");
+                $smp ++;
+                if (empty($get_parent_variants)) {
+                    return false;
+                }
+
+                $value["status"] = lcfirst($value["status"]);
+                $value["info"] = esc_sql($value["info"]);
+                $value["key"] = esc_sql($value["key"]);
+                $key = esc_sql($value["key"]);
 
                 $import_data = $wpdb->query("INSERT INTO
                 tp_v2_product_variants
-                    (`created_by`, `date_created`, `title`,`info`, `status`, `banner`, `price`, `discount`, `created_by`, `status`, `date_created`)
+                    ( `pdid`, `parents`,`created_by`, `date_created`, `title`,`info`, `status`, `price`   )
                 VALUES
-                    ('{$value["ID"]}', '$get_store_hsid->hsid', '$cat', '$product_name', '$short_info', '{$value["preview"]}', '', '{$value["price"]}', '{$value["discount"]}', '{$value["created_by"]}', '{$value["status"]}', '{$value["date_created"]}' ) ");
+                    ('$get_parent_variants->pdid', '$get_parent_variants->hsid', '{$value["created_by"]}', '{$value["date_created"]}', '{$value["info"]}', '{$value["info"]}', '{$value["status"]}', '{$value["price"]}'    ) ");
                 $import_data_id = $wpdb->insert_id;
 
-
-
+                $hsid = TP_Globals_v2::generating_pubkey($import_data_id, 'tp_v2_product_variants', 'hsid', true, 64);
 
             }
 
             $wpdb->query("COMMIT");
+return $smp;
+ */
 
+
+/**
+ * variant parent script
+*/
+
+// $wpdb->query("START TRANSACTION");
+
+// foreach ($json_a['RECORDS'] as $key => $value) {
+
+//     $get_product = $wpdb->get_row("SELECT hsid FROM $tbl_product WHERE ID = '{$value["pdid"]}' ");
+//     $smp ++;
+
+//     $value["status"] = lcfirst($value["status"]);
+//     $name = esc_sql($value["name"]);
+//     $info = esc_sql($value["info"]);
+
+//     $import_data = $wpdb->query("INSERT INTO
+//     tp_v2_product_variants
+//         (`ID`, `pdid`,`created_by`, `date_created`, `title`,`info`, `status`   )
+//     VALUES
+//         ('{$value["ID"]}', '$get_product->hsid', '{$value["created_by"]}', '{$value["date_created"]}', '$name', '$info', '{$value["status"]}'    ) ");
+//     $import_data_id = $wpdb->insert_id;
+
+//     $hsid = TP_Globals_v2::generating_pubkey($import_data_id, 'tp_v2_product_variants', 'hsid', true, 64);
+
+// }
+
+// $wpdb->query("COMMIT");
+// return $smp;
+/**
+ * END
+*/
 
 
 /**
  * Product Script
-*//*
-            foreach ($json_a['RECORDS'] as $key => $value) {
+*/
+            // foreach ($json_a['RECORDS'] as $key => $value) {
 
-                $cat_name = esc_sql($value["cat_name"]);
+            //     $cat_name = esc_sql($value["cat_name"]);
 
-                $get_category_hsid = $wpdb->get_row("SELECT hsid FROM $tbl_product_categories WHERE title LIKE '%$cat_name%' ");
-                if (empty($get_category_hsid)) {
+            //     $get_category_hsid = $wpdb->get_row("SELECT hsid FROM $tbl_product_categories WHERE title LIKE '%$cat_name%' ");
+            //     if (empty($get_category_hsid)) {
 
-                    if (empty($value)) {
-                        return true;
-                    }else{
-                        $cat = $value['ID'];
-                    }
-                }else{
-                    $cat= $get_category_hsid->hsid;
-                }
+            //         if (empty($value)) {
+            //             return true;
+            //         }else{
+            //             $cat = $value['ID'];
+            //         }
+            //     }else{
+            //         $cat= $get_category_hsid->hsid;
+            //     }
 
-                $get_store_hsid = $wpdb->get_row("SELECT hsid FROM tp_v2_stores WHERE ID = '{$value["stid"]}' ");
+            //     $get_store_hsid = $wpdb->get_row("SELECT hsid FROM tp_v2_stores WHERE ID = '{$value["stid"]}' ");
 
-                if (empty($get_store_hsid)) {
-                    return false;
-                }
+            //     if (empty($get_store_hsid)) {
+            //         return false;
+            //     }
 
-                if ($value["preview"] == null || $value["preview"] == "None") {
-                    $value["preview"] = '';
-                }
-                // return $value;
-                $smp ++;
+            //     if ($value["preview"] == null || $value["preview"] == "None") {
+            //         $value["preview"] = '';
+            //     }
 
-                $value["status"] = lcfirst($value["preview"]);
-                $product_name = esc_sql($value["product_name"]);
-                $short_info = esc_sql($value["short_info"]);
+            //     // return $value;
+            //     $smp ++;
 
-                $import_data = $wpdb->query("INSERT INTO
-                    tp_v2_products
-                        (`ID`, `stid`, `pcid`, `title`,`info`, `avatar`, `banner`, `price`, `discount`, `created_by`, `status`, `date_created`)
-                    VALUES
-                        ('{$value["ID"]}', '$get_store_hsid->hsid', '$cat', '$product_name', '$short_info', '{$value["preview"]}', '', '{$value["price"]}', '{$value["discount"]}', '{$value["created_by"]}', '{$value["status"]}', '{$value["date_created"]}' ) ");
-                $import_data_id = $wpdb->insert_id;
+            //     $value["status"] = lcfirst($value["status"]);
+            //     $product_name = esc_sql($value["product_name"]);
+            //     $short_info = esc_sql($value["short_info"]);
 
-                $hsid = TP_Globals_v2::generating_pubkey($import_data_id, 'tp_v2_products', 'hsid', true, 64);
+            //     $import_data = $wpdb->query("INSERT INTO
+            //         tp_v2_products
+            //             (`ID`, `stid`, `pcid`, `title`,`info`, `avatar`, `banner`, `price`, `discount`, `created_by`, `status`, `date_created`)
+            //         VALUES
+            //             ('{$value["ID"]}', '$get_store_hsid->hsid', '$cat', '$product_name', '$short_info', '{$value["preview"]}', '', '{$value["price"]}', '{$value["discount"]}', '{$value["created_by"]}', '{$value["status"]}', '{$value["date_created"]}' ) ");
+            //     $import_data_id = $wpdb->insert_id;
 
-
-            }
+            //     $hsid = TP_Globals_v2::generating_pubkey($import_data_id, 'tp_v2_products', 'hsid', true, 64);
 
 
+            // }
 
-            return $smp; */
+
+
+            // return $smp;
 
 /**
  * End Product Script
