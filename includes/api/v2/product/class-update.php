@@ -64,8 +64,9 @@
 
             $user = self::catch_post();
 
-            $product_data = $wpdb->get_row("SELECT * FROM $tbl_product WHERE hsid = '{$_POST["pdid"]}' ");
+            $product_data = $wpdb->get_row("SELECT * FROM $tbl_product WHERE hsid = '{$_POST["pdid"]}' AND id IN ( SELECT MAX( p.id ) FROM $tbl_product  p WHERE p.hsid = hsid GROUP BY hsid ) ");
 
+            isset($_POST['status']) && !empty($_POST['status'])? $user['status'] =  $_POST['status'] :  $user['status'] = $product_data->status ;
             isset($_POST['title']) && !empty($_POST['title'])? $user['title'] =  $_POST['title'] :  $user['title'] = $product_data->title ;
             isset($_POST['info']) && !empty($_POST['info'])? $user['info'] =  $_POST['info'] :  $user['info'] = $product_data->info ;
             isset($_POST['price']) && !empty($_POST['price'])? $user['price'] =  $_POST['price'] :  $user['price'] = $product_data->price ;
@@ -75,9 +76,9 @@
 
             $import_data = $wpdb->query("INSERT INTO
                 $tbl_product
-                    ($tbl_product_filed)
+                    (`hsid`,$tbl_product_filed, `status`)
                 VALUES
-                    ( '$product_data->stid', '{$user["pcid"]}', '{$user["title"]}', '{$user["info"]}', '{$user["price"]}', '{$user["discount"]}',  '{$user["inventory"]}', '{$user["wpid"]}' ) ");
+                    ('$product_data->hsid', '$product_data->stid', '{$user["pcid"]}', '{$user["title"]}', '{$user["info"]}', '{$user["price"]}', '{$user["discount"]}',  '{$user["inventory"]}', '{$user["wpid"]}', '{$user["status"]}'  ) ");
             $import_data_id = $wpdb->insert_id;
 
             if ($import_data < 1) {
