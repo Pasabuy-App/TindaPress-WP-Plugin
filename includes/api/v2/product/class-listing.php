@@ -69,15 +69,15 @@
                 IF(avatar is null, '', avatar) as avatar,
                 IF(banner is null, '', banner) as banner,
                 price,
-                ( SELECT  AVG(rates) as rates FROM $tbl_product_rates WHERE pdid = p.hsid ) as rates,
-                discount,
+                IF( ( SELECT  AVG(rates) as rates FROM $tbl_product_rates WHERE pdid = p.hsid )is null, 0, ( SELECT  AVG(rates) as rates FROM $tbl_product_rates WHERE pdid = p.hsid ) ) as rates,
+                IF( discount is null OR discount = '',  0, discount ) as discount,
                 `status`,
                 inventory,
                 date_created
             FROM
                 $tbl_product p
             WHERE
-                id IN ( SELECT MAX( id ) FROM $tbl_product GROUP BY title ) ";
+                ID IN ( SELECT MAX( pdd.ID ) FROM $tbl_product  pdd WHERE pdd.hsid = hsid GROUP BY hsid )  ";
 
             if($user["ctid"] != null){
                 $sql .= " AND pcid = '{$user["ctid"]}' ";
