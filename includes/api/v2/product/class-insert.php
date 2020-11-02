@@ -130,6 +130,7 @@
                 if (empty($files['banner']['name'])) {
                     unset($files['banner']);
                 }
+
                 if (empty($files['avatar']['name'])) {
                     unset($files['avatar']);
                 }
