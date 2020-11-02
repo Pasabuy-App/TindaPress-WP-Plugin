@@ -22,11 +22,11 @@
 
 			// Initialize WP global variable
             global $wpdb;
+
             $tbl_product = TP_PRODUCT_v2;
             $tbl_stores = TP_STORES_v2;
             $tbl_store_categories = TP_STORES_CATEGORIES_v2;
             $tbl_product_categories = TP_PRODUCT_CATEGORY_v2;
-
 
             $smp =0 ;
             $_store = $wpdb->get_results("SELECT * FROM $tbl_stores");
