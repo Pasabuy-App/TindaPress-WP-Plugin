@@ -68,7 +68,6 @@
             WHERE
                 id IN ( SELECT MAX( id ) FROM $tbl_store_category GROUP BY title ) ";
 
-
             if ($user['title'] != null) {
                 $sql .= " AND title LIKE '%{$user["title"]}%' ";
             }
