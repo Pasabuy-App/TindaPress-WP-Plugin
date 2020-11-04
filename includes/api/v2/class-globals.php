@@ -102,7 +102,7 @@
 
 				}
 
-				$completed_file_name = sha1(date("Y-m-d~h:i:s"))."-".$img_name;
+				$completed_file_name = sha1(date("Y-m-d~h:i:s"))."-". trim($img_name," ");
 
 				$target_file = $target_dir['path'] . '/' . basename($completed_file_name);
 				$uploadOk = 1;
@@ -191,6 +191,8 @@
 
 						//return file path
 						$data[$key] = (string)$target_dir['url'].'/'.basename($completed_file_name);
+						$data[$key.'_id'] = $upload_id;
+
 
 					} else {
 						//there was an error uploading your file
@@ -207,6 +209,22 @@
 			return array(
 				"status" => "success",
 				"data" => array($data)
+
 			);
-        }
+		}
+
+		public static function check_type($type, $values = array()){
+			global $wpdb;
+			#return $values;
+
+			for ($i=0; $i < count($values) ; $i++) {
+
+				if($type == $values[$i]->title){
+					return true;
+				}
+			}
+			return false;
+
+
+		}
     }

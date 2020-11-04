@@ -10,7 +10,7 @@
         * @version 0.2.0
 	*/
 
-    class TP_Product_Delete_v2 {
+    class TP_Product_Variants_Delete_v2 {
 
         //REST API Call
         public static function listen($request){
@@ -22,10 +22,8 @@
 
         public static function catch_post(){
             $curl_user = array();
-
-            $curl_user['pdid'] = $_POST["pdid"];
-            $curl_user['wpid'] = $_POST["wpid"];
-
+            $curl_user['vrid'] = $_POST['vrid'];
+            $curl_user['wpid'] = $_POST['wpid'];
             return $curl_user;
         }
 
@@ -33,7 +31,8 @@
 
             global $wpdb;
             $tbl_product = TP_PRODUCT_v2;
-            $tbl_product_field = TP_PRODUCT_FIELDS_v2;
+            $tbl_variants =  TP_PRODUCT_VARIANTS_v2;
+            $tbl_variants_filed =  TP_PRODUCT_VARIANTS_FILEDS_v2;
 
             // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -52,44 +51,42 @@
                 );
             }
 
-            if (!isset($_POST['pdid']) ) {
+            if (!isset($_POST['vrid'])) {
                 return array(
                     "status" => "unknown",
-                    "message" => "Please contact your administrator. Request unknown!"
-                );
-            }
-
-            if (empty($_POST['pdid']) ) {
-                return array(
-                    "status" => "unknown",
-                    "message" => "Please contact your administrator. Request unknown!"
+                    "message" => "Please contact your administrator. Request unknown.",
                 );
             }
 
             $user = self::catch_post();
 
-            $product_data = $wpdb->get_row("SELECT * FROM $tbl_product WHERE hsid = '{$_POST["pdid"]}' ");
+            // Fetch all data of variants
+                $variant_data = $wpdb->get_row("SELECT * FROM $tbl_variants v WHERE hsid = '{$user["vrid"]}' AND id IN ( SELECT MAX( id ) FROM $tbl_variants WHERE hsid = v.hsid  GROUP BY hsid ) ");
+                if (empty($variant_data)) {
+                    return array(
+                        "status" => "unknown",
+                        "message" => "Please contact your administrator. Verification Issues!",
+                    );
+                }
+            // End
 
-            if ($product_data->status == "inactive") {
-                return array(
-                    "status" => "failed",
-                    "message" => "This product is already in $product_data->status"
-                );
-            }
+
+            $wpdb->query("START TRANSACTION");
 
             $import_data = $wpdb->query("INSERT INTO
-                $tbl_product
-                    (`hsid`,$tbl_product_field, `status`)
+                $tbl_variants
+                    (`hsid`,$tbl_variants_filed, `parents`, `status`)
                 VALUES
-                    ( '$product_data->hsid', '$product_data->stid', '$product_data->pcid', '$product_data->title', '$product_data->info', '$product_data->price', '$product_data->discount',  '$product_data->inventory', '{$user["wpid"]}', 'inactive' ) ");
-            $import_data_id = $wpdb->insert_id;
+                    ('$variant_data->hsid', '$variant_data->pdid', '$variant_data->title', '$variant_data->info', '$variant_data->price', '$variant_data->required', '{$user["wpid"]}', '$variant_data->parents', 'inactive' ) ");
 
-            if ($import_data < 1) {
+            if ($import_data < 1 ) {
+                $wpdb->query("ROLLBACK");
                 return array(
                     "status" => "failed",
-                    "message" => "An error occured while submitting data."
+                    "message" => "An error occured while submitting data to server."
                 );
             }else{
+                $wpdb->query("COMMIT");
                 return array(
                     "status" => "success",
                     "message" => "Data has been deleted successfully."

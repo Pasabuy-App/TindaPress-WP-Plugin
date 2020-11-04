@@ -59,15 +59,18 @@
             }
 
             $user = self::catch_post();
+            $_default_avatar = TP_PLUGIN_URL . "assets/images/default-product.png";
+            $_default_banner = TP_PLUGIN_URL . "assets/images/default-banner.png";
 
             $sql = "SELECT
                 hsid as ID,
                 (SELECT title FROM $tbl_stores WHERE hsid = stid ) as store_name,
                 (SELECT title FROM $tbl_product_category WHERE hsid = pcid ) as category_name,
+                pcid,
                 title,
                 info,
-                IF(avatar is null, '', avatar) as avatar,
-                IF(banner is null, '', banner) as banner,
+                avatar,
+                banner,
                 price,
                 IF( ( SELECT  AVG(rates) as rates FROM $tbl_product_rates WHERE pdid = p.hsid )is null, 0, ( SELECT  AVG(rates) as rates FROM $tbl_product_rates WHERE pdid = p.hsid ) ) as rates,
                 IF( discount is null OR discount = '',  0, discount ) as discount,
@@ -118,6 +121,14 @@
             }
 
             $data = $wpdb->get_results($sql);
+            foreach ($data as $key => $value) {
+                if (is_numeric($value->avatar)) {
+                    $image = wp_get_attachment_image_src( $value->avatar, 'medium', $icon = false );
+                    if ($image != false) {
+                        $value->avatar = $image[0];
+                    }
+                }
+            }
 
             return array(
                 "status" => "success",

@@ -104,7 +104,7 @@
 		// End
 
 		// Config declaration for version two
-			define('TP_PREFIX_v2', 'tp_');
+			define('TP_PREFIX_v2', 'tp_v2_');
 
 			define('TP_STORES_v2', TP_PREFIX_v2.'stores');
 			define('TP_STORES_FIELDS_v2', ' `scid`, `title`, `info`, `adid`, `created_by`');
@@ -137,7 +137,7 @@
 			define('TP_PRODUCT_CATEGORY_FIELDS_v2', ' `stid`, `title`, `info`, `created_by` ');
 
 			define('TP_PRODUCT_v2', TP_PREFIX_v2.'products');
-			define('TP_PRODUCT_FIELDS_v2', ' `stid`, `pcid`, `title`, `info`, `price`, `discount`, `inventory` `created_by` ');
+			define('TP_PRODUCT_FIELDS_v2', ' `stid`, `pcid`, `title`, `info`, `price`, `discount`, `inventory`, `created_by` ');
 
 			define('TP_PRODUCT_VARIANTS_v2', TP_PREFIX_v2.'product_variants');
 			define('TP_PRODUCT_VARIANTS_FILEDS_v2', ' `pdid`, `title`, `info`, `price`, `required`, `created_by` ');

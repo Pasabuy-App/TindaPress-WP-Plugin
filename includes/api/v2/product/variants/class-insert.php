@@ -29,7 +29,6 @@
             $curl_user['price'] = $_POST["price"];
             $curl_user['required'] = $_POST["required"];
             $curl_user['wpid'] = $_POST["wpid"];
-            isset($_POST['pid']) && !empty($_POST['pid'])? $curl_user['pid'] =  $_POST['pid'] :  $curl_user['pid'] = null ;
 
             return $curl_user;
         }
@@ -75,6 +74,8 @@
                 );
             }
 
+            isset($_POST['pid']) && !empty($_POST['pid'])? $user['pid'] =  $_POST['pid'] :  $user['pid'] = null ;
+
             if ($user["required"] != "true" && $user["required"] != "false") {
                 return array(
                     "status" => "failed",
@@ -83,7 +84,7 @@
             }
 
             // Check if product exists
-                $check_product = $wpdb->get_row("SELECT ID FROM $tbl_product WHERE hsid = '{$user["pdid"]}' ");
+                $check_product = $wpdb->get_row("SELECT ID FROM $tbl_product WHERE hsid = '{$user["pdid"]}' AND `status` = 'active' AND  ID IN ( SELECT MAX( pdd.ID ) FROM $tbl_product  pdd WHERE pdd.hsid = hsid GROUP BY hsid )  ");
                 if (empty($check_product)) {
                     return array(
                         "status" => "failed",
@@ -94,7 +95,7 @@
 
             // Verify parent id
                 if ($user["pid"] != null) {
-                    $check_variant = $wpdb->get_row("SELECT ID FROM $tbl_variants WHERE hsid = '{$user["pdid"]}' ");
+                    $check_variant = $wpdb->get_row("SELECT ID FROM $tbl_variants WHERE hsid = '{$user["pid"]}' ");
                     if (empty($check_variant)) {
                         return array(
                             "status" => "failed",
@@ -105,7 +106,7 @@
             // End
 
             // Check if variants exists
-                $check_variants = $wpdb->get_row("SELECT title FROM $tbl_variants WHERE title LIKE '%{$user["title"]}%' AND `status` = 'active'  ");
+                $check_variants = $wpdb->get_row("SELECT title FROM $tbl_variants WHERE title LIKE '%{$user["title"]}%' AND pdid = '{$user["pdid"]}'  AND `status` = 'active'  ");
                 if (!empty($check_variants)) {
                     return array(
                         "status" => "failed",
@@ -113,6 +114,7 @@
                     );
                 }
             // End
+
             $wpdb->query("START TRANSACTION");
             $import_data = $wpdb->query("INSERT INTO
                 $tbl_variants
@@ -123,7 +125,7 @@
 
             // Update variant parent column of variant is option
             if ($user["pid"] != null) {
-                $update_parent = $wpdb->query("UPDATE $tbl_variants SET parent = '{$user["pid"]}' WHERE ID = '$import_data_id' ");
+                $update_parent = $wpdb->query("UPDATE $tbl_variants SET parents = '{$user["pid"]}' WHERE ID = '$import_data_id' ");
 
                 if ($update_parent < 1) {
                     return array(

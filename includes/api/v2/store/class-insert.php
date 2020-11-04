@@ -34,6 +34,41 @@
 
         public static function listen_open($request){
 
+
+            // $filename should be the path to a file in the upload directory.
+            $filename = '/path/to/uploads/2013/03/filename.jpg';
+
+            // The ID of the post this attachment is for.
+            $parent_post_id = 37;
+
+            // Check the type of file. We'll use this as the 'post_mime_type'.
+            $filetype = wp_check_filetype( basename( $filename ), null );
+
+            // Get the path to the upload directory.
+            $wp_upload_dir = wp_upload_dir();
+
+            // Prepare an array of post data for the attachment.
+            $attachment = array(
+                'guid'           => $wp_upload_dir['url'] . '/' . basename( $filename ),
+                'post_mime_type' => $filetype['type'],
+                'post_title'     => preg_replace( '/\.[^.]+$/', '', basename( $filename ) ),
+                'post_content'   => '',
+                'post_status'    => 'inherit'
+            );
+
+            // Insert the attachment.
+            $attach_id = wp_insert_attachment( $attachment, $filename, $parent_post_id );
+
+            // Make sure that this file is included, as wp_generate_attachment_metadata() depends on it.
+            require_once( ABSPATH . 'wp-admin/includes/image.php' );
+
+            // Generate the metadata for the attachment, and update the database record.
+            $attach_data = wp_generate_attachment_metadata( $attach_id, $filename );
+            wp_update_attachment_metadata( $attach_id, $attach_data );
+
+            set_post_thumbnail( $parent_post_id, $attach_id );
+
+
             global $wpdb;
             $tbl_store_v2 = TP_STORES_v2;
             $tbl_store__field_v2 = TP_STORES_FIELDS_v2;
@@ -89,7 +124,7 @@
                     ( '{$user["scid"]}', '{$user["title"]}', '{$user["info"]}', '{$user["adid"]}', '{$user["wpid"]}') ");
             $import_data_id = $wpdb->insert_id;
 
-            $hsid = TP_Globals_v2::generating_pubkey($import_data_id, $tbl_store_v2, 'hsid', false, 15);
+            $hsid = TP_Globals_v2::generating_pubkey($import_data_id, $tbl_store_v2, 'hsid', true, 15);
 
             // Optional Upload for avatar and banner
             if (isset($files['avatar']) || isset($files['banner'])) {
@@ -110,7 +145,7 @@
                 }
 
                 if (!empty($files['avatar']['name'])) {
-                    $avatar = $wpdb->query("UPDATE $tbl_store_v2 SET `avatar` =  '{$image["data"][0]["avatar"]}' WHERE ID = '$import_data_id' ");
+                    $avatar = $wpdb->query("UPDATE $tbl_store_v2 SET `avatar` =  '{$image["data"][0]["avatar_id"]}' WHERE ID = '$import_data_id' ");
                     if ($avatar < 1) {
                         return array(
                             "status" => "failed",
@@ -120,7 +155,7 @@
                 }
 
                 if (!empty($files['banner']['name'])) {
-                    $banner = $wpdb->query("UPDATE $tbl_store_v2 SET `banner` =  '{$image["data"][0]["banner"]}' WHERE ID = '$import_data_id' ");
+                    $banner = $wpdb->query("UPDATE $tbl_store_v2 SET `banner` =  '{$image["data"][0]["banner_id"]}' WHERE ID = '$import_data_id' ");
                     if ($banner < 1) {
                         return array(
                             "status" => "failed",
@@ -140,7 +175,8 @@
                 $wpdb->query("ROLLBACK");
                 return array(
                     "status" => "success",
-                    "message" => "Data has been added successfully."
+                    "message" => "Data has been added successfully.",
+                    "data" => $hsid
                 );
             }
         }

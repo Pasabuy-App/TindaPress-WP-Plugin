@@ -64,25 +64,24 @@
                 info,
                 price,
                 `required`,
-                `status`,
-                created_by,
-                date_created
+                `status`
             FROM
-                $tbl_variants
+                $tbl_variants v
             WHERE
-                id IN ( SELECT MAX( id ) FROM $tbl_variants GROUP BY hsid )
-            AND parents = '' OR parents is null";
+                id IN ( SELECT MAX( id ) FROM $tbl_variants  WHERE v.hsid = hsid  GROUP BY hsid )
+             ";
 
-            if ($user["pdid"]) {
+            if ($user["pdid"] != null) {
+
                 $sql .= " AND pdid = '{$user["pdid"]}' ";
             }
 
-            if ($user["title"]) {
+            if ($user["title"] != null) {
                 $sql .= " AND title LIKE '%{$user["title"]}%' ";
             }
 
             if ($user["ID"] != null) {
-                $sql .= " AND hsid = '{$user["title"]}' ";
+                $sql .= " AND hsid = '{$user["ID"]}' ";
             }
 
             if ($user["required"] != null) {
@@ -104,30 +103,32 @@
                 }
                 $sql .= " AND `status` = '{$user["status"]}' ";
             }
+            $sql .= " AND parents = '' OR parents is null ";
 
             $parent_variants = $wpdb->get_results($sql);
 
             foreach ($parent_variants as $key => $value) {
                 $get_child = $wpdb->get_results("SELECT
                     hsid as ID,
-                    pdid,
-                    title,
-                    info,
+                    title as name,
                     price,
+                    info,
                     `required`,
-                    `status`,
-                    created_by,
-                    date_created
+                    `status`
                 FROM
-                    $tbl_variants
+                    $tbl_variants v
                 WHERE
-                    parents = '$value->ID' ");
+                    parents = '$value->ID'
+                AND
+                    `status` = 'active'
+                AND
+                    id IN ( SELECT MAX( id ) FROM $tbl_variants  WHERE v.hsid = hsid  GROUP BY hsid )");
                 $value->options = $get_child;
             }
 
             return array(
                 "status" => "success",
-                "message" => $parent_variants
+                "data" => $parent_variants
             );
         }
     }

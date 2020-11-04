@@ -23,6 +23,7 @@
         public static function catch_post(){
             $curl_user = array();
 
+            $curl_user['pcid'] = $_POST["pcid"];
             $curl_user['title'] = $_POST["title"];
             $curl_user['info'] = $_POST["info"];
             $curl_user['wpid'] = $_POST["wpid"];
@@ -45,46 +46,53 @@
                 );
             }
 
-            // Step 2: Validate user
-            // if (DV_Verification::is_verified() == false) {
-            //     return array(
-            //         "status" => "unknown",
-            //         "message" => "Please contact your administrator. Verification Issues!",
-            //     );
-            // }
-
-            if (!isset($_POST['title']) || !isset($_POST['info'])  ) {
+            if (!isset($_POST['title']) || !isset($_POST['info']) || !isset($_POST['status'])) {
                 return array(
                     "status" => "unknown",
-                    "message" => "Please contact your administrator. Request unknown!"
+                    "message" => "Please contact your administrator. Request unknown."
+                );
+            }
+
+            // Step 2: Validate user
+            if (DV_Verification::is_verified() == false) {
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification Issues!",
                 );
             }
 
             $user = self::catch_post();
+            $category_data = $wpdb->get_row("SELECT * FROM $tbl_category WHERE  hsid = '{$user["pcid"]}' AND id IN ( SELECT MAX( id ) FROM $tbl_category  ct WHERE ct.hsid = hsid GROUP BY hsid )   ");
 
-            $category_data = $wpdb->get_row("SELECT * FROM $tbl_category  WHERE hsid = '{$_POST["pcid"]}' ");
+            if (empty($category_data)) {
+                return array(
+                    "status" => "failed",
+                    "message" => "This product category does not exists!"
+                );
+            }
 
-            isset($_POST['title']) && !empty($_POST['title'])? $user['title'] =  $_POST['title'] :  $user['title'] = $product_data->title ;
-            isset($_POST['info']) && !empty($_POST['info'])? $user['info'] =  $_POST['info'] :  $user['info'] = $product_data->info ;
-            isset($_POST['status']) && !empty($_POST['status'])? $user['status'] =  $_POST['status'] :  $user['status'] = $product_data->pcid;
+            isset($_POST['title']) && !empty($_POST['title'])? $user['title'] =  $_POST['title'] :  $user['title'] = $category_data->title ;
+            isset($_POST['info']) && !empty($_POST['info'])? $user['info'] =  $_POST['info'] :  $user['info'] = $category_data->info ;
+            isset($_POST['status']) && !empty($_POST['status'])? $user['status'] =  $_POST['status'] :  $user['status'] = $category_data->status;
 
-            if(isset($_POST['status'])){
-                if ($user['status'] != null) {
-                    if ($category_data->status == $user['status']) {
-                        return array(
-                            "status" => "failed",
-                            "message" => "Status is already $category_data->status"
-                        );
+            if(isset($_POST['status'])  ){
+                if (!empty($_POST['status'])) {
+                    if ($user['status'] != null) {
+                        if ($category_data->status == $user['status']) {
+                            return array(
+                                "status" => "failed",
+                                "message" => "Status is already $category_data->status"
+                            );
+                        }
                     }
                 }
             }
 
             $import_data = $wpdb->query("INSERT INTO
                 $tbl_category
-                    ($tbl_category_filed)
+                    (`hsid`, $tbl_category_filed, `status`)
                 VALUES
-                    #`stid`, `title`, `info`, `created_by`
-                    ( '$product_data->stid', '{$user["title"]}', '{$user["info"]}', '{$user["wpid"]}' ) ");
+                    ('{$user["title"]}''$category_data->hsid', '$category_data->stid', '{$user["title"]}', '{$user["info"]}', '{$user["wpid"]}', '{$user["status"]}') ");
             $import_data_id = $wpdb->insert_id;
 
             if ($import_data < 1) {
@@ -93,9 +101,10 @@
                     "message" => "An error occured while submitting data."
                 );
             }else{
+
                 return array(
                     "status" => "success",
-                    "message" => "Data has been added successfully."
+                    "message" => "Data has been updated successfully."
                 );
             }
         }

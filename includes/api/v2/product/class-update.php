@@ -37,6 +37,9 @@
 
             global $wpdb;
             $tbl_product = TP_PRODUCT_v2;
+            $tbl_product_filed = TP_PRODUCT_FIELDS_v2;
+
+            $files = $request->get_file_params();
 
             // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -66,7 +69,17 @@
 
             $product_data = $wpdb->get_row("SELECT * FROM $tbl_product WHERE hsid = '{$_POST["pdid"]}' AND id IN ( SELECT MAX( p.id ) FROM $tbl_product  p WHERE p.hsid = hsid GROUP BY hsid ) ");
 
-            isset($_POST['status']) && !empty($_POST['status'])? $user['status'] =  $_POST['status'] :  $user['status'] = $product_data->status ;
+            isset($_POST['status']) && !empty($_POST['status'])? $user['status'] = $_POST['status']   :  $user['status'] = $product_data->status ;
+
+            if (!empty($_POST['status'])) {
+                if ($product_data->status == $user['status']) {
+                    return array(
+                        "status" => "failed",
+                        "message" => "This product is already been $product_data->status."
+                    );
+                }
+            }
+
             isset($_POST['title']) && !empty($_POST['title'])? $user['title'] =  $_POST['title'] :  $user['title'] = $product_data->title ;
             isset($_POST['info']) && !empty($_POST['info'])? $user['info'] =  $_POST['info'] :  $user['info'] = $product_data->info ;
             isset($_POST['price']) && !empty($_POST['price'])? $user['price'] =  $_POST['price'] :  $user['price'] = $product_data->price ;
@@ -74,11 +87,52 @@
             isset($_POST['inventory']) && !empty($_POST['inventory'])? $user['inventory'] =  $_POST['inventory'] :  $user['inventory'] = $product_data->inventory ;
             isset($_POST['pcid']) && !empty($_POST['pcid'])? $user['pcid'] =  $_POST['pcid'] :  $user['pcid'] = $product_data->pcid;
 
+            if (!empty($_POST['inventory'])) {
+                if ( $user['inventory'] != "true" && $user['inventory'] != "false") {
+                    return array(
+                        "status" => "failed",
+                        "message" => "Inventory value must be bool."
+                    );
+                }
+            }
+
+            if (isset($files['avatar']) || isset($files['banner'])) {
+                if (empty($files['banner']['name'])) {
+                    unset($files['banner']);
+                }
+
+                if (empty($files['avatar']['name'])) {
+                    unset($files['avatar']);
+                }
+
+                if (isset($files['avatar']) || isset($files['banner'])) {
+                    $image = TP_Globals_v2::upload_image( $request, $files);
+                    if ($image['status'] != 'success') {
+                        return array(
+                            "status" => $image['status'],
+                            "message" => $image['message']
+                        );
+                    }
+                }
+
+                if (!empty($files['avatar']['name'])) {
+                    $user["avatar"] = $image["data"][0]["avatar_id"];
+                }else{
+                    $user["avatar"] = $product_data->avatar;
+                }
+
+                if (!empty($files['banner']['name'])) {
+                    $user["banner"] = $image["data"][0]["banner_id"];
+                }else{
+                    $user["banner"] = $product_data->banner;
+                }
+            }
+
             $import_data = $wpdb->query("INSERT INTO
                 $tbl_product
-                    (`hsid`,$tbl_product_filed, `status`)
+                    (`avatar`, `banner`,`hsid`, $tbl_product_filed, `status`)
                 VALUES
-                    ('$product_data->hsid', '$product_data->stid', '{$user["pcid"]}', '{$user["title"]}', '{$user["info"]}', '{$user["price"]}', '{$user["discount"]}',  '{$user["inventory"]}', '{$user["wpid"]}', '{$user["status"]}'  ) ");
+                    ('{$user["avatar"]}', '{$user["banner"]}','$product_data->hsid', '$product_data->stid', '{$user["pcid"]}', '{$user["title"]}', '{$user["info"]}', '{$user["price"]}', '{$user["discount"]}',  '{$user["inventory"]}', '{$user["wpid"]}', '{$user["status"]}'  ) ");
             $import_data_id = $wpdb->insert_id;
 
             if ($import_data < 1) {

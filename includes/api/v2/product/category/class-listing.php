@@ -65,7 +65,7 @@
             FROM
                 $tbl_product_category_v2
             WHERE
-                id IN ( SELECT MAX( id ) FROM $tbl_product_category_v2 GROUP BY hsid ) ";
+                id IN ( SELECT MAX( id ) FROM $tbl_product_category_v2 ct WHERE ct.hsid = hsid  GROUP BY hsid ) ";
 
             if ($user["stid"] != null) {
                 $sql .= " AND stid = '{$user["stid"]}' ";

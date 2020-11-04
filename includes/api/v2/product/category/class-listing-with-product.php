@@ -47,12 +47,12 @@
             }
 
             // Step 2: Validate user
-            // if (DV_Verification::is_verified() == false) {
-            //     return array(
-            //         "status" => "unknown",
-            //         "message" => "Please contact your administrator. Verification Issues!",
-            //     );
-            // }
+            if (DV_Verification::is_verified() == false) {
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification Issues!",
+                );
+            }
 
             $user = self::catch_post();
 
@@ -87,7 +87,7 @@
             $data = $wpdb->get_results($sql);
 
             foreach ($data as $key => $value) {
-                $value->products = $wpdb->get_results("SELECT * FROM $tbl_product WHERE pcid = '$value->ID' ");
+                $value->products = $wpdb->get_results("SELECT hsid as ID, stid, title, info, avatar, banner, price, IF(discount is null OR discount = '', 0, discount) as discount    FROM $tbl_product WHERE pcid = '$value->ID' ");
             }
             return array(
                 "status" => "success",

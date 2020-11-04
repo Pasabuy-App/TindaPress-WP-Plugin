@@ -144,7 +144,7 @@
                 }
 
                 if (!empty($files['avatar']['name'])) {
-                    $avatar = $wpdb->query("UPDATE $tbl_product SET `avatar` =  '{$image["data"][0]["avatar"]}' WHERE ID = '$import_data_id' ");
+                    $avatar = $wpdb->query("UPDATE $tbl_product SET `avatar` =  '{$image["data"][0]["avatar_id"]}' WHERE ID = '$import_data_id' ");
                     if ($avatar < 1) {
                         return array(
                             "status" => "failed",
@@ -154,7 +154,7 @@
                 }
 
                 if (!empty($files['banner']['name'])) {
-                    $banner = $wpdb->query("UPDATE $tbl_product SET `banner` =  '{$image["data"][0]["banner"]}' WHERE ID = '$import_data_id' ");
+                    $banner = $wpdb->query("UPDATE $tbl_product SET `banner` =  '{$image["data"][0]["banner_id"]}' WHERE ID = '$import_data_id' ");
                     if ($banner < 1) {
                         return array(
                             "status" => "failed",
