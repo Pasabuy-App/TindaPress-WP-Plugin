@@ -112,8 +112,11 @@
 			define('TP_STORES_CATEGORIES_v2', TP_PREFIX_v2.'stores_categories');
 			define('TP_STORES_CATEGORIES_FIELDS_v2', ' `title`, `info`, `groups`, `avatar`, `created_by`');
 
-			define('TP_STORE_DOCS_TYPES_v2', TP_PREFIX_v2.'store_doc_types');
-			define('TP_STORE_DOCS_TYPES_FIELDS_v2', ' `title`, `info`, `created_by`');
+			define('TP_STORES_DOCS_TYPES_v2', TP_PREFIX_v2.'store_doc_types');
+			define('TP_STORES_DOCS_TYPES_FIELDS_v2', ' `title`, `info`, `created_by`');
+
+			define('TP_STORES_DOCS_v2', TP_PREFIX_v2.'store_documents');
+			define('TP_STORES_DOCS_FIELDS_v2', ' `stid`, `preview`, `types`, `comments`');
 
 			define('TP_STORES_RATINGS_v2', TP_PREFIX_v2.'store_rating');
 			define('TP_STORES_RATINGS_FIELDS_v2', ' `stid`, `rates`, `comments`, `rated_by`');

@@ -120,7 +120,11 @@
 
             // Documents
                 require plugin_dir_path(__FILE__) . '/v2/store/documents/doc-types/class-insert.php';
+                require plugin_dir_path(__FILE__) . '/v2/store/documents/doc-types/class-listing.php';
                 require plugin_dir_path(__FILE__) . '/v2/store/documents/class-listing.php';
+                require plugin_dir_path(__FILE__) . '/v2/store/documents/class-insert.php';
+                require plugin_dir_path(__FILE__) . '/v2/store/documents/class-update.php';
+                require plugin_dir_path(__FILE__) . '/v2/store/documents/class-delete.php';
 
             // Rates
                 require plugin_dir_path(__FILE__) . '/v2/store/rates/class-insert.php';
@@ -133,6 +137,7 @@
 
             require plugin_dir_path(__FILE__) . '/v2/store/class-insert.php';
             require plugin_dir_path(__FILE__) . '/v2/store/class-listing.php';
+            require plugin_dir_path(__FILE__) . '/v2/store/class-update.php';
 
         // End
 
@@ -597,6 +602,11 @@
                         'callback' => array('TP_Store_Insert_v2','listen'),
                     ));
 
+                    register_rest_route( 'tindapress/v2/store', 'update', array(
+                        'methods' => 'POST',
+                        'callback' => array('TP_Store_Update_v2','listen'),
+                    ));
+
                         // Store category
                             register_rest_route( 'tindapress/v2/store/category', 'insert', array(
                                 'methods' => 'POST',
@@ -620,9 +630,29 @@
                                 'callback' => array('TP_Store_Doc_type_Insert_v2','listen'),
                             ));
 
+                            register_rest_route( 'tindapress/v2/store/document/type', 'list', array(
+                                'methods' => 'POST',
+                                'callback' => array('TP_Store_Doc_type_Listing_v2','listen'),
+                            ));
+
+                            register_rest_route( 'tindapress/v2/store/document', 'insert', array(
+                                'methods' => 'POST',
+                                'callback' => array('TP_Store_Insert_Docs_v2','listen'),
+                            ));
+
                             register_rest_route( 'tindapress/v2/store/document', 'list', array(
                                 'methods' => 'POST',
                                 'callback' => array('TP_Store_Lisitng_Docs_v2','listen'),
+                            ));
+
+                            register_rest_route( 'tindapress/v2/store/document', 'update', array(
+                                'methods' => 'POST',
+                                'callback' => array('TP_Store_Update_Docs_v2','listen'),
+                            ));
+
+                            register_rest_route( 'tindapress/v2/store/document', 'delete', array(
+                                'methods' => 'POST',
+                                'callback' => array('TP_Store_Delete_Docs_v2','listen'),
                             ));
 
                         // Rates

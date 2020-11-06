@@ -92,7 +92,7 @@
                 $tbl_category
                     (`hsid`, $tbl_category_filed, `status`)
                 VALUES
-                    ('{$user["title"]}''$category_data->hsid', '$category_data->stid', '{$user["title"]}', '{$user["info"]}', '{$user["wpid"]}', '{$user["status"]}') ");
+                    ('$category_data->hsid', '$category_data->stid', '{$user["title"]}', '{$user["info"]}', '{$user["wpid"]}', '{$user["status"]}') ");
             $import_data_id = $wpdb->insert_id;
 
             if ($import_data < 1) {

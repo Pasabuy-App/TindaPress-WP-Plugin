@@ -31,8 +31,8 @@
         public static function listen_open($request){
 
             global $wpdb;
-            $tbl_store_doc_types = TP_STORE_DOCS_TYPES_v2;
-            $tbl_store_doc_types_field = TP_STORE_DOCS_TYPES_FIELDS_v2;
+            $tbl_store_doc_types = TP_STORES_DOCS_TYPES_v2;
+            $tbl_store_doc_types_field = TP_STORES_DOCS_TYPES_FIELDS_v2;
 
             // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();

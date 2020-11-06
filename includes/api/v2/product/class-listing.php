@@ -51,12 +51,12 @@
             }
 
             // Step 2: Validate user
-            if (DV_Verification::is_verified() == false) {
-                return array(
-                    "status" => "unknown",
-                    "message" => "Please contact your administrator. Verification Issues!",
-                );
-            }
+            // if (DV_Verification::is_verified() == false) {
+            //     return array(
+            //         "status" => "unknown",
+            //         "message" => "Please contact your administrator. Verification Issues!",
+            //     );
+            // }
 
             $user = self::catch_post();
             $_default_avatar = TP_PLUGIN_URL . "assets/images/default-product.png";
@@ -65,7 +65,8 @@
             $sql = "SELECT
                 hsid as ID,
                 (SELECT title FROM $tbl_stores WHERE hsid = stid ) as store_name,
-                (SELECT title FROM $tbl_product_category WHERE hsid = pcid ) as category_name,
+                (SELECT title FROM $tbl_product_category WHERE hsid = pcid AND
+                id IN ( SELECT MAX( id ) FROM $tbl_product_category ct WHERE ct.hsid = hsid  GROUP BY hsid ) ) as category_name,
                 pcid,
                 title,
                 info,
@@ -119,6 +120,8 @@
 
                 $sql .= " AND `status` = '{$user["status"]}' ";
             }
+
+            $sql .= " ORDER BY ID DESC ";
 
             $data = $wpdb->get_results($sql);
             foreach ($data as $key => $value) {

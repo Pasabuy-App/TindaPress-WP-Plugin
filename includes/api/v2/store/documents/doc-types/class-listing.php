@@ -10,7 +10,7 @@
         * @version 0.2.0
 	*/
 
-    class TP_Store_Lisitng_Docs_v2 {
+    class TP_Store_Doc_type_Listing_v2 {
 
         //REST API Call
         public static function listen($request){
@@ -24,7 +24,7 @@
             $curl_user = array();
 
             isset($_POST['ID']) && !empty($_POST['ID'])? $curl_user['ID'] =  $_POST['ID'] :  $curl_user['ID'] = null ;
-            isset($_POST['type']) && !empty($_POST['type'])? $curl_user['type'] =  $_POST['type'] :  $curl_user['type'] = null ;
+            isset($_POST['title']) && !empty($_POST['title'])? $curl_user['title'] =  $_POST['title'] :  $curl_user['title'] = null ;
             isset($_POST['status']) && !empty($_POST['status'])? $curl_user['status'] =  $_POST['status'] :  $curl_user['status'] = null ;
 
             return $curl_user;
@@ -33,9 +33,7 @@
         public static function listen_open($request){
 
             global $wpdb;
-            $tbl_docu = TP_STORES_DOCS_v2;
             $tbl_docu_type = TP_STORES_DOCS_TYPES_v2;
-
 
             // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -58,17 +56,13 @@
 
             $sql = "SELECT
                     hsid as ID,
-                    stid,
-                    (SELECT title FROM $tbl_docu_type WHERE hsid = c.types ) as doctype,
-                    preview,
-                    comments,
-                    IF ( executed_by is null AND activated = 'false', 'Pending',
-                        IF ( executed_by != '' AND activated = 'false', 'Inactive', 'Active' )  ) as `status`,
-                    date_created
+                    title,
+                    info,
+                    `status`
                 FROM
-                    $tbl_docu c
+                    $tbl_docu_type
                 WHERE
-                    ID IN ( SELECT MAX( pdd.ID ) FROM $tbl_docu  pdd WHERE pdd.hsid = hsid GROUP BY hsid ) ";
+                    ID IN ( SELECT MAX( pdd.ID ) FROM $tbl_docu_type  pdd WHERE pdd.hsid = hsid GROUP BY hsid ) ";
 
             if ($user["ID"]) {
                 $sql .= " AND hsid = '{$user["ID"]}'  ";
@@ -78,32 +72,11 @@
                 $sql .= " AND `status` = '{$user["status"]}'  ";
             }
 
-            if ($user["type"]) {
-                $sql .= " AND `types` = '{$user["type"]}'  ";
+            if ($user["title"]) {
+                $sql .= " AND `title` LIKE '%{$user["title"]}%'  ";
             }
 
             $data = $wpdb->get_results($sql);
-
-            foreach ($data as $key => $value) {
-                if (is_numeric($value->preview)) {
-
-                    $image = wp_get_attachment_image_src( $value->preview, 'medium', $icon =false );
-                    if ($image != false) {
-                        $value->preview = $image[0];
-                    }else{
-                        $get_image = $wpdb->get_row("SELECT meta_value FROM wp_postmeta WHERE meta_id = $value->preview ");
-                        if(!empty($get_image)){
-                            // $value->preview = 'https://pasabuy.app/wp-content/uploads/'.$get_image->meta_value;
-                            $value->preview = 'None';
-                        }else{
-                            $value->preview = 'None';
-                        }
-                    }
-
-                }else{
-                    $value->preview = 'None';
-                }
-            }
 
             return array(
                 "status" => "success",

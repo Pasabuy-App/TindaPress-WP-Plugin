@@ -42,9 +42,10 @@
 		// Table Declaration for Version two
 			$tbl_store_v2 = TP_STORES_v2;
 			$tbl_stores_category_v2 = TP_STORES_CATEGORIES_v2;
-			$tbl_store_docs_types_v2 = TP_STORE_DOCS_TYPES_v2;
+			$tbl_store_docs_types_v2 = TP_STORES_DOCS_TYPES_v2;
 			$tbl_store_ratings_v2 = TP_STORES_RATINGS_v2;
 			$tbl_store_seen_v2 = TP_STORES_SEEN_v2;
+			$tbl_store_documents =TP_STORES_DOCS_v2;
 			$tbl_featured_store_groups_v2 = TP_FEATURED_STORES_GROUPS_v2;
 			$tbl_featied_store_v2 = TP_FEATURED_STORES_v2;
 			$tbl_featured_store_seen_v2 = TP_FEATURED_STORES_SEEN_v2;
@@ -652,7 +653,7 @@
 		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_wishlist'" ) != $tbl_wishlist) {
 			$sql = "CREATE TABLE `".$tbl_wishlist."` (";
 				$sql .= "`ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
-				$sql .= "`hash_id` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
+				$sql .= "`hsid` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
 				$sql .= "`product_id` bigint(20) DEFAULT NULL, ";
 				$sql .= "`status` tinyint(2) NOT NULL, ";
 				$sql .= "`created_by` bigint(20) NOT NULL, ";
@@ -661,6 +662,26 @@
 				$sql .= ") ENGINE = InnoDB; ";
 			$result = $wpdb->get_results($sql);
 		}
+
+
+		//Database table creation for store documents
+		if($wpdb->get_var( "SHOW TABLES LIKE '$tbl_store_documents'" ) != $tbl_store_documents) {
+			$sql = "CREATE TABLE `".$tbl_store_documents."` (";
+				$sql .= " `ID` bigint(20) NOT NULL AUTO_INCREMENT, ";
+				$sql .= " `hsid` varchar(255) NOT NULL COMMENT 'Hash of id.', ";
+				$sql .= " `stid` varchar(150) DEFAULT NULL, ";
+				$sql .= " `preview` varchar(255) NOT NULL, ";
+				$sql .= " `types` varchar(150) NOT NULL, ";
+				$sql .= " `status` enum('active', 'inactive') NOT NULL, ";
+				$sql .= " `comments` varchar(255) , ";
+				$sql .= " `executed_by` bigint(20) , ";
+				$sql .= " `activated` enum('false', 'true') NOT NULL, ";
+				$sql .= " `date_created` datetime DEFAULT current_timestamp() COMMENT 'The date this Store doducmnet.', ";
+				$sql .= "PRIMARY KEY (`ID`) ";
+				$sql .= ") ENGINE = InnoDB; ";
+			$result = $wpdb->get_results($sql);
+		}
+
 
 		$wpdb->query("COMMIT");
 

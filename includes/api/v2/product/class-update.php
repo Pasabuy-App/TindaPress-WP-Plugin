@@ -86,6 +86,8 @@
             isset($_POST['discount']) && !empty($_POST['discount'])? $user['discount'] =  $_POST['discount'] :  $user['discount'] = $product_data->discount ;
             isset($_POST['inventory']) && !empty($_POST['inventory'])? $user['inventory'] =  $_POST['inventory'] :  $user['inventory'] = $product_data->inventory ;
             isset($_POST['pcid']) && !empty($_POST['pcid'])? $user['pcid'] =  $_POST['pcid'] :  $user['pcid'] = $product_data->pcid;
+            isset($files['avatar']) && !empty($files['avatar'])? $user['avatar'] =  $files['avatar'] :  $user['avatar'] = $product_data->avatar;
+            isset($files['banner']) && !empty($files['banner'])? $user['banner'] =  $files['banner'] :  $user['banner'] = $product_data->banner;
 
             if (!empty($_POST['inventory'])) {
                 if ( $user['inventory'] != "true" && $user['inventory'] != "false") {

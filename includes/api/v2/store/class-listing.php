@@ -35,27 +35,6 @@
         public static function listen_open($request){
 
             global $wpdb;
-            // return wp_get_attachment_image_src( 1117 );
-
-            // $data =  $wpdb->get_results("SELECT ID, banner FROM tp_v2_stores WHERE banner LIKE '%https://%' ");
-            // $i = array();
-            // $a = 0;
-
-
-
-            // foreach ($data as $key => $value) {
-            //     //$image = substr($value->banner,39);
-            //     // $image  = substr($value->banner,47);
-            //     // $a++;
-
-            //     $i = $wpdb->get_row("SELECT meta_id FROM wp_postmeta WHERE meta_value LIKE '%$image%' ");
-            //     // if (!empty($b)) {
-            //     //     $wpdb->query("UPDATE tp_v2_stores SET banner = '$b->meta_id' WHERE ID = '$value->ID' ");
-            //     // }
-            // }
-            // return $a;
-
-
 
             $tbl_store = TP_STORES_v2;
             $tbl_store_category = TP_STORES_CATEGORIES_v2;
@@ -63,6 +42,10 @@
             $tbl_operation = MP_OPERATIONS_v2;
             $tbl_store_category_groups = TP_STORES_CATEGORY_GROUPS_v2;
             $tbl_rate = TP_STORES_RATINGS_v2;
+
+            $time = time();
+            $date = date("Y:m:d");
+            $day = lcfirst(date('D', $time));
 
              // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals::verify_prerequisites();
@@ -74,12 +57,12 @@
             }
 
             // Step 2: Validate user
-            if (DV_Verification::is_verified() == false) {
-                return array(
-                    "status" => "unknown",
-                    "message" => "Please contact your administrator. Verification Issues!",
-                );
-            }
+            // if (DV_Verification::is_verified() == false) {
+            //     return array(
+            //         "status" => "unknown",
+            //         "message" => "Please contact your administrator. Verification Issues!",
+            //     );
+            // }
 
             $user = self::catch_post();
 
@@ -140,7 +123,7 @@
 
             $data = $wpdb->get_results($sql);
             $a = array();
-
+            $ops = array();
             // Get other store information
                 foreach ($data as $key => $value) {
                     // Store category
@@ -198,6 +181,7 @@
 
                     // Get store schedule
                         $get_schedule = $wpdb->get_row("SELECT * FROM mp_v2_schedule WHERE stid = '$value->hsid'");
+                        $get_schedule_today = $wpdb->get_row("SELECT stid, hsid FROM mp_v2_schedule WHERE stid = '$value->hsid' AND types = '$day' ");
                         if (!empty($get_schedule)) {
                             $value->opening = $get_schedule->started;
                             $value->closing = $get_schedule->ended;
@@ -241,6 +225,21 @@
                     }else{
                         $value->banner = 'None';
                     }
+
+                    // Get store operation
+                        if (!empty($get_schedule_today)) {
+
+                            $operation = $wpdb->get_row("SELECT hsid FROM $tbl_operation WHERE stid = '$value->hsid' AND sdid = '$get_schedule_today->hsid'  ");
+                            if (!empty($operation)) {
+                                $value->operation_id = $operation->hsid;
+                            }else{
+                                $value->operation_id = "";
+                            }
+
+                        }else{
+                            $value->operation_id = "";
+                        }
+                    // End
                 }
             // End
 
