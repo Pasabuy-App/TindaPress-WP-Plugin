@@ -24,7 +24,6 @@
             $curl_user = array();
 
             $curl_user['title'] = $_POST["title"];
-            $curl_user['info'] = $_POST["info"];
             $curl_user['wpid'] = $_POST["wpid"];
 
             return $curl_user;
@@ -69,6 +68,7 @@
                     "message" => "Required fileds cannot be empty "."'".ucfirst($validate)."'"."."
                 );
             }
+            isset($_POST['info']) && !empty($_POST['info'])? $user['info'] =  $_POST['info'] :  $user['info'] = null ;
 
             $check_store_groups = $wpdb->get_row("SELECT * FROM $tbl_featured_groups WHERE title LIKE '%{$user["title"]}%'");
             if (!empty($check_store_groups)) {

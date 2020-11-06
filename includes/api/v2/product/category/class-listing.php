@@ -37,7 +37,7 @@
             $tbl_product_category_v2 = TP_PRODUCT_CATEGORY_v2;
 
             // Step 1: Check if prerequisites plugin are missing
-            $plugin = TP_Globals::verify_prerequisites();
+            $plugin = TP_Globals_v2::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
                     "status" => "unknown",

@@ -25,7 +25,6 @@
 
             $curl_user['pdid'] = $_POST["pdid"];
             $curl_user['title'] = $_POST["title"];
-            $curl_user['info'] = $_POST["info"];
             $curl_user['price'] = $_POST["price"];
             $curl_user['required'] = $_POST["required"];
             $curl_user['wpid'] = $_POST["wpid"];
@@ -41,7 +40,7 @@
             $tbl_variants_filed =  TP_PRODUCT_VARIANTS_FILEDS_v2;
 
             // Step 1: Check if prerequisites plugin are missing
-            $plugin = TP_Globals::verify_prerequisites();
+            $plugin = TP_Globals_v2::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
                     "status" => "unknown",
@@ -57,7 +56,7 @@
                 );
             }
 
-            if (!isset($_POST['pdid']) || !isset($_POST['title']) || !isset($_POST['info']) || !isset($_POST['price']) ) {
+            if (!isset($_POST['pdid']) || !isset($_POST['title']) || !isset($_POST['price']) ) {
                 return array(
                     "status" => "unknown",
                     "message" => "Please contact your administrator. Request unknown!",
@@ -73,6 +72,8 @@
                     "message" => "Required fileds cannot be empty "."'".ucfirst($validate)."'"."."
                 );
             }
+
+            isset($_POST['info']) && !empty($_POST['info'])? $user['info'] =  $_POST['info'] :  $user['info'] = null ;
 
             isset($_POST['pid']) && !empty($_POST['pid'])? $user['pid'] =  $_POST['pid'] :  $user['pid'] = null ;
 

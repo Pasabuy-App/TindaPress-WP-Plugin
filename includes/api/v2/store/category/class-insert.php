@@ -23,7 +23,7 @@
         public static function catch_post(){
             $curl_user = array();
             $curl_user['title'] = $_POST["title"];
-            $curl_user['info'] = $_POST["info"];
+            $curl_user['info'] = isset($_POST['info']) ? $_POST['info'] : "";
             $curl_user['wpid'] = $_POST["wpid"];
             return $curl_user;
         }
@@ -37,7 +37,7 @@
             $files = $request->get_file_params();
 
             // Step 1: Check if prerequisites plugin are missing
-            $plugin = TP_Globals::verify_prerequisites();
+            $plugin = TP_Globals_v2::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
                     "status" => "unknown",
@@ -46,14 +46,14 @@
             }
 
             // Step 2: Validate user
-            // if (DV_Verification::is_verified() == false) {
-            //     return array(
-            //         "status" => "unknown",
-            //         "message" => "Please contact your administrator. Verification Issues!",
-            //     );
-            // }
+            if (DV_Verification::is_verified() == false) {
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification Issues!",
+                );
+            }
 
-            if (!isset($_POST['title']) || !isset($_POST['info']) ) {
+            if (!isset($_POST['title']) ) {
                 return array(
                     "status" => "unknwon",
                     "message" => "Please contact your administrator. Request unknown!",
@@ -62,13 +62,6 @@
 
             $user = self::catch_post();
 
-            if (empty($files['img']['name'])) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Category avatar is required"
-                );
-            }
-
             $validate = TP_Globals_v2::check_listener($user);
             if ($validate !== true) {
                 return array(
@@ -76,6 +69,14 @@
                     "message" => "Required fileds cannot be empty "."'".ucfirst($validate)."'"."."
                 );
             }
+
+            if (empty($files['img']['name'])) {
+                return array(
+                    "status" => "failed",
+                    "message" => "Category avatar is required"
+                );
+            }
+
             isset($_POST['groups']) && !empty($_POST['groups'])? $user['groups'] =  $_POST['groups'] :  $user['groups'] = null ;
 
             // Check of category group exits

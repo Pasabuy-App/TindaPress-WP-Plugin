@@ -35,7 +35,7 @@
             $tbl_variants_filed =  TP_PRODUCT_VARIANTS_FILEDS_v2;
 
             // Step 1: Check if prerequisites plugin are missing
-            $plugin = TP_Globals::verify_prerequisites();
+            $plugin = TP_Globals_v2::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
                     "status" => "unknown",
@@ -59,6 +59,14 @@
             }
 
             $user = self::catch_post();
+
+            $validate = HP_Globals_v2::check_listener($user);
+            if ($validate !== true) {
+                return array(
+                    "status" => "failed",
+                    "message" => "Required fileds cannot be empty "."'".ucfirst($validate)."'"."."
+                );
+            }
 
             // Fetch all data of variants
                 $variant_data = $wpdb->get_row("SELECT * FROM $tbl_variants v WHERE hsid = '{$user["vrid"]}' AND id IN ( SELECT MAX( id ) FROM $tbl_variants WHERE hsid = v.hsid  GROUP BY hsid ) ");

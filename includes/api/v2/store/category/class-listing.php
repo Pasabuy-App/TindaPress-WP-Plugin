@@ -37,7 +37,7 @@
             $tbl_store_category_groups = TP_STORES_CATEGORY_GROUPS_v2;
 
             // Step 1: Check if prerequisites plugin are missing
-            $plugin = TP_Globals::verify_prerequisites();
+            $plugin = TP_Globals_v2::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
                     "status" => "unknown",
@@ -46,12 +46,12 @@
             }
 
             // Step 2: Validate user
-            // if (DV_Verification::is_verified() == false) {
-            //     return array(
-            //         "status" => "unknown",
-            //         "message" => "Please contact your administrator. Verification Issues!",
-            //     );
-            // }
+            if (DV_Verification::is_verified() == false) {
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification Issues!",
+                );
+            }
 
             $user = self::catch_post();
 

@@ -36,7 +36,7 @@
             $tbl_product_field = TP_PRODUCT_FIELDS_v2;
 
             // Step 1: Check if prerequisites plugin are missing
-            $plugin = TP_Globals::verify_prerequisites();
+            $plugin = TP_Globals_v2::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
                     "status" => "unknown",

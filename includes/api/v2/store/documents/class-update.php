@@ -39,7 +39,7 @@
             $files = $request->get_file_params();
 
              // Step 1: Check if prerequisites plugin are missing
-            $plugin = TP_Globals::verify_prerequisites();
+            $plugin = TP_Globals_v2::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
                     "status" => "unknown",
@@ -48,14 +48,22 @@
             }
 
             // Step 2: Validate user
-            // if (DV_Verification::is_verified() == false) {
-            //     return array(
-            //         "status" => "unknown",
-            //         "message" => "Please contact your administrator. Verification Issues!",
-            //     );
-            // }
+            if (DV_Verification::is_verified() == false) {
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification Issues!",
+                );
+            }
 
             $user = self::catch_post();
+
+            $validate = MP_Globals_v2::check_listener($user);
+            if ($validate !== true) {
+                return array(
+                    "status" => "failed",
+                    "message" => "Required fileds cannot be empty "."'".ucfirst($validate)."'"."."
+                );
+            }
 
             // Check store docs is already exists
                 $check_store_document = $wpdb->get_row("SELECT * FROM $tbl_store_document WHERE hsid = '{$user["docid"]}' AND `status` = 'active'  ");

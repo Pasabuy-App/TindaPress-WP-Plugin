@@ -24,7 +24,6 @@
             $curl_user = array();
 
             $curl_user['title'] = $_POST["title"];
-            $curl_user['info'] = $_POST["info"];
             $curl_user['price'] = $_POST["price"];
             $curl_user['discount'] = $_POST["discount"];
             $curl_user['inventory'] = $_POST["inventory"];
@@ -42,7 +41,7 @@
             $files = $request->get_file_params();
 
             // Step 1: Check if prerequisites plugin are missing
-            $plugin = TP_Globals::verify_prerequisites();
+            $plugin = TP_Globals_v2::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
                     "status" => "unknown",
@@ -55,13 +54,6 @@
                 return array(
                     "status" => "unknown",
                     "message" => "Please contact your administrator. Verification Issues!",
-                );
-            }
-
-            if (!isset($_POST['title']) || !isset($_POST['info']) || !isset($_POST['price']) || !isset($_POST['discount']) || !isset($_POST['inventory']) || !isset($_POST['pdid']) ) {
-                return array(
-                    "status" => "unknown",
-                    "message" => "Please contact your administrator. Request unknown!"
                 );
             }
 
@@ -80,14 +72,14 @@
                 }
             }
 
-            isset($_POST['title']) && !empty($_POST['title'])? $user['title'] =  $_POST['title'] :  $user['title'] = $product_data->title ;
-            isset($_POST['info']) && !empty($_POST['info'])? $user['info'] =  $_POST['info'] :  $user['info'] = $product_data->info ;
-            isset($_POST['price']) && !empty($_POST['price'])? $user['price'] =  $_POST['price'] :  $user['price'] = $product_data->price ;
-            isset($_POST['discount']) && !empty($_POST['discount'])? $user['discount'] =  $_POST['discount'] :  $user['discount'] = $product_data->discount ;
-            isset($_POST['inventory']) && !empty($_POST['inventory'])? $user['inventory'] =  $_POST['inventory'] :  $user['inventory'] = $product_data->inventory ;
-            isset($_POST['pcid']) && !empty($_POST['pcid'])? $user['pcid'] =  $_POST['pcid'] :  $user['pcid'] = $product_data->pcid;
-            isset($files['avatar']) && !empty($files['avatar'])? $user['avatar'] =  $files['avatar'] :  $user['avatar'] = $product_data->avatar;
-            isset($files['banner']) && !empty($files['banner'])? $user['banner'] =  $files['banner'] :  $user['banner'] = $product_data->banner;
+            isset($_POST['title']) && !empty($_POST['title']) ? $user['title'] =  $_POST['title'] :  $user['title'] = $product_data->title ;
+            isset($_POST['info']) && !empty($_POST['info']) ? $user['info'] =  $_POST['info'] :  $user['info'] = $product_data->info ;
+            isset($_POST['price']) && !empty($_POST['price']) ? $user['price'] =  $_POST['price'] :  $user['price'] = $product_data->price ;
+            isset($_POST['discount']) && !empty($_POST['discount']) ? $user['discount'] =  $_POST['discount'] :  $user['discount'] = $product_data->discount ;
+            isset($_POST['inventory']) && !empty($_POST['inventory']) ? $user['inventory'] =  $_POST['inventory'] :  $user['inventory'] = $product_data->inventory ;
+            isset($_POST['pcid']) && !empty($_POST['pcid']) ? $user['pcid'] =  $_POST['pcid'] :  $user['pcid'] = $product_data->pcid;
+            isset($files['avatar']) && !empty($files['avatar']) ? $user['avatar'] =  $files['avatar'] :  $user['avatar'] = $product_data->avatar;
+            isset($files['banner']) && !empty($files['banner']) ? $user['banner'] =  $files['banner'] :  $user['banner'] = $product_data->banner;
 
             if (!empty($_POST['inventory'])) {
                 if ( $user['inventory'] != "true" && $user['inventory'] != "false") {

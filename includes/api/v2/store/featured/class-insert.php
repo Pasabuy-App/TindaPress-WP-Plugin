@@ -73,6 +73,7 @@
                     "message" => "Required fileds cannot be empty "."'".ucfirst($validate)."'"."."
                 );
             }
+            isset($_POST['info']) && !empty($_POST['info'])? $user['info'] =  $_POST['info'] :  $user['info'] = null ;
 
             // Check if this store exists in featured table
             $check_store = $wpdb->get_row("SELECT `status` FROM $tbl_featured_store WHERE stid = '{$user["store_id"]}' AND `status` = 'active' ");

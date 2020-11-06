@@ -27,7 +27,6 @@
             $curl_user['price'] = $_POST["price"];
             $curl_user['pcid'] = $_POST["pcid"];
             $curl_user['title'] = $_POST["title"];
-            $curl_user['info'] = $_POST["info"];
             $curl_user['discount'] = $_POST["discount"];
             $curl_user['inventory'] = $_POST["inventory"];
             $curl_user['wpid'] = $_POST["wpid"];
@@ -46,7 +45,7 @@
             $files = $request->get_file_params();
 
             // Step 1: Check if prerequisites plugin are missing
-            $plugin = TP_Globals::verify_prerequisites();
+            $plugin = TP_Globals_v2::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
                     "status" => "unknown",
@@ -62,8 +61,7 @@
                 );
             }
 
-            if (!isset($_POST['stid']) || !isset($_POST['title']) || !isset($_POST['info']) || !isset($_POST['pcid'])
-                || !isset($_POST['discount']) || !isset($_POST['price']) ) {
+            if (!isset($_POST['stid']) || !isset($_POST['title']) || !isset($_POST['pcid']) || !isset($_POST['discount']) || !isset($_POST['price']) ) {
                 return array(
                     "status" => "unknown",
                     "message" => "Please contact your administrator. Request unknown"
@@ -79,6 +77,8 @@
                     "message" => "Required fileds cannot be empty "."'".ucfirst($validate)."'"."."
                 );
             }
+
+            isset($_POST['info']) && !empty($_POST['info'])? $user['info'] =  $_POST['info'] :  $user['info'] = null ;
 
             if ($_POST['inventory'] != "true" && $_POST['inventory'] != "false") {
                 return array(

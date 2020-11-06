@@ -26,7 +26,6 @@
             isset($_POST['ctid']) && !empty($_POST['ctid'])? $curl_user['ctid'] =  $_POST['ctid'] :  $curl_user['ctid'] = null ;
             isset($_POST['title']) && !empty($_POST['title'])? $curl_user['title'] =  $_POST['title'] :  $curl_user['title'] = null ;
             isset($_POST['ID']) && !empty($_POST['ID'])? $curl_user['ID'] =  $_POST['ID'] :  $curl_user['ID'] = null ;
-            isset($_POST['inventory']) && !empty($_POST['inventory'])? $curl_user['inventory'] =  $_POST['inventory'] :  $curl_user['inventory'] = null ;
             isset($_POST['status']) && !empty($_POST['status'])? $curl_user['status'] =  $_POST['status'] :  $curl_user['status'] = null ;
 
             return $curl_user;
@@ -48,6 +47,7 @@
             FROM $tbl_featured_products ";
 
             $data = $wpdb->get_results($sql);
+
             return array(
                 "status" => "success",
                 "message" => $data

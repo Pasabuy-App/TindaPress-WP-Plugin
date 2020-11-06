@@ -40,7 +40,7 @@
             $files = $request->get_file_params();
 
              // Step 1: Check if prerequisites plugin are missing
-            $plugin = TP_Globals::verify_prerequisites();
+            $plugin = TP_Globals_v2::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
                     "status" => "unknown",
@@ -65,13 +65,14 @@
 
             $user = self::catch_post();
 
-            $validate = TP_Globals_v2::check_listener($user);
+            $validate = MP_Globals_v2::check_listener($user);
             if ($validate !== true) {
                 return array(
                     "status" => "failed",
                     "message" => "Required fileds cannot be empty "."'".ucfirst($validate)."'"."."
                 );
             }
+            isset($_POST['comments']) && !empty($_POST['comments'])? $user['comments'] =  $_POST['comments'] :  $user['comments'] = null ;
 
             // Check if store exists
                 $check_store = $wpdb->get_row("SELECT ID FROM $tbl_store WHERE hsid = '{$user["stid"]}' AND `status` = 'active' ");

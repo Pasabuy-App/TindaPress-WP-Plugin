@@ -40,16 +40,5 @@
 
     //Make sure to create required mysql tables.
     include_once ( TP_PLUGIN_PATH . '/includes/core/dbhook.php' );
-
-    if(TP_UIHOST != site_url() || TP_FULLMODE == true) {
-        // include_once ( TP_PLUGIN_PATH . '/includes/view/primary.php' );
-        // include_once ( TP_PLUGIN_PATH . '/includes/view/primary.php' );
-        //Includes assets if page is defined.
-        include_once ( TP_PLUGIN_PATH . '/includes/core/assets.php' );
-    }
-
-    if(TP_UIHOST == site_url() || TP_FULLMODE == true) {
-        //Include the REST API of USocketNet to be accessible.
-        include_once ( TP_PLUGIN_PATH . '/includes/api/routes.php' );
-    }
+    include_once ( TP_PLUGIN_PATH . '/includes/api/routes.php' );
 ?>

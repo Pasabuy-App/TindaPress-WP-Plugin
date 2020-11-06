@@ -25,7 +25,7 @@
 
             $curl_user['scid'] = $_POST["scid"];
             $curl_user['title'] = $_POST["title"];
-            $curl_user['info'] = $_POST["info"];
+            $curl_user['info'] = isset($_POST["info"]) ? $_POST["info"] : "";
             $curl_user['adid'] = $_POST["adid"];
             $curl_user['wpid'] = $_POST["wpid"];
 
@@ -57,7 +57,7 @@
                 );
             }
 
-            if(!isset($_POST['scid']) || !isset($_POST['title']) || !isset($_POST['info'])  || !isset($_POST['adid'])  ){
+            if(!isset($_POST['scid']) || !isset($_POST['title']) || !isset($_POST['adid'])  ){
                 return  array(
                     "status" => "unknown",
                     "message" => "Please contact your administrator. Request Unknown!",
@@ -65,14 +65,6 @@
             }
 
             $user = self::catch_post();
-
-            $validate = TP_Globals_v2::check_listener($user);
-            if ($validate !== true) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Required fileds cannot be empty "."'".ucfirst($validate)."'"."."
-                );
-            }
 
             $check_store = $wpdb->get_row("SELECT `title`, `status` FROM $tbl_store_v2 WHERE title LIKE '%{$user["title"]}%' AND `status` = 'active' ");
             if (!empty($check_store)) {

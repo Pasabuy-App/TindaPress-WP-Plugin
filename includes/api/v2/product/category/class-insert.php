@@ -25,7 +25,6 @@
 
             $curl_user['stid'] = $_POST["stid"];
             $curl_user['title'] = $_POST["title"];
-            $curl_user['info'] = $_POST["info"];
             $curl_user['wpid'] = $_POST["wpid"];
 
             return $curl_user;
@@ -34,11 +33,12 @@
         public static function listen_open(){
 
             global $wpdb;
+            $tbl_stores = TP_STORES_v2;
             $tbl_product_category_v2 = TP_PRODUCT_CATEGORY_v2;
             $tbl_product_category_fields_v2 = TP_PRODUCT_CATEGORY_FIELDS_v2;
 
              // Step 1: Check if prerequisites plugin are missing
-            $plugin = TP_Globals::verify_prerequisites();
+            $plugin = TP_Globals_v2::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
                     "status" => "unknown",
@@ -54,7 +54,7 @@
                 );
             }
 
-            if (!isset($_POST['title']) || !isset($_POST['stid']) || !isset($_POST['info'])  ) {
+            if (!isset($_POST['title']) || !isset($_POST['stid'])  ) {
                 return array(
                     "status" => "unknwon",
                     "message" => "Please contact your administrator. Request unknown!",
@@ -68,6 +68,15 @@
                 return array(
                     "status" => "failed",
                     "message" => "Required fileds cannot be empty "."'".ucfirst($validate)."'"."."
+                );
+            }
+            isset($_POST['info']) && !empty($_POST['info'])? $user['info'] =  $_POST['info'] :  $user['info'] = null ;
+
+            $check_store = $wpdb->get_row("SELECT `status` FROM $tbl_stores WHERE `hsid` = '{$user["stid"]}' AND `status` = 'active' ");
+            if (empty($check_store)) {
+                return array(
+                    "status" => "failed",
+                    "message" => "This Store does not Exist.",
                 );
             }
 

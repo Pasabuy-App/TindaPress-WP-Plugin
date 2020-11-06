@@ -23,7 +23,7 @@
         public static function catch_post(){
             $curl_user = array();
             $curl_user['title'] = $_POST["title"];
-            $curl_user['info'] = $_POST["info"];
+            $curl_user['info'] = isset($_POST["info"]) ? $_POST["info"] : "";
             $curl_user['wpid'] = $_POST["wpid"];
             return $curl_user;
         }
@@ -35,7 +35,7 @@
             $tbl_store_doc_types_field = TP_STORES_DOCS_TYPES_FIELDS_v2;
 
             // Step 1: Check if prerequisites plugin are missing
-            $plugin = TP_Globals::verify_prerequisites();
+            $plugin = TP_Globals_v2::verify_prerequisites();
             if ($plugin !== true) {
                 return array(
                     "status" => "unknown",
@@ -59,14 +59,6 @@
             }
 
             $user = self::catch_post();
-
-            $validate = HP_Globals_v2::check_listener($user);
-            if ($validate !== true) {
-                return array(
-                    "status" => "failed",
-                    "message" => "Required fileds cannot be empty "."'".ucfirst($validate)."'"."."
-                );
-            }
 
             $check_category = $wpdb->get_row("SELECT `status` FROM $tbl_store_doc_types WHERE title LIKE '%{$user["title"]}%' AND `status` = 'active' ");
             if (!empty($check_category)) {
