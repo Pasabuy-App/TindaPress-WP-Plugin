@@ -92,7 +92,7 @@
                     if ($check == false) {
                         return array(
                             "status" => "failed",
-                            "data" => "Invalid value of type."
+                            "message" => "Invalid value of type."
                         );
                     }
                 // End
