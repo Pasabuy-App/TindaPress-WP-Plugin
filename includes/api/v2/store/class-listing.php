@@ -180,7 +180,7 @@
                     // End
 
                     // Get store schedule
-                        $get_schedule = $wpdb->get_row("SELECT * FROM mp_v2_schedule WHERE stid = '$value->hsid'");
+                        $get_schedule = $wpdb->get_row("SELECT * FROM mpv2_schedule WHERE stid = '$value->hsid'");
                         $get_schedule_today = $wpdb->get_row("SELECT stid, hsid FROM mp_v2_schedule WHERE stid = '$value->hsid' AND types = '$day' ");
                         if (!empty($get_schedule)) {
                             $value->opening = $get_schedule->started;
