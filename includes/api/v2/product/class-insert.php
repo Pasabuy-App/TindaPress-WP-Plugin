@@ -108,7 +108,7 @@
             // End
 
             // Check if product exists
-                $check_product = $wpdb->get_row("SELECT `status` FROM $tbl_product WHERE title LIKE '%{$user["title"]}%' AND `status` = 'active' AND stid = '{$user["store_id"]}' ");
+                $check_product = $wpdb->get_row("SELECT `status` FROM $tbl_product WHERE title LIKE '%{$user["title"]}%' AND `status` = 'active' AND stid = '{$user["store_id"]}' AND id IN ( SELECT MAX( id ) FROM $tbl_product  WHERE v.hsid = hsid  GROUP BY hsid ) ");
                 if (!empty($check_product)) {
                     return array(
                         "status" => "failed",

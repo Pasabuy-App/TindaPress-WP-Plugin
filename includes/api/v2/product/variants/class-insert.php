@@ -107,7 +107,8 @@
             // End
 
             // Check if variants exists
-                $check_variants = $wpdb->get_row("SELECT title FROM $tbl_variants WHERE title LIKE '%{$user["title"]}%' AND pdid = '{$user["pdid"]}'  AND `status` = 'active'  ");
+                $check_variants = $wpdb->get_row("SELECT title FROM $tbl_variants WHERE title LIKE '%{$user["title"]}%' AND pdid = '{$user["pdid"]}'  AND `status` = 'active'  AND
+                id IN ( SELECT MAX( id ) FROM $tbl_variants  WHERE v.hsid = hsid  GROUP BY hsid )  ");
                 if (!empty($check_variants)) {
                     return array(
                         "status" => "failed",
