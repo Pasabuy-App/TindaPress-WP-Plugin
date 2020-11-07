@@ -108,6 +108,8 @@
                 }
             }
 
+            $wpdb->query("START TRANSACTION");
+
             $import_data = $wpdb->query("INSERT INTO
                 $tbl_store_v2
                     ( `avatar`, `banner`, `hsid`, $tbl_store__field_v2, `status`, `commision`)
@@ -123,7 +125,7 @@
                     "message" => "An error occured while submitting data to server."
                 );
             }else{
-                $wpdb->query("ROLLBACK");
+                $wpdb->query("COMMIT");
                 return array(
                     "status" => "success",
                     "message" => "Data has been updated successfully.",

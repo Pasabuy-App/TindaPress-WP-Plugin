@@ -65,7 +65,7 @@
             }
 
             $user = self::catch_post();
-
+            $wpdb->query("START TRANSACTION");
             $check_store = $wpdb->get_row("SELECT `title`, `status` FROM $tbl_store_v2 WHERE title LIKE '%{$user["title"]}%' AND `status` = 'active' ");
             if (!empty($check_store)) {
                 return array(
@@ -129,7 +129,7 @@
                     "message" => "An error occured while submitting data to server."
                 );
             }else{
-                $wpdb->query("ROLLBACK");
+                $wpdb->query("COMMIT");
                 return array(
                     "status" => "success",
                     "message" => "Data has been added successfully.",
