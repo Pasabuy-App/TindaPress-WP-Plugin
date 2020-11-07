@@ -80,7 +80,8 @@
                 );
             }
 
-            $check_category = $wpdb->get_row("SELECT `status` FROM $tbl_product_category_v2 WHERE title LIKE '%{$user["title"]}%' AND `status` = 'active' AND stid = '{$user["stid"]}' ");
+            $check_category = $wpdb->get_row("SELECT `status` FROM $tbl_product_category_v2 WHERE title LIKE '%{$user["title"]}%' AND `status` = 'active' AND stid = '{$user["stid"]}' AND  WHERE
+            ID IN ( SELECT MAX( pdd.ID ) FROM $tbl_product_category_v2  pdd WHERE pdd.hsid = hsid GROUP BY hsid )");
             if (!empty($check_category)) {
                 return array(
                     "status" => "failed",

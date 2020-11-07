@@ -87,7 +87,7 @@
             $data = $wpdb->get_results($sql);
 
             foreach ($data as $key => $value) {
-                $value->products = $wpdb->get_results("SELECT
+                    $products = $wpdb->get_results("SELECT
                         hsid as ID,
                         stid,
                         title,
@@ -102,7 +102,19 @@
                         pcid = '$value->ID'
                     AND
                         ID IN ( SELECT MAX( pdd.ID ) FROM $tbl_product  pdd WHERE pdd.hsid = hsid GROUP BY hsid ) ");
+
+                foreach ($products as $prod_key => $prod_value) {
+                    if (is_numeric($prod_value->avatar)) {
+                        $image = wp_get_attachment_image_src( $prod_value->avatar, 'medium', $icon = false );
+                        if ($image != false) {
+                            $prod_value->avatar = $image[0];
+                        }
+                    }
+                }
+
+                $value->products = $products;
             }
+
             return array(
                 "status" => "success",
                 "data" => $data
