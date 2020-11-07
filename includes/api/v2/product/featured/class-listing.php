@@ -50,7 +50,7 @@
 
             return array(
                 "status" => "success",
-                "message" => $data
+                "data" => $data
             );
         }
     }

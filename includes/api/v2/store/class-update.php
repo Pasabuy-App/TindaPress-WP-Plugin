@@ -126,7 +126,7 @@
                 $wpdb->query("ROLLBACK");
                 return array(
                     "status" => "success",
-                    "message" => "Data has been added successfully.",
+                    "message" => "Data has been updated successfully.",
                     "data" => $check_store->hsid
                 );
             }
