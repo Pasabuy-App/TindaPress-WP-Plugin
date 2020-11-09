@@ -42,7 +42,7 @@
             $tbl_operation = MP_OPERATIONS_v2;
             $tbl_store_category_groups = TP_STORES_CATEGORY_GROUPS_v2;
             $tbl_rate = TP_STORES_RATINGS_v2;
-
+            $tbl_schedule = MP_SCHEDULES_v2;
             $time = time();
             $date = date("Y:m:d");
             $day = lcfirst(date('D', $time));
@@ -57,12 +57,12 @@
             }
 
             // Step 2: Validate user
-            // if (DV_Verification::is_verified() == false) {
-            //     return array(
-            //         "status" => "unknown",
-            //         "message" => "Please contact your administrator. Verification Issues!",
-            //     );
-            // }
+            if (DV_Verification::is_verified() == false) {
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification Issues!",
+                );
+            }
 
             $user = self::catch_post();
 
@@ -131,7 +131,6 @@
                         if (empty($get_category)) {
                             $value->category_name = '';
                         }else{
-
                             $value->category_name = $get_category->title;
                         }
                     // End
@@ -147,29 +146,26 @@
                             dv_address d WHERE ID = $value->adid ");
 
                         if (empty($get_store_address) || empty($get_store_address_code)) {
-
-                            $value->street = "";
-                            $value->brgy = "";
-                            $value->brgy_code = "";
-                            $value->city = "";
-                            $value->city_code = "";
-                            $value->province = "";
+                            $value->street        = "";
+                            $value->brgy          = "";
+                            $value->brgy_code     = "";
+                            $value->city          = "";
+                            $value->city_code     = "";
+                            $value->province      = "";
                             $value->province_code = "";
-                            $value->country = "";
-                            $value->country_code = "";
-
+                            $value->country       = "";
+                            $value->country_code  = "";
                         }else{
-                            $value->street = $get_store_address->street;
-                            $value->brgy = $get_store_address->brgy;
-                            $value->brgy_code = $get_store_address_code->brgy_code;
-                            $value->city = $get_store_address->city;
-                            $value->city_code = $get_store_address_code->city_code;
-                            $value->province = $get_store_address->province;
+                            $value->street        = $get_store_address->street;
+                            $value->brgy          = $get_store_address->brgy;
+                            $value->brgy_code     = $get_store_address_code->brgy_code;
+                            $value->city          = $get_store_address->city;
+                            $value->city_code     = $get_store_address_code->city_code;
+                            $value->province      = $get_store_address->province;
                             $value->province_code = $get_store_address_code->province_code;
-                            $value->country = $get_store_address->country;
-                            $value->country_code = $get_store_address_code->country_code;
+                            $value->country       = $get_store_address->country;
+                            $value->country_code  = $get_store_address_code->country_code;
                         }
-
                     // End
 
                     // Get store rates
@@ -180,8 +176,8 @@
                     // End
 
                     // Get store schedule
-                        $get_schedule = $wpdb->get_row("SELECT * FROM mpv2_schedule WHERE stid = '$value->hsid'");
-                        $get_schedule_today = $wpdb->get_row("SELECT stid, hsid FROM mp_v2_schedule WHERE stid = '$value->hsid' AND types = '$day' ");
+                        $get_schedule = $wpdb->get_row("SELECT * FROM $tbl_schedule WHERE stid = '$value->hsid'");
+                        $get_schedule_today = $wpdb->get_row("SELECT stid, hsid FROM $tbl_schedule WHERE stid = '$value->hsid' AND types = '$day' ");
                         if (!empty($get_schedule)) {
                             $value->opening = $get_schedule->started;
                             $value->closing = $get_schedule->ended;
