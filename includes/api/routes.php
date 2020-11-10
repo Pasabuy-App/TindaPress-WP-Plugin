@@ -19,6 +19,9 @@
                 require plugin_dir_path(__FILE__) . '/v2/store/category/class-listing.php';
                 // Groups
                     require plugin_dir_path(__FILE__) . '/v2/store/category/groups/class-insert.php';
+                    require plugin_dir_path(__FILE__) . '/v2/store/category/groups/class-update.php';
+                    require plugin_dir_path(__FILE__) . '/v2/store/category/groups/class-delete.php';
+                    require plugin_dir_path(__FILE__) . '/v2/store/category/groups/class-listing.php';
 
             // Documents
                 require plugin_dir_path(__FILE__) . '/v2/store/documents/doc-types/class-insert.php';
@@ -36,6 +39,12 @@
 
                 require plugin_dir_path(__FILE__) . '/v2/store/featured/class-insert.php';
                 require plugin_dir_path(__FILE__) . '/v2/store/featured/class-listing.php';
+
+            // Address
+                require plugin_dir_path(__FILE__) . '/v2/store/address/class-insert.php';
+                require plugin_dir_path(__FILE__) . '/v2/store/address/class-activate.php';
+                require plugin_dir_path(__FILE__) . '/v2/store/address/class-listing.php';
+                require plugin_dir_path(__FILE__) . '/v2/store/address/class-update.php';
 
             require plugin_dir_path(__FILE__) . '/v2/store/class-insert.php';
             require plugin_dir_path(__FILE__) . '/v2/store/class-listing.php';
@@ -93,6 +102,17 @@
                         'callback' => array('TP_Store_Update_v2','listen'),
                     ));
 
+                        // Address
+                            register_rest_route( 'tindapress/v2/store/address', 'insert', array(
+                                'methods' => 'POST',
+                                'callback' => array('TP_Store_Insert_address','listen'),
+                            ));
+
+                            register_rest_route( 'tindapress/v2/store/address', 'list', array(
+                                'methods' => 'POST',
+                                'callback' => array('TP_Store_Listing_Address','listen'),
+                            ));
+
                         // Store category
                             register_rest_route( 'tindapress/v2/store/category', 'insert', array(
                                 'methods' => 'POST',
@@ -108,6 +128,18 @@
                                 register_rest_route( 'tindapress/v2/store/category/groups', 'insert', array(
                                     'methods' => 'POST',
                                     'callback' => array('TP_Store_Category_Group_Insert_v2','listen'),
+                                ));
+                                register_rest_route( 'tindapress/v2/store/category/groups', 'list', array(
+                                    'methods' => 'POST',
+                                    'callback' => array('TP_Store_Category_Group_Listing_v2','listen'),
+                                ));
+                                register_rest_route( 'tindapress/v2/store/category/groups', 'update', array(
+                                    'methods' => 'POST',
+                                    'callback' => array('TP_Store_Category_Group_Update_v2','listen'),
+                                ));
+                                register_rest_route( 'tindapress/v2/store/category/groups', 'delete', array(
+                                    'methods' => 'POST',
+                                    'callback' => array('TP_Store_Category_Group_Delete_v2','listen'),
                                 ));
 
                         // Documents

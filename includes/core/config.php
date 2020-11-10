@@ -14,7 +14,7 @@
 		// Miguel Igdalino
 
 		// Config declaration for version two
-			define('TP_PREFIX_v2', 'tpv2_');
+			define('TP_PREFIX_v2', 'tp_v2_');
 
 			define('TP_STORES_v2', TP_PREFIX_v2.'stores');
 			define('TP_STORES_FIELDS_v2', ' `scid`, `title`, `info`, `adid`, `created_by`');

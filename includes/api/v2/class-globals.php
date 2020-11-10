@@ -72,9 +72,12 @@
             if(!class_exists('DV_Verification') ){
                 return 'DataVice';
             }
-
             return true;
-        }
+		}
+
+		public static function date_stamp(){
+            return date("Y-m-d h:i:s");
+		}
 
         public static function upload_image($request, $files){
 			$data = array();

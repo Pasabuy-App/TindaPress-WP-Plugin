@@ -85,7 +85,7 @@
             if (empty($check_store)) {
                 return array(
                     "status" => "failed",
-                    "message" => "This mover does not exists"
+                    "message" => "This store does not exists"
                 );
             }
 
