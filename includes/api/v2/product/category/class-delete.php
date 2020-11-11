@@ -23,6 +23,7 @@
         public static function catch_post(){
             $curl_user = array();
 
+            $curl_user['pcid'] = $_POST["pcid"];
             $curl_user['wpid'] = $_POST["wpid"];
 
             return $curl_user;
@@ -43,7 +44,7 @@
                 );
             }
 
-            if (!isset($_POST['title']) || !isset($_POST['info']) || !isset($_POST['status'])) {
+            if (!isset($_POST['pcid']) ) {
                 return array(
                     "status" => "unknown",
                     "message" => "Please contact your administrator. Request unknown."
@@ -79,7 +80,7 @@
                 $tbl_category
                     (`hsid`, $tbl_category_filed, `status`)
                 VALUES
-                    ('{$user["title"]}''$category_data->hsid', '$category_data->stid', '{$user["title"]}', '{$user["info"]}', '{$user["wpid"]}', 'inactive') ");
+                    ('$category_data->hsid', '$category_data->stid', '$category_data->title', '$category_data->info', '{$user["wpid"]}', 'inactive') ");
             $import_data_id = $wpdb->insert_id;
 
             if ($import_data < 1) {
