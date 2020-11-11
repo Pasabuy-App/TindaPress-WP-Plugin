@@ -76,6 +76,16 @@
                 $sql .= " AND hsid = '{$user["ID"]}' ";
             }
 
+            if($user['status'] != null){
+                if ($user['status'] != "active" && $user['status'] != "inactive") {
+                    return array(
+                        "status" => "failed",
+                        "message" => "Invalid value of status"
+                    );
+                }
+                $sql .= " AND `status` = '{$user["status"]}' ";
+            }
+
             if ($user['groups'] != null) {
                 $sql .= "  HAVING category_groups = '{$user["groups"]}' ";
             }
