@@ -58,15 +58,15 @@
             $sql = "SELECT
                 hsid as ID,
                 title,
-                (SELECT title FROM $tbl_store_category_groups WHERE hsid = groups ) as category_groups,
+                (SELECT title FROM $tbl_store_category_groups sg WHERE hsid = groups AND id IN ( SELECT MAX( id ) FROM $tbl_store_category_groups WHERE sg.hsid = hsid  GROUP BY hsid ) ) as category_groups,
                 info,
                 avatar,
                 `status`,
                 date_created
             FROM
-                $tbl_store_category
+                $tbl_store_category sc
             WHERE
-                id IN ( SELECT MAX( id ) FROM $tbl_store_category GROUP BY title ) ";
+                id IN ( SELECT MAX( id ) FROM $tbl_store_category WHERE sc.hsid = hsid  GROUP BY hsid ) ";
 
             if ($user['title'] != null) {
                 $sql .= " AND title LIKE '%{$user["title"]}%' ";
