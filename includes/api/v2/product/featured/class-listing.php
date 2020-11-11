@@ -44,7 +44,10 @@
                 avatar,
                 `status`
                 date_created
-            FROM $tbl_featured_products ";
+            FROM
+                $tbl_featured_products
+            WHERE
+                ID IN ( SELECT MAX( pdd.ID ) FROM $tbl_featured_products  fp WHERE fp.hsid = hsid GROUP BY hsid )";
 
             $data = $wpdb->get_results($sql);
 

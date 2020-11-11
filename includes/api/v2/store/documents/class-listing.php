@@ -59,6 +59,7 @@
             $sql = "SELECT
                     hsid as ID,
                     stid,
+                    types as `type_id`,
                     (SELECT title FROM $tbl_docu_type WHERE hsid = c.types ) as doctype,
                     preview,
                     comments,

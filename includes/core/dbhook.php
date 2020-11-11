@@ -227,6 +227,7 @@
 					$sql .= " `rates` tinyint(10) NOT NULL COMMENT 'Rates.', ";
 					$sql .= " `comments` varchar(255) COMMENT 'Comments for this product rating', ";
 					$sql .= " `rated_by` bigint(20) NOT NULL COMMENT 'The user who seen this store.', ";
+					$sql .= " `status` enum('active', 'inactive') NOT NULL COMMENT 'Status of this featured product.', ";
 					$sql .= " `date_created` datetime NULL DEFAULT current_timestamp() COMMENT 'Date created this variants.', ";
 					$sql .= "PRIMARY KEY (`ID`) ";
 					$sql .= ") ENGINE = InnoDB; ";
