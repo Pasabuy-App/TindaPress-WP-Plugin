@@ -64,9 +64,8 @@
 
             $sql = "SELECT
                 hsid as ID,
-                (SELECT title FROM $tbl_stores WHERE hsid = stid ) as store_name,
-                (SELECT title FROM $tbl_product_category WHERE hsid = pcid AND
-                id IN ( SELECT MAX( id ) FROM $tbl_product_category ct WHERE ct.hsid = hsid  GROUP BY hsid ) ) as category_name,
+                (SELECT title FROM $tbl_stores WHERE hsid = stid AND id IN ( SELECT MAX( id ) FROM $tbl_stores s WHERE s.hsid = hsid  GROUP BY hsid )  ) as store_name,
+                (SELECT title FROM $tbl_product_category WHERE hsid = pcid AND id IN ( SELECT MAX( id ) FROM $tbl_product_category ct WHERE ct.hsid = hsid  GROUP BY hsid ) ) as category_name,
                 pcid,
                 title,
                 info,
