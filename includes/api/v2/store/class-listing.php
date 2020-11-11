@@ -81,7 +81,7 @@
             FROM
                 $tbl_store
             WHERE
-                id IN ( SELECT MAX( id ) FROM $tbl_store GROUP BY title ) ";
+                id IN ( SELECT MAX( id ) FROM $tbl_store s WHERE s.hsid = hsid  GROUP BY hsid ) ";
 
             if($user["stid"] != null){
                 $sql .= " AND hsid = '{$user["stid"]}' ";
