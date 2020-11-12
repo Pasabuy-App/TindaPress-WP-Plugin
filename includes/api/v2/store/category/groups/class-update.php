@@ -44,21 +44,21 @@
             }
 
             // Step 2: Validate user
-            // if (DV_Verification::is_verified() == false) {
-            //     return array(
-            //         "status" => "unknown",
-            //         "message" => "Please contact your administrator. Verification Issues!",
-            //     );
-            // }
+            if (DV_Verification::is_verified() == false) {
+                return array(
+                    "status" => "unknown",
+                    "message" => "Please contact your administrator. Verification Issues!",
+                );
+            }
 
             $posts = self::catch_post();
 
-            $check_group = $wpdb->get_row("SELECT * 
-                FROM 
+            $check_group = $wpdb->get_row("SELECT *
+                FROM
                     $tbl_store_category_groups as groups
-                WHERE 
+                WHERE
                     hsid = '{$posts["ID"]}'
-                AND 
+                AND
                     id IN ( SELECT MAX( id ) FROM $tbl_store_category_groups WHERE groups.hsid = hsid GROUP BY hsid ) ");
 
 
@@ -88,7 +88,7 @@
                     $tbl_store_category_groups
                         (`hsid`, $tbl_store_category_groups_fields, `status`)
                     VALUES
-                        ('$check_group->hsid', '{$posts["title"]}', '{$posts["title"]}', '$check_group->created_by', '$check_group->status' ) ");
+                        ('$check_group->hsid', '{$posts["title"]}', '{$posts["info"]}', '$check_group->created_by', '$check_group->status' ) ");
             $group_id = $wpdb->insert_id;
 
             if ($group_id < 1 ) {
@@ -104,6 +104,6 @@
                     "message" => "Data has been updated sucessfully."
                 );
             }
-            
+
         }
     }
