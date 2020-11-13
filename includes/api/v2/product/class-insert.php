@@ -88,7 +88,7 @@
             }
 
             // Check if store exists
-                $check_store = $wpdb->get_row("SELECT ID FROM $tbl_store WHERE hsid = '{$user["store_id"]}' AND `status` = 'active'");
+                $check_store = $wpdb->get_row("SELECT ID FROM $tbl_store WHERE hsid = '{$user["store_id"]}' AND `status` = 'active' AND id IN ( SELECT MAX( id ) FROM $tbl_store s WHERE s.hsid = hsid  GROUP BY hsid )");
                 if (empty($check_store)) {
                     return array(
                         "status" => "failed",
@@ -98,7 +98,7 @@
             // End
 
             // Check if product category exists
-                $check_product_category = $wpdb->get_row("SELECT ID FROM $tbl_product_category WHERE hsid = '{$user["pcid"]}' AND `status` = 'active'");
+                $check_product_category = $wpdb->get_row("SELECT ID FROM $tbl_product_category WHERE hsid = '{$user["pcid"]}' AND `status` = 'active' AND id IN ( SELECT MAX( id ) FROM $tbl_product_category c WHERE c.hsid = hsid  GROUP BY hsid )  ");
                 if (empty($check_product_category)) {
                     return array(
                         "status" => "failed",
