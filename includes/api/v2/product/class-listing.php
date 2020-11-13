@@ -80,7 +80,7 @@
             FROM
                 $tbl_product p
             WHERE
-                ID IN ( SELECT MAX( pdd.ID ) FROM $tbl_product  pdd WHERE pdd.hsid = hsid GROUP BY pubkey )  ";
+                ID IN ( SELECT MAX( pdd.ID ) FROM $tbl_product  pdd WHERE pdd.hsid = hsid GROUP BY hsid )  ";
 
             if($user["ctid"] != null){
                 $sql .= " AND pcid = '{$user["ctid"]}' ";
