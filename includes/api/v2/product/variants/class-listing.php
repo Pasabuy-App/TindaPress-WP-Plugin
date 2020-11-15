@@ -36,7 +36,8 @@
 
             global $wpdb;
             $tbl_variants = TP_PRODUCT_VARIANTS_v2;
-
+            $tbl_product = TP_PRODUCT_v2;
+            $tbl_product_category = TP_PRODUCT_CATEGORY_v2;
 
             // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals_v2::verify_prerequisites();
@@ -59,7 +60,8 @@
 
             $sql = " SELECT
                 hsid as ID,
-                pdid,
+                (SELECT title FROM $tbl_product p WHERE ID IN ( SELECT MAX( pdd.ID ) FROM $tbl_product  pdd WHERE pdd.hsid = p.hsid GROUP BY pdd.hsid ) ) as product_name,
+                (SELECT title FROM $tbl_product_category WHERE hsid = pcid AND id IN ( SELECT MAX( id ) FROM $tbl_product_category ct WHERE ct.hsid = hsid  GROUP BY hsid ) ) as category_name,
                 title,
                 info,
                 price,
