@@ -38,6 +38,7 @@
             $tbl_variants = TP_PRODUCT_VARIANTS_v2;
             $tbl_product = TP_PRODUCT_v2;
             $tbl_product_category = TP_PRODUCT_CATEGORY_v2;
+            $tbl_store_v2 = TP_STORES_v2;
 
             // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals_v2::verify_prerequisites();
@@ -60,8 +61,7 @@
 
             $sql = " SELECT
                 hsid as ID,
-                (SELECT title FROM $tbl_product p WHERE ID IN ( SELECT MAX( pdd.ID ) FROM $tbl_product  pdd WHERE pdd.hsid = p.hsid GROUP BY pdd.hsid ) ) as product_name,
-                (SELECT title FROM $tbl_product_category WHERE hsid = pcid AND id IN ( SELECT MAX( id ) FROM $tbl_product_category ct WHERE ct.hsid = hsid  GROUP BY hsid ) ) as category_name,
+                pdid,
                 title,
                 info,
                 price,
@@ -126,6 +126,24 @@
                 AND
                     id IN ( SELECT MAX( id ) FROM $tbl_variants  WHERE v.hsid = hsid  GROUP BY hsid )");
                 $value->options = $get_child;
+
+                // Get product name
+                    $get_product = $wpdb->get_row("SELECT title, stid, pcid FROM $tbl_product WHERE hsid = '$value->pdid' AND
+                        id IN ( SELECT MAX( id ) FROM $tbl_product p WHERE p.hsid = hsid  GROUP BY hsid ) ");
+                    $value->product_name = !empty($get_product)? $get_product->title : "" ;
+                // End
+
+                // Get category nme
+                    $get_category = $wpdb->get_row("SELECT title FROM $tbl_product_category WHERE hsid = '$get_product->pcid' AND
+                        id IN ( SELECT MAX( id ) FROM $tbl_product_category c WHERE c.hsid = hsid  GROUP BY hsid ) ");
+                    $value->category_name = !empty($get_category)? $get_category->title : "" ;
+                // End
+
+                // Get store name
+                    $get_store = $wpdb->get_row("SELECT title FROM $tbl_store_v2 WHERE hsid = '$get_product->stid' AND
+                        id IN ( SELECT MAX( id ) FROM $tbl_store_v2 s WHERE s.hsid = hsid  GROUP BY hsid ) ");
+                    $value->store_name = !empty($get_store)? $get_store->title : "" ;
+                // End
             }
 
             return array(
