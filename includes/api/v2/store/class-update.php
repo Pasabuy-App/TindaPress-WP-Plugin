@@ -67,8 +67,8 @@
             }
 
 
-            isset($_POST['title']) && !empty($_POST['title'])? $user['title'] =  $_POST['title'] :  $user['title'] = $check_store->title;
-            isset($_POST['info']) && !empty($_POST['info'])? $user['info'] =  $_POST['info'] :  $user['info'] = $check_store->info;
+            isset($_POST['title']) && !empty($_POST['title'])? $user['title'] =   $wpdb->_real_escape($_POST['title']) :  $user['title'] = $wpdb->_real_escape($check_store->title);
+            isset($_POST['info']) && !empty($_POST['info'])? $user['info'] =  $wpdb->_real_escape($_POST['info']) :  $user['info'] = $wpdb->_real_escape($check_store->info);
             isset($_POST['adid']) && !empty($_POST['adid'])? $user['adid'] =  $_POST['adid'] :  $user['adid'] = $check_store->adid;
             isset($_POST['commision']) && !empty($_POST['commision'])? $user['commision'] =  $_POST['commision'] :  $user['commision'] = $check_store->commision;
             isset($_POST['scid']) && !empty($_POST['scid'])? $user['scid'] =  $_POST['scid'] :  $user['scid'] = $check_store->scid;

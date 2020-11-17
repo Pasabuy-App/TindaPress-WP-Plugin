@@ -20,12 +20,12 @@
             );
         }
 
-        public static function catch_post(){
+        public static function catch_post($wpdb){
             $curl_user = array();
 
             $curl_user['scid'] = $_POST["scid"];
-            $curl_user['title'] = $_POST["title"];
-            $curl_user['info'] = isset($_POST["info"]) ? $_POST["info"] : "";
+            $curl_user['title'] = $wpdb->_real_escape($_POST["title"]);
+            $curl_user['info'] = isset($_POST["info"]) ? $wpdb->_real_escape($_POST["info"]) : "";
             $curl_user['adid'] = $_POST["adid"];
             $curl_user['wpid'] = $_POST["wpid"];
 
@@ -33,8 +33,8 @@
         }
 
         public static function listen_open($request){
-
             global $wpdb;
+
             $tbl_store_v2 = TP_STORES_v2;
             $tbl_store__field_v2 = TP_STORES_FIELDS_v2;
 
@@ -64,7 +64,7 @@
                 );
             }
 
-            $user = self::catch_post();
+            $user = self::catch_post($wpdb);
             $wpdb->query("START TRANSACTION");
             $check_store = $wpdb->get_row("SELECT `title`, `status` FROM $tbl_store_v2 WHERE title LIKE '%{$user["title"]}%' AND `status` = 'active' ");
             if (!empty($check_store)) {

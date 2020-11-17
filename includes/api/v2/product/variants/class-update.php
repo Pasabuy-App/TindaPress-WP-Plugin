@@ -80,8 +80,8 @@
 
             // Create listener of post param
                 isset($_POST['pdid']) && !empty($_POST['pdid'])? $user['pdid'] =  $_POST['pdid'] :  $user['pdid'] = $variant_data->pdid ;
-                isset($_POST['title']) && !empty($_POST['title'])? $user['title'] =  $_POST['title'] :  $user['title'] = $variant_data->title ;
-                isset($_POST['info']) && !empty($_POST['info'])? $user['info'] =  $_POST['info'] :  $user['info'] = $variant_data->info ;
+                isset($_POST['title']) && !empty($_POST['title'])? $user['title'] =  $wpdb->_real_escape($_POST['title']) :  $user['title'] = $wpdb->_real_escape($variant_data->title) ;
+                isset($_POST['info']) && !empty($_POST['info'])? $user['info'] =  $wpdb->_real_escape($_POST['info']) :  $user['info'] = $wpdb->_real_escape($variant_data->info) ;
                 isset($_POST['price']) && !empty($_POST['price'])? $user['price'] =  $_POST['price'] :  $user['price'] = $variant_data->price ;
                 isset($_POST['required']) && !empty($_POST['required'])? $user['required'] =  $_POST['required'] :  $user['required'] = $variant_data->required ;
                 isset($_POST['parents']) && !empty($_POST['parents'])? $user['parents'] =  $_POST['parents'] :  $user['parents'] = $variant_data->parents ;

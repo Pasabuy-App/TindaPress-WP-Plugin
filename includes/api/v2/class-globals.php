@@ -227,7 +227,29 @@
 				}
 			}
 			return false;
+		}
 
+		public static function seen($table_name, $wpid, $unique_column, $unique_column_id){
+			global $wpdb;
 
+			// Check if this user already seen this unique column
+				$check_unique = $wpdb->get_row("SELECT `ID` FROM $table_name WHERE `wpid` = '$wpid' AND `$unique_column` = '$unique_column_id' ");
+				if (!empty($check_unique)) {
+					return true;
+				}else{
+
+					// Import seen
+
+						$import_unique_seen = $wpdb->query("INSERT INTO $table_name ( `wpid`, `$unique_column` ) VALUES ( '$wpid', '$unique_column_id' ) ");
+						$import_unique_seen_id = $wpdb->insert_id;
+						$import_unique_seen_hsid = $wpdb->query("UPDATE $table_name SET hsid = sha2($import_unique_seen_id, 256) WHERE ID = '$import_unique_seen_id' ");
+					// End
+					if ($import_unique_seen < 1 || $import_unique_seen_hsid < 1 ) {
+						return false;
+					}else{
+						return true;
+					}
+				}
+			// End
 		}
     }

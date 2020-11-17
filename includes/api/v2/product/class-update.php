@@ -72,8 +72,8 @@
                 }
             }
 
-            isset($_POST['title']) && !empty($_POST['title']) ? $user['title'] =  $_POST['title'] :  $user['title'] = $product_data->title ;
-            isset($_POST['info']) && !empty($_POST['info']) ? $user['info'] =  $_POST['info'] :  $user['info'] = $product_data->info ;
+            isset($_POST['title']) && !empty($_POST['title']) ? $user['title'] =  $wpdb->_real_escape($_POST['title']) :  $user['title'] = $wpdb->_real_escape($product_data->title) ;
+            isset($_POST['info']) && !empty($_POST['info']) ? $user['info'] =  $wpdb->_real_escape($_POST['info']) :  $user['info'] = $wpdb->_real_escape($product_data->info) ;
             isset($_POST['price']) && !empty($_POST['price']) ? $user['price'] =  $_POST['price'] :  $user['price'] = $product_data->price ;
             isset($_POST['discount']) && !empty($_POST['discount']) ? $user['discount'] =  $_POST['discount'] :  $user['discount'] = $product_data->discount ;
             isset($_POST['inventory']) && !empty($_POST['inventory']) ? $user['inventory'] =  $_POST['inventory'] :  $user['inventory'] = $product_data->inventory ;

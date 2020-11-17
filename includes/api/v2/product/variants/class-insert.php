@@ -24,7 +24,7 @@
             $curl_user = array();
 
             $curl_user['pdid'] = $_POST["pdid"];
-            $curl_user['title'] = $_POST["title"];
+            $curl_user['title'] = $wpdb->_real_escape($_POST["title"]);
             $curl_user['price'] = $_POST["price"];
             $curl_user['required'] = $_POST["required"];
             $curl_user['wpid'] = $_POST["wpid"];
@@ -63,7 +63,7 @@
                 );
             }
 
-            $user = self::catch_post();
+            $user = self::catch_post($wpdb);
 
             $validate = HP_Globals_v2::check_listener($user);
             if ($validate !== true) {

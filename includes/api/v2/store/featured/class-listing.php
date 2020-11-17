@@ -43,6 +43,7 @@
             $tbl_store_category = TP_STORES_CATEGORIES_v2;
             $tbl_address_view = DV_ADDRESS_VIEW;
             $tbl_operation = MP_OPERATIONS_v2;
+            $tbl_featured_store_seen = TP_FEATURED_STORES_SEEN_v2;
             $time = time();
             $date = date("Y:m:d");
             $day = lcfirst(date('D', $time));
@@ -66,18 +67,18 @@
             $user = self::catch_post();
 
             $sql = " SELECT
-                hsid as ID,
-                stid as hsid,
-                (SELECT title FROM $tbl_store s WHERE hsid = stid AND id IN ( SELECT MAX( id ) FROM $tbl_store  WHERE hsid = s.hsid GROUP BY hsid  ) ) as title,
-                groups,
-                avatar,
-                banner,
-                `status`,
-                date_created
-            FROM
-                $tbl_featured_store fs
-            WHERE
-                id IN ( SELECT MAX( id ) FROM $tbl_featured_store WHERE  hsid = fs.hsid GROUP BY stid ) " ;
+                    hsid as ID,
+                    stid as hsid,
+                    (SELECT title FROM $tbl_store s WHERE hsid = stid AND id IN ( SELECT MAX( id ) FROM $tbl_store  WHERE hsid = s.hsid GROUP BY hsid  ) ) as title,
+                    groups,
+                    avatar,
+                    banner,
+                    `status`,
+                    date_created
+                FROM
+                    $tbl_featured_store fs
+                WHERE
+                    id IN ( SELECT MAX( id ) FROM $tbl_featured_store WHERE  hsid = fs.hsid GROUP BY stid ) " ;
 
             if ($user["ID"] != null ) {
                 $sql .= " AND hsid = '{$user["ID"]}' ";
@@ -128,10 +129,12 @@
                     `status`,
                     created_by,
                     date_created
-                FROM
-                    $tbl_store
-                WHERE
-                    id IN ( SELECT MAX( id ) FROM $tbl_store s WHERE s.hsid = hsid  GROUP BY hsid )");
+                    FROM
+                        $tbl_store
+                    WHERE
+                        hsid = '$value->stid'
+                    AND
+                        id IN ( SELECT MAX( id ) FROM $tbl_store s WHERE s.hsid = hsid  GROUP BY hsid )");
 
 
                 // Store category
@@ -256,6 +259,14 @@
                         $value->operation_id = "";
                     }
                 // End
+
+                $seen = TP_Globals_v2::seen($tbl_featured_store_seen, $_POST['wpid'], "stid", $value->stid);
+                if ($seen == false) {
+                    return array(
+                        "status" => "failed",
+                        "message" => "Please contact your administrator. Featured store seen failed."
+                    );
+                }
             }
 
 

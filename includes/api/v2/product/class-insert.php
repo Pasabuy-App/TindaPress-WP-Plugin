@@ -20,13 +20,13 @@
             );
         }
 
-        public static function catch_post(){
+        public static function catch_post($wpdb){
             $curl_user = array();
 
             $curl_user['store_id'] = $_POST["stid"];
             $curl_user['price'] = $_POST["price"];
             $curl_user['pcid'] = $_POST["pcid"];
-            $curl_user['title'] = $_POST["title"];
+            $curl_user['title'] = $wpdb->_real_escape($_POST["title"]);
             $curl_user['discount'] = $_POST["discount"];
             $curl_user['inventory'] = $_POST["inventory"];
             $curl_user['wpid'] = $_POST["wpid"];
@@ -68,7 +68,7 @@
                 );
             }
 
-            $user = self::catch_post();
+            $user = self::catch_post($wpdb);
 
             $validate = TP_Globals_v2::check_listener($user);
             if ($validate !== true) {
@@ -78,7 +78,7 @@
                 );
             }
 
-            isset($_POST['info']) && !empty($_POST['info'])? $user['info'] =  $_POST['info'] :  $user['info'] = null ;
+            isset($_POST['info']) && !empty($_POST['info'])? $user['info'] =  $wpdb->_real_escape($_POST['info']) :  $user['info'] = null ;
 
             if ($_POST['inventory'] != "true" && $_POST['inventory'] != "false") {
                 return array(
