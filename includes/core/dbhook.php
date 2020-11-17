@@ -51,6 +51,11 @@
 					$sql .= "PRIMARY KEY (`ID`) ";
 					$sql .= ") ENGINE = InnoDB; ";
 				$result = $wpdb->get_results($sql);
+
+				$wpdb->query("CREATE INDEX `hsid` ON $tbl_stores_category_v2 (`hsid`);");
+				$wpdb->query("CREATE INDEX `title` ON $tbl_stores_category_v2 (`title`);");
+				$wpdb->query("CREATE INDEX `status` ON $tbl_stores_category_v2 (`status`);");
+
 			}
 
 			//Database table creation for store document types
@@ -66,6 +71,11 @@
 					$sql .= "PRIMARY KEY (`ID`) ";
 					$sql .= ") ENGINE = InnoDB; ";
 				$result = $wpdb->get_results($sql);
+
+				$wpdb->query("CREATE INDEX `hsid` ON $tbl_store_docs_types_v2 (`hsid`);");
+				$wpdb->query("CREATE INDEX `title` ON $tbl_store_docs_types_v2 (`title`);");
+				$wpdb->query("CREATE INDEX `status` ON $tbl_store_docs_types_v2 (`status`);");
+
 			}
 
 			//Database table creation for store
@@ -90,6 +100,13 @@
 					$sql .= "PRIMARY KEY (`ID`) ";
 					$sql .= ") ENGINE = InnoDB; ";
 				$result = $wpdb->get_results($sql);
+
+				$wpdb->query("CREATE INDEX `hsid` ON $tbl_store_v2 (`hsid`);");
+				$wpdb->query("CREATE INDEX `scid` ON $tbl_store_v2 (`scid`);");
+				$wpdb->query("CREATE INDEX `title` ON $tbl_store_v2 (`title`);");
+				$wpdb->query("CREATE INDEX `status` ON $tbl_store_v2 (`status`);");
+				$wpdb->query("CREATE INDEX `adid` ON $tbl_store_v2 (`adid`);");
+
 			}
 
 			//Database table creation for store
@@ -105,6 +122,11 @@
 					$sql .= "PRIMARY KEY (`ID`) ";
 					$sql .= ") ENGINE = InnoDB; ";
 				$result = $wpdb->get_results($sql);
+
+				$wpdb->query("CREATE INDEX `hsid` ON $tbl_store_ratings_v2 (`hsid`);");
+				$wpdb->query("CREATE INDEX `stid` ON $tbl_store_ratings_v2 (`stid`);");
+				$wpdb->query("CREATE INDEX `rates` ON $tbl_store_ratings_v2 (`rates`);");
+
 			}
 
 			//Database table creation for store seen
@@ -118,6 +140,10 @@
 					$sql .= "PRIMARY KEY (`ID`) ";
 					$sql .= ") ENGINE = InnoDB; ";
 				$result = $wpdb->get_results($sql);
+
+				$wpdb->query("CREATE INDEX `stid` ON $tbl_store_seen_v2 (`stid`);");
+				$wpdb->query("CREATE INDEX `hsid` ON $tbl_store_seen_v2 (`hsid`);");
+
 			}
 
 			//Database table creation for store featured store groups
@@ -133,6 +159,11 @@
 					$sql .= "PRIMARY KEY (`ID`) ";
 					$sql .= ") ENGINE = InnoDB; ";
 				$result = $wpdb->get_results($sql);
+
+				$wpdb->query("CREATE INDEX `hsid` ON $tbl_featured_store_groups_v2 (`hsid`);");
+				$wpdb->query("CREATE INDEX `title` ON $tbl_featured_store_groups_v2 (`title`);");
+				$wpdb->query("CREATE INDEX `status` ON $tbl_featured_store_groups_v2 (`status`);");
+
 			}
 
 
@@ -151,6 +182,12 @@
 					$sql .= "PRIMARY KEY (`ID`) ";
 					$sql .= ") ENGINE = InnoDB; ";
 				$result = $wpdb->get_results($sql);
+
+				$wpdb->query("CREATE INDEX `hsid` ON $tbl_featied_store_v2 (`hsid`);");
+				$wpdb->query("CREATE INDEX `stid` ON $tbl_featied_store_v2 (`stid`);");
+				$wpdb->query("CREATE INDEX `groups` ON $tbl_featied_store_v2 (`groups`);");
+				$wpdb->query("CREATE INDEX `status` ON $tbl_featied_store_v2 (`status`);");
+
 			}
 
 			//Database table creation for featured store seen
@@ -164,6 +201,10 @@
 					$sql .= "PRIMARY KEY (`ID`) ";
 					$sql .= ") ENGINE = InnoDB; ";
 				$result = $wpdb->get_results($sql);
+
+				$wpdb->query("CREATE INDEX `hsid` ON $tbl_featured_store_seen_v2 (`hsid`);");
+				$wpdb->query("CREATE INDEX `ftid` ON $tbl_featured_store_seen_v2 (`ftid`);");
+
 			}
 
 			//Database table creation for store cancelled
@@ -180,6 +221,11 @@
 					$sql .= "PRIMARY KEY (`ID`) ";
 					$sql .= ") ENGINE = InnoDB; ";
 				$result = $wpdb->get_results($sql);
+
+				$wpdb->query("CREATE INDEX `stid` ON $tbl_store_cancelled_v2 (`stid`);");
+				$wpdb->query("CREATE INDEX `hsid` ON $tbl_store_cancelled_v2 (`hsid`);");
+				$wpdb->query("CREATE INDEX `activated` ON $tbl_store_cancelled_v2 (`activated`, `executed_by`);");
+
 			}
 
 			//Database table creation for product categories
@@ -196,6 +242,11 @@
 					$sql .= "PRIMARY KEY (`ID`) ";
 					$sql .= ") ENGINE = InnoDB; ";
 				$result = $wpdb->get_results($sql);
+
+				$wpdb->query("CREATE INDEX `hsid` ON $tbl_product_category_v2 (`hsid`);");
+				$wpdb->query("CREATE INDEX `status` ON $tbl_product_category_v2 (`status`);");
+				$wpdb->query("CREATE INDEX `stid` ON $tbl_product_category_v2 (`stid`);");
+
 			}
 
 			//Database table creation for product
@@ -215,6 +266,12 @@
 					$sql .= "PRIMARY KEY (`ID`) ";
 					$sql .= ") ENGINE = InnoDB; ";
 				$result = $wpdb->get_results($sql);
+				$wpdb->query("CREATE INDEX `pdid` ON $tbl_product_varints_v2 (`pdid`);");
+				$wpdb->query("CREATE INDEX `hsid` ON $tbl_product_varints_v2 (`hsid`);");
+				$wpdb->query("CREATE INDEX `title` ON $tbl_product_varints_v2 (`title`);");
+				$wpdb->query("CREATE INDEX `parents` ON $tbl_product_varints_v2 (`parents`);");
+				$wpdb->query("CREATE INDEX `status` ON $tbl_product_varints_v2 (`status`);");
+
 			}
 
 
@@ -232,6 +289,10 @@
 					$sql .= "PRIMARY KEY (`ID`) ";
 					$sql .= ") ENGINE = InnoDB; ";
 				$result = $wpdb->get_results($sql);
+
+				$wpdb->query("CREATE INDEX `rates` ON $tbl_featured_product_v2 (`rates`);");
+				$wpdb->query("CREATE INDEX `pdid` ON $tbl_featured_product_v2 (`pdid`);");
+
 			}
 
 			//Database table creation for product
@@ -248,6 +309,11 @@
 					$sql .= "PRIMARY KEY (`ID`) ";
 					$sql .= ") ENGINE = InnoDB; ";
 				$result = $wpdb->get_results($sql);
+
+				$wpdb->query("CREATE INDEX `hsid` ON $tbl_featured_product_v2 (`hsid`);");
+				$wpdb->query("CREATE INDEX `stid` ON $tbl_featured_product_v2 (`stid`, `pdid`);");
+				$wpdb->query("CREATE INDEX `status` ON $tbl_featured_product_v2 (`status`);");
+
 			}
 
 			//Database table creation for product
@@ -261,6 +327,9 @@
 					$sql .= "PRIMARY KEY (`ID`) ";
 					$sql .= ") ENGINE = InnoDB; ";
 				$result = $wpdb->get_results($sql);
+
+				$wpdb->query("CREATE INDEX `wpid` ON $tbl_featured_product_seen_v2 (`wpid`);");
+
 			}
 
 			//Database table creation for store category
@@ -276,6 +345,10 @@
 					$sql .= "PRIMARY KEY (`ID`) ";
 					$sql .= ") ENGINE = InnoDB; ";
 				$result = $wpdb->get_results($sql);
+
+				$wpdb->query("CREATE INDEX `hsid` ON $tbl_store_category_groups_v2 (`hsid`);");
+				$wpdb->query("CREATE INDEX `status` ON $tbl_store_category_groups_v2 (`status`);");
+
 			}
 
 			//Database table creation for store category
@@ -298,6 +371,14 @@
 					$sql .= "PRIMARY KEY (`ID`) ";
 					$sql .= ") ENGINE = InnoDB; ";
 				$result = $wpdb->get_results($sql);
+
+				$wpdb->query("CREATE INDEX `hsid` ON $tbl_product_v2 (`hsid`);");
+				$wpdb->query("CREATE INDEX `stid` ON $tbl_product_v2 (`stid`);");
+				$wpdb->query("CREATE INDEX `pcid` ON $tbl_product_v2 (`pcid`);");
+				$wpdb->query("CREATE INDEX `title` ON $tbl_product_v2 (`title`);");
+				$wpdb->query("CREATE INDEX `inventory` ON $tbl_product_v2 (`inventory`);");
+				$wpdb->query("CREATE INDEX `status` ON $tbl_product_v2 (`status`);");
+
 			}
 
 		// END
@@ -314,6 +395,9 @@
 				$sql .= "PRIMARY KEY (`ID`) ";
 				$sql .= ") ENGINE = InnoDB; ";
 			$result = $wpdb->get_results($sql);
+
+			$wpdb->query("CREATE INDEX `hsid` ON $tbl_wishlist (`hsid`);");
+
 		}
 
 
@@ -333,6 +417,12 @@
 				$sql .= "PRIMARY KEY (`ID`) ";
 				$sql .= ") ENGINE = InnoDB; ";
 			$result = $wpdb->get_results($sql);
+
+			$wpdb->query("CREATE INDEX `hsid` ON $tbl_store_documents (`hsid`);");
+			$wpdb->query("CREATE INDEX `stid` ON $tbl_store_documents (`stid`);");
+			$wpdb->query("CREATE INDEX `types` ON $tbl_store_documents (`types`);");
+			$wpdb->query("CREATE INDEX `executed_by` ON $tbl_store_documents (`executed_by`, `activated`);");
+
 		}
 
 
