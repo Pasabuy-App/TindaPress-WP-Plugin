@@ -260,13 +260,13 @@
                     }
                 // End
 
-                $seen = TP_Globals_v2::seen($tbl_featured_store_seen, $_POST['wpid'], "stid", $value->stid);
-                if ($seen == false) {
-                    return array(
-                        "status" => "failed",
-                        "message" => "Please contact your administrator. Featured store seen failed."
-                    );
-                }
+                // $seen = TP_Globals_v2::seen($tbl_featured_store_seen, $_POST['wpid'], "stid", $value->stid);
+                // if ($seen == false) {
+                //     return array(
+                //         "status" => "failed",
+                //         "message" => "Please contact your administrator. Featured store seen failed."
+                //     );
+                // }
             }
 
 
