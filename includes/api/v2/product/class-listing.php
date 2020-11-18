@@ -80,7 +80,7 @@
             FROM
                 $tbl_product p
             WHERE
-                ID IN ( SELECT MAX( pdd.ID ) FROM $tbl_product  pdd WHERE pdd.hsid = p.hsid GROUP BY pdd.hsid )  ";
+                ID IN ( SELECT MAX( ID ) FROM $tbl_product  WHERE hsid = p.hsid GROUP BY hsid )  ";
 
             if($user["ctid"] != null){
                 $sql .= " AND pcid = '{$user["ctid"]}' ";
@@ -120,7 +120,7 @@
                 $sql .= " AND `status` = '{$user["status"]}' ";
             }
 
-            $sql .= " ORDER BY ID DESC ";
+            $sql .= " ORDER BY hsid DESC ";
 
             $data = $wpdb->get_results($sql);
             foreach ($data as $key => $value) {
