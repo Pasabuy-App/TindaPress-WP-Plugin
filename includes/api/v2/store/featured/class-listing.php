@@ -218,23 +218,23 @@
                         $get_image = $wpdb->get_row("SELECT meta_value FROM wp_postmeta WHERE meta_id = $value->avatar ");
                         if(!empty($get_image)){
                             // $value->avatar = 'https://pasabuy.app/wp-content/uploads/'.$get_image->meta_value;
-                            $value->avatar = 'None';
+                            $value->avatar =  $image[0];
                         }else{
                             $value->avatar = 'None';
                         }
                     }
 
                 }else{
-                    $value->avatar = 'None';
+                    $value->avatar = $value->avatar;
                 }
 
-                if (is_numeric($store->banner)) {
+                if (is_numeric($value->banner)) {
 
-                    $image = wp_get_attachment_image_src( $store->banner, 'full', $icon =false );
+                    $image = wp_get_attachment_image_src( $value->banner, 'full', $icon =false );
                     if ($image != false) {
                         $value->banner = $image[0];
                     }else{
-                        $get_image = $wpdb->get_row("SELECT meta_value FROM wp_postmeta WHERE meta_id = $store->banner ");
+                        $get_image = $wpdb->get_row("SELECT meta_value FROM wp_postmeta WHERE meta_id = $value->banner ");
                         if(!empty($get_image)){
                             // $value->banner = 'https://pasabuy.app/wp-content/uploads/'.$get_image->meta_value;
                             $value->banner = 'None';
