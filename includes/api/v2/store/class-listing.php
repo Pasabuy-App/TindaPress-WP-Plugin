@@ -28,6 +28,7 @@
             isset($_POST['title']) && !empty($_POST['title'])? $curl_user['title'] =  $_POST['title'] :  $curl_user['title'] = null ;
             isset($_POST['scid']) && !empty($_POST['scid'])? $curl_user['scid'] =  $_POST['scid'] :  $curl_user['scid'] = null ;
             isset($_POST['type']) && !empty($_POST['type'])? $curl_user['type'] =  $_POST['type'] :  $curl_user['type'] = null ;
+            $curl_user['wpid'] = $_POST['wpid'];
 
             return $curl_user;
         }
@@ -43,6 +44,7 @@
             $tbl_store_category_groups = TP_STORES_CATEGORY_GROUPS_v2;
             $tbl_rate = TP_STORES_RATINGS_v2;
             $tbl_schedule = MP_SCHEDULES_v2;
+            $tbl_store_seen = TP_STORES_SEEN_v2;
             $time = time();
             $date = date("Y:m:d");
             $day = lcfirst(date('D', $time));
@@ -248,8 +250,23 @@
                             $value->operation_id = "";
                         }
                     // End
+
+                    $seen = TP_Globals_v2::seen($tbl_store_seen, $user['wpid'], "stid", $value->hsid);
+                    if ($seen == false) {
+                        return array(
+                            "status" => "failed",
+                            "message" => "Please contact your administrator. Featured store seen failed."
+                        );
+                    }
+
+                    // Add store seen count
+                    $get_store_seen_count = $wpdb->get_row("SELECT count(wpid) as `count` FROM $tbl_store_seen WHERE stid = '$value->hsid' ");
+                    if (!empty($get_store_seen_count)) {
+                        $value->store_seen = $get_store_seen_count->count;
+                    }
+                    // End
                 }
-            // End
+            // End of main loop
 
             return array(
                 "status" => "success",

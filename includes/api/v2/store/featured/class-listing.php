@@ -27,7 +27,7 @@
             isset($_POST['ID']) && !empty($_POST['ID'])? $curl_user['ID'] =  $_POST['ID'] :  $curl_user['ID'] = null ;
             isset($_POST['stid']) && !empty($_POST['stid'])? $curl_user['stid'] =  $_POST['stid'] :  $curl_user['stid'] = null ;
             isset($_POST['status']) && !empty($_POST['status'])? $curl_user['status'] =  $_POST['status'] :  $curl_user['status'] = null ;
-
+            $curl_user['wpid'] = $_POST['wpid'];
             return $curl_user;
         }
 
@@ -207,13 +207,15 @@
                     }
                 // End
 
-                if (is_numeric($store->avatar)) {
-                    $image = wp_get_attachment_image_src( $store->avatar, 'full', $icon = false );
+
+
+                if (is_numeric($value->avatar)) {
+                    $image = wp_get_attachment_image_src( $value->avatar, 'full', $icon = false );
 
                     if ($image != false) {
                         $value->avatar = $image[0];
                     }else{
-                        $get_image = $wpdb->get_row("SELECT meta_value FROM wp_postmeta WHERE meta_id = $store->avatar ");
+                        $get_image = $wpdb->get_row("SELECT meta_value FROM wp_postmeta WHERE meta_id = $value->avatar ");
                         if(!empty($get_image)){
                             // $value->avatar = 'https://pasabuy.app/wp-content/uploads/'.$get_image->meta_value;
                             $value->avatar = 'None';
@@ -260,13 +262,20 @@
                     }
                 // End
 
-                // $seen = TP_Globals_v2::seen($tbl_featured_store_seen, $_POST['wpid'], "stid", $value->stid);
-                // if ($seen == false) {
-                //     return array(
-                //         "status" => "failed",
-                //         "message" => "Please contact your administrator. Featured store seen failed."
-                //     );
-                // }
+                $seen = TP_Globals_v2::seen($tbl_featured_store_seen, $user['wpid'], "ftid", $value->ID);
+                if ($seen == false) {
+                    return array(
+                        "status" => "failed",
+                        "message" => "Please contact your administrator. Featured store seen failed."
+                    );
+                }
+
+                // Add store seen count
+                $get_Fstore_seen_count = $wpdb->get_row("SELECT count(wpid) as `count` FROM $tbl_featured_store_seen WHERE ftid = '$value->ID' ");
+                if (!empty($get_Fstore_seen_count)) {
+                    $value->store_seen = $get_Fstore_seen_count->count;
+                }
+                // End
             }
 
 
