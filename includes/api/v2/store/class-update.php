@@ -75,6 +75,12 @@
             isset($files['avatar']) && !empty($files['avatar'])? $user['avatar'] =  $files['avatar'] :  $user['avatar'] = $check_store->avatar;
             isset($files['banner']) && !empty($files['banner'])? $user['banner'] =  $files['banner'] :  $user['banner'] = $check_store->banner;
 
+            $smp = array(
+                "status" => "success",
+                "message" => "Data has been updated successfully.",
+                "data" => $check_store->hsid,
+            );
+
             // Optional Update for avatar and banner
             if (isset($files['avatar']) || isset($files['banner'])) {
                 if (empty($files['banner']['name'])) {
@@ -96,13 +102,15 @@
                 }
 
                 if (!empty($files['avatar']['name'])) {
+                    $smp['avatar']  =  $image["data"][0]["avatar"];
                     $user["avatar"] = $image["data"][0]["avatar_id"];
                 }else{
                     $user["avatar"] = $check_store->avatar;
                 }
 
                 if (!empty($files['banner']['name'])) {
-                    $user["banner"] = $image["data"][0]["banner_id"];
+                    $user["banner"] = $image["data"][0]["banner"];
+                    $smp['banner']  =  $image["data"][0]["banner_id"];
                 }else{
                     $user["banner"] = $check_store->banner;
                 }
@@ -126,11 +134,7 @@
                 );
             }else{
                 $wpdb->query("COMMIT");
-                return array(
-                    "status" => "success",
-                    "message" => "Data has been updated successfully.",
-                    "data" => $check_store->hsid
-                );
+                return $smp;
             }
         }
     }

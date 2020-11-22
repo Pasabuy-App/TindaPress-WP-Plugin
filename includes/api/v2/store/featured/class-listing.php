@@ -138,7 +138,7 @@
 
 
                 // Store category
-                    $get_category = $wpdb->get_row("SELECT title FROM $tbl_store_category WHERE hsid = '$store->scid' ");
+                    $get_category = $wpdb->get_row("SELECT title FROM $tbl_store_category WHERE hsid = '$store->scid'  AND id IN ( SELECT MAX( id ) FROM $tbl_store_category sc WHERE sc.hsid = hsid  GROUP BY hsid ) ");
                     if (empty($get_category)) {
                         $value->category_name = '';
                     }else{
