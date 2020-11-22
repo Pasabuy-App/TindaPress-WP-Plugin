@@ -110,7 +110,7 @@
 
                 if (!empty($files['banner']['name'])) {
                     $user["banner"] = $image["data"][0]["banner"];
-                    $smp['banner']  =  $image["data"][0]["banner_id"];
+                    $smp['banner']  =  $image["data"][0]["banner"];
                 }else{
                     $user["banner"] = $check_store->banner;
                 }
