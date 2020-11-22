@@ -28,6 +28,7 @@
             isset($_POST['title']) && !empty($_POST['title'])? $curl_user['title'] =  $_POST['title'] :  $curl_user['title'] = null ;
             isset($_POST['scid']) && !empty($_POST['scid'])? $curl_user['scid'] =  $_POST['scid'] :  $curl_user['scid'] = null ;
             isset($_POST['type']) && !empty($_POST['type'])? $curl_user['type'] =  $_POST['type'] :  $curl_user['type'] = null ;
+
             $curl_user['wpid'] = $_POST['wpid'];
 
             return $curl_user;
@@ -48,6 +49,7 @@
             $time = time();
             $date = date("Y:m:d");
             $day = lcfirst(date('D', $time));
+            $last_id = '';
 
              // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals_v2::verify_prerequisites();
@@ -119,9 +121,18 @@
                         );
                     }
                 // End
-
                 $sql .= " AND scid IN (SELECT hsid FROM $tbl_store_category WHERE groups =  (SELECT hsid FROM $tbl_store_category_groups WHERE title LIKE  '%{$user["type"]}%' ) )";
             }
+
+            if (isset($_POST['lid'])) {
+                $last_id = " LIMIT 12 ";
+            }
+
+            if (!empty($_POST['lid'])) {
+                $last_id = " LIMIT 7 OFFSET {$_POST["lid"]} ";
+            }
+
+            $sql .= " ORDER BY ID DESC  $last_id ";
 
             $data = $wpdb->get_results($sql);
             $a = array();

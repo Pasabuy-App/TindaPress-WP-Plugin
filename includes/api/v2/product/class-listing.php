@@ -40,6 +40,7 @@
             $tbl_stores = TP_STORES_v2;
             $tbl_product_rates = TP_PRODUCT_RATING_v2;
             $tbl_product_category = TP_PRODUCT_CATEGORY_v2;
+            $last_id = '';
 
             // Step 1: Check if prerequisites plugin are missing
             $plugin = TP_Globals_v2::verify_prerequisites();
@@ -120,9 +121,18 @@
                 $sql .= " AND `status` = '{$user["status"]}' ";
             }
 
-            $sql .= " ORDER BY hsid DESC ";
+            if (isset($_POST['lid'])) {
+                $last_id = " LIMIT 12 ";
+            }
+
+            if (!empty($_POST['lid'])) {
+                $last_id = " LIMIT 7 OFFSET {$_POST["lid"]} ";
+            }
+
+            $sql .= " ORDER BY hsid DESC  $last_id ";
 
             $data = $wpdb->get_results($sql);
+
             foreach ($data as $key => $value) {
                 if (is_numeric($value->avatar)) {
                     $image = wp_get_attachment_image_src( $value->avatar, 'medium', $icon = false );
