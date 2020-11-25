@@ -139,6 +139,8 @@
             $ops = array();
             // Get other store information
                 foreach ($data as $key => $value) {
+
+                    $value->title = str_replace("\\", "",  $value->title );
                     // Store category
                         $get_category = $wpdb->get_row("SELECT title FROM $tbl_store_category WHERE hsid = '$value->scid' ");
                         if (empty($get_category)) {
@@ -149,16 +151,26 @@
                     // End
 
                     // Get Store Data
-                        $get_store_address = $wpdb->get_row("SELECT * FROM $tbl_address_view WHERE ID = '$value->adid' ");
-                        $get_store_address_code = $wpdb->get_row("SELECT
-                            ( SELECT child_val FROM dv_revisions WHERE ID = d.city ) AS city_code,
-                            ( SELECT child_val FROM dv_revisions WHERE ID = d.province ) AS province_code,
-                            ( SELECT child_val FROM dv_revisions WHERE ID = d.country ) AS country_code,
-                            ( SELECT child_val FROM dv_revisions WHERE ID = d.brgy ) AS brgy_code
-                        FROM
-                            dv_address d WHERE ID = '$value->adid' ");
 
-                        if (empty($get_store_address) || empty($get_store_address_code)) {
+                        $get_store_address = DV_Address_Config::get_address(null, null, 'active', $value->adid );
+                        if (!empty($get_store_address)) {
+
+                            $value->street        = $get_store_address['data'][0]->street;
+                            $value->brgy          = $get_store_address['data'][0]->brgy;
+                            $value->city          = $get_store_address['data'][0]->city;
+                            $value->province      = $get_store_address['data'][0]->province;
+                            $value->country       = $get_store_address['data'][0]->country;
+
+                            $value->brgy_code     = DV_Address_Config::get_geo_location( DV_BRGY_TABLE, 'brgy_name', $get_store_address['data'][0]->brgy )['data'][0]->ID;
+                            $value->city_code     = DV_Address_Config::get_geo_location( DV_CITY_TABLE, 'city_name', $get_store_address['data'][0]->city )['data'][0]->city_code;
+                            $value->province_code = DV_Address_Config::get_geo_location( DV_PROVINCE_TABLE, 'prov_name', $get_store_address['data'][0]->province )['data'][0]->prov_code;
+                            $value->country_code  = DV_Address_Config::get_geo_location( DV_COUNTRY_TABLE, 'country_name', $get_store_address['data'][0]->country )['data'][0]->country_code;
+
+                            $value->latitude = $get_store_address['data'][0]->latitude;
+                            $value->longitude = $get_store_address['data'][0]->longitude;
+
+                        }else{
+
                             $value->street        = "";
                             $value->brgy          = "";
                             $value->brgy_code     = "";
@@ -170,27 +182,9 @@
                             $value->country_code  = "";
                             $value->latitude  = "";
                             $value->longitude  = "";
-                        }else{
-                            $value->street        = $get_store_address->street;
-                            $value->brgy          = $get_store_address->brgy;
-                            $value->brgy_code     = $get_store_address_code->brgy_code;
-                            $value->city          = $get_store_address->city;
-                            $value->city_code     = $get_store_address_code->city_code;
-                            $value->province      = $get_store_address->province;
-                            $value->province_code = $get_store_address_code->province_code;
-                            $value->country       = $get_store_address->country;
-                            $value->country_code  = $get_store_address_code->country_code;
-                            if (isset($get_store_address->latitude)) {
-                                $value->latitude = $get_store_address->latitude;
-                            }else{
-                                $value->latitude = "";
-                            }
-                            if (isset($get_store_address_code->longitude)) {
-                                $value->longitude = $get_store_address_code->longitude;
-                            }else{
-                                $value->longitude = "";
-                            }
                         }
+
+
                     // End
 
                     // Get store rates
@@ -210,7 +204,7 @@
                     // End
 
                     if (is_numeric($value->avatar)) {
-                        $image = wp_get_attachment_image_src( $value->avatar, 'full', $icon = false );
+                        $image = wp_get_attachment_image_src( $value->avatar, 'medium', $icon = false );
 
                         if ($image != false) {
                             $value->avatar = $image[0];
@@ -230,7 +224,7 @@
 
                     if (is_numeric($value->banner)) {
 
-                        $image = wp_get_attachment_image_src( $value->banner, 'full', $icon =false );
+                        $image = wp_get_attachment_image_src( $value->banner, 'medium', $icon =false );
                         if ($image != false) {
                             $value->banner = $image[0];
                         }else{

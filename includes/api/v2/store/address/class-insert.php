@@ -21,6 +21,13 @@
 
         public static function listen_open(){
 
+            $data = array( "st" => "streeeettt", "bg" => 36800, "ct" => 137603, "pv" => 1376, "co" => "PH", "type" => "office" );
+            return DV_Address_Config::add_address( $data,  11);
+
+            #$data = DV_Address_Config::get_geo_location(  'dv_geo_countries', 'country_code', 'PH');
+
+            #$data = DV_Address_Config::update_address(  $data = array(), $user_id = 0, $store_id = 0, 2 );
+            return DV_Address_Config::get_address();
             // 2nd Initial QA 2020-08-24 7:27 PM - Miguel
             global $wpdb;
 
@@ -170,7 +177,7 @@
             // Declare catch_post function
             $date_created = TP_Globals_v2::date_stamp();
 
-            $check_store = $wpdb->get_row("SELECT ID FROM $table_store WHERE hsid = '{$user["store_id"]}' AND `status` = 'active' ");
+            $check_store = $wpdb->get_row("SELECT ID FROM $table_store WHERE hsid = '{$user["store_id"]}' AND `status` = 'active' AND  id IN ( SELECT MAX( id ) FROM $table_store s WHERE s.hsid = hsid  GROUP BY hsid ) ");
             if (empty($check_store)) {
                 return array(
                     "status" => "failed",
@@ -189,33 +196,9 @@
             // Step 8: Start mysql transaction
             $wpdb->query("START TRANSACTION");
 
-             //get country id
-             $get_country = $wpdb->get_row("SELECT ID FROM $dv_geo_countries WHERE `country_code` = '{$user["country"]}'");
+            //get country id
+            $get_country = $wpdb->get_row("SELECT ID FROM $dv_geo_countries WHERE `country_code` = '{$user["country"]}'");
 
-             // Query of store address.
-             $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'status', '1', '{$user["created_by"]}', '$date_created');");
-             $status = $wpdb->insert_id;
-
-             $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'street', '{$user["street"]}', '{$user["created_by"]}', '$date_created');");
-             $street = $wpdb->insert_id;
-
-             $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'brgy', '{$user["barangy"]}', '{$user["created_by"]}', '$date_created');");
-             $brgy = $wpdb->insert_id;
-
-             $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'city', '{$user["city"]}', '{$user["created_by"]}', '$date_created');");
-             $city = $wpdb->insert_id;
-
-             $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'province', '{$user["province"]}', '{$user["created_by"]}', '$date_created');");
-             $province = $wpdb->insert_id;
-
-             $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'country', '$get_country->ID', '{$user["created_by"]}', '$date_created');");
-             $country = $wpdb->insert_id;
-
-             $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'latitude', '{$user["latitude"]}', '{$user["created_by"]}', '$date_created');");
-             $latitude = $wpdb->insert_id;
-
-             $wpdb->query("INSERT INTO $dv_rev_table ($rev_fields) VALUES ('address', 'longtitude', '{$user["longtitude"]}', '{$user["created_by"]}', '$date_created');");
-             $longtitude = $wpdb->insert_id;
 
             //Save the address in the parent table
             $wpdb->query("INSERT INTO $table_address (`status`, `types`, `stid`, `street`, `brgy`, `city`, `province`, `country`, `date_created`, `latitude`, `longitude`)

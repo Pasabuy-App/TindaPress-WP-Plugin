@@ -93,10 +93,6 @@
 					$sql .= " `commision` varchar(50) NOT NULL, ";
 					$sql .= " `created_by` bigint(20) NOT NULL  COMMENT 'The one who created this store.', ";
 					$sql .= " `date_created` datetime NULL DEFAULT current_timestamp() COMMENT 'Date created this store.', ";
-					$sql .= "PRIMARY KEY (`ID`), ";
-					$sql .= "KEY `scid` (`scid`) USING BTREE, ";
-					$sql .= "KEY `hsid` (`hsid`) USING BTREE, ";
-					$sql .= "KEY `status` (`status`) USING BTREE, ";
 					$sql .= "PRIMARY KEY (`ID`) ";
 					$sql .= ") ENGINE = InnoDB; ";
 				$result = $wpdb->get_results($sql);
