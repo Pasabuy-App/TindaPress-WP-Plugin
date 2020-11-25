@@ -151,9 +151,8 @@
                     // End
 
                     // Get Store Data
-
                         $get_store_address = DV_Address_Config::get_address(null, null, 'active', $value->adid );
-                        if (!empty($get_store_address)) {
+                        if (!empty($get_store_address['data'])) {
 
                             $value->street        = $get_store_address['data'][0]->street;
                             $value->brgy          = $get_store_address['data'][0]->brgy;
@@ -183,8 +182,6 @@
                             $value->latitude  = "";
                             $value->longitude  = "";
                         }
-
-
                     // End
 
                     // Get store rates

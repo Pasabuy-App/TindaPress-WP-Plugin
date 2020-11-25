@@ -59,7 +59,7 @@
 
             $user = self::catch_post();
 
-            $sql = " SELECT
+            $sql = "SELECT
                 hsid as ID,
                 pdid,
                 title,
