@@ -52,7 +52,6 @@
                 require plugin_dir_path(__FILE__) . '/v2/store/address/class-insert.php';
                 require plugin_dir_path(__FILE__) . '/v2/store/address/class-activate.php';
                 require plugin_dir_path(__FILE__) . '/v2/store/address/class-listing.php';
-                require plugin_dir_path(__FILE__) . '/v2/store/address/class-update.php';
 
             require plugin_dir_path(__FILE__) . '/v2/store/class-delete.php';
             require plugin_dir_path(__FILE__) . '/v2/store/class-insert.php';
