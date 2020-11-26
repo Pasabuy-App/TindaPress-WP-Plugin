@@ -133,7 +133,7 @@
             }
 
             $sql .= " ORDER BY ID DESC  $last_id ";
-
+            $kpl = array();
             $data = $wpdb->get_results($sql);
             $a = array();
             $ops = array();
@@ -163,7 +163,7 @@
 
                             $value->brgy_code     = $address_data->brgy_code;
                             $value->city_code     = $address_data->city_code;
-                            $value->province_code = $address_data->province_code;
+                            $value->province_code = $address_data->prov_code;
                             $value->country_code  = $address_data->country_code;
 
                             $value->latitude = $address_data->latitude;
