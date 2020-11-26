@@ -152,10 +152,10 @@
                         $value->province      = $address_data->province;
                         $value->country       = $address_data->country;
 
-                        $value->brgy_code     = DV_Address_Config::get_geo_location( DV_BRGY_TABLE, 'brgy_name', $address_data->brgy )['data'][0]->ID;
-                        $value->city_code     = DV_Address_Config::get_geo_location( DV_CITY_TABLE, 'city_name', $address_data->city )['data'][0]->city_code;
-                        $value->province_code = DV_Address_Config::get_geo_location( DV_PROVINCE_TABLE, 'prov_name', $address_data->province )['data'][0]->prov_code;
-                        $value->country_code  = DV_Address_Config::get_geo_location( DV_COUNTRY_TABLE, 'country_name', $address_data->country )['data'][0]->country_code;
+                        $value->brgy_code     = $address_data->brgy_code;
+                        $value->city_code     = $address_data->city_code;
+                        $value->province_code = $address_data->province_code;
+                        $value->country_code  = $address_data->country_code;
 
                         $value->latitude = $address_data->latitude;
                         $value->longitude = $address_data->longitude;
