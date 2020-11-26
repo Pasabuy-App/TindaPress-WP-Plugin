@@ -124,10 +124,7 @@
                         info,
                         avatar,
                         banner,
-                        adid,
-                        `status`,
-                        created_by,
-                        date_created
+                        adid
                     FROM
                         $tbl_store
                     WHERE
@@ -146,22 +143,22 @@
                 // End
 
                 // Get Store Data
-                    $get_store_address = DV_Address_Config::get_address(null, null, 'active', $value->adid );
-                    if (!empty($get_store_address)) {
+                    $address_data = DV_Address_Config::get_address( null, $store->hsid, 'active', null, null, true);
 
-                        $value->street        = $get_store_address['data'][0]->street;
-                        $value->brgy          = $get_store_address['data'][0]->brgy;
-                        $value->city          = $get_store_address['data'][0]->city;
-                        $value->province      = $get_store_address['data'][0]->province;
-                        $value->country       = $get_store_address['data'][0]->country;
+                    if (!empty($address_data)) {
+                        $value->street        = $address_data->street;
+                        $value->brgy          = $address_data->brgy;
+                        $value->city          = $address_data->city;
+                        $value->province      = $address_data->province;
+                        $value->country       = $address_data->country;
 
-                        $value->brgy_code     = DV_Address_Config::get_geo_location( DV_BRGY_TABLE, 'brgy_name', $get_store_address['data'][0]->brgy )['data'][0]->ID;
-                        $value->city_code     = DV_Address_Config::get_geo_location( DV_CITY_TABLE, 'city_name', $get_store_address['data'][0]->city )['data'][0]->city_code;
-                        $value->province_code = DV_Address_Config::get_geo_location( DV_PROVINCE_TABLE, 'prov_name', $get_store_address['data'][0]->province )['data'][0]->prov_code;
-                        $value->country_code  = DV_Address_Config::get_geo_location( DV_COUNTRY_TABLE, 'country_name', $get_store_address['data'][0]->country )['data'][0]->country_code;
+                        $value->brgy_code     = DV_Address_Config::get_geo_location( DV_BRGY_TABLE, 'brgy_name', $address_data->brgy )['data'][0]->ID;
+                        $value->city_code     = DV_Address_Config::get_geo_location( DV_CITY_TABLE, 'city_name', $address_data->city )['data'][0]->city_code;
+                        $value->province_code = DV_Address_Config::get_geo_location( DV_PROVINCE_TABLE, 'prov_name', $address_data->province )['data'][0]->prov_code;
+                        $value->country_code  = DV_Address_Config::get_geo_location( DV_COUNTRY_TABLE, 'country_name', $address_data->country )['data'][0]->country_code;
 
-                        $value->latitude = $get_store_address['data'][0]->latitude;
-                        $value->longitude = $get_store_address['data'][0]->longitude;
+                        $value->latitude = $address_data->latitude;
+                        $value->longitude = $address_data->longitude;
 
                     }else{
 
