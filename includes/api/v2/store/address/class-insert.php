@@ -54,12 +54,12 @@
             $address_data = DV_Address_Config::get_address( null, $user["store_id"], 'active', null, null, true);
 
             $data = array(
-                "st" => empty($address_data) ? $user["street"] : $address_data->street,
-                "bg" => empty($address_data) ? $user["brgy"] : $address_data->brgy_code,
-                "ct" => empty($address_data) ? $user["city"] : $address_data->city_code,
-                "pv" => empty($address_data) ? $user["province"] : $address_data->province_code,
-                "co" => empty($address_data) ? $user["country"] : $address_data->country_code,
-                "type" => empty($address_data) ? $user["type"] : $address_data->types,
+                "st" => empty($address_data) || $user["street"]   != '' ? $user["street"] : $address_data->street,
+                "bg" => empty($address_data) || $user["brgy"]     != '' ? $user["brgy"] : $address_data->brgy_code,
+                "ct" => empty($address_data) || $user["city"]     != '' ? $user["city"] : $address_data->city_code,
+                "pv" => empty($address_data) || $user["province"] != '' ? $user["province"] : $address_data->province_code,
+                "co" => empty($address_data) || $user["country"]  != '' ? $user["country"] : $address_data->country_code,
+                "type" => empty($address_data)  || $user["type"]  != '' ? $user["type"] : $address_data->types,
             );
 
             $wpdb->query("START TRANSACTION");
@@ -86,7 +86,7 @@
                 $user['longitude'] = empty($address_data) ? $user['longitude'] : $address_data->longitude;
 
                 /* Update current store address */
-                $import = DV_Address_Config::add_address( $data,  0, $user["store_id"], $user['latitude'], $user['longitude'],  null, $status = 'active', $address_data->hash_id );
+                $import = DV_Address_Config::add_address( $data,  0, $user["store_id"], $user['latitude'], $user['longitude'],  null, $status = 'active', null);
                 $stats = 'updated';
 
             }
